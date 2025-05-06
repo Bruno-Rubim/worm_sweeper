@@ -7,14 +7,13 @@ const THREAT = 'threat'
 const UNSURE = 'unsure'
 
 export class Block{
-    constructor({posX=0, posY=0, content=null, gold=true, parentLevel=new Level({})}){
+    constructor({posX=0, posY=0, gold=true, parentLevel=new Level({})}){
         this.posX = posX
         this.posY = posY
         this.hidden = true
         this.broken = false
         this.worm = false
         this.gold = gold
-        this.content = content
         this.parentLevel = parentLevel
         this.starter = false
         this.marker = null

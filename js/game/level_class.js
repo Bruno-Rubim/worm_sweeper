@@ -35,19 +35,17 @@ export class Level{
             block.starter = true
         })
         firstBlock.starter = true
-        firstBlock.content = null
 
         let wormsDelivered = 0
         while(wormsDelivered < this.wormQuantity){
             const randX = Math.floor(Math.random() * this.size)
             const randy = Math.floor(Math.random() * this.size)
             const block = this.blocks[randX][randy]
-            if (!block.starter && block.content == null) {
+            if (!block.starter && !block.worm) {
                 block.worm = true
                 wormsDelivered++
             }
         }
-        firstBlock.content = null
         firstBlock.break()
         this.started = true
         this.timer.start()
@@ -97,7 +95,6 @@ export class Level{
         return counter
     }
     checkWin(){
-        console.log(this.countBrokenBlocks(), this.wormQuantity)
         if (this.countBrokenBlocks() == this.wormQuantity){
             this.win()
         }
