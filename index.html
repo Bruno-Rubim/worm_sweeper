@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worm Sweeper</title>
+    <link rel="shortcut icon" href="/images/dirt_block_gold.png" type="image/x-icon" />
+    <style>
+        body{
+            background-color: #111;
+            color: white;
+            /* cursor: url('/images/picaxe_cursor.png'), auto; */
+        }
+    </style>
+    <script type="module" src="/js/index.js"></script>
+    Size: <input type="number" id="size" min="3" max="16" value="8">
+    <br>
+    Difficulty: <input type="number" min="1" max="10" id="difficulty"  value="5">
+    <br>
+    <button id="new_game">New Game</button>
+    <br>Press space bar or hold shift to switch tool
+</head>
+<body>
+    <canvas></canvas>
+</body>
+</html>
