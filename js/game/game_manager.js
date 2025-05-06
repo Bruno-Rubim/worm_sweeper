@@ -1,7 +1,7 @@
-import { ctx, renderScale } from "../canvas_handler.js";
-import { difficultyInput, sizeInput } from "../html_handler.js";
-import { findSprite } from "../sprites.js";
-import { Level } from "./level_class.js";
+import { ctx, renderScale } from "/js/canvas_handler.js";
+import { difficultyInput, sizeInput } from "/js/html_handler.js";
+import { findSprite } from "/js/sprites.js";
+import { Level } from "/js/game/level_class.js";
 
 export const PICAXE = 'picaxe';
 export const FLAG = 'flag';

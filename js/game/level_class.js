@@ -1,8 +1,8 @@
-import { ctx, renderScale } from "../canvas_handler.js";
-import { findSprite } from "../sprites.js";
-import { Timer } from "../time_manager.js";
-import { Block } from "./blocks.js";
-import { borderThicness, gameManager } from "./game_manager.js";
+import { ctx, renderScale } from "/js/canvas_handler.js";
+import { findSprite } from "/js/sprites.js";
+import { Timer } from "/js/time_manager.js";
+import { Block } from "/js/game/blocks.js";
+import { borderThicness, gameManager } from "/js/game/game_manager.js";
 
 export class Level{
     constructor({size=8, difficulty=5, timerMiliseconds=100000}){

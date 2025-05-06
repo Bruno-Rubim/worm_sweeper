@@ -1,7 +1,7 @@
-import { renderGame } from "./game/game_manager.js";
-import { canvasElement, clearCanvas } from "./canvas_handler.js";
-import { ctx } from "./canvas_handler.js";
-import { timedCondition } from "./time_manager.js";
+import { renderGame } from "/js/game/game_manager.js";
+import { canvasElement, clearCanvas } from "/js/canvas_handler.js";
+import { ctx } from "/js/canvas_handler.js";
+import { timedCondition } from "/js/time_manager.js";
 
 export function render(){
     timedCondition(()=>{})

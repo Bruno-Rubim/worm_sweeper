@@ -1,4 +1,4 @@
-import { borderLength, borderThicness, FLAG, gameManager, PICAXE } from "./game_manager.js"
+import { borderLength, borderThicness, FLAG, gameManager, PICAXE } from "/js/game/game_manager.js"
 
 export const KEYUP = 'keyup'
 export const KEYDOWN = 'keydown'

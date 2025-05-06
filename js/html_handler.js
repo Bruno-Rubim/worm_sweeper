@@ -1,4 +1,4 @@
-import { newGame } from "./game/game_manager.js"
+import { newGame } from "/js/game/game_manager.js"
 
 export const sizeInput = document.querySelector("#size")
 export const difficultyInput = document.querySelector("#difficulty")
