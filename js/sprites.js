@@ -29,6 +29,7 @@ const sprites = {
 	dirt_block_unknown: new Sprite('./images/dirt_block_unknown.png'),
 	dirt_block_hidden: new Sprite('./images/dirt_block_hidden.png'),
 	dirt_block_gold: new Sprite('./images/dirt_block_gold.png'),
+	exit_door: new Sprite('./images/exit_door.png'),
 	threat: new Sprite('./images/threat.png'),
 	empty: new Sprite('./images/empty_block.png'),
 	ground_numbers: new Sprite('./images/ground_numbers.png'),

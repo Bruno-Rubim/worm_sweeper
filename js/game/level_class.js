@@ -1,11 +1,12 @@
-import { ctx, renderScale } from "/js/canvas_handler.js";
-import { findSprite } from "/js/sprites.js";
-import { Timer } from "/js/time_manager.js";
-import { Block } from "/js/game/blocks.js";
-import { borderThicness, gameManager } from "/js/game/game_manager.js";
+import { ctx, renderScale } from "..canvas_handler.js";
+import { findSprite } from "..sprites.js";
+import { Block } from "./blocks.js";
+import { borderThicness, gameManager } from "./game_manager.js";
+import { Timer } from "./timer.js";
 
 export class Level{
-    constructor({size=8, difficulty=5, timerMiliseconds=100000}){
+    constructor({ id=0, size=6, difficulty=4, timerMiliseconds=60000}){
+        this.id = id;
         this.size = size;
         this.difficulty = difficulty;
         this.wormQuantity = Math.floor((difficulty * 0.033) * size * size)
@@ -36,17 +37,31 @@ export class Level{
         })
         firstBlock.starter = true
 
-        let wormsDelivered = 0
-        while(wormsDelivered < this.wormQuantity){
+        let wormsPlaced = 0
+        if (this.wormQuantity > Math.floor((this.size*this.size)/3)){
+            this.wormQuantity = Math.floor((this.size*this.size)/3)
+        }
+        while(wormsPlaced < this.wormQuantity){
             const randX = Math.floor(Math.random() * this.size)
             const randy = Math.floor(Math.random() * this.size)
             const block = this.blocks[randX][randy]
-            if (!block.starter && !block.worm) {
-                block.worm = true
-                wormsDelivered++
+            if (!block.starter && block.content != 'worm') {
+                block.content = 'worm'
+                wormsPlaced++
+            }
+        }
+        let exitPlaced = false
+        while(!exitPlaced){
+            const randX = Math.floor(Math.random() * this.size)
+            const randy = Math.floor(Math.random() * this.size)
+            const block = this.blocks[randX][randy]
+            if (!block.starter && block.content != 'worm' && block.wormLevel == 0) {
+                block.content = 'exit_door'
+                exitPlaced = true
             }
         }
         firstBlock.break()
+        firstBlock.breakSurr()
         this.started = true
         this.timer.start()
     }
@@ -75,7 +90,7 @@ export class Level{
         gameManager.currentLevel.ended = true
         gameManager.currentLevel.blocks.forEach(column => {
             column.forEach(block =>{
-                if (block.marker && !block.worm){
+                if (block.marker && block.content != 'worm'){
                     block.marker = 'wrong'
                 } else {
                     block.break()
@@ -102,6 +117,18 @@ export class Level{
     win(){
         this.ended = true;
         this.timer.stop()
-        console.log('contrags')
+    }
+
+    nextLevel(startX, startY){
+        const nextId = this.id + 1
+        let nextSize = Math.floor(nextId/3) + 6
+        let nextDificulty = (nextId%3) + Math.floor(nextId/3) + 3
+        gameManager.currentLevel = new Level({
+            difficulty: nextDificulty,
+            size: nextSize,
+            timerMiliseconds: this.timer.miliseconds,
+            id: nextId
+        })
+        gameManager.currentLevel.start(startX, startY)
     }
 }

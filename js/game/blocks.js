@@ -1,7 +1,8 @@
-import { ctx, renderScale } from "/js/canvas_handler.js"
-import { findSprite } from "/js/sprites.js"
-import { borderThicness } from "/js/game/game_manager.js"
-import { Level } from "/js/game/level_class.js"
+import { ctx, renderScale } from "..canvas_handler.js"
+import { findSprite } from "..sprites.js"
+import { borderThicness } from "./game_manager.js"
+import { Level } from "./level_class.js"
+import { FLAG } from "./game_manager.js"
 
 const THREAT = 'threat'
 const UNSURE = 'unsure'
@@ -12,8 +13,8 @@ export class Block{
         this.posY = posY
         this.hidden = true
         this.broken = false
-        this.worm = false
         this.gold = gold
+        this.content = null
         this.parentLevel = parentLevel
         this.starter = false
         this.marker = null
@@ -65,7 +66,7 @@ export class Block{
     get wormLevel(){
         let wormLevel = 0
         this.surrBlocks.forEach(block => {
-            if (block.worm){
+            if (block.content == 'worm'){
                 wormLevel++
             }
         });
@@ -80,10 +81,11 @@ export class Block{
         });
         return count
     }
+
     get sprite(){
         if (this.broken){
-            if (this.worm){
-                return findSprite('worm').img
+            if (this.content){
+                return findSprite(this.content).img
             }
             return findSprite('ground_numbers').img
         }
@@ -96,8 +98,24 @@ export class Block{
         return findSprite(`dirt_block_unknown`).img
     }
 
+    // get sprite(){
+    //     if (this.content){
+    //         return findSprite(this.content).img
+    //     }
+    //     if (this.broken){
+    //         return findSprite('ground_numbers').img
+    //     }
+    //     if (this.hidden){
+    //         return findSprite(`dirt_block_hidden`).img
+    //     }
+    //     if (this.gold){
+    //         return findSprite(`dirt_block_gold`).img
+    //     }
+    //     return findSprite(`dirt_block_unknown`).img
+    // }
+
     render(levelScale){
-        if (this.broken && !this.worm){
+        if (this.broken && !this.content){
             ctx.drawImage(
                 this.sprite,
                 this.wormLevel*16,
@@ -148,34 +166,36 @@ export class Block{
                 return
             }
             block.break()
-            if (block.wormLevel == 0){
-                block.breakSurr()
-            }
         });
     }   
     break(){
         if (this.marker != null){
             return
         }
+        if (this.parentLevel.ended && this.wormLevel == 0 && this.content != 'worm'){
+            return
+        } else {
+            this.parentLevel.timer.addSeconds(3)
+        }
         if (this.broken){
             this.check()
             return
         }
-        if (this.parentLevel.ended && this.wormLevel == 0 && !this.worm){
-            return
-        }
         this.broken = true
         this.revealAdjc()
-        if (this.wormLevel == 0 && !this.worm){
-            this.breakSurr()
+        if (this.wormLevel == 0 && this.content != 'worm'){
+            // this.breakSurr()
         }
-        if (this.worm && !this.parentLevel.ended){
+        if (this.content == 'worm' && !this.parentLevel.ended){
             this.parentLevel.lose()
             this.parentLevel.timer.stop()
         }
     }
 
     mark(){
+        if (!this.parentLevel.started){
+            return
+        }
         if(this.broken || this.parentLevel.ended){
             return
         }
@@ -194,10 +214,25 @@ export class Block{
             return
         }
     }
-
     check(){
         if (this.surrMarkerCount == this.wormLevel){
             this.breakSurr()
         }
+    }
+
+    click(tool){
+        if (tool == FLAG){
+            this.mark()
+            return
+        }
+        if (!this.broken){
+            this.break()
+            return
+        }
+        if (this.content == 'exit_door') {
+            this.parentLevel.nextLevel(this.posX, this.posY)
+            return
+        }
+        this.check()
     }
 }

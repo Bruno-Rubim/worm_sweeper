@@ -1,5 +1,5 @@
-import { render } from "/js/rendering.js";
-import { updateCanvas } from "/js/canvas_handler.js";
+import { render } from "./rendering.js";
+import { updateCanvas } from "./canvas_handler.js";
 
 
 export function frame(){

@@ -1,7 +1,6 @@
-import { ctx, renderScale } from "/js/canvas_handler.js";
-import { difficultyInput, sizeInput } from "/js/html_handler.js";
-import { findSprite } from "/js/sprites.js";
-import { Level } from "/js/game/level_class.js";
+import { ctx, renderScale } from "../canvas_handler.js";
+import { findSprite } from "../sprites.js";
+import { Level } from "../game/level_class.js";
 
 export const PICAXE = 'picaxe';
 export const FLAG = 'flag';
@@ -9,7 +8,11 @@ export const borderLength = 160
 export const borderThicness = 16
 
 export const gameManager = {
-    currentLevel: new Level({}),
+    currentLevel: new Level({
+        // size: sizeInput.value,
+        // difficulty: difficultyInput.value,
+        // timerMiliseconds: timeLimitInput.value * 1000
+    }),
     selectedTool: PICAXE
 }
 
@@ -24,13 +27,18 @@ function renderBorder(){
 
 export function newGame(){
     gameManager.currentLevel = new Level ({
-        size: sizeInput.value,
-        difficulty: difficultyInput.value
+        // size: sizeInput.value,
+        // difficulty: difficultyInput.value,
+        // timerMiliseconds: timeLimitInput.value * 1000,
+        size: 6,
+        difficulty: 4,
+        timerMiliseconds: 60 * 1000,
     })
     gameManager.selectedTool = PICAXE
 }
 
 const tools = [PICAXE, FLAG]
+
 function renderTools(){
     tools.forEach((tool, index) =>{
         let toolName = tool

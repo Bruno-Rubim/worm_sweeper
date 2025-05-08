@@ -1,5 +1,5 @@
-import { canvasElement, renderScale } from "/js/canvas_handler.js";
-import { clickHandler, KEYDOWN, keyHandler, KEYUP, wheelHandler } from "/js/game/game_input_handler.js";
+import { canvasElement, renderScale } from "./canvas_handler.js";
+import { clickHandler, KEYDOWN, keyHandler, KEYUP, wheelHandler } from "./game/game_input_handler.js";
 
 
 document.addEventListener("keyup", (event)=>{
