@@ -1,5 +1,5 @@
-import { ctx, renderScale } from "..canvas_handler.js"
-import { findSprite } from "..sprites.js"
+import { ctx, renderScale } from "../canvas_handler.js"
+import { findSprite } from "../sprites.js"
 import { borderThicness } from "./game_manager.js"
 import { Level } from "./level_class.js"
 import { FLAG } from "./game_manager.js"

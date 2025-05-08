@@ -1,5 +1,5 @@
-import { ctx, renderScale } from "..canvas_handler.js";
-import { findSprite } from "..sprites.js";
+import { ctx, renderScale } from "../canvas_handler.js";
+import { findSprite } from "../sprites.js";
 import { Block } from "./blocks.js";
 import { borderThicness, gameManager } from "./game_manager.js";
 import { Timer } from "./timer.js";
