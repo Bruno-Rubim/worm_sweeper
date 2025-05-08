@@ -1,14 +1,14 @@
 import { ctx, renderScale } from "../canvas_handler.js"
 import { findSprite } from "../sprites.js"
-import { borderThicness } from "./game_manager.js"
+import { borderThicness, gameManager } from "./game_manager.js"
 import { Level } from "./level_class.js"
-import { FLAG } from "./game_manager.js"
+import { CHECKER, FLAG } from "./shop.js"
 
 const THREAT = 'threat'
 const UNSURE = 'unsure'
 
 export class Block{
-    constructor({posX=0, posY=0, gold=true, parentLevel=new Level({})}){
+    constructor({posX=0, posY=0, gold=false, parentLevel=new Level({})}){
         this.posX = posX
         this.posY = posY
         this.hidden = true
@@ -98,22 +98,6 @@ export class Block{
         return findSprite(`dirt_block_unknown`).img
     }
 
-    // get sprite(){
-    //     if (this.content){
-    //         return findSprite(this.content).img
-    //     }
-    //     if (this.broken){
-    //         return findSprite('ground_numbers').img
-    //     }
-    //     if (this.hidden){
-    //         return findSprite(`dirt_block_hidden`).img
-    //     }
-    //     if (this.gold){
-    //         return findSprite(`dirt_block_gold`).img
-    //     }
-    //     return findSprite(`dirt_block_unknown`).img
-    // }
-
     render(levelScale){
         if (this.broken && !this.content){
             ctx.drawImage(
@@ -182,6 +166,9 @@ export class Block{
             return
         }
         this.broken = true
+        if (this.gold){
+            gameManager.gold++
+        }
         this.revealAdjc()
         if (this.wormLevel == 0 && this.content != 'worm'){
             // this.breakSurr()
@@ -233,6 +220,12 @@ export class Block{
             this.parentLevel.nextLevel(this.posX, this.posY)
             return
         }
-        this.check()
+        if (this.content == 'shop_door') {
+            this.parentLevel.inShop = true
+            return
+        }
+        if (gameManager.inventory.includes(CHECKER)){
+            this.check()
+        }
     }
 }

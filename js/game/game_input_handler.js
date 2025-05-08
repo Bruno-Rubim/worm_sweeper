@@ -1,5 +1,5 @@
-import { newGame } from "./game_manager.js"
-import { borderLength, borderThicness, FLAG, gameManager, PICAXE } from "./game_manager.js"
+import { gameCursor, restart, swapTools } from "./game_manager.js"
+import { borderLength, borderThicness, gameManager  } from "./game_manager.js"
 
 export const KEYUP = 'keyup'
 export const KEYDOWN = 'keydown'
@@ -17,42 +17,39 @@ export function keyHandler(key, state){
         keyDict[key] = KEYUP
     }
     if (keyDict[' '] == KEYDOWN){
-        if (gameManager.selectedTool == PICAXE){
-            gameManager.selectedTool = FLAG
-        } else {
-            gameManager.selectedTool = PICAXE
-        }
+        swapTools()
     }
     if (keyDict['Shift'] == KEYDOWN || keyDict['Shift'] == KEYUP){
-        if (gameManager.selectedTool == PICAXE){
-            gameManager.selectedTool = FLAG
-        } else {
-            gameManager.selectedTool = PICAXE
-        }
+        swapTools()
+    }
+    if (keyDict['Escape'] == KEYDOWN){
+        gameManager.currentLevel.inShop = false
     }
 }
 
 export function clickHandler(posX, posY){
     if (posX > borderThicness && posX <= borderLength - borderThicness && posY > borderThicness && posY <= borderLength - borderThicness){
-        let tileX = Math.floor((posX-borderThicness)/(gameManager.currentLevel.levelScale * 16))
-        let tileY = Math.floor((posY-borderThicness)/(gameManager.currentLevel.levelScale * 16))
+        posX = posX - borderThicness
+        posY = posY - borderThicness
+        if (gameManager.currentLevel.inShop){
+            gameManager.currentLevel.shop.click(posX, posY)
+            return
+        }
+        let tileX = Math.floor(posX/(gameManager.currentLevel.levelScale * 16))
+        let tileY = Math.floor(posY/(gameManager.currentLevel.levelScale * 16))
         if (!gameManager.currentLevel.started){
             gameManager.currentLevel.start(tileX, tileY)
+            return
+        }
+        if (gameManager.currentLevel.ended){
+            restart()
         } else {
-            if (gameManager.currentLevel.ended){
-                newGame()
-            } else {
-                gameManager.currentLevel.blocks[tileX][tileY].click(gameManager.selectedTool)
-            }
-            // gameManager.currentLevel.checkWin()
+            gameManager.currentLevel.blocks[tileX][tileY].click(gameManager.selectedTool)
         }
     }
 }
 
-export function wheelHandler(degrees){
-    if (gameManager.selectedTool == PICAXE){
-        gameManager.selectedTool = FLAG
-    } else {
-        gameManager.selectedTool = PICAXE
-    }
+export function mouseMoveHandler(posX, posY){
+    gameCursor.posX = posX
+    gameCursor.posY = posY
 }

@@ -1,14 +1,16 @@
 import { ctx, renderScale } from "../canvas_handler.js";
 import { findSprite } from "../sprites.js";
 import { Block } from "./blocks.js";
-import { borderThicness, gameManager } from "./game_manager.js";
+import { borderLength, borderThicness, gameManager } from "./game_manager.js";
+import { Shop } from "./shop.js";
 import { Timer } from "./timer.js";
 
 export class Level{
-    constructor({ id=0, size=6, difficulty=4, timerMiliseconds=60000}){
+    constructor({ id=0, size=6, difficulty=4, timerMiliseconds=60000, shop=null}){
         this.id = id;
         this.size = size;
         this.difficulty = difficulty;
+        this.shop = shop;
         this.wormQuantity = Math.floor((difficulty * 0.033) * size * size)
         this.flagsLeft = this.wormQuantity
         this.levelScale = (128/(this.size*16))
@@ -16,13 +18,64 @@ export class Level{
         this.started = false
         this.ended = false
         this.timer = new Timer({length: timerMiliseconds, whenEnd: this.lose})
+        this.inShop = false
     }
     fillEmptyBlocks(){
         for (let i = 0; i < this.size; i++){
             for (let j = 0; j < this.size; j++){
-                const rngGold = Math.floor(Math.random()*1.5)
-                const block = new Block({posX:i, posY:j, parentLevel:this, gold:rngGold})
+                const block = new Block({posX:i, posY:j, parentLevel:this})
                 this.blocks[i].push(block)
+            }
+        }
+    }
+    placeWorms(){
+        let wormsPlaced = 0
+        if (this.wormQuantity > Math.floor((this.size*this.size)/3)){
+            this.wormQuantity = Math.floor((this.size*this.size)/3)
+        }
+        while(wormsPlaced < this.wormQuantity){
+            const randX = Math.floor(Math.random() * this.size)
+            const randy = Math.floor(Math.random() * this.size)
+            const block = this.blocks[randX][randy]
+            if (!block.starter && !block.content) {
+                block.content = 'worm'
+                wormsPlaced++
+            }
+        }
+    }
+    placeGold(){
+        for (let i = 0; i < this.size; i++){
+            for (let j = 0; j < this.size; j++){
+                const block = this.blocks[i][j]
+                if (block.starter) {
+                    continue
+                }
+                const rngGold = Math.floor(Math.random()*1.5)
+                block.gold = rngGold
+            }
+        }
+    }
+    placeExit(){
+        let exitPlaced = false
+        while(!exitPlaced){
+            const randX = Math.floor(Math.random() * this.size)
+            const randy = Math.floor(Math.random() * this.size)
+            const block = this.blocks[randX][randy]
+            if (!block.starter && !block.content && block.wormLevel == 0) {
+                block.content = 'exit_door'
+                exitPlaced = true
+            }
+        }
+    }
+    placeShop(){
+        let shopPlaced = false
+        while(!shopPlaced){
+            const randX = Math.floor(Math.random() * this.size)
+            const randy = Math.floor(Math.random() * this.size)
+            const block = this.blocks[randX][randy]
+            if (!block.starter && !block.content && block.wormLevel == 0) {
+                block.content = 'shop_door'
+                shopPlaced = true
             }
         }
     }
@@ -36,29 +89,11 @@ export class Level{
             block.starter = true
         })
         firstBlock.starter = true
-
-        let wormsPlaced = 0
-        if (this.wormQuantity > Math.floor((this.size*this.size)/3)){
-            this.wormQuantity = Math.floor((this.size*this.size)/3)
-        }
-        while(wormsPlaced < this.wormQuantity){
-            const randX = Math.floor(Math.random() * this.size)
-            const randy = Math.floor(Math.random() * this.size)
-            const block = this.blocks[randX][randy]
-            if (!block.starter && block.content != 'worm') {
-                block.content = 'worm'
-                wormsPlaced++
-            }
-        }
-        let exitPlaced = false
-        while(!exitPlaced){
-            const randX = Math.floor(Math.random() * this.size)
-            const randy = Math.floor(Math.random() * this.size)
-            const block = this.blocks[randX][randy]
-            if (!block.starter && block.content != 'worm' && block.wormLevel == 0) {
-                block.content = 'exit_door'
-                exitPlaced = true
-            }
+        this.placeWorms()
+        this.placeExit()
+        this.placeGold()
+        if (this.shop){
+            this.placeShop()
         }
         firstBlock.break()
         firstBlock.breakSurr()
@@ -84,6 +119,16 @@ export class Level{
                     block.render(this.levelScale)
                 })
             )
+        }
+    }
+    renderShop(){
+        this.shop.render()
+    }
+    render(){
+        if(this.inShop){
+            this.renderShop()
+        } else {
+            this.renderBlocks()
         }
     }
     lose(){
@@ -123,11 +168,16 @@ export class Level{
         const nextId = this.id + 1
         let nextSize = Math.floor(nextId/3) + 6
         let nextDificulty = (nextId%3) + Math.floor(nextId/3) + 3
+        let nextShop = null
+        if (nextId%3 == 1){
+            nextShop = new Shop({inventory: gameManager.inventory, level: nextId})
+        }
         gameManager.currentLevel = new Level({
             difficulty: nextDificulty,
             size: nextSize,
             timerMiliseconds: this.timer.miliseconds,
-            id: nextId
+            id: nextId,
+            shop: nextShop,
         })
         gameManager.currentLevel.start(startX, startY)
     }
