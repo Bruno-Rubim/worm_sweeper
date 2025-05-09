@@ -28,7 +28,7 @@ export function keyHandler(key, state){
 }
 
 export function clickHandler(posX, posY){
-    if (posX > borderThicness && posX <= borderLength - borderThicness && posY > borderThicness && posY <= borderLength - borderThicness){
+    if (posX > borderThicness && posX < borderLength - borderThicness && posY > borderThicness && posY < borderLength - borderThicness){
         posX = posX - borderThicness
         posY = posY - borderThicness
         if (gameManager.currentLevel.inShop){

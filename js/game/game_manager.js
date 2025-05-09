@@ -11,7 +11,7 @@ export const gameManager = {
     currentLevel: new Level({}),
     selectedTool: PICAXE,
     inventory: [...starterInventory],
-    gold: 50,
+    gold: 0,
 }
 
 export const gameCursor = {
