@@ -1,7 +1,6 @@
-import { ctx, renderScale } from "../canvas_handler.js";
 import { findSprite } from "../sprites.js";
 import { Level } from "../game/level_class.js";
-import { CHECKER, CURSOR, FLAG, PICAXE } from "./shop.js";
+import { DETONATOR, CURSOR, DRILL, FLAG, PICAXE } from "./shop.js";
 
 export const borderLength = 168
 export const borderThicness = 20
@@ -12,12 +11,12 @@ export const gameManager = {
     currentLevel: new Level({}),
     selectedTool: PICAXE,
     inventory: [...starterInventory],
-    gold: 0,
+    gold: 50,
 }
 
 export const gameCursor = {
-    posX: 0,
-    posY: 0,
+    posX: borderLength,
+    posY: borderLength,
     get sprite(){
         if (gameManager.currentLevel.inShop || 
             this.posX < borderThicness || this.posX >= borderLength - borderThicness ||
@@ -25,13 +24,13 @@ export const gameCursor = {
             return findSprite('default_cursor').img
         }
         if (!gameManager.currentLevel.inShop && gameManager.selectedTool == PICAXE && gameManager.currentLevel.started){
-            if (gameManager.inventory.includes(CHECKER) && 
+            if (gameManager.inventory.includes(DETONATOR) && 
                 this.posX > borderThicness && this.posX <= borderLength - borderThicness &&
                 this.posY > borderThicness && this.posY <= borderLength - borderThicness){
                 let tileX = Math.floor((this.posX - borderThicness)/(gameManager.currentLevel.levelScale * 16))
                 let tileY = Math.floor((this.posY - borderThicness)/(gameManager.currentLevel.levelScale * 16))
                 if (gameManager.currentLevel.blocks[tileX][tileY].broken){
-                    return findSprite(CHECKER + '_cursor').img
+                    return findSprite(DETONATOR + '_cursor').img
                 }
             }
         }

@@ -5,7 +5,8 @@ import { renderNumbers } from "./game_renderer.js";
 
 export const PICAXE = 'picaxe';
 export const FLAG = 'flag';
-export const CHECKER = 'checker';
+export const DRILL = 'drill';
+export const DETONATOR = 'detonator';
 export const CURSOR = 'default';
 
 const shelfLenght = 96
@@ -35,7 +36,7 @@ export class Item {
                 this.parentList.splice(index, 1)
             }
         })
-        console.log(this.parentList)
+        gameManager.gold -= this.cost
     }
 }
 
@@ -126,8 +127,11 @@ export class Shop {
         this.gear = []
         if (!inventory.includes(FLAG)){
             this.tools.push(new Item({name: FLAG, cost: 15, parentShop: this, parentList: this.tools}))
-        } else if (!inventory.includes(CHECKER)){
-            this.tools.push(new Item({name: CHECKER, cost: 40, parentShop: this, parentList: this.tools}))
+        } else if (!inventory.includes(DETONATOR)){
+            this.tools.push(new Item({name: DETONATOR, cost: 40, parentShop: this, parentList: this.tools}))
+        }
+        if (!inventory.includes(DRILL)){
+            this.tools.push(new Item({name: DRILL, cost: 50, parentShop: this, parentList: this.tools}))
         }
     }
 
@@ -135,7 +139,7 @@ export class Shop {
         const item = this.selectedItem
         if (gameManager.gold >= item.cost){
             gameManager.inventory.push(item.name)
-            item.getPurchased()
+            item.getPurchased(gameManager)
         }
         this.generateItems(gameManager.inventory)
     }

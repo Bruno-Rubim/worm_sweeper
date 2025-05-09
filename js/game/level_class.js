@@ -8,8 +8,8 @@ import { Timer } from "./timer.js";
 //new Shop({inventory:[]})
 
 export class Level{
-    constructor({ id=0, size=6, difficulty=4, timerMiliseconds=60000, shop=null}){
-        this.id = id;
+    constructor({ depth=0, size=6, difficulty=4, timerMiliseconds=60000, shop=null}){
+        this.depth = depth;
         this.size = size;
         this.difficulty = difficulty;
         this.shop = shop;
@@ -52,7 +52,7 @@ export class Level{
                 if (block.starter) {
                     continue
                 }
-                const rngGold = Math.floor(Math.random()*1.5)
+                const rngGold = Math.floor(Math.random()*1.5 + (this.depth/10))
                 block.gold = rngGold
             }
         }
@@ -167,18 +167,18 @@ export class Level{
     }
 
     nextLevel(startX, startY){
-        const nextId = this.id + 1
-        let nextSize = Math.floor(nextId/3) + 6
-        let nextDificulty = (nextId%3) + Math.floor(nextId/3) + 3
+        const nextDepth = this.depth + 1
+        let nextSize = Math.floor(nextDepth/3) + 6
+        let nextDificulty = (nextDepth%3) + Math.floor(nextDepth/3) + 3
         let nextShop = null
-        if (nextId%3 == 1){
-            nextShop = new Shop({inventory: gameManager.inventory, level: nextId})
+        if (nextDepth%3 == 1){
+            nextShop = new Shop({inventory: gameManager.inventory, level: nextDepth})
         }
         gameManager.currentLevel = new Level({
             difficulty: nextDificulty,
             size: nextSize,
             timerMiliseconds: this.timer.miliseconds,
-            id: nextId,
+            depth: nextDepth,
             shop: nextShop,
         })
         gameManager.currentLevel.start(startX, startY)

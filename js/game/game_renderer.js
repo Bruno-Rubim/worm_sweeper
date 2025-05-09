@@ -130,10 +130,10 @@ function renderUI(){
 function renderCursor(){
     ctx.drawImage(
         gameCursor.sprite,
-        gameCursor.posX * renderScale,
-        gameCursor.posY * renderScale,
-        8 * renderScale,
-        8 * renderScale
+        (gameCursor.posX - 8) * renderScale,
+        (gameCursor.posY - 8) * renderScale,
+        16 * renderScale,
+        16 * renderScale
     )
 }
 

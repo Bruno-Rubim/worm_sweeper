@@ -4,10 +4,12 @@ import { clickHandler, KEYDOWN, keyHandler, KEYUP, mouseMoveHandler} from "./gam
 
 document.addEventListener("keyup", (event)=>{
     keyHandler(event.key, KEYUP)
+    console.log(event.key)
 })
 
 document.addEventListener("keydown", (event)=>{
     keyHandler(event.key, KEYDOWN)
+    console.log(event.key)
 })
 
 document.addEventListener("mouseup", (event)=>{

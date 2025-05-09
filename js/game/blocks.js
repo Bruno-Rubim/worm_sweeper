@@ -2,7 +2,7 @@ import { ctx, renderScale } from "../canvas_handler.js"
 import { findSprite } from "../sprites.js"
 import { borderThicness, gameManager } from "./game_manager.js"
 import { Level } from "./level_class.js"
-import { CHECKER, CURSOR, FLAG, Shop } from "./shop.js"
+import { DETONATOR, CURSOR, DRILL, FLAG, Shop } from "./shop.js"
 
 const THREAT = 'threat'
 const UNSURE = 'unsure'
@@ -163,6 +163,14 @@ export class Block{
             block.reveal()
         });
     }
+    breakAdjc(){
+        this.adjcBlocks.forEach(block => {
+            if (block.broken){
+                return
+            }
+            block.break()
+        });
+    }
     breakSurr(){
         this.surrBlocks.forEach(block => {
             if (block.broken){
@@ -170,7 +178,7 @@ export class Block{
             }
             block.break()
         });
-    }   
+    }
     break(){
         if (this.marker != null){
             return
@@ -190,7 +198,9 @@ export class Block{
         }
         this.revealAdjc()
         if (this.wormLevel == 0 && this.content != 'worm'){
-            // this.breakSurr()
+            if (gameManager.inventory.includes(DRILL)){
+                this.breakAdjc()
+            }
         }
         if (this.content == 'worm' && !this.parentLevel.ended){
             this.parentLevel.lose()
@@ -239,6 +249,10 @@ export class Block{
             return
         }
         if (this.content == 'exit_door') {
+            this.content = 'exit_door_open'
+            return
+        }
+        if (this.content == 'exit_door_open') {
             this.parentLevel.nextLevel(this.posX, this.posY)
             return
         }
@@ -246,7 +260,7 @@ export class Block{
             this.parentLevel.inShop = true
             return
         }
-        if (gameManager.inventory.includes(CHECKER)){
+        if (gameManager.inventory.includes(DETONATOR)){
             this.check()
         }
     }
