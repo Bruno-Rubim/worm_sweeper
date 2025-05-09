@@ -2,7 +2,7 @@ import { ctx, renderScale } from "../canvas_handler.js"
 import { findSprite } from "../sprites.js"
 import { borderThicness, gameManager } from "./game_manager.js"
 import { Level } from "./level_class.js"
-import { CHECKER, FLAG } from "./shop.js"
+import { CHECKER, CURSOR, FLAG, Shop } from "./shop.js"
 
 const THREAT = 'threat'
 const UNSURE = 'unsure'
@@ -82,38 +82,56 @@ export class Block{
         return count
     }
 
-    get sprite(){
+    get blockSprite(){
+        if (this.broken){
+            return findSprite('empty').img
+        }
+        if (this.hidden){
+            return findSprite(`dirt_block_hidden`).img
+        }
+        return findSprite(`dirt_block_unknown`).img
+    }
+
+    get contentSprite(){
         if (this.broken){
             if (this.content){
                 return findSprite(this.content).img
             }
             return findSprite('ground_numbers').img
         }
-        if (this.hidden){
-            return findSprite(`dirt_block_hidden`).img
+        if (this.gold && !this.hidden){
+            return findSprite('gold_ore').img
         }
-        if (this.gold){
-            return findSprite(`dirt_block_gold`).img
-        }
-        return findSprite(`dirt_block_unknown`).img
+        return false
     }
 
     render(levelScale){
-        if (this.broken && !this.content){
+        ctx.drawImage(
+            this.blockSprite,
+            ((this.posX * 16) * levelScale + borderThicness) * renderScale,
+            ((this.posY * 16) * levelScale + borderThicness) * renderScale,
+            (16 * levelScale) * renderScale,
+            (16 * levelScale) * renderScale,
+        )
+        if (this.broken){
+                if (!this.content){
+                ctx.drawImage(
+                    this.contentSprite,
+                    this.wormLevel*16,
+                    0,
+                    16,
+                    16,
+                    ((this.posX * 16) * levelScale + borderThicness) * renderScale,
+                    ((this.posY * 16) * levelScale + borderThicness) * renderScale,
+                    (16 * levelScale) * renderScale,
+                    (16 * levelScale) * renderScale,
+                )
+                return
+            }
+        }
+        if (this.contentSprite){
             ctx.drawImage(
-                this.sprite,
-                this.wormLevel*16,
-                0,
-                16,
-                16,
-                ((this.posX * 16) * levelScale + borderThicness) * renderScale,
-                ((this.posY * 16) * levelScale + borderThicness) * renderScale,
-                (16 * levelScale) * renderScale,
-                (16 * levelScale) * renderScale,
-            )
-        } else {
-            ctx.drawImage(
-                this.sprite,
+                this.contentSprite,
                 ((this.posX * 16) * levelScale + borderThicness) * renderScale,
                 ((this.posY * 16) * levelScale + borderThicness) * renderScale,
                 (16 * levelScale) * renderScale,
@@ -128,6 +146,7 @@ export class Block{
                 (16 * levelScale) * renderScale,
                 (16 * levelScale) * renderScale,
             )
+            return
         }
     }
 
@@ -159,7 +178,7 @@ export class Block{
         if (this.parentLevel.ended && this.wormLevel == 0 && this.content != 'worm'){
             return
         } else {
-            this.parentLevel.timer.addSeconds(3)
+            this.parentLevel.timer.addSeconds(2)
         }
         if (this.broken){
             this.check()
@@ -188,7 +207,7 @@ export class Block{
         }
         if (this.marker == null){
             this.marker = THREAT
-            this.parentLevel.flagsLeft --
+            this.parentLevel.wormsLeft --
             return
         }
         if (this.marker == THREAT){
@@ -197,7 +216,7 @@ export class Block{
         }
         if (this.marker == UNSURE){
             this.marker = null
-            this.parentLevel.flagsLeft ++
+            this.parentLevel.wormsLeft ++
             return
         }
     }
@@ -208,6 +227,9 @@ export class Block{
     }
 
     click(tool){
+        if (tool == CURSOR){
+            return
+        }
         if (tool == FLAG){
             this.mark()
             return

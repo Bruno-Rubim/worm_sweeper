@@ -2,8 +2,10 @@ import { ctx, renderScale } from "../canvas_handler.js";
 import { findSprite } from "../sprites.js";
 import { Block } from "./blocks.js";
 import { borderLength, borderThicness, gameManager } from "./game_manager.js";
-import { Shop } from "./shop.js";
+import { FLAG, Shop } from "./shop.js";
 import { Timer } from "./timer.js";
+
+//new Shop({inventory:[]})
 
 export class Level{
     constructor({ id=0, size=6, difficulty=4, timerMiliseconds=60000, shop=null}){
@@ -12,7 +14,7 @@ export class Level{
         this.difficulty = difficulty;
         this.shop = shop;
         this.wormQuantity = Math.floor((difficulty * 0.033) * size * size)
-        this.flagsLeft = this.wormQuantity
+        this.wormsLeft = this.wormQuantity
         this.levelScale = (128/(this.size*16))
         this.blocks = []
         this.started = false
@@ -138,7 +140,7 @@ export class Level{
                 if (block.marker && block.content != 'worm'){
                     block.marker = 'wrong'
                 } else {
-                    block.break()
+                    block.broken = true
                 }
             })
         })
@@ -154,9 +156,9 @@ export class Level{
         }
         return counter
     }
-    checkWin(){
+    checkClear(){
         if (this.countBrokenBlocks() == this.wormQuantity){
-            this.win()
+            this.timer.addSeconds(20)
         }
     }
     win(){

@@ -18,6 +18,8 @@ const sprites = {
 	clock_icon: new Sprite('./images/clock_icon.png'),
 	checker: new Sprite('./images/checker.png'),
 	checker_selected: new Sprite('./images/checker_selected.png'),
+	checker_cursor: new Sprite('./images/checker_cursor.png'),
+	default_cursor: new Sprite('./images/default_cursor.png'),
 	flag: new Sprite('./images/flag.png'),
 	flag_cursor: new Sprite('./images/flag_cursor.png'),
 	flag_selected: new Sprite('./images/flag_selected.png'),
@@ -37,6 +39,7 @@ const sprites = {
 	//shop
 	shop_bg: new Sprite('./images/shop_bg.png'),
 	shop_buy_button: new Sprite('./images/shop_buy_button.png'),
+	shop_buy_button_poor: new Sprite('./images/shop_buy_button_poor.png'),
 	numbers_shop_cost: new Sprite('./images/numbers_shop_cost.png'),
 	shop_description_flag: new Sprite('./images/shop_description_flag.png'),
 	shop_description_checker: new Sprite('./images/shop_description_checker.png'),
@@ -44,17 +47,18 @@ const sprites = {
 	//blocks
 	dirt_block_unknown: new Sprite('./images/dirt_block_unknown.png'),
 	dirt_block_hidden: new Sprite('./images/dirt_block_hidden.png'),
-	dirt_block_gold: new Sprite('./images/dirt_block_gold.png'),
 	empty: new Sprite('./images/empty_block.png'),
 	exit_door: new Sprite('./images/exit_door.png'),
 	ground_numbers: new Sprite('./images/ground_numbers.png'),
-	gold: new Sprite('./images/gold.png'),
+	gold_ore: new Sprite('./images/gold_ore.png'),
+	gold_icon: new Sprite('./images/gold_icon.png'),
 	marker_threat: new Sprite('./images/marker_threat.png'),
 	marker_unsure: new Sprite('./images/marker_unsure.png'),
 	marker_wrong: new Sprite('./images/marker_wrong.png'),
 	shop_door: new Sprite('./images/shop_door.png'),
 	threat: new Sprite('./images/threat.png'),
 	worm: new Sprite('./images/worm.png'),
+	worm_icon: new Sprite('./images/worm_icon.png'),
 }
 
 const spriteArr = Object.values(sprites)

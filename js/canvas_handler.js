@@ -4,8 +4,8 @@ export let renderScale;
 export const scaleMultiplyer = 1
 
 let sizeConfig = {
-    originalWidth: 160,
-    originalHeight: 160,
+    originalWidth: 168,
+    originalHeight: 168,
 }
 
 export function clearCanvas(){

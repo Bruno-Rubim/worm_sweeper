@@ -6,19 +6,21 @@ function renderBorder(){
     ctx.drawImage(
         findSprite('game_border').img,
         0,0,
-        160 * renderScale,
-        160 * renderScale
+        borderLength * renderScale,
+        borderLength * renderScale
     )
 }
 
 function renderTools(){
-    ctx.drawImage(
-        findSprite(gameManager.selectedTool).img,
-        0 * renderScale,
-        (borderLength - borderThicness) * renderScale,
-        16 * renderScale,
-        16 * renderScale
-    )
+    gameManager.inventory.forEach((tool, index) => {
+        ctx.drawImage(
+            findSprite(tool).img,
+            ((index * 16) + 2) * renderScale,
+            (borderLength - borderThicness + 2) * renderScale,
+            16 * renderScale,
+            16 * renderScale
+        )
+    });
 }
 
 const numberWidth = 8
@@ -39,32 +41,37 @@ export function renderNumbers(vector, posStartX, posStartY, numberGap, order, co
             )
         })
     } else {
-        for(let i = vector.length - 1; i >= 0; i--){
-            const number = vector[i]
+        vector.forEach((number, index)=>{
             ctx.drawImage(
-                findSprite(`numbers_red`).img,
+                findSprite(`numbers_${color}`).img,
                 numberWidth * number,
                 0,
                 numberWidth,
                 numberWidth,
-                (borderLength - (numberWidth * (vector.length - i) + posStartX))* renderScale,
+                (
+                    borderLength -
+                    (posStartX + //base start
+                        (((numberWidth + numberGap) * (vector.length - index))) //individual number
+                    )
+                )* renderScale,
                 posStartY * renderScale,
                 numberWidth * renderScale,
                 numberWidth * renderScale
             )
-        }
+        })
     }
 }
+
+const numberPadding = 6
 
 function renderTimer(){
     ctx.drawImage(
         findSprite(`clock_icon`).img,
-        4 * renderScale,
-        4 * renderScale,
+        numberPadding * renderScale,
+        numberPadding * renderScale,
         numberWidth * renderScale,
         numberWidth * renderScale
     )
-
     let miliseconds = gameManager.currentLevel.timer.miliseconds
     if (miliseconds <= 0){
         miliseconds = 0
@@ -74,12 +81,19 @@ function renderTimer(){
     vector.pop()
     vector.pop()
     vector.pop()
-    renderNumbers(vector, 14, 4, -1, 'normal', 'blue')
+    renderNumbers(vector, 14, numberPadding, -1, 'normal', 'blue')
 
 }
 
-function renderFlagCounter(){
-    let counter = gameManager.currentLevel.flagsLeft
+function renderWormCounter(){
+    ctx.drawImage(
+        findSprite(`worm_icon`).img,
+        (borderLength - numberPadding - 8) * renderScale,
+        numberPadding * renderScale,
+        8 * renderScale,
+        8 * renderScale
+    )
+    let counter = gameManager.currentLevel.wormsLeft
     let negative = false;
     if (counter < 0){
         counter = Math.abs(counter)
@@ -87,7 +101,7 @@ function renderFlagCounter(){
     }
     let string = counter.toString()
     let vector = [...string]
-    renderNumbers(vector, 4, 4, -1, 'reversed', 'red')
+    renderNumbers(vector, numberPadding + 10, numberPadding, -1, 'reversed', 'red')
     if (negative){
         ctx.drawImage(
             findSprite(`minus_red`).img,
@@ -103,26 +117,13 @@ function renderGoldCounter(){
     let goldCount = gameManager.gold
     let string = goldCount.toString()
     let vector = [...string]
-    for(let i = vector.length - 1; i >= 0; i--){
-        const number = vector[i]
-        ctx.drawImage(
-            findSprite(`numbers_gold`).img,
-            numberWidth * number,
-            0,
-            numberWidth,
-            numberWidth,
-            (borderLength - (numberWidth * (vector.length - i) + 1))* renderScale,
-            (borderLength - (numberWidth + 2)) * renderScale,
-            numberWidth * renderScale,
-            numberWidth * renderScale
-        )
-    }
+    renderNumbers(vector, numberPadding, borderLength - numberWidth - numberPadding, -1, 'reversed', 'gold')
 }
 
 function renderUI(){
     renderTools()
     renderTimer()
-    renderFlagCounter()
+    renderWormCounter()
     renderGoldCounter()
 }
 

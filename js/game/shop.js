@@ -6,6 +6,11 @@ import { renderNumbers } from "./game_renderer.js";
 export const PICAXE = 'picaxe';
 export const FLAG = 'flag';
 export const CHECKER = 'checker';
+export const CURSOR = 'default';
+
+const shelfLenght = 96
+const toolShelfHeight = 48
+const gearShelfHeight = 80
 
 export class Item {
     constructor({name=null, cost=30, parentShop = new Shop({}), parentList=[]}){
@@ -39,6 +44,12 @@ const buyButton = {
     posY: 110,
     width: 21,
     height: 14,
+    getSprite(cost, playerGold){
+        if (playerGold >= cost){
+            return findSprite('shop_buy_button').img
+        }
+        return findSprite('shop_buy_button_poor').img
+    }
 }
 
 export class Shop {
@@ -62,8 +73,8 @@ export class Shop {
         this.tools.forEach((tool, index) => {
             ctx.drawImage(
                 tool.sprite,
-                ((16 * (index + 1))) * renderScale,
-                48 * renderScale,
+                (borderThicness + (16 * (index))) * renderScale,
+                (borderThicness + toolShelfHeight - 16) * renderScale,
                 16 * renderScale,
                 16 * renderScale
             )
@@ -73,8 +84,8 @@ export class Shop {
         this.gear.forEach((tool, index) => {
             ctx.drawImage(
                 tool.sprite,
-                ((16 * (index + 1))) * renderScale,
-                48 * renderScale,
+                (borderThicness + (16 * (index))) * renderScale,
+                (borderThicness + gearShelfHeight - 16) * renderScale,
                 16 * renderScale,
                 16 * renderScale
             )
@@ -88,12 +99,12 @@ export class Shop {
         ctx.drawImage(
             item.descriptionSprite,
             (borderThicness + 4) * renderScale,
-            115 * renderScale,
+            borderThicness + 115 * renderScale,
             121 * renderScale,
             26 * renderScale
         )
         ctx.drawImage(
-            findSprite('shop_buy_button').img,
+            buyButton.getSprite(item.cost, gameManager.gold),
             (borderThicness + buyButton.posX) * renderScale,
             (borderThicness + buyButton.posY) * renderScale,
             buyButton.width * renderScale,
@@ -101,7 +112,7 @@ export class Shop {
         )
         let string = item.cost.toString()
         let vector = [...string]
-        renderNumbers(vector, borderThicness + 106, borderThicness + 99, -5, 'normal', 'shop_cost')
+        renderNumbers(vector, borderThicness + 107, borderThicness + 99, -4, 'normal', 'shop_cost')
     }
     render(){
         this.renderBG()
@@ -114,9 +125,9 @@ export class Shop {
         this.tools = []
         this.gear = []
         if (!inventory.includes(FLAG)){
-            this.tools.push(new Item({name: FLAG, cost: 10, parentShop: this, parentList: this.tools}))
+            this.tools.push(new Item({name: FLAG, cost: 15, parentShop: this, parentList: this.tools}))
         } else if (!inventory.includes(CHECKER)){
-            this.tools.push(new Item({name: CHECKER, cost: 25, parentShop: this, parentList: this.tools}))
+            this.tools.push(new Item({name: CHECKER, cost: 40, parentShop: this, parentList: this.tools}))
         }
     }
 
@@ -130,6 +141,13 @@ export class Shop {
     }
 
     click(posX, posY){
+        if (posX > 111 &&
+            posX < 128 &&
+            posY > 0 &&
+            posY < 16 
+            ){
+            gameManager.currentLevel.inShop = false
+        }
         if (posX < this.tools.length*16 && posY > 32 && posY < 49){
             const item = this.tools[Math.floor(posX/16)]
             this.selectedItem = item
