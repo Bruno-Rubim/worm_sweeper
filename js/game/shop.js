@@ -115,9 +115,9 @@ export class Shop {
                 gameManager.player.shield = selectedItem
             }
             gameManager.inventory.push(selectedItem)
+            gameManager.gold -= selectedItem.cost
             this.generateItems(gameManager.inventory)
         }
-        console.log('has no money')
     }
 
     click(posX, posY){
