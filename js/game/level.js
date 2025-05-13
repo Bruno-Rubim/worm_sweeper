@@ -1,14 +1,14 @@
 import { ctx, renderScale } from "../canvas_handler.js";
 import { findSprite } from "../sprites.js";
+import { Battle } from "./battle.js";
 import { Block } from "./blocks.js";
-import { borderLength, borderThicness, gameManager } from "./game_manager.js";
-import { FLAG, Shop } from "./shop.js";
-import { Timer } from "./timer.js";
+import { borderThicness, gameManager } from "./game_manager.js";
+import { Shop } from "./shop.js";
 
 //new Shop({inventory:[]})
 
 export class Level{
-    constructor({ depth=0, size=6, difficulty=4, timerMiliseconds=60000, shop=null}){
+    constructor({ depth=0, size=6, difficulty=4, shop=null}){
         this.depth = depth;
         this.size = size;
         this.difficulty = difficulty;
@@ -18,9 +18,8 @@ export class Level{
         this.levelScale = (128/(this.size*16))
         this.blocks = []
         this.started = false
-        this.ended = false
-        this.timer = new Timer({length: timerMiliseconds, whenEnd: this.lose})
         this.inShop = false
+        this.currentBattle = null
     }
     fillEmptyBlocks(){
         for (let i = 0; i < this.size; i++){
@@ -52,7 +51,7 @@ export class Level{
                 if (block.starter) {
                     continue
                 }
-                const rngGold = Math.floor(Math.random()*1.5 + (this.depth/10))
+                const rngGold = Math.floor(Math.random()*1.7)
                 block.gold = rngGold
             }
         }
@@ -100,8 +99,8 @@ export class Level{
         firstBlock.break()
         firstBlock.breakSurr()
         this.started = true
-        this.timer.start()
     }
+
     renderBlocks(){
         if (this.blocks.length == 0){
             for (let i = 0; i < this.size; i++){
@@ -127,23 +126,15 @@ export class Level{
         this.shop.render()
     }
     render(){
+        if (this.currentBattle){
+            this.currentBattle.render()
+            return
+        }
         if(this.inShop){
             this.renderShop()
-        } else {
-            this.renderBlocks()
+            return
         }
-    }
-    lose(){
-        gameManager.currentLevel.ended = true
-        gameManager.currentLevel.blocks.forEach(column => {
-            column.forEach(block =>{
-                if (block.marker && block.content != 'worm'){
-                    block.marker = 'wrong'
-                } else {
-                    block.broken = true
-                }
-            })
-        })
+        this.renderBlocks()
     }
     countBrokenBlocks(){
         let counter = this.size*this.size
@@ -158,18 +149,23 @@ export class Level{
     }
     checkClear(){
         if (this.countBrokenBlocks() == this.wormQuantity){
-            this.timer.addSeconds(20)
+            gameManager.timer.addSeconds(20)
         }
     }
     win(){
         this.ended = true;
-        this.timer.stop()
+        gameManager.timer.stop()
     }
 
+    startBattle(){
+        this.currentBattle = new Battle({parentLevel:this})
+    }    
+
     nextLevel(startX, startY){
+        gameManager.timer.addSeconds(60)
         const nextDepth = this.depth + 1
         let nextSize = Math.floor(nextDepth/3) + 6
-        let nextDificulty = (nextDepth%3) + Math.floor(nextDepth/3) + 3
+        let nextDificulty = (nextDepth%3) + Math.floor(nextDepth/3) + 4
         let nextShop = null
         if (nextDepth%3 == 1){
             nextShop = new Shop({inventory: gameManager.inventory, level: nextDepth})
@@ -177,7 +173,6 @@ export class Level{
         gameManager.currentLevel = new Level({
             difficulty: nextDificulty,
             size: nextSize,
-            timerMiliseconds: this.timer.miliseconds,
             depth: nextDepth,
             shop: nextShop,
         })

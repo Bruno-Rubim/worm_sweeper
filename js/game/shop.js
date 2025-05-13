@@ -2,43 +2,10 @@ import { ctx, renderScale } from "../canvas_handler.js"
 import { findSprite } from "../sprites.js"
 import { borderLength, borderThicness, gameManager } from "./game_manager.js"
 import { renderNumbers } from "./game_renderer.js";
+import { daggerItem, detonatorItem, drillItem, flagItem, Shield, Weapon } from "./item.js";
 
-export const PICAXE = 'picaxe';
-export const FLAG = 'flag';
-export const DRILL = 'drill';
-export const DETONATOR = 'detonator';
-export const CURSOR = 'default';
-
-const shelfLenght = 96
 const toolShelfHeight = 48
 const gearShelfHeight = 80
-
-export class Item {
-    constructor({name=null, cost=30, parentShop = new Shop({}), parentList=[]}){
-        this.name = name
-        this.cost = cost
-        this.selected = false
-        this.parentShop = parentShop
-        this.parentList = parentList
-    }
-    get sprite(){
-        if (this.parentShop.selectedItem == this){
-            return findSprite(this.name + '_selected').img
-        }
-        return findSprite(this.name).img
-    }
-    get descriptionSprite(){
-        return findSprite('shop_description_' + this.name).img
-    }
-    getPurchased(){
-        this.parentList.forEach((item, index) =>{
-            if (item == this){
-                this.parentList.splice(index, 1)
-            }
-        })
-        gameManager.gold -= this.cost
-    }
-}
 
 const buyButton = {
     posX: 103,
@@ -125,43 +92,35 @@ export class Shop {
     generateItems(inventory){
         this.tools = []
         this.gear = []
-        if (!inventory.includes(FLAG)){
-            this.tools.push(new Item({name: FLAG, cost: 15, parentShop: this, parentList: this.tools}))
-        } else if (!inventory.includes(DETONATOR)){
-            this.tools.push(new Item({name: DETONATOR, cost: 40, parentShop: this, parentList: this.tools}))
+        if (!inventory.includes(flagItem)){
+            this.tools.push(flagItem)
+        } else if (!inventory.includes(detonatorItem)){
+            this.tools.push(detonatorItem)
         }
-        if (!inventory.includes(DRILL)){
-            this.tools.push(new Item({name: DRILL, cost: 50, parentShop: this, parentList: this.tools}))
+        if (!inventory.includes(drillItem)){
+            this.tools.push(drillItem)
+        }
+        if (!inventory.includes(daggerItem)){
+            this.gear.push(daggerItem)
         }
     }
 
     buyItem(){
-        const item = this.selectedItem
-        if (gameManager.gold >= item.cost){
-            gameManager.inventory.push(item.name)
-            item.getPurchased(gameManager)
+        const selectedItem = this.selectedItem
+        if (gameManager.gold >= selectedItem.cost){
+            console.log('has money')
+            if(selectedItem instanceof Weapon){
+                gameManager.player.weapon = selectedItem
+            } else if (selectedItem instanceof Shield) {
+                gameManager.player.shield = selectedItem
+            }
+            gameManager.inventory.push(selectedItem)
+            this.generateItems(gameManager.inventory)
         }
-        this.generateItems(gameManager.inventory)
+        console.log('has no money')
     }
 
     click(posX, posY){
-        if (posX > 111 &&
-            posX < 128 &&
-            posY > 0 &&
-            posY < 16 
-            ){
-            gameManager.currentLevel.inShop = false
-        }
-        if (posX < this.tools.length*16 && posY > 32 && posY < 49){
-            const item = this.tools[Math.floor(posX/16)]
-            this.selectedItem = item
-            return
-        }
-        if (posX < this.gear.length*16 && posY > 64 && posY < 81){
-            const item = this.gear[Math.floor(posX/16)]
-            this.selectedItem = item
-            return
-        }
         if (this.selectedItem &&
             posX > buyButton.posX &&
             posX < buyButton.posX + buyButton.width &&
@@ -170,6 +129,29 @@ export class Shop {
         ){
             this.buyItem()
         }
-        this.selectedItem = null
+
+        if (this.selectedItem){
+            this.selectedItem.selected = false
+            this.selectedItem = null
+        }
+        if (posX > 111 &&
+            posX < 128 &&
+            posY > 0 &&
+            posY < 16 ){
+
+            gameManager.currentLevel.inShop = false
+            return
+        }
+        let item = null;
+        if (posX < this.tools.length*16 && posY > 32 && posY < 49){
+            item = this.tools[Math.floor(posX/16)]
+        }
+        if (posX < this.gear.length*16 && posY > 64 && posY < 81){
+            item = this.gear[Math.floor(posX/16)]
+        }
+        if (item){
+            item.selected = true
+            this.selectedItem = item
+        }
     }
 }

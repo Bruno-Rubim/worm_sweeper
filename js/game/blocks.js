@@ -1,21 +1,24 @@
 import { ctx, renderScale } from "../canvas_handler.js"
 import { findSprite } from "../sprites.js"
 import { borderThicness, gameManager } from "./game_manager.js"
-import { Level } from "./level_class.js"
-import { DETONATOR, CURSOR, DRILL, FLAG, Shop } from "./shop.js"
+import { Level } from "./level.js"
+import { detonatorItem, flagItem, cursorItem, drillItem } from "./item.js"
+import { Battle } from "./battle.js"
 
 const THREAT = 'threat'
 const UNSURE = 'unsure'
+
+const secondsGained = 3
 
 export class Block{
     constructor({posX=0, posY=0, gold=false, parentLevel=new Level({})}){
         this.posX = posX
         this.posY = posY
+        this.gold = gold
+        this.parentLevel = parentLevel
         this.hidden = true
         this.broken = false
-        this.gold = gold
         this.content = null
-        this.parentLevel = parentLevel
         this.starter = false
         this.marker = null
     }
@@ -183,10 +186,10 @@ export class Block{
         if (this.marker != null){
             return
         }
-        if (this.parentLevel.ended && this.wormLevel == 0 && this.content != 'worm'){
+        if (gameManager.ended && this.wormLevel == 0 && this.content != 'worm'){
             return
         } else {
-            this.parentLevel.timer.addSeconds(2)
+            // gameManager.timer.addSeconds(secondsGained)
         }
         if (this.broken){
             this.check()
@@ -198,13 +201,13 @@ export class Block{
         }
         this.revealAdjc()
         if (this.wormLevel == 0 && this.content != 'worm'){
-            if (gameManager.inventory.includes(DRILL)){
+            if (gameManager.inventory.includes(drillItem)){
                 this.breakAdjc()
             }
         }
-        if (this.content == 'worm' && !this.parentLevel.ended){
-            this.parentLevel.lose()
-            this.parentLevel.timer.stop()
+        if (this.content == 'worm' && !gameManager.ended){
+            this.content = null
+            this.parentLevel.startBattle()
         }
     }
 
@@ -212,7 +215,7 @@ export class Block{
         if (!this.parentLevel.started){
             return
         }
-        if(this.broken || this.parentLevel.ended){
+        if(this.broken || gameManager.ended){
             return
         }
         if (this.marker == null){
@@ -237,10 +240,13 @@ export class Block{
     }
 
     click(tool){
-        if (tool == CURSOR){
+        if (tool == cursorItem){
             return
         }
-        if (tool == FLAG){
+        if (this.hidden){
+            return
+        }
+        if (tool == flagItem){
             this.mark()
             return
         }
@@ -260,7 +266,7 @@ export class Block{
             this.parentLevel.inShop = true
             return
         }
-        if (gameManager.inventory.includes(DETONATOR)){
+        if (gameManager.inventory.includes(detonatorItem)){
             this.check()
         }
     }

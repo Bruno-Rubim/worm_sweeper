@@ -22,30 +22,32 @@ export function keyHandler(key, state){
     if (keyDict['Shift'] == KEYDOWN || keyDict['Shift'] == KEYUP){
         swapTools()
     }
-    if (keyDict['Escape'] == KEYDOWN){
-        gameManager.currentLevel.inShop = false
-    }
 }
 
 export function clickHandler(posX, posY){
     if (posX > borderThicness && posX < borderLength - borderThicness && posY > borderThicness && posY < borderLength - borderThicness){
+        if (gameManager.ended){
+            restart()
+            return
+        }
         posX = posX - borderThicness
         posY = posY - borderThicness
         if (gameManager.currentLevel.inShop){
             gameManager.currentLevel.shop.click(posX, posY)
             return
         }
+        if (gameManager.currentLevel.currentBattle){
+            gameManager.currentLevel.currentBattle.click(posX, posY)
+            return
+        }
         let tileX = Math.floor(posX/(gameManager.currentLevel.levelScale * 16))
         let tileY = Math.floor(posY/(gameManager.currentLevel.levelScale * 16))
         if (!gameManager.currentLevel.started){
+            gameManager.timer.start()
             gameManager.currentLevel.start(tileX, tileY)
             return
         }
-        if (gameManager.currentLevel.ended){
-            restart()
-        } else {
-            gameManager.currentLevel.blocks[tileX][tileY].click(gameManager.selectedTool)
-        }
+        gameManager.currentLevel.blocks[tileX][tileY].click(gameManager.selectedTool)
     }
 }
 
