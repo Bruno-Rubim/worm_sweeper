@@ -41,7 +41,7 @@ export class Enemy{
             64 * renderScale,
             64 * renderScale
         )
-        renderNumbers(this.attackTimer.miliseconds, 2, borderLength - borderThicness - 16, borderThicness + 16, -1, 'normal', 'blue')
+        renderNumbers(this.attackTimer.miliseconds, 2, borderLength/2, borderThicness + 8, -1, 'centered', 'blue')
     }
 
     die(){
