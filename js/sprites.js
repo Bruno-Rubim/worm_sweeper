@@ -29,6 +29,7 @@ const sprites = {
 	icon_gold: new Sprite('./images/icon_gold.png'),
 	icon_heart: new Sprite('./images/icon_heart.png'),
 	icon_shield: new Sprite('./images/icon_shield.png'),
+	icon_sword: new Sprite('./images/icon_sword.png'),
 	icon_weight: new Sprite('./images/icon_weight.png'),
 	icon_worm: new Sprite('./images/icon_worm.png'),
 	minus_red: new Sprite('./images/minus_red.png'),

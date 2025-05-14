@@ -41,7 +41,34 @@ export class Enemy{
             64 * renderScale,
             64 * renderScale
         )
-        renderNumbers(this.attackTimer.miliseconds, 2, borderLength/2, borderThicness + 8, -1, 'centered', 'blue')
+        for (let i = 0; i < this.hp;i++){
+            ctx.drawImage(
+                findSprite('icon_heart').img,
+                (((borderLength - borderThicness - 64) - ((this.hp) * 4.5)) + (9 * i)) * renderScale,
+                (borderThicness + 64) * renderScale,
+                8 * renderScale,
+                8 * renderScale
+            )
+        }
+        ctx.drawImage(
+            findSprite('icon_sword').img,
+            (borderThicness + 32) * renderScale,
+            (borderThicness + 8) * renderScale,
+            8 * renderScale,
+            8 * renderScale
+        )
+        ctx.drawImage(
+            findSprite(`numbers_red`).img,
+            8 * this.damage,
+            0,
+            8,
+            8,
+            (borderThicness + 40) * renderScale,
+            (borderThicness + 8) * renderScale,
+            8 * renderScale,
+            8 * renderScale
+        )
+        renderNumbers(this.attackTimer.miliseconds, 2, borderLength/2  + 10, borderThicness + 8, -1, 'centered', 'blue')
     }
 
     die(){

@@ -96,7 +96,7 @@ export function renderNumbers(number, digitSkip, posStartX, posStartY, numberGap
                 numberWidth,
                 numberWidth,
                 (
-                    ((borderLength/2) - ((vector.length) * ((numberWidth + numberGap)/2))) + ((numberWidth + numberGap) * index)
+                    ((posStartX) - ((vector.length) * ((numberWidth + numberGap)/2))) + ((numberWidth + numberGap) * index)
                 )* renderScale,
                 posStartY * renderScale,
                 numberWidth * renderScale,

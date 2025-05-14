@@ -32,15 +32,6 @@ export class Battle {
         })
         this.enemies.forEach((enemy, index)=>{
             enemy.render(index)
-            for (let i = 0; i < enemy.hp;i++){
-                ctx.drawImage(
-                    findSprite('icon_heart').img,
-                    (((borderLength - borderThicness - 64) - ((enemy.hp) * 4.5)) + (9 * i)) * renderScale,
-                    (borderThicness + 64) * renderScale,
-                    8 * renderScale,
-                    8 * renderScale
-                )
-            }
         })
     }
     
@@ -129,9 +120,6 @@ export class Battle {
         if (player.actionTimer){
             renderNumbers(player.actionTimer.miliseconds, 2, (borderLength/2), borderLength - borderThicness - 36, -1, 'centered', 'gray')
         }
-        // if (player.shieldTimer){
-        //     renderNumbers(player.shieldTimer.miliseconds, 2, borderThicness + 45, borderLength - borderThicness - 6 - 16, -1, 'centered', 'blue')
-        // }
     }
     renderUI(){
         this.renderPlayerButtons()
