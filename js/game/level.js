@@ -8,7 +8,7 @@ import { Shop } from "./shop.js";
 //new Shop({inventory:[]})
 
 export class Level{
-    constructor({ depth=0, size=6, difficulty=4, shop=null}){
+    constructor({depth=0, size=6, difficulty=4, shop=null}){
         this.depth = depth;
         this.size = size;
         this.difficulty = difficulty;
@@ -151,10 +151,6 @@ export class Level{
         if (this.countBrokenBlocks() == this.wormQuantity){
             gameManager.timer.addSeconds(20)
         }
-    }
-    win(){
-        this.ended = true;
-        gameManager.timer.stop()
     }
 
     startBattle(){

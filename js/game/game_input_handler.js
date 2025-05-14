@@ -1,4 +1,4 @@
-import { gameCursor, restart, swapTools } from "./game_manager.js"
+import { gameCursor, pauseGame, restart, swapTools } from "./game_manager.js"
 import { borderLength, borderThicness, gameManager  } from "./game_manager.js"
 
 export const KEYUP = 'keyup'
@@ -18,6 +18,9 @@ export function keyHandler(key, state){
     }
     if (keyDict[' '] == KEYDOWN){
         swapTools()
+    }
+    if (keyDict['Escape'] == KEYDOWN){
+        pauseGame()
     }
     if (keyDict['Shift'] == KEYDOWN || keyDict['Shift'] == KEYUP){
         swapTools()

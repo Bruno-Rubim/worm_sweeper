@@ -2,7 +2,7 @@ import { ctx, renderScale } from "../canvas_handler.js"
 import { findSprite } from "../sprites.js"
 import { borderLength, borderThicness, gameManager } from "./game_manager.js"
 import { renderNumbers } from "./game_renderer.js";
-import { daggerItem, detonatorItem, drillItem, flagItem, Shield, Weapon } from "./item.js";
+import { daggerItem, detonatorItem, drillItem, flagItem, Shield, steelShieldItem, Weapon } from "./item.js";
 
 const toolShelfHeight = 48
 const gearShelfHeight = 80
@@ -78,9 +78,7 @@ export class Shop {
             buyButton.width * renderScale,
             buyButton.height * renderScale
         )
-        let string = item.cost.toString()
-        let vector = [...string]
-        renderNumbers(vector, borderThicness + 107, borderThicness + 99, -4, 'normal', 'shop_cost')
+        renderNumbers(item.cost, 0, borderThicness + 107, borderThicness + 99, -4, 'normal', 'shop_cost')
     }
     render(){
         this.renderBG()
@@ -103,12 +101,14 @@ export class Shop {
         if (!inventory.includes(daggerItem)){
             this.gear.push(daggerItem)
         }
+        if (!inventory.includes(steelShieldItem)){
+            this.gear.push(steelShieldItem)
+        }
     }
 
     buyItem(){
         const selectedItem = this.selectedItem
         if (gameManager.gold >= selectedItem.cost){
-            console.log('has money')
             if(selectedItem instanceof Weapon){
                 gameManager.player.weapon = selectedItem
             } else if (selectedItem instanceof Shield) {

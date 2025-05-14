@@ -2,13 +2,19 @@ import { Weapon, woodShieldItem, woodSwordItem } from "./item.js"
 import { Timer } from "./timer.js"
 
 export class Player{
-    constructor({inventory=[]}){
+    constructor({}){
         this.hp = 5
         this.tired = false
-        this.armor = 0
         this.weapon = woodSwordItem
         this.shield = woodShieldItem
+        this.shieldBlock = 0
+        this.armorBlock = 0
+        this.swingTimer = null
+        this.shieldTimer = null
         this.actionTimer = null
+    }
+    get armor(){
+        return this.armorBlock + this.shieldBlock
     }
     act(type){
         let equipment;
@@ -25,10 +31,18 @@ export class Player{
         }})
         this.actionTimer.start()
     }
+    attack(){
+        this.swingTimer = new Timer({length: 500, whenEnd:()=>{
+            this.swingTimer = null
+        }})
+        this.swingTimer.start()
+    }
     block(ammount, seconds){
-        this.armor += ammount;
-        setTimeout(()=>{
-            this.armor -= ammount;
-        }, seconds * 1000)
+        this.shieldBlock += ammount;
+        this.shieldTimer = new Timer({length: seconds * 1000, whenEnd:()=>{
+            this.shieldBlock = 0
+            this.shieldTimer = null
+        }})
+        this.shieldTimer.start()
     }
 }

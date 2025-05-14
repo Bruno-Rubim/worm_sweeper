@@ -27,7 +27,7 @@ export class Tool extends Item {
 
 export const cursorItem = new Tool({name: 'default'})
 export const picaxeItem = new Tool({name: 'picaxe'})
-export const flagItem = new Tool({name: 'flag', cost: 15})
+export const flagItem = new Tool({name: 'flag', cost: 10})
 export const detonatorItem = new Tool({name: 'detonator', cost: 40})
 export const drillItem = new Tool({name: 'drill', cost: 50})
 
@@ -37,26 +37,34 @@ export class Weapon extends Item {
         this.weight = weight
         this.damage = damage
     }
+    get spriteBig(){
+        return findSprite(`${this.name}_big`).img
+    }
     action(){
-        const battle = gameManager.currentLevel.currentBattle
-        battle.hitEnemy(this.damage)
+        gameManager.player.attack()
+        gameManager.currentLevel.currentBattle.hitEnemy(this.damage)
     }
 }
 
 export const woodSwordItem = new Weapon({name: 'wooden_sword', cost: 0, weight: 2})
 
-export const daggerItem = new Weapon({name: 'dagger', cost: 20, weight: 1})
+export const daggerItem = new Weapon({name: 'dagger', cost: 25, weight: 1})
 
 export class Shield extends Item {
-    constructor({name=null, cost=30, weight=1, armor=1, duration=1}){
+    constructor({name=null, cost=30, weight=1, block=1, duration=1}){
         super({name: name, cost: cost})
         this.weight = weight
-        this.armor = armor
+        this.block = block
         this.duration = duration
     }
+    get spriteBig(){
+        return findSprite(`${this.name}_big`).img
+    }
     action(){
-        gameManager.player.block(this.armor, this.duration)
+        gameManager.player.block(this.block, this.duration)
     }
 }
 
-export const woodShieldItem = new Shield({name: 'wooden_shield', cost: 0, weight: 2})
+export const woodShieldItem = new Shield({name: 'wooden_shield', cost: 0, weight: 2, block: 1, duration: 1})
+
+export const steelShieldItem = new Shield({name: 'steel_shield', cost: 30, weight: 3, block: 2, duration: 1.5})

@@ -263,6 +263,10 @@ export class Block{
             return
         }
         if (this.content == 'shop_door') {
+            this.content = 'shop_door_open'
+            return
+        }
+        if (this.content == 'shop_door_open') {
             this.parentLevel.inShop = true
             return
         }

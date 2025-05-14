@@ -15,11 +15,15 @@ class Sprite {
 
 const sprites = {
 	//ui
-	detonator_cursor: new Sprite('./images/detonator_cursor.png'),
-	default_cursor: new Sprite('./images/default_cursor.png'),
-	defeat: new Sprite('./images/defeat.png'),
+	cursor_default: new Sprite('./images/cursor_default.png'),
+	cursor_detonator: new Sprite('./images/cursor_detonator.png'),
+	cursor_flag: new Sprite('./images/cursor_flag.png'),
+	cursor_hourglass: new Sprite('./images/cursor_hourglass.png'),
+	cursor_picaxe: new Sprite('./images/cursor_picaxe.png'),
+	cursor_shield: new Sprite('./images/cursor_shield.png'),
+	cursor_sword: new Sprite('./images/cursor_sword.png'),
 	game_border: new Sprite('./images/game_border.png'),
-	flag_cursor: new Sprite('./images/flag_cursor.png'),
+	game_bg: new Sprite('./images/game_bg.png'),
 	icon_clock: new Sprite('./images/icon_clock.png'),
 	icon_damage: new Sprite('./images/icon_damage.png'),
 	icon_gold: new Sprite('./images/icon_gold.png'),
@@ -27,15 +31,17 @@ const sprites = {
 	icon_shield: new Sprite('./images/icon_shield.png'),
 	icon_weight: new Sprite('./images/icon_weight.png'),
 	icon_worm: new Sprite('./images/icon_worm.png'),
-	picaxe_cursor: new Sprite('./images/picaxe_cursor.png'),
+	minus_red: new Sprite('./images/minus_red.png'),
 	numbers: new Sprite('./images/numbers.png'),
 	numbers_blue: new Sprite('./images/numbers_blue.png'),
 	numbers_green: new Sprite('./images/numbers_green.png'),
+	numbers_gray: new Sprite('./images/numbers_gray.png'),
 	numbers_gold: new Sprite('./images/numbers_gold.png'),
 	numbers_purple: new Sprite('./images/numbers_purple.png'),
 	numbers_red: new Sprite('./images/numbers_red.png'),
 	numbers_yellow: new Sprite('./images/numbers_yellow.png'),
-	minus_red: new Sprite('./images/minus_red.png'),
+	screen_defeat: new Sprite('./images/screen_defeat.png'),
+	screen_paused: new Sprite('./images/screen_paused.png'),
 	
 	//shop
 	picaxe: new Sprite('./images/picaxe.png'),
@@ -55,17 +61,25 @@ const sprites = {
 	shop_description_detonator: new Sprite('./images/shop_description_detonator.png'),
 	shop_description_drill: new Sprite('./images/shop_description_drill.png'),
 	shop_description_flag: new Sprite('./images/shop_description_flag.png'),
+	shop_description_steel_shield: new Sprite('./images/shop_description_steel_shield.png'),
 	wooden_sword: new Sprite('./images/wooden_sword.png'),
 	wooden_sword_selected: new Sprite('./images/wooden_sword_selected.png'),
 	wooden_shield: new Sprite('./images/wooden_shield.png'),
 	wooden_shield_selected: new Sprite('./images/wooden_shield_selected.png'),
+	steel_shield: new Sprite('./images/steel_shield.png'),
+	steel_shield_selected: new Sprite('./images/steel_shield_selected.png'),
 	
 	//battle
+	battle_bar: new Sprite('./images/battle_bar.png'),
 	battle_bg: new Sprite('./images/battle_bg.png'),
+	dagger_big: new Sprite('./images/dagger_big.png'),
 	enemy_shadow: new Sprite('./images/enemy_shadow.png'),
 	player_shadow: new Sprite('./images/player_shadow.png'),
 	tired_overlay: new Sprite('./images/tired_overlay.png'),
 	worm_enemy: new Sprite('./images/worm_enemy.png'),
+	wooden_sword_big: new Sprite('./images/wooden_sword_big.png'),
+	wooden_shield_big: new Sprite('./images/wooden_shield_big.png'),
+	steel_shield_big: new Sprite('./images/steel_shield_big.png'),
 
 	//mine
 	dirt_block_unknown: new Sprite('./images/dirt_block_unknown.png'),
@@ -79,6 +93,7 @@ const sprites = {
 	marker_unsure: new Sprite('./images/marker_unsure.png'),
 	marker_wrong: new Sprite('./images/marker_wrong.png'),
 	shop_door: new Sprite('./images/shop_door.png'),
+	shop_door_open: new Sprite('./images/shop_door_open.png'),
 	threat: new Sprite('./images/threat.png'),
 	worm: new Sprite('./images/worm.png'),
 }

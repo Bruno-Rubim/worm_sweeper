@@ -7,18 +7,19 @@ export class Timer {
         this.loop = loop
         this.starterTime = 0
         this.endTime = 0
-        this.stopped = false
+        this.paused = false
         this.stoppedTime = 0
         this.ended = false
     }
     get miliseconds(){
-        if (this.stopped){
+        if (this.paused){
             return this.stoppedTime
         }
         if (this.starterTime != 0){
             let seconds = this.endTime - getNow()
             if (seconds <= 0 && !this.ended){
                 this.whenEnd()
+                this.stoppedTime = 0
                 if (this.loop){
                     this.endTime += this.length
                 } else {
@@ -29,7 +30,10 @@ export class Timer {
         }
         return this.length
     }
-    
+    get seconds(){
+        return Math.ceil(this.miliseconds/1000)
+    }
+
     start(){
         this.starterTime = getNow()
         this.endTime = this.starterTime + (this.length)
@@ -42,8 +46,15 @@ export class Timer {
     removeSeconds(seconds){
         this.endTime -= seconds*1000
     }
-    stop(){
-        this.stopped = true
-        this.stoppedTime = this.miliseconds
+    pause(){
+        if (this.stoppedTime != 0){
+            this.stoppedTime = this.miliseconds
+        }
+        this.paused = true
+    }
+    continue(){
+        this.paused = false
+        this.length = this.stoppedTime
+        this.start()
     }
 }

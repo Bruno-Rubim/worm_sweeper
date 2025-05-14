@@ -27,9 +27,27 @@ export function restart(){
     gameManager = new GameManager({})
 }
 
+export function pauseGame(){
+    if (gameManager.paused){
+        gameManager.paused = false
+        gameManager.timer.continue()
+        if (gameManager.currentLevel.currentBattle){
+            gameManager.currentLevel.currentBattle.continue()
+        }
+    } else {
+        gameManager.paused = true
+        gameManager.timer.pause()
+        if (gameManager.currentLevel.currentBattle){
+            gameManager.currentLevel.currentBattle.pause()
+        }
+    }
+}
+
 export function loseGame(){
     gameManager.ended = true
-    gameManager.timer.stop()
+    if (!gameManager.timer.paused){
+        gameManager.timer.pause()
+    }
     gameManager.currentLevel.blocks.forEach(column => {
         column.forEach(block =>{
             if (block.marker && block.content != 'worm'){
@@ -45,10 +63,19 @@ export const gameCursor = {
     posX: borderLength,
     posY: borderLength,
     get sprite(){
-        if (gameManager.currentLevel.inShop || gameManager.currentLevel.currentBattle || 
+        if (gameManager.ended || gameManager.ended || gameManager.currentLevel.inShop || 
             this.posX < borderThicness || this.posX >= borderLength - borderThicness ||
             this.posY < borderThicness || this.posY >= borderLength - borderThicness){
-            return findSprite('default_cursor').img
+            return findSprite('cursor_default').img
+        }
+        if (gameManager.currentLevel.currentBattle){
+            if (gameManager.player.actionTimer){
+                return findSprite('cursor_hourglass').img
+            } else if (this.posX < borderLength/2){
+                return findSprite('cursor_sword').img
+            } else {
+                return findSprite('cursor_shield').img
+            }
         }
         if (!gameManager.currentLevel.inShop && gameManager.selectedTool == picaxeItem && gameManager.currentLevel.started){
             if (gameManager.inventory.includes(detonatorItem) && 
@@ -57,11 +84,11 @@ export const gameCursor = {
                 let tileX = Math.floor((this.posX - borderThicness)/(gameManager.currentLevel.levelScale * 16))
                 let tileY = Math.floor((this.posY - borderThicness)/(gameManager.currentLevel.levelScale * 16))
                 if (gameManager.currentLevel.blocks[tileX][tileY].broken){
-                    return findSprite(detonatorItem.name + '_cursor').img
+                    return findSprite('cursor_' + detonatorItem.name).img
                 }
             }
         }
-        return findSprite(gameManager.selectedTool.name + '_cursor').img
+        return findSprite('cursor_' + gameManager.selectedTool.name).img
     }
 }
 
