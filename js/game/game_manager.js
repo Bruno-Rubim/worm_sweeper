@@ -7,7 +7,7 @@ import { Player } from "./player.js";
 export const borderLength = 168
 export const borderThicness = 20
 
-const starterInventory = [picaxeItem, woodSwordItem]
+const starterInventory = [picaxeItem, woodSwordItem, woodShieldItem]
 
 export class GameManager{
     constructor({}){
@@ -19,6 +19,7 @@ export class GameManager{
         this.timer = new Timer({length: 60000, whenEnd: ()=>{this.timerEnded = true; loseGame();}}),
         this.timerEnded = false;
         this.player = new Player({inventory: this.inventory})
+        this.inTransition = false
     }
 }
 

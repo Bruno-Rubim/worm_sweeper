@@ -2,15 +2,13 @@ import { ctx, renderScale } from "../canvas_handler.js"
 import { findSprite } from "../sprites.js"
 import { borderLength, borderThicness, gameManager } from "./game_manager.js"
 import { renderNumbers } from "./game_renderer.js";
-import { Armor, chainmailArmorItem, Consumable, daggerItem, detonatorItem, drillItem, flagItem, healthPotionItem, Shield, steelShieldItem, Weapon } from "./item.js";
+import { Armor, chainmailArmorItem, Consumable, daggerItem, darkCrystalItem, detonatorItem, drillItem, flagItem, healthPotionItem, Shield, steelShieldItem, timePotionItem, Weapon } from "./item.js";
 
 const toolShelfHeight = 24
 const consShelfHeight = toolShelfHeight + 18
 const gearShelfHeight = toolShelfHeight + 32
 
-const consumables = [
-    healthPotionItem
-]
+const consumables = [healthPotionItem, timePotionItem]
 const CONSUMED = 'consumed'
 
 const buyButton = {
@@ -70,6 +68,20 @@ export class Shop {
         if (this.consumable == CONSUMED || this.consumable == null){
             return
         }
+        if (this.consumable == timePotionItem){
+            ctx.drawImage(
+                this.consumable.sprite,
+                16 * (Math.floor(gameManager.timer.miliseconds/180)%12),
+                0,
+                16,
+                16,
+                (borderLength - borderThicness - 28) * renderScale,
+                (borderThicness + consShelfHeight - 16) * renderScale,
+                16 * renderScale,
+                16 * renderScale
+            )
+            return
+        }
         ctx.drawImage(
             this.consumable.sprite,
             (borderLength - borderThicness - 28) * renderScale,
@@ -125,7 +137,6 @@ export class Shop {
 
     generateItems(inventory){
         this.tools = []
-        this.gear = []
         if (!inventory.includes(flagItem)){
             this.tools.push(flagItem)
         } else if (!inventory.includes(detonatorItem)){
@@ -133,21 +144,26 @@ export class Shop {
         }
         if (!inventory.includes(drillItem)){
             this.tools.push(drillItem)
+        }    
+        if (!inventory.includes(darkCrystalItem)){
+            this.tools.push(darkCrystalItem)
         }
+
+        this.gear = []
         if (!inventory.includes(daggerItem)){
             this.gear.push(daggerItem)
-        }
+        }    
         if (!inventory.includes(steelShieldItem)){
             this.gear.push(steelShieldItem)
-        }
+        }    
         if (!inventory.includes(chainmailArmorItem)){
             this.gear.push(chainmailArmorItem)
         }
+
         if (this.consumable == null){
             const i = Math.floor(Math.random()*consumables.length)
             this.consumable = consumables[i]
         }
-        console.log(this.consumable)
     }
 
     buyItem(){
@@ -205,7 +221,6 @@ export class Shop {
         if (item){
             item.selected = true
             this.selectedItem = item
-            console.log(item)
         }
     }
 }

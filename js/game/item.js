@@ -30,6 +30,7 @@ export const picaxeItem = new Tool({name: 'picaxe'})
 export const flagItem = new Tool({name: 'flag', cost: 10})
 export const detonatorItem = new Tool({name: 'detonator', cost: 40})
 export const drillItem = new Tool({name: 'drill', cost: 50})
+export const darkCrystalItem = new Tool({name: 'dark_crystal', cost: 20})
 
 export class Weapon extends Item {
     constructor({name=null, cost=30, weight=1, damage=1}){
@@ -47,7 +48,6 @@ export class Weapon extends Item {
 }
 
 export const woodSwordItem = new Weapon({name: 'wooden_sword', cost: 0, weight: 2})
-
 export const daggerItem = new Weapon({name: 'dagger', cost: 25, weight: 1.5})
 
 export class Shield extends Item {
@@ -66,11 +66,8 @@ export class Shield extends Item {
 }
 
 export const woodShieldItem = new Shield({name: 'wooden_shield', cost: 0, weight: 2, block: 1})
-
 export const steelShieldItem = new Shield({name: 'steel_shield', cost: 35, weight: 2.5, block: 2})
-
 export const lightShieldItem = new Shield({name: 'light_shield', cost: 30, weight: 1, block: 1})
-
 
 export class Armor extends Item {
     constructor({name=null, cost=30, weight=1, block=1}){
@@ -91,4 +88,7 @@ export class Consumable extends Item {
 
 export const healthPotionItem = new Consumable({name:'potion_health', cost: 5, purchase: ()=>{
     gameManager.player.hp++
+}})
+export const timePotionItem = new Consumable({name:'potion_time', cost: 10, purchase: ()=>{
+    gameManager.timer.addSeconds(20)
 }})

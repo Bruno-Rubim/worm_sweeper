@@ -2,7 +2,7 @@ import { ctx, renderScale } from "../canvas_handler.js"
 import { findSprite } from "../sprites.js"
 import { borderThicness, gameManager } from "./game_manager.js"
 import { Level } from "./level.js"
-import { detonatorItem, flagItem, cursorItem, drillItem } from "./item.js"
+import { detonatorItem, flagItem, cursorItem, drillItem, darkCrystalItem } from "./item.js"
 import { Battle } from "./battle.js"
 
 const THREAT = 'threat'
@@ -228,10 +228,6 @@ export class Block{
             return
         }
         if (this.marker == THREAT){
-            this.marker = UNSURE
-            return
-        }
-        if (this.marker == UNSURE){
             this.marker = null
             return
         }
@@ -243,17 +239,14 @@ export class Block{
     }
 
     click(tool){
-        if (tool == cursorItem){
-            return
-        }
-        if (this.hidden){
-            return
-        }
         if (tool == flagItem){
             this.mark()
             return
         }
-        if (!this.broken){
+        if (this.hidden && !(gameManager.inventory.includes(darkCrystalItem))){
+            return
+        }
+        if (!this.broken && tool != cursorItem){
             this.break()
             return
         }

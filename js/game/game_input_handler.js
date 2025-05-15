@@ -28,6 +28,9 @@ export function keyHandler(key, state){
 }
 
 export function clickHandler(posX, posY){
+    if (gameManager.paused){
+        return
+    }
     if (posX > borderThicness && posX < borderLength - borderThicness && posY > borderThicness && posY < borderLength - borderThicness){
         if (gameManager.ended){
             restart()
