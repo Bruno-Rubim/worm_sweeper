@@ -108,10 +108,10 @@ export class Battle {
     }
     renderPlayerStats(){
         const player = gameManager.player
-        for (let i = 0; i < player.armor;i++){
+        for (let i = 0; i < player.totalBlock;i++){
             ctx.drawImage(
                 findSprite('icon_shield').img,
-                (((borderLength/2) - (player.armor * 4.5)) + (9 * i)) * renderScale,
+                (((borderLength/2) - (player.totalBlock * 4.5)) + (9 * i)) * renderScale,
                 (borderLength - borderThicness - 22) * renderScale,
                 8 * renderScale,
                 8 * renderScale

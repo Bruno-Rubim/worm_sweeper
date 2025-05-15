@@ -13,14 +13,17 @@ export class Level{
         this.size = size;
         this.difficulty = difficulty;
         this.shop = shop;
+        this.inShop = false
         this.wormQuantity = Math.floor((difficulty * 0.033) * size * size)
         this.wormsLeft = this.wormQuantity
+        this.blockCount = (size*size) - this.wormsLeft
         this.levelScale = (128/(this.size*16))
         this.blocks = []
         this.started = false
-        this.inShop = false
+        this.cleared = false
         this.currentBattle = null
     }
+
     fillEmptyBlocks(){
         for (let i = 0; i < this.size; i++){
             for (let j = 0; j < this.size; j++){
@@ -136,6 +139,7 @@ export class Level{
         }
         this.renderBlocks()
     }
+
     countBrokenBlocks(){
         let counter = this.size*this.size
         for (let i = 0; i < this.size; i++){
@@ -148,8 +152,10 @@ export class Level{
         return counter
     }
     checkClear(){
-        if (this.countBrokenBlocks() == this.wormQuantity){
-            gameManager.timer.addSeconds(20)
+        if (this.countBrokenBlocks() == this.wormQuantity && !this.cleared){
+            this.cleared
+            // gameManager.timer.addSeconds(20)
+            gameManager.gold += 5
         }
     }
 
@@ -162,10 +168,7 @@ export class Level{
         const nextDepth = this.depth + 1
         let nextSize = Math.floor(nextDepth/3) + 6
         let nextDificulty = (nextDepth%3) + Math.floor(nextDepth/3) + 4
-        let nextShop = null
-        if (nextDepth%3 == 1){
-            nextShop = new Shop({inventory: gameManager.inventory, level: nextDepth})
-        }
+        let nextShop = new Shop({inventory: gameManager.inventory, level: nextDepth})
         gameManager.currentLevel = new Level({
             difficulty: nextDificulty,
             size: nextSize,

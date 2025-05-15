@@ -16,8 +16,9 @@ export class Timer {
             return this.stoppedTime
         }
         if (this.starterTime != 0){
-            let seconds = this.endTime - getNow()
-            if (seconds <= 0 && !this.ended){
+            let miliseconds = this.endTime - getNow()
+            this.stoppedTime = miliseconds
+            if (miliseconds <= 0 && !this.ended){
                 this.whenEnd()
                 this.stoppedTime = 0
                 if (this.loop){
@@ -25,8 +26,9 @@ export class Timer {
                 } else {
                     this.ended = true
                 }
+                return 0
             }
-            return seconds
+            return miliseconds
         }
         return this.length
     }

@@ -76,7 +76,7 @@ export class Enemy{
     }
 
     attack(){
-        let damage = this.damage - gameManager.player.armor
+        let damage = this.damage - gameManager.player.totalBlock
         if (damage > 0){
             gameManager.player.hp -= damage
         }

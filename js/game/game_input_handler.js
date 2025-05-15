@@ -1,4 +1,4 @@
-import { gameCursor, pauseGame, restart, swapTools } from "./game_manager.js"
+import { gameCursor, pauseGame, pauseSwap, restart, swapTools } from "./game_manager.js"
 import { borderLength, borderThicness, gameManager  } from "./game_manager.js"
 
 export const KEYUP = 'keyup'
@@ -20,7 +20,7 @@ export function keyHandler(key, state){
         swapTools()
     }
     if (keyDict['Escape'] == KEYDOWN){
-        pauseGame()
+        pauseSwap()
     }
     if (keyDict['Shift'] == KEYDOWN || keyDict['Shift'] == KEYUP){
         swapTools()
@@ -57,4 +57,8 @@ export function clickHandler(posX, posY){
 export function mouseMoveHandler(posX, posY){
     gameCursor.posX = posX
     gameCursor.posY = posY
+}
+
+export function unfocusHandler(){
+    pauseGame()
 }

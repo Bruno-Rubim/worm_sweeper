@@ -1,4 +1,4 @@
-import { Weapon, woodShieldItem, woodSwordItem } from "./item.js"
+import { daggerItem, steelShieldItem, Weapon, woodShieldItem, woodSwordItem } from "./item.js"
 import { Timer } from "./timer.js"
 
 export class Player{
@@ -7,13 +7,14 @@ export class Player{
         this.tired = false
         this.weapon = woodSwordItem
         this.shield = woodShieldItem
+        this.armor = null
         this.shieldBlock = 0
         this.armorBlock = 0
         this.swingTimer = null
         this.shieldTimer = null
         this.actionTimer = null
     }
-    get armor(){
+    get totalBlock(){
         return this.armorBlock + this.shieldBlock
     }
     act(type){

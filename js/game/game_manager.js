@@ -16,7 +16,8 @@ export class GameManager{
         this.inventory = [...starterInventory],
         this.gold = 0,
         this.ended = false,
-        this.timer = new Timer({length: 60000, whenEnd: ()=>{loseGame()}}),
+        this.timer = new Timer({length: 60000, whenEnd: ()=>{this.timerEnded = true; loseGame();}}),
+        this.timerEnded = false;
         this.player = new Player({inventory: this.inventory})
     }
 }
@@ -27,25 +28,35 @@ export function restart(){
     gameManager = new GameManager({})
 }
 
-export function pauseGame(){
+export function pauseSwap(){
     if (gameManager.paused){
-        gameManager.paused = false
-        gameManager.timer.continue()
-        if (gameManager.currentLevel.currentBattle){
-            gameManager.currentLevel.currentBattle.continue()
-        }
+        unPauseGame()
     } else {
-        gameManager.paused = true
-        gameManager.timer.pause()
-        if (gameManager.currentLevel.currentBattle){
-            gameManager.currentLevel.currentBattle.pause()
-        }
+        pauseGame()
+    }
+}
+
+export function pauseGame(){
+    if (!gameManager.currentLevel.started){
+        return
+    }
+    gameManager.paused = true
+    gameManager.timer.pause()
+    if (gameManager.currentLevel.currentBattle){
+        gameManager.currentLevel.currentBattle.pause()
+    }
+}
+export function unPauseGame(){
+    gameManager.paused = false
+    gameManager.timer.continue()
+    if (gameManager.currentLevel.currentBattle){
+        gameManager.currentLevel.currentBattle.continue()
     }
 }
 
 export function loseGame(){
     gameManager.ended = true
-    if (!gameManager.timer.paused){
+    if (!gameManager.timerEnded){
         gameManager.timer.pause()
     }
     gameManager.currentLevel.blocks.forEach(column => {
@@ -93,6 +104,9 @@ export const gameCursor = {
 }
 
 export function swapTools(){
+    if (gameManager.paused){
+        return
+    }
     if (gameManager.selectedTool == picaxeItem){
         if (!gameManager.inventory.includes(flagItem)){
             gameManager.selectedTool = cursorItem

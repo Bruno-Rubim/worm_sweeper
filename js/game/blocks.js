@@ -199,6 +199,7 @@ export class Block{
         if (this.gold){
             gameManager.gold++
         }
+        this.parentLevel.checkClear()
         this.revealAdjc()
         if (this.wormLevel == 0 && this.content != 'worm'){
             if (gameManager.inventory.includes(drillItem)){
@@ -206,8 +207,12 @@ export class Block{
             }
         }
         if (this.content == 'worm' && !gameManager.ended){
-            this.content = null
-            this.parentLevel.startBattle()
+            setTimeout(()=>{
+                this.content = null
+                this.parentLevel.startBattle()
+            }, 500)
+        } else {
+            this.parentLevel.blockCount--
         }
     }
 
@@ -220,7 +225,6 @@ export class Block{
         }
         if (this.marker == null){
             this.marker = THREAT
-            this.parentLevel.wormsLeft --
             return
         }
         if (this.marker == THREAT){
@@ -229,7 +233,6 @@ export class Block{
         }
         if (this.marker == UNSURE){
             this.marker = null
-            this.parentLevel.wormsLeft ++
             return
         }
     }

@@ -2,16 +2,22 @@ import { ctx, renderScale } from "../canvas_handler.js"
 import { findSprite } from "../sprites.js"
 import { borderLength, borderThicness, gameManager } from "./game_manager.js"
 import { renderNumbers } from "./game_renderer.js";
-import { daggerItem, detonatorItem, drillItem, flagItem, Shield, steelShieldItem, Weapon } from "./item.js";
+import { Armor, chainmailArmorItem, Consumable, daggerItem, detonatorItem, drillItem, flagItem, healthPotionItem, Shield, steelShieldItem, Weapon } from "./item.js";
 
-const toolShelfHeight = 48
-const gearShelfHeight = 80
+const toolShelfHeight = 24
+const consShelfHeight = toolShelfHeight + 18
+const gearShelfHeight = toolShelfHeight + 32
+
+const consumables = [
+    healthPotionItem
+]
+const CONSUMED = 'consumed'
 
 const buyButton = {
-    posX: 103,
-    posY: 110,
-    width: 21,
-    height: 14,
+    posX: 94,
+    posY: 106,
+    width: 28,
+    height: 17,
     getSprite(cost, playerGold){
         if (playerGold >= cost){
             return findSprite('shop_buy_button').img
@@ -26,6 +32,7 @@ export class Shop {
         this.tools = []
         this.gear = []
         this.selectedItem = null
+        this.consumable = null
         this.generateItems(inventory)
     }
     renderBG(){
@@ -59,6 +66,18 @@ export class Shop {
             )
         })
     }
+    renderConsumable(){
+        if (this.consumable == CONSUMED || this.consumable == null){
+            return
+        }
+        ctx.drawImage(
+            this.consumable.sprite,
+            (borderLength - borderThicness - 28) * renderScale,
+            (borderThicness + consShelfHeight - 16) * renderScale,
+            16 * renderScale,
+            16 * renderScale
+        )
+    }
     renderDescription(){
         if (!this.selectedItem){
             return
@@ -67,9 +86,9 @@ export class Shop {
         ctx.drawImage(
             item.descriptionSprite,
             (borderThicness + 4) * renderScale,
-            borderThicness + 115 * renderScale,
-            121 * renderScale,
-            26 * renderScale
+            (borderThicness + 75) * renderScale,
+            98 * renderScale,
+            50 * renderScale
         )
         ctx.drawImage(
             buyButton.getSprite(item.cost, gameManager.gold),
@@ -78,12 +97,29 @@ export class Shop {
             buyButton.width * renderScale,
             buyButton.height * renderScale
         )
-        renderNumbers(item.cost, 0, borderThicness + 107, borderThicness + 99, -4, 'normal', 'shop_cost')
+        if (item instanceof Weapon){
+            renderNumbers(item.damage, 0, borderThicness + 55, borderThicness + 86, -1, 'normal', 'red')
+        }
+        if (item instanceof Shield || item instanceof Weapon){
+            renderNumbers(item.weight, 0, borderThicness + 49, borderThicness + 96, -1, 'normal', 'gray')
+        }
+        if (item instanceof Shield || item instanceof Armor){
+            renderNumbers(item.block, 0, borderThicness + 39, borderThicness + 86, -1, 'normal', 'blue')
+        }
+        ctx.drawImage(
+            findSprite('icon_gold').img,
+            (borderThicness + 114) * renderScale,
+            (borderThicness + 96) * renderScale,
+            8 * renderScale,
+            8 * renderScale
+        )
+        renderNumbers(item.cost, 0, borderThicness + 16, borderThicness + 96, -1, 'reversed', 'gold')
     }
     render(){
         this.renderBG()
         this.renderTools()
         this.renderGear()
+        this.renderConsumable()
         this.renderDescription()
     }
 
@@ -104,6 +140,14 @@ export class Shop {
         if (!inventory.includes(steelShieldItem)){
             this.gear.push(steelShieldItem)
         }
+        if (!inventory.includes(chainmailArmorItem)){
+            this.gear.push(chainmailArmorItem)
+        }
+        if (this.consumable == null){
+            const i = Math.floor(Math.random()*consumables.length)
+            this.consumable = consumables[i]
+        }
+        console.log(this.consumable)
     }
 
     buyItem(){
@@ -113,6 +157,12 @@ export class Shop {
                 gameManager.player.weapon = selectedItem
             } else if (selectedItem instanceof Shield) {
                 gameManager.player.shield = selectedItem
+            } else if (selectedItem instanceof Armor){
+                gameManager.player.armor = selectedItem
+                gameManager.player.armorBlock = selectedItem.block
+            } else if (selectedItem instanceof Consumable){
+                this.consumable = CONSUMED;
+                selectedItem.purchase()
             }
             gameManager.inventory.push(selectedItem)
             gameManager.gold -= selectedItem.cost
@@ -143,15 +193,19 @@ export class Shop {
             return
         }
         let item = null;
-        if (posX < this.tools.length*16 && posY > 32 && posY < 49){
+        if (posX < this.tools.length*16 && posY > toolShelfHeight - 16 && posY < toolShelfHeight){
             item = this.tools[Math.floor(posX/16)]
         }
-        if (posX < this.gear.length*16 && posY > 64 && posY < 81){
+        if (posX < this.gear.length*16 && posY > gearShelfHeight - 16 && posY < gearShelfHeight){
             item = this.gear[Math.floor(posX/16)]
+        }
+        if (posX > 98 && posY > consShelfHeight - 16 && posY < consShelfHeight){
+            item = this.consumable
         }
         if (item){
             item.selected = true
             this.selectedItem = item
+            console.log(item)
         }
     }
 }

@@ -1,5 +1,5 @@
 import { findSprite } from "../sprites.js"
-import { gameCursor, gameManager } from "./game_manager.js"
+import { gameManager } from "./game_manager.js"
 
 export class Item {
     constructor({name=null, cost=30, type=''}){
@@ -48,7 +48,7 @@ export class Weapon extends Item {
 
 export const woodSwordItem = new Weapon({name: 'wooden_sword', cost: 0, weight: 2})
 
-export const daggerItem = new Weapon({name: 'dagger', cost: 25, weight: 1})
+export const daggerItem = new Weapon({name: 'dagger', cost: 25, weight: 1.5})
 
 export class Shield extends Item {
     constructor({name=null, cost=30, weight=1, block=1, duration=1}){
@@ -65,6 +65,30 @@ export class Shield extends Item {
     }
 }
 
-export const woodShieldItem = new Shield({name: 'wooden_shield', cost: 0, weight: 2, block: 1, duration: 1})
+export const woodShieldItem = new Shield({name: 'wooden_shield', cost: 0, weight: 2, block: 1})
 
-export const steelShieldItem = new Shield({name: 'steel_shield', cost: 30, weight: 3, block: 2, duration: 1.5})
+export const steelShieldItem = new Shield({name: 'steel_shield', cost: 35, weight: 2.5, block: 2})
+
+export const lightShieldItem = new Shield({name: 'light_shield', cost: 30, weight: 1, block: 1})
+
+
+export class Armor extends Item {
+    constructor({name=null, cost=30, weight=1, block=1}){
+        super({name: name, cost: cost})
+        this.weight = weight
+        this.block = block
+    }
+}
+
+export const chainmailArmorItem = new Armor({name:'chainmail_armor', cost: 45, weight: 0.5, block:1})
+
+export class Consumable extends Item {
+    constructor({name=null, cost=30, purchase=()=>{}}){
+        super({name: name, cost: cost})
+        this.purchase = purchase
+    }
+}
+
+export const healthPotionItem = new Consumable({name:'potion_health', cost: 5, purchase: ()=>{
+    gameManager.player.hp++
+}})

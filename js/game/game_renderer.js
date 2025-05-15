@@ -41,10 +41,27 @@ function renderTools(){
         16 * renderScale,
         16 * renderScale
     )
+    if (gameManager.player.armor){
+        ctx.drawImage(
+            findSprite(gameManager.player.armor.name).img,
+            (2) * renderScale,
+            (borderLength - borderThicness - 52) * renderScale,
+            16 * renderScale,
+            16 * renderScale
+        )
+    }
 }
 
 const numberWidth = 8
 const numberPadding = 6
+const numberSymbols = {
+    '.': 0,
+    '-': 1,
+}
+const symbolGap = {
+    '.': 1.5,
+    '-': 0,
+}
 
 export function renderNumbers(number, digitSkip, posStartX, posStartY, numberGap, order, color){
     let vector = [...number.toString()]
@@ -55,14 +72,31 @@ export function renderNumbers(number, digitSkip, posStartX, posStartY, numberGap
         vector.pop()
     }
     if (order == 'normal'){
-        vector.forEach((number, index)=>{
+        let shiftX = 0
+        vector.forEach((char, index)=>{
+            if (isNaN(Number(char))){
+                ctx.drawImage(
+                    findSprite(`numbers_symbols_${color}`).img,
+                    numberWidth * numberSymbols[char],
+                    0,
+                    numberWidth,
+                    numberWidth,
+                    ((numberWidth * index) + posStartX + ((numberGap - Math.floor(symbolGap[char])) * index)) * renderScale,
+                    posStartY * renderScale,
+                    numberWidth * renderScale,
+                    numberWidth * renderScale
+                )
+                shiftX -= symbolGap[char]*2
+                return
+            }
+            let number = Number(char)
             ctx.drawImage(
                 findSprite(`numbers_${color}`).img,
                 numberWidth * number,
                 0,
                 numberWidth,
                 numberWidth,
-                ((numberWidth * index) + posStartX + (numberGap * index)) * renderScale,
+                ((numberWidth * index) + posStartX + (numberGap * index) + shiftX) * renderScale,
                 posStartY * renderScale,
                 numberWidth * renderScale,
                 numberWidth * renderScale
@@ -106,6 +140,30 @@ export function renderNumbers(number, digitSkip, posStartX, posStartY, numberGap
     }
 }
 
+function renderHealth(){
+    if (gameManager.currentLevel.currentBattle){
+        for (let i = 0; i < gameManager.player.hp;i++){
+            ctx.drawImage(
+                findSprite('icon_heart').img,
+                (((borderLength/2) - ((gameManager.player.hp) * 4.5)) + (9 * i)) * renderScale,
+                (135) * renderScale,
+                8 * renderScale,
+                8 * renderScale
+            )
+        } 
+    } else {
+        for (let i = 0; i < gameManager.player.hp;i++){
+            ctx.drawImage(
+                findSprite('icon_heart').img,
+                (numberPadding) * renderScale,
+                (numberPadding + (9 * i) + 12) * renderScale,
+                8 * renderScale,
+                8 * renderScale
+            )
+        } 
+    }
+}
+
 function renderTimer(){
     ctx.drawImage(
         findSprite(`icon_clock`).img,
@@ -122,9 +180,10 @@ function renderTimer(){
 }
 
 function renderWormCounter(){
+    const shiftX = ((numberPadding + 14) + 30)
     ctx.drawImage(
         findSprite(`icon_worm`).img,
-        (borderLength - numberPadding - 8) * renderScale,
+        (shiftX) * renderScale,
         numberPadding * renderScale,
         8 * renderScale,
         8 * renderScale
@@ -135,16 +194,35 @@ function renderWormCounter(){
         counter = Math.abs(counter)
         negative = true;
     }
-    renderNumbers(counter, 0, numberPadding + 10, numberPadding, -1, 'reversed', 'red')
-    if (negative){
-        ctx.drawImage(
-            findSprite(`minus_red`).img,
-            (borderLength - ((numberWidth-1) * (Math.floor(counter/10) + 4)) - 2) * renderScale,
-            6 * renderScale,
-            numberWidth * renderScale,
-            numberWidth * renderScale
-        )
+    renderNumbers(counter, 0, (shiftX + 9) , numberPadding, -1, 'normal', 'red')
+}
+
+function renderBlockCount(){
+    ctx.drawImage(
+        findSprite(`icon_dirt`).img,
+        (borderLength - numberPadding - 56) * renderScale,
+        numberPadding * renderScale,
+        8 * renderScale,
+        8 * renderScale
+    )
+    let counter = gameManager.currentLevel.blockCount
+    let negative = false;
+    if (counter < 0){
+        counter = Math.abs(counter)
+        negative = true;
     }
+    renderNumbers(counter, 0, numberPadding + 58, numberPadding, -1, 'reversed', 'brown')
+}
+
+function renderDepth(){
+    ctx.drawImage(
+        findSprite(`icon_door`).img,
+        (borderLength - numberPadding - 8) * renderScale,
+        numberPadding * renderScale,
+        8 * renderScale,
+        8 * renderScale
+    )
+    renderNumbers(gameManager.currentLevel.depth +1, 0, numberPadding + numberWidth + 2, numberPadding, -1, 'reversed', 'green')
 }
 
 function renderGoldCounter(){
@@ -156,26 +234,6 @@ function renderGoldCounter(){
         8 * renderScale
     )
     renderNumbers(gameManager.gold, 0, numberPadding + 10, borderLength - numberWidth - numberPadding, -1, 'reversed', 'gold')
-}
-
-function renderHealth(){
-    let shiftY = 6
-    if (gameManager.currentLevel.currentBattle){
-        shiftY = 135
-    }
-    for (let i = 0; i < gameManager.player.hp;i++){
-        ctx.drawImage(
-            findSprite('icon_heart').img,
-            (((borderLength/2) - ((gameManager.player.hp) * 4.5)) + (9 * i)) * renderScale,
-            (shiftY) * renderScale,
-            8 * renderScale,
-            8 * renderScale
-        )
-    }
-}
-
-function renderDepth(){
-    renderNumbers(gameManager.currentLevel.depth +1, 0, borderLength - numberPadding - numberWidth, numberPadding + 10, -1, 'normal', 'green')
 }
 
 function renderScreenOverlay(){
@@ -198,12 +256,13 @@ function renderScreenOverlay(){
 }
 
 function renderUI(){
-    renderTools()
-    renderGoldCounter()
-    renderDepth()
     renderHealth()
+    renderTools()
     renderTimer()
     renderWormCounter()
+    renderBlockCount()
+    renderDepth()
+    renderGoldCounter()
     renderScreenOverlay()
 }
 
