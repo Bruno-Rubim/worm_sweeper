@@ -22,6 +22,7 @@ export class Level{
         this.started = false
         this.cleared = false
         this.currentBattle = null
+        this.safeTiles = []
     }
 
     fillEmptyBlocks(){
@@ -29,6 +30,18 @@ export class Level{
             for (let j = 0; j < this.size; j++){
                 const block = new Block({posX:i, posY:j, parentLevel:this})
                 this.blocks[i].push(block)
+            }
+        }
+    }
+    placeGold(){
+        for (let i = 0; i < this.size; i++){
+            for (let j = 0; j < this.size; j++){
+                const block = this.blocks[i][j]
+                if (block.starter) {
+                    continue
+                }
+                const rngGold = Math.floor(Math.random()*1.7)
+                block.gold = rngGold
             }
         }
     }
@@ -47,41 +60,35 @@ export class Level{
             }
         }
     }
-    placeGold(){
+    setSafeTiles(){
         for (let i = 0; i < this.size; i++){
             for (let j = 0; j < this.size; j++){
                 const block = this.blocks[i][j]
-                if (block.starter) {
-                    continue
+                if (!block.starter && !block.content && block.wormLevel == 0){
+                    this.safeTiles.push(block)
                 }
-                const rngGold = Math.floor(Math.random()*1.7)
-                block.gold = rngGold
             }
         }
     }
     placeExit(){
-        let exitPlaced = false
-        while(!exitPlaced){
-            const randX = Math.floor(Math.random() * this.size)
-            const randy = Math.floor(Math.random() * this.size)
-            const block = this.blocks[randX][randy]
-            if (!block.starter && !block.content && block.wormLevel == 0) {
-                block.content = 'exit_door'
-                exitPlaced = true
-            }
+        if (this.safeTiles.length == 0){
+            console.warn('drake...')
+            return
         }
+        const r = Math.floor(Math.random()*this.safeTiles.length)
+        const block = this.safeTiles[r]
+        block.content = 'exit_door'
+        this.safeTiles.splice(r, 1)
     }
     placeShop(){
-        let shopPlaced = false
-        while(!shopPlaced){
-            const randX = Math.floor(Math.random() * this.size)
-            const randy = Math.floor(Math.random() * this.size)
-            const block = this.blocks[randX][randy]
-            if (!block.starter && !block.content && block.wormLevel == 0) {
-                block.content = 'shop_door'
-                shopPlaced = true
-            }
+        if (this.safeTiles.length == 0){
+            console.warn('drake...')
+            return
         }
+        const r = Math.floor(Math.random()*this.safeTiles.length)
+        const block = this.safeTiles[r]
+        block.content = 'shop_door'
+        this.safeTiles.splice(r, 1)
     }
     start(startX, startY){
         for (let i = 0; i < this.size; i++){
@@ -94,10 +101,12 @@ export class Level{
         })
         firstBlock.starter = true
         this.placeWorms()
+        this.setSafeTiles()
         this.placeExit()
         this.placeGold()
         if (this.shop){
             this.placeShop()
+        } else {
         }
         firstBlock.break()
         firstBlock.breakSurr()

@@ -24,9 +24,14 @@ export class Player{
         } else {
             equipment = this.shield
         }
+
+        let armorSpeed = 0
+        if (this.armor){
+            armorSpeed = this.armor.speed
+        }
         equipment.action()
         this.tired = true
-        this.actionTimer = new Timer({length: (equipment.weight * 1000), whenEnd: ()=>{
+        this.actionTimer = new Timer({length: ((equipment.weight - armorSpeed) * 1000), whenEnd: ()=>{
             this.tired = false
             this.actionTimer = null
         }})

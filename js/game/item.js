@@ -15,7 +15,7 @@ export class Item {
         return findSprite(this.name).img
     }
     get descriptionSprite(){
-        return findSprite('shop_description_' + this.name).img
+        return findSprite(this.name + '_shop_description').img
     }
 }
 
@@ -48,7 +48,7 @@ export class Weapon extends Item {
 }
 
 export const woodSwordItem = new Weapon({name: 'wooden_sword', cost: 0, weight: 2})
-export const daggerItem = new Weapon({name: 'dagger', cost: 25, weight: 1.5})
+export const daggerItem = new Weapon({name: 'dagger', cost: 30, weight: 1.5})
 
 export class Shield extends Item {
     constructor({name=null, cost=30, weight=1, block=1, duration=1}){
@@ -66,18 +66,19 @@ export class Shield extends Item {
 }
 
 export const woodShieldItem = new Shield({name: 'wooden_shield', cost: 0, weight: 2, block: 1})
-export const steelShieldItem = new Shield({name: 'steel_shield', cost: 35, weight: 2.5, block: 2})
+export const steelShieldItem = new Shield({name: 'steel_shield', cost: 35, weight: 2, block: 2})
 export const lightShieldItem = new Shield({name: 'light_shield', cost: 30, weight: 1, block: 1})
 
 export class Armor extends Item {
-    constructor({name=null, cost=30, weight=1, block=1}){
+    constructor({name=null, cost=30, block=1, speed=0}){
         super({name: name, cost: cost})
-        this.weight = weight
         this.block = block
+        this.speed = speed
     }
 }
 
-export const chainmailArmorItem = new Armor({name:'chainmail_armor', cost: 45, weight: 0.5, block:1})
+export const chainmailArmorItem = new Armor({name:'chainmail_armor', cost: 50, block:2})
+export const swiftVestItem = new Armor({name:'swift_vest', cost: 50, block:1, speed: 0.7})
 
 export class Consumable extends Item {
     constructor({name=null, cost=30, purchase=()=>{}}){

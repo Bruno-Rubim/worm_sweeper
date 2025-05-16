@@ -1,20 +1,20 @@
 import { findSprite } from "../sprites.js";
 import { Level } from "./level.js";
-import { detonatorItem, flagItem, picaxeItem, cursorItem, woodSwordItem, woodShieldItem } from "./item.js";
+import { detonatorItem, flagItem, picaxeItem, cursorItem, woodSwordItem, woodShieldItem, chainmailArmorItem } from "./item.js";
 import { Timer } from "./timer.js";
 import { Player } from "./player.js";
 
 export const borderLength = 168
 export const borderThicness = 20
 
-const starterInventory = [picaxeItem, woodSwordItem, woodShieldItem]
+const starterInventory = [picaxeItem, flagItem, woodSwordItem, woodShieldItem]
 
 export class GameManager{
     constructor({}){
         this.currentLevel = new Level({}),
         this.selectedTool = picaxeItem,
         this.inventory = [...starterInventory],
-        this.gold = 0,
+        this.gold = 100,
         this.ended = false,
         this.timer = new Timer({length: 60000, whenEnd: ()=>{this.timerEnded = true; loseGame();}}),
         this.timerEnded = false;

@@ -2,7 +2,7 @@ import { ctx, renderScale } from "../canvas_handler.js"
 import { findSprite } from "../sprites.js"
 import { borderLength, borderThicness, gameManager } from "./game_manager.js"
 import { renderNumbers } from "./game_renderer.js";
-import { Armor, chainmailArmorItem, Consumable, daggerItem, darkCrystalItem, detonatorItem, drillItem, flagItem, healthPotionItem, Shield, steelShieldItem, timePotionItem, Weapon } from "./item.js";
+import { Armor, chainmailArmorItem, Consumable, daggerItem, darkCrystalItem, detonatorItem, drillItem, flagItem, healthPotionItem, Shield, steelShieldItem, swiftVestItem, timePotionItem, Weapon } from "./item.js";
 
 const toolShelfHeight = 24
 const consShelfHeight = toolShelfHeight + 18
@@ -10,6 +10,8 @@ const gearShelfHeight = toolShelfHeight + 32
 
 const consumables = [healthPotionItem, timePotionItem]
 const CONSUMED = 'consumed'
+
+const armorOptions = [chainmailArmorItem, swiftVestItem]
 
 const buyButton = {
     posX: 94,
@@ -31,6 +33,8 @@ export class Shop {
         this.gear = []
         this.selectedItem = null
         this.consumable = null
+        this.armor = null
+        this.armorOptions = [...armorOptions]
         this.generateItems(inventory)
     }
     renderBG(){
@@ -118,6 +122,12 @@ export class Shop {
         if (item instanceof Shield || item instanceof Armor){
             renderNumbers(item.block, 0, borderThicness + 39, borderThicness + 86, -1, 'normal', 'blue')
         }
+        if (item instanceof Shield || item instanceof Armor){
+            renderNumbers(item.block, 0, borderThicness + 39, borderThicness + 86, -1, 'normal', 'blue')
+        }
+        if (item.speed){
+            renderNumbers(item.speed, 0, borderThicness + 66, borderThicness + 96, -1, 'normal', 'green')
+        }
         ctx.drawImage(
             findSprite('icon_gold').img,
             (borderThicness + 114) * renderScale,
@@ -156,8 +166,21 @@ export class Shop {
         if (!inventory.includes(steelShieldItem)){
             this.gear.push(steelShieldItem)
         }    
-        if (!inventory.includes(chainmailArmorItem)){
-            this.gear.push(chainmailArmorItem)
+
+        if (this.armor == null && this.armorOptions?.length > 0){
+            console.log(this.armorOptions)
+            let selected = false
+            while (!selected && this.armorOptions.length > 0){
+                const r = Math.floor(Math.random()*this.armorOptions.length)
+                const armor = this.armorOptions[r]
+                console.log(armor, inventory.includes(armor))
+                if (!(inventory.includes(armor))){
+                    this.gear.push(armor)
+                    selected = true
+                } else {
+                    this.armorOptions.splice(r, 1)
+                }
+            }
         }
 
         if (this.consumable == null){
@@ -206,6 +229,7 @@ export class Shop {
             posY < 16 ){
 
             gameManager.currentLevel.inShop = false
+            gameManager.timer.continue()
             return
         }
         let item = null;

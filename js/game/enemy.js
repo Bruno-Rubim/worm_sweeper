@@ -11,7 +11,7 @@ export class Enemy{
         this.damage = damage + (Math.floor(depth/5))
         this.attacking = false
         this.takingDamage = false
-        this.attackDelay = attackDelay - (Math.floor(depth/2)*500)
+        this.attackDelay = attackDelay - (Math.floor(depth/2)*50)
 
         this.attackTimer = new Timer({length: this.attackDelay, loop: true, 
             whenEnd:()=>{this.attack()}})

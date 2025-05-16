@@ -264,6 +264,7 @@ export class Block{
         }
         if (this.content == 'shop_door_open') {
             this.parentLevel.inShop = true
+            gameManager.timer.pause()
             return
         }
         if (gameManager.inventory.includes(detonatorItem)){
