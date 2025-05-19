@@ -4,15 +4,19 @@ import { borderLength, borderThicness, gameManager } from "./game_manager.js"
 import { renderNumbers } from "./game_renderer.js"
 import { Timer } from "./timer.js"
 
-export class Enemy{
+const indexPosition = [
+    {posX: 20 + 32, posY: 20 - 8},
+    {posX: 20 + 64, posY: 20 - 12},
+]
+
+class Enemy{
     constructor({hp=3, name='worm', attackDelay=5000, damage=1, depth=0}){
-        this.hp = hp + (Math.floor(depth/3))
+        this.hp = hp
         this.name = name
-        this.damage = damage + (Math.floor(depth/5))
+        this.damage = damage
+        this.attackDelay = attackDelay 
         this.attacking = false
         this.takingDamage = false
-        this.attackDelay = attackDelay - (Math.floor(depth/2)*50)
-
         this.attackTimer = new Timer({length: this.attackDelay, loop: true, 
             whenEnd:()=>{this.attack()}})
         this.attackTimer.start()
@@ -36,8 +40,8 @@ export class Enemy{
             spriteSheetShiftY,
             64,
             64,
-            (borderThicness + 32) * renderScale,
-            borderThicness * renderScale,
+            (indexPosition[index].posX) * renderScale,
+            (indexPosition[index].posY) * renderScale,
             64 * renderScale,
             64 * renderScale
         )
@@ -89,4 +93,37 @@ export class Enemy{
         this.takingDamage = true
         setTimeout(()=>{this.takingDamage = false}, 100)
     }
+}
+
+export class WormEnemy extends Enemy {
+    constructor({depth=0}){
+        super({
+            depth: depth,
+            name:'worm',
+            hp: 3 + (Math.floor(depth/3)),
+            attackDelay: 5000 - (Math.floor(depth/2)*50),
+            damage: 1 + (Math.floor(depth/5)),
+        })
+    }
+}
+
+export class ScaleWormEnemy extends Enemy {
+    constructor({depth=0}){
+        super({
+            depth: depth,
+            name:'scale_worm',
+            hp: 6 + (Math.floor(depth/3)),
+            attackDelay: 8000 - (Math.floor(depth/3)*50),
+            damage: 2 + (Math.floor(depth/4)),
+        })
+    }
+}
+
+export const EnemyFactory = {
+    getWorm(depth){
+        return new WormEnemy({depth: depth})
+    },
+    getScaleWorm(depth){
+        return new ScaleWormEnemy({depth: depth})
+    },
 }

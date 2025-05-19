@@ -106,11 +106,12 @@ const sprites = {
 	dagger_big: new Sprite('./images/dagger_big.png'),
 	enemy_shadow: new Sprite('./images/enemy_shadow.png'),
 	player_shadow: new Sprite('./images/player_shadow.png'),
+	scale_worm_enemy: new Sprite('./images/scale_worm_enemy.png'),
+	steel_shield_big: new Sprite('./images/steel_shield_big.png'),
 	tired_overlay: new Sprite('./images/tired_overlay.png'),
 	worm_enemy: new Sprite('./images/worm_enemy.png'),
 	wooden_sword_big: new Sprite('./images/wooden_sword_big.png'),
 	wooden_shield_big: new Sprite('./images/wooden_shield_big.png'),
-	steel_shield_big: new Sprite('./images/steel_shield_big.png'),
 
 	//mine
 	dirt_block_unknown: new Sprite('./images/dirt_block_unknown.png'),

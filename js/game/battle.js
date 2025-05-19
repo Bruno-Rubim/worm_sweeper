@@ -1,14 +1,33 @@
 import { ctx, renderScale } from "../canvas_handler.js"
 import { findSprite } from "../sprites.js"
-import { Enemy } from "./enemy.js"
+import { EnemyFactory } from "./enemy.js"
 import { borderLength, borderThicness, gameCursor, gameManager, loseGame } from "./game_manager.js"
 import { renderNumbers } from "./game_renderer.js"
 import { Shield, Weapon } from "./item.js"
 
+const enemies = [
+    'getWorm', 'getScaleWorm'
+]
+
 export class Battle {
     constructor({parentLevel=null}){
         this.parentLevel = parentLevel
-        this.enemies = [new Enemy({depth:this.parentLevel.depth})]
+        this.enemies = []
+        this.started = false
+    }
+    start(){
+        let r = Math.floor(Math.random()*this.parentLevel.depth)
+        if (r >= enemies.length){
+            r = enemies.length - 1
+        }
+        this.enemies[0] = EnemyFactory[enemies[r]]()
+        if (gameManager.player.actionTimer){
+            gameManager.player.actionTimer.end()
+        }
+        if (gameManager.player.shieldTimer){
+            gameManager.player.shieldTimer.end()
+        }
+        this.started = true
     }
 
     renderBg(){
@@ -21,15 +40,6 @@ export class Battle {
         )
     }
     renderEnemies(){
-        this.enemies.forEach((enemy, index)=>{
-            ctx.drawImage(
-                findSprite('enemy_shadow').img,
-                (borderThicness + 32) * renderScale,
-                borderThicness * renderScale,
-                64 * renderScale,
-                64 * renderScale
-            )
-        })
         this.enemies.forEach((enemy, index)=>{
             enemy.render(index)
         })

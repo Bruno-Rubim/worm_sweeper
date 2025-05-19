@@ -42,6 +42,10 @@ export class Timer {
         this.ended = false
     }
 
+    end(){
+        this.endTime = 0
+    }
+
     addSeconds(seconds){
         if (this.paused){
             this.stoppedTime += seconds*1000 

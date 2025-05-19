@@ -188,6 +188,7 @@ export class Level{
 
     startBattle(){
         this.currentBattle = new Battle({parentLevel:this})
+        this.currentBattle.start()
     }    
 
     nextLevel(startX, startY){
