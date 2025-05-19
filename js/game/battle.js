@@ -175,6 +175,7 @@ export class Battle {
             this.enemies = []
             setTimeout(()=>{
                 this.parentLevel.currentBattle = null
+                this.parentLevel.checkClear()
             }, 1000)
             return
         }

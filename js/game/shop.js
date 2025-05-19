@@ -1,17 +1,21 @@
 import { ctx, renderScale } from "../canvas_handler.js"
 import { findSprite } from "../sprites.js"
+import { getNow } from "../time_manager.js";
 import { borderLength, borderThicness, gameManager } from "./game_manager.js"
 import { renderNumbers } from "./game_renderer.js";
-import { Armor, chainmailArmorItem, Consumable, daggerItem, darkCrystalItem, detonatorItem, drillItem, flagItem, healthPotionItem, Shield, steelShieldItem, swiftVestItem, timePotionItem, Weapon } from "./item.js";
+import { Armor, chainmailArmorItem, Consumable, daggerItem, darkCrystalItem, detonatorItem, drillItem, healthPotionBigItem, healthPotionSmallItem, Shield, silverBellItem, steelShieldItem, swiftVestItem, timePotionItem, Weapon } from "./item.js";
 
-const toolShelfHeight = 24
-const consShelfHeight = toolShelfHeight + 18
-const gearShelfHeight = toolShelfHeight + 32
+const shelfHeightTool = 24
+const shelfHeightCons = shelfHeightTool + 18
+const shelfHeightGear = shelfHeightTool + 32
 
-const consumables = [healthPotionItem, timePotionItem]
+const consumableItems = [healthPotionBigItem, healthPotionSmallItem, timePotionItem]
 const CONSUMED = 'consumed'
 
-const armorOptions = [chainmailArmorItem, swiftVestItem]
+const tool1Items = [detonatorItem, drillItem]
+const tool2Items = [darkCrystalItem, silverBellItem]
+
+const armorItems = [chainmailArmorItem, swiftVestItem]
 
 const buyButton = {
     posX: 94,
@@ -34,7 +38,6 @@ export class Shop {
         this.selectedItem = null
         this.consumable = null
         this.armor = null
-        this.armorOptions = [...armorOptions]
         this.generateItems(inventory)
     }
     renderBG(){
@@ -51,7 +54,7 @@ export class Shop {
             ctx.drawImage(
                 tool.sprite,
                 (borderThicness + (16 * (index))) * renderScale,
-                (borderThicness + toolShelfHeight - 16) * renderScale,
+                (borderThicness + shelfHeightTool - 16) * renderScale,
                 16 * renderScale,
                 16 * renderScale
             )
@@ -62,7 +65,7 @@ export class Shop {
             ctx.drawImage(
                 tool.sprite,
                 (borderThicness + (16 * (index))) * renderScale,
-                (borderThicness + gearShelfHeight - 16) * renderScale,
+                (borderThicness + shelfHeightGear - 16) * renderScale,
                 16 * renderScale,
                 16 * renderScale
             )
@@ -72,27 +75,37 @@ export class Shop {
         if (this.consumable == CONSUMED || this.consumable == null){
             return
         }
+        ctx.drawImage(
+            this.consumable.sprite,
+            (borderLength - borderThicness - 28) * renderScale,
+            (borderThicness + shelfHeightCons - 16) * renderScale,
+            16 * renderScale,
+            16 * renderScale
+        )
         if (this.consumable == timePotionItem){
             ctx.drawImage(
-                this.consumable.sprite,
-                16 * (Math.floor(gameManager.timer.miliseconds/180)%12),
+                findSprite('potion_time_pointer_minute').img,
+                16 * (Math.floor(getNow()/120)%12),
                 0,
                 16,
                 16,
                 (borderLength - borderThicness - 28) * renderScale,
-                (borderThicness + consShelfHeight - 16) * renderScale,
+                (borderThicness + shelfHeightCons - 16) * renderScale,
                 16 * renderScale,
                 16 * renderScale
             )
-            return
+            ctx.drawImage(
+                findSprite('potion_time_pointer_hour').img,
+                16 * (Math.floor(getNow()/1440)%12),
+                0,
+                16,
+                16,
+                (borderLength - borderThicness - 28) * renderScale,
+                (borderThicness + shelfHeightCons - 16) * renderScale,
+                16 * renderScale,
+                16 * renderScale
+            )
         }
-        ctx.drawImage(
-            this.consumable.sprite,
-            (borderLength - borderThicness - 28) * renderScale,
-            (borderThicness + consShelfHeight - 16) * renderScale,
-            16 * renderScale,
-            16 * renderScale
-        )
     }
     renderDescription(){
         if (!this.selectedItem){
@@ -146,52 +159,88 @@ export class Shop {
     }
 
     generateItems(inventory){
-        this.tools = []
-        if (!inventory.includes(flagItem)){
-            this.tools.push(flagItem)
-        } else if (!inventory.includes(detonatorItem)){
-            this.tools.push(detonatorItem)
-        }
-        if (!inventory.includes(drillItem)){
-            this.tools.push(drillItem)
-        }    
-        if (!inventory.includes(darkCrystalItem)){
-            this.tools.push(darkCrystalItem)
+        let tool1Selected = false
+        let tool1Options = [...tool1Items]
+        while (!tool1Selected && tool1Options.length > 0){
+            const r = Math.floor(Math.random()*tool1Options.length)
+            const tool1 = tool1Options[r]
+            if (!(inventory.includes(tool1))){
+                this.tools.push(tool1)
+                tool1Selected = true
+            }
+            tool1Options.splice(r, 1)
         }
 
-        this.gear = []
+        let tool2Selected = false
+        let tool2Options = [...tool2Items]
+        while (!tool2Selected && tool2Options.length > 0){
+            const r = Math.floor(Math.random()*tool2Options.length)
+            const tool2 = tool2Options[r]
+            if (!(inventory.includes(tool2))){
+                this.tools.push(tool2)
+                tool2Selected = true
+            }
+            tool2Options.splice(r, 1)
+        }
+
+        let tool3Options = tool1Options.concat(tool2Options)
+        if (tool3Options.length > 0){
+            const r = Math.floor(Math.random()*tool3Options.length)
+            const tool3 = tool3Options[r]
+            if (!(inventory.includes(tool3))){
+                this.tools.push(tool3)
+            }
+        }
+
         if (!inventory.includes(daggerItem)){
             this.gear.push(daggerItem)
         }    
         if (!inventory.includes(steelShieldItem)){
             this.gear.push(steelShieldItem)
-        }    
+        }
 
-        if (this.armor == null && this.armorOptions?.length > 0){
-            console.log(this.armorOptions)
-            let selected = false
-            while (!selected && this.armorOptions.length > 0){
-                const r = Math.floor(Math.random()*this.armorOptions.length)
-                const armor = this.armorOptions[r]
-                console.log(armor, inventory.includes(armor))
-                if (!(inventory.includes(armor))){
-                    this.gear.push(armor)
-                    selected = true
-                } else {
-                    this.armorOptions.splice(r, 1)
-                }
+        let armorSelected = false
+        let armorOptions = [...armorItems]
+        while (!armorSelected && armorOptions.length > 0){
+            const r = Math.floor(Math.random()*armorOptions.length)
+            const armor = armorOptions[r]
+            if (!(inventory.includes(armor))){
+                this.gear.push(armor)
+                armorSelected = true
             }
+            armorOptions.splice(r, 1)
         }
 
-        if (this.consumable == null){
-            const i = Math.floor(Math.random()*consumables.length)
-            this.consumable = consumables[i]
-        }
+        const i = Math.floor(Math.random()*consumableItems.length)
+        this.consumable = consumableItems[i]
     }
 
     buyItem(){
         const selectedItem = this.selectedItem
         if (gameManager.gold >= selectedItem.cost){
+            if (!(selectedItem instanceof Weapon) &&
+                !(selectedItem instanceof Shield) &&
+                !(selectedItem instanceof Armor)
+                ){
+                if (selectedItem instanceof Consumable){
+                    this.consumable = CONSUMED;
+                    selectedItem.consume()
+                } else {
+                    this.tools.forEach((tool, index) => {
+                        if (tool == selectedItem){
+                            this.tools.splice(index, 1)
+                        }
+                    })
+                }
+            } else {
+                this.gear.forEach((gear, index) => {
+                    if (gear == selectedItem){
+                        this.gear.splice(index, 1)
+                    } else {
+                    }
+                })
+            }
+
             if(selectedItem instanceof Weapon){
                 gameManager.player.weapon = selectedItem
             } else if (selectedItem instanceof Shield) {
@@ -199,13 +248,9 @@ export class Shop {
             } else if (selectedItem instanceof Armor){
                 gameManager.player.armor = selectedItem
                 gameManager.player.armorBlock = selectedItem.block
-            } else if (selectedItem instanceof Consumable){
-                this.consumable = CONSUMED;
-                selectedItem.purchase()
             }
             gameManager.inventory.push(selectedItem)
             gameManager.gold -= selectedItem.cost
-            this.generateItems(gameManager.inventory)
         }
     }
 
@@ -233,13 +278,13 @@ export class Shop {
             return
         }
         let item = null;
-        if (posX < this.tools.length*16 && posY > toolShelfHeight - 16 && posY < toolShelfHeight){
+        if (posX < this.tools.length*16 && posY > shelfHeightTool - 16 && posY < shelfHeightTool){
             item = this.tools[Math.floor(posX/16)]
         }
-        if (posX < this.gear.length*16 && posY > gearShelfHeight - 16 && posY < gearShelfHeight){
+        if (posX < this.gear.length*16 && posY > shelfHeightGear - 16 && posY < shelfHeightGear){
             item = this.gear[Math.floor(posX/16)]
         }
-        if (posX > 98 && posY > consShelfHeight - 16 && posY < consShelfHeight){
+        if (posX > 98 && posY > shelfHeightCons - 16 && posY < shelfHeightCons){
             item = this.consumable
         }
         if (item){

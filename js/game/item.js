@@ -27,10 +27,11 @@ export class Tool extends Item {
 
 export const cursorItem = new Tool({name: 'default'})
 export const picaxeItem = new Tool({name: 'picaxe'})
-export const flagItem = new Tool({name: 'flag', cost: 10})
-export const detonatorItem = new Tool({name: 'detonator', cost: 40})
-export const drillItem = new Tool({name: 'drill', cost: 50})
+export const flagItem = new Tool({name: 'flag'})
+export const detonatorItem = new Tool({name: 'detonator', cost: 30})
+export const drillItem = new Tool({name: 'drill', cost: 30})
 export const darkCrystalItem = new Tool({name: 'dark_crystal', cost: 20})
+export const silverBellItem = new Tool({name: 'silver_bell', cost: 30})
 
 export class Weapon extends Item {
     constructor({name=null, cost=30, weight=1, damage=1}){
@@ -47,8 +48,8 @@ export class Weapon extends Item {
     }
 }
 
-export const woodSwordItem = new Weapon({name: 'wooden_sword', cost: 0, weight: 2})
-export const daggerItem = new Weapon({name: 'dagger', cost: 30, weight: 1.5})
+export const woodSwordItem = new Weapon({name: 'wooden_sword', cost: 0, weight: 2, damage: 1})
+export const daggerItem = new Weapon({name: 'dagger', cost: 30, weight: 1.5, damage: 1})
 
 export class Shield extends Item {
     constructor({name=null, cost=30, weight=1, block=1, duration=1}){
@@ -81,15 +82,18 @@ export const chainmailArmorItem = new Armor({name:'chainmail_armor', cost: 50, b
 export const swiftVestItem = new Armor({name:'swift_vest', cost: 50, block:1, speed: 0.7})
 
 export class Consumable extends Item {
-    constructor({name=null, cost=30, purchase=()=>{}}){
+    constructor({name=null, cost=30, consume=()=>{}}){
         super({name: name, cost: cost})
-        this.purchase = purchase
+        this.consume = consume
     }
 }
 
-export const healthPotionItem = new Consumable({name:'potion_health', cost: 5, purchase: ()=>{
+export const healthPotionBigItem = new Consumable({name:'potion_health', cost: 15, consume: ()=>{
+    gameManager.player.hp += 2
+}})
+export const healthPotionSmallItem = new Consumable({name:'potion_health_small', cost: 10, consume: ()=>{
     gameManager.player.hp++
 }})
-export const timePotionItem = new Consumable({name:'potion_time', cost: 10, purchase: ()=>{
+export const timePotionItem = new Consumable({name:'potion_time', cost: 10, consume: ()=>{
     gameManager.timer.addSeconds(20)
 }})

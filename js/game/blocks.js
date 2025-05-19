@@ -75,6 +75,15 @@ export class Block{
         });
         return wormLevel
     }
+    get surrDoorCount(){
+        let doorLevel = 0
+        this.surrBlocks.forEach(block => {
+            if (block.content.includes('door')){
+                doorLevel++
+            }
+        });
+        return doorLevel
+    }
     get surrMarkerCount(){
         let count = 0
         this.surrBlocks.forEach(block => {
@@ -217,20 +226,17 @@ export class Block{
     }
 
     mark(){
-        if (!this.parentLevel.started){
-            return
-        }
-        if(this.broken || gameManager.ended){
+        if (!this.parentLevel.started || this.broken || gameManager.ended){
             return
         }
         if (this.marker == null){
             this.marker = THREAT
-            return
-        }
-        if (this.marker == THREAT){
+            this.parentLevel.wormsLeft--
+        } else if (this.marker == THREAT){
             this.marker = null
-            return
+            this.parentLevel.wormsLeft++
         }
+        this.parentLevel.checkClear()
     }
     check(){
         if (this.surrMarkerCount == this.wormLevel){

@@ -103,7 +103,23 @@ export function renderNumbers(number, digitSkip, posStartX, posStartY, numberGap
             )
         })
     } else if (order == 'reversed') {
-        vector.forEach((number, index)=>{
+        vector.forEach((char, index)=>{
+            if (isNaN(Number(char))){
+                ctx.drawImage(
+                    findSprite(`numbers_symbols_${color}`).img,
+                    numberWidth * numberSymbols[char],
+                    0,
+                    numberWidth,
+                    numberWidth,
+                    ((numberWidth * index) + posStartX + ((numberGap - Math.floor(symbolGap[char])) * index)) * renderScale,
+                    posStartY * renderScale,
+                    numberWidth * renderScale,
+                    numberWidth * renderScale
+                )
+                shiftX -= symbolGap[char]*2
+                return
+            }
+            let number = Number(char)
             ctx.drawImage(
                 findSprite(`numbers_${color}`).img,
                 numberWidth * number,
@@ -189,11 +205,6 @@ function renderWormCounter(){
         8 * renderScale
     )
     let counter = gameManager.currentLevel.wormsLeft
-    let negative = false;
-    if (counter < 0){
-        counter = Math.abs(counter)
-        negative = true;
-    }
     renderNumbers(counter, 0, (shiftX + 9) , numberPadding, -1, 'normal', 'red')
 }
 

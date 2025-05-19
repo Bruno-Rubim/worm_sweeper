@@ -19,10 +19,10 @@ export class Level{
         this.blockCount = (size*size) - this.wormsLeft
         this.levelScale = (128/(this.size*16))
         this.blocks = []
+        this.freeTiles = []
         this.started = false
         this.cleared = false
         this.currentBattle = null
-        this.safeTiles = []
     }
 
     fillEmptyBlocks(){
@@ -30,6 +30,16 @@ export class Level{
             for (let j = 0; j < this.size; j++){
                 const block = new Block({posX:i, posY:j, parentLevel:this})
                 this.blocks[i].push(block)
+            }
+        }
+    }
+    setFreeTiles(){
+        for (let i = 0; i < this.size; i++){
+            for (let j = 0; j < this.size; j++){
+                const block = this.blocks[i][j]
+                if (!block.starter){
+                    this.freeTiles.push(block)
+                }
             }
         }
     }
@@ -45,69 +55,77 @@ export class Level{
             }
         }
     }
+    placeExit(){
+        if (this.freeTiles.length == 0){
+            console.warn('drake...')
+            return
+        }
+        const r = Math.floor(Math.random()*this.freeTiles.length)
+        const block = this.freeTiles[r]
+        block.content = 'exit_door'
+        this.freeTiles.splice(r, 1)
+        block.surrBlocks.forEach(block => {
+            for (let i = 0; i < this.freeTiles.length; i++){
+                if (this.freeTiles[i] == block){
+                    this.freeTiles.splice(i, 1)
+                    i--
+                }
+            }
+        })
+    }
+    placeShop(){
+        if (this.freeTiles.length == 0){
+            console.warn('drake...')
+            return
+        }
+        const r = Math.floor(Math.random()*this.freeTiles.length)
+        const block = this.freeTiles[r]
+        block.content = 'shop_door'
+        this.freeTiles.splice(r, 1)
+        block.surrBlocks.forEach(block => {
+            for (let i = 0; i < this.freeTiles.length; i++){
+                if (this.freeTiles[i] == block){
+                    this.freeTiles.splice(i, 1)
+                    i--
+                }
+            }
+        })
+    }
     placeWorms(){
+        if (this.freeTiles.length < this.wormQuantity){
+            window.alert('not enough worms')
+        }
         let wormsPlaced = 0
         if (this.wormQuantity > Math.floor((this.size*this.size)/3)){
             this.wormQuantity = Math.floor((this.size*this.size)/3)
         }
-        while(wormsPlaced < this.wormQuantity){
-            const randX = Math.floor(Math.random() * this.size)
-            const randy = Math.floor(Math.random() * this.size)
-            const block = this.blocks[randX][randy]
-            if (!block.starter && !block.content) {
-                block.content = 'worm'
-                wormsPlaced++
-            }
+        for (let i = 0; wormsPlaced < this.wormQuantity && i < 300; i++){
+            const r = Math.floor(Math.random()*this.freeTiles.length)
+            const block = this.freeTiles[r]
+            block.content = 'worm'
+            wormsPlaced++
+            this.freeTiles.splice(r, 1)
         }
     }
-    setSafeTiles(){
-        for (let i = 0; i < this.size; i++){
-            for (let j = 0; j < this.size; j++){
-                const block = this.blocks[i][j]
-                if (!block.starter && !block.content && block.wormLevel == 0){
-                    this.safeTiles.push(block)
-                }
-            }
-        }
-    }
-    placeExit(){
-        if (this.safeTiles.length == 0){
-            console.warn('drake...')
-            return
-        }
-        const r = Math.floor(Math.random()*this.safeTiles.length)
-        const block = this.safeTiles[r]
-        block.content = 'exit_door'
-        this.safeTiles.splice(r, 1)
-    }
-    placeShop(){
-        if (this.safeTiles.length == 0){
-            console.warn('drake...')
-            return
-        }
-        const r = Math.floor(Math.random()*this.safeTiles.length)
-        const block = this.safeTiles[r]
-        block.content = 'shop_door'
-        this.safeTiles.splice(r, 1)
-    }
+
     start(startX, startY){
         for (let i = 0; i < this.size; i++){
             this.blocks.push([])
         }
         this.fillEmptyBlocks()
         const firstBlock = this.blocks[startX][startY]
+        firstBlock.starter = true
         firstBlock.surrBlocks.forEach(block =>{
             block.starter = true
         })
-        firstBlock.starter = true
-        this.placeWorms()
-        this.setSafeTiles()
-        this.placeExit()
+        this.setFreeTiles()
         this.placeGold()
+        this.placeExit()
         if (this.shop){
             this.placeShop()
         } else {
         }
+        this.placeWorms()
         firstBlock.break()
         firstBlock.breakSurr()
         this.started = true
@@ -161,8 +179,8 @@ export class Level{
         return counter
     }
     checkClear(){
-        if (this.countBrokenBlocks() == this.wormQuantity && !this.cleared){
-            this.cleared
+        if (this.countBrokenBlocks() == this.wormQuantity && this.wormsLeft == 0 && !this.cleared){
+            this.cleared = true
             // gameManager.timer.addSeconds(20)
             gameManager.gold += 5
         }

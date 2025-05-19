@@ -1,6 +1,6 @@
 import { findSprite } from "../sprites.js";
 import { Level } from "./level.js";
-import { detonatorItem, flagItem, picaxeItem, cursorItem, woodSwordItem, woodShieldItem, chainmailArmorItem } from "./item.js";
+import { detonatorItem, flagItem, picaxeItem, cursorItem, woodSwordItem, woodShieldItem, chainmailArmorItem, silverBellItem } from "./item.js";
 import { Timer } from "./timer.js";
 import { Player } from "./player.js";
 
@@ -49,7 +49,9 @@ export function pauseGame(){
 }
 export function unPauseGame(){
     gameManager.paused = false
-    gameManager.timer.continue()
+    if (!gameManager.currentLevel.inShop){
+        gameManager.timer.continue()
+    }
     if (gameManager.currentLevel.currentBattle){
         gameManager.currentLevel.currentBattle.continue()
     }
@@ -90,13 +92,20 @@ export const gameCursor = {
             }
         }
         if (!gameManager.currentLevel.inShop && gameManager.selectedTool == picaxeItem && gameManager.currentLevel.started){
-            if (gameManager.inventory.includes(detonatorItem) && 
-                this.posX > borderThicness && this.posX <= borderLength - borderThicness &&
+            if (this.posX > borderThicness && this.posX <= borderLength - borderThicness &&
                 this.posY > borderThicness && this.posY <= borderLength - borderThicness){
-                let tileX = Math.floor((this.posX - borderThicness)/(gameManager.currentLevel.levelScale * 16))
-                let tileY = Math.floor((this.posY - borderThicness)/(gameManager.currentLevel.levelScale * 16))
-                if (gameManager.currentLevel.blocks[tileX][tileY].broken){
-                    return findSprite('cursor_' + detonatorItem.name).img
+                const tileX = Math.floor((this.posX - borderThicness)/(gameManager.currentLevel.levelScale * 16))
+                const tileY = Math.floor((this.posY - borderThicness)/(gameManager.currentLevel.levelScale * 16))
+                const block = gameManager.currentLevel.blocks[tileX][tileY]
+                if (block.content?.includes('door')){
+                    if (gameManager.inventory.includes(silverBellItem)){
+                        return findSprite('cursor_' + silverBellItem.name).img
+                    }
+                }
+                if (block.broken){
+                    if (gameManager.inventory.includes(detonatorItem)){
+                        return findSprite('cursor_' + detonatorItem.name).img
+                    }
                 }
             }
         }
