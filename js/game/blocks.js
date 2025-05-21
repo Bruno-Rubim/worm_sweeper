@@ -212,12 +212,12 @@ export class Block{
         this.revealAdjc()
         if (this.wormLevel == 0 && this.content != 'worm'){
             if (gameManager.inventory.includes(drillItem)){
-                this.breakAdjc()
+                this.breakSurr()
             }
         }
         if (this.content == 'worm' && !gameManager.ended){
             setTimeout(()=>{
-                this.content = null
+                this.content = 'worm_remains'
                 this.parentLevel.startBattle()
             }, 500)
         } else {
@@ -273,7 +273,7 @@ export class Block{
             gameManager.timer.pause()
             return
         }
-        if (gameManager.inventory.includes(detonatorItem)){
+        if (gameManager.inventory.includes(detonatorItem) && this.wormLevel != 0){
             this.check()
         }
     }

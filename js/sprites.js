@@ -53,6 +53,9 @@ const sprites = {
 	screen_paused: new Sprite('./images/screen_paused.png'),
 
 	//shop
+	big_sword: new Sprite('./images/big_sword.png'),
+	big_sword_selected: new Sprite('./images/big_sword_selected.png'),
+	big_sword_shop_description: new Sprite('./images/big_sword_shop_description.png'),
 	chainmail_armor: new Sprite('./images/chainmail_armor.png'),
 	chainmail_armor_selected: new Sprite('./images/chainmail_armor_selected.png'),
 	chainmail_armor_shop_description: new Sprite('./images/chainmail_armor_shop_description.png'),
@@ -103,6 +106,7 @@ const sprites = {
 	//battle
 	battle_bar: new Sprite('./images/battle_bar.png'),
 	battle_bg: new Sprite('./images/battle_bg.png'),
+	big_sword_big: new Sprite('./images/big_sword_big.png'),
 	dagger_big: new Sprite('./images/dagger_big.png'),
 	enemy_shadow: new Sprite('./images/enemy_shadow.png'),
 	player_shadow: new Sprite('./images/player_shadow.png'),
@@ -128,6 +132,7 @@ const sprites = {
 	shop_door_open: new Sprite('./images/shop_door_open.png'),
 	threat: new Sprite('./images/threat.png'),
 	worm: new Sprite('./images/worm.png'),
+	worm_remains: new Sprite('./images/worm_remains.png'),
 }
 
 const spriteArr = Object.values(sprites)

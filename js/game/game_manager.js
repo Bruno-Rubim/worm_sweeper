@@ -102,7 +102,7 @@ export const gameCursor = {
                         return findSprite('cursor_' + silverBellItem.name).img
                     }
                 }
-                if (block.broken){
+                if (block.broken && block.wormLevel > 0){
                     if (gameManager.inventory.includes(detonatorItem)){
                         return findSprite('cursor_' + detonatorItem.name).img
                     }

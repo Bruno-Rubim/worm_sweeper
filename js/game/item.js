@@ -49,7 +49,8 @@ export class Weapon extends Item {
 }
 
 export const woodSwordItem = new Weapon({name: 'wooden_sword', cost: 0, weight: 2, damage: 1})
-export const daggerItem = new Weapon({name: 'dagger', cost: 30, weight: 1.5, damage: 1})
+export const daggerItem = new Weapon({name: 'dagger', cost: 35, weight: 1.5, damage: 1})
+export const bigSwordItem = new Weapon({name: 'big_sword', cost: 50, weight: 2.5, damage: 3})
 
 export class Shield extends Item {
     constructor({name=null, cost=30, weight=1, block=1, duration=1}){

@@ -72,7 +72,7 @@ class Enemy{
             8 * renderScale,
             8 * renderScale
         )
-        renderNumbers(this.attackTimer.miliseconds, 2, borderLength/2  + 10, borderThicness + 8, -1, 'centered', 'blue')
+        renderNumbers(this.attackTimer.miliseconds, 2, borderLength/2  + 10, borderThicness + 8, -1, 'centered', 'green')
     }
 
     die(){
@@ -113,8 +113,8 @@ export class ScaleWormEnemy extends Enemy {
             depth: depth,
             name:'scale_worm',
             hp: 6 + (Math.floor(depth/3)),
-            attackDelay: 8000 - (Math.floor(depth/3)*50),
-            damage: 2 + (Math.floor(depth/4)),
+            attackDelay: 8000 - (Math.floor(depth/2)*30),
+            damage: 2 + (Math.floor(depth/3)),
         })
     }
 }

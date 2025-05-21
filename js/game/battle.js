@@ -128,7 +128,7 @@ export class Battle {
             )
         }
         if (player.actionTimer){
-            renderNumbers(player.actionTimer.miliseconds, 2, (borderLength/2), borderLength - borderThicness - 36, -1, 'centered', 'gray')
+            renderNumbers(player.actionTimer.miliseconds, 2, (borderLength/2), borderLength - borderThicness - 36, -1, 'centered', 'green')
         }
     }
     renderUI(){

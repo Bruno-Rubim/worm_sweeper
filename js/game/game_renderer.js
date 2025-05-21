@@ -12,7 +12,7 @@ function renderBorder(){
     )
 }
 
-function renderTools(){
+function renderInventory(){
     let index = 0
     gameManager.inventory.forEach(item => {
         if (!(item instanceof Tool)){
@@ -20,8 +20,8 @@ function renderTools(){
         }
         ctx.drawImage(
             item.sprite,
-            ((index * 16) + 2) * renderScale,
             (borderLength - borderThicness + 2) * renderScale,
+            (borderLength - ((index + 2) * 17) - 2) * renderScale,
             16 * renderScale,
             16 * renderScale
         )
@@ -30,14 +30,14 @@ function renderTools(){
     ctx.drawImage(
         findSprite(gameManager.player.shield.name).img,
         (2) * renderScale,
-        (borderLength - borderThicness - 16) * renderScale,
+        (borderLength - borderThicness - 34) * renderScale,
         16 * renderScale,
         16 * renderScale
     )
     ctx.drawImage(
         findSprite(gameManager.player.weapon.name).img,
         (2) * renderScale,
-        (borderLength - borderThicness - 34) * renderScale,
+        (borderLength - borderThicness - 17) * renderScale,
         16 * renderScale,
         16 * renderScale
     )
@@ -45,7 +45,7 @@ function renderTools(){
         ctx.drawImage(
             findSprite(gameManager.player.armor.name).img,
             (2) * renderScale,
-            (borderLength - borderThicness - 52) * renderScale,
+            (borderLength - borderThicness - 53) * renderScale,
             16 * renderScale,
             16 * renderScale
         )
@@ -268,7 +268,7 @@ function renderScreenOverlay(){
 
 function renderUI(){
     renderHealth()
-    renderTools()
+    renderInventory()
     renderTimer()
     renderWormCounter()
     renderBlockCount()
