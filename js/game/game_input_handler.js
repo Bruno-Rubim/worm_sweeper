@@ -1,5 +1,7 @@
+import { LEFT } from "../user_input_handler.js"
 import { gameCursor, pauseGame, pauseSwap, restart, swapTools } from "./game_manager.js"
 import { borderLength, borderThicness, gameManager  } from "./game_manager.js"
+import { flagItem } from "./item.js"
 
 export const KEYUP = 'keyup'
 export const KEYDOWN = 'keydown'
@@ -27,7 +29,7 @@ export function keyHandler(key, state){
     }
 }
 
-export function clickHandler(posX, posY){
+export function clickHandler(posX, posY, side){
     if (gameManager.paused){
         return
     }
@@ -53,7 +55,11 @@ export function clickHandler(posX, posY){
             gameManager.currentLevel.start(tileX, tileY)
             return
         }
-        gameManager.currentLevel.blocks[tileX][tileY].click(gameManager.selectedTool)
+        if (side == LEFT){
+            gameManager.currentLevel.blocks[tileX][tileY].click(gameManager.selectedTool)
+        } else {
+            gameManager.currentLevel.blocks[tileX][tileY].click(flagItem)
+        }
     }
 }
 

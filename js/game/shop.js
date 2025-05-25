@@ -3,7 +3,7 @@ import { findSprite } from "../sprites.js"
 import { getNow } from "../time_manager.js";
 import { borderLength, borderThicness, gameManager } from "./game_manager.js"
 import { renderNumbers } from "./game_renderer.js";
-import { Armor, bigSwordItem, chainmailArmorItem, Consumable, daggerItem, darkCrystalItem, detonatorItem, drillItem, healthPotionBigItem, healthPotionSmallItem, Shield, silverBellItem, steelShieldItem, swiftVestItem, timePotionItem, Weapon } from "./item.js";
+import { Armor, bigSwordItem, chainmailArmorItem, Consumable, daggerItem, darkCrystalItem, detonatorItem, drillItem, healthPotionBigItem, healthPotionSmallItem, jadeShieldItem, Shield, silverBellItem, steelShieldItem, swiftVestItem, timePotionItem, Weapon } from "./item.js";
 
 const shelfHeightTool = 24
 const shelfHeightCons = shelfHeightTool + 18
@@ -13,6 +13,7 @@ const tool1Items = [detonatorItem, drillItem]
 const tool2Items = [darkCrystalItem, silverBellItem]
 
 const weaponItems = [bigSwordItem, daggerItem]
+const shieldItems = [steelShieldItem, jadeShieldItem]
 const armorItems = [chainmailArmorItem, swiftVestItem]
 const consumableItems = [healthPotionBigItem, healthPotionSmallItem, timePotionItem]
 
@@ -130,11 +131,11 @@ export class Shop {
         if (item instanceof Shield || item instanceof Weapon){
             renderNumbers(item.weight, 0, borderThicness + 49, borderThicness + 96, -1, 'normal', 'gray')
         }
-        if (item instanceof Shield || item instanceof Armor){
-            renderNumbers(item.block, 0, borderThicness + 39, borderThicness + 86, -1, 'normal', 'blue')
+        if (item.block){
+            renderNumbers(item.block, 0, borderThicness + 42, borderThicness + 86, -1, 'normal', 'blue')
         }
-        if (item instanceof Shield || item instanceof Armor){
-            renderNumbers(item.block, 0, borderThicness + 39, borderThicness + 86, -1, 'normal', 'blue')
+        if (item.reflection){
+            renderNumbers(item.reflection, 0, borderThicness + 74, borderThicness + 86, -1, 'normal', 'lime')
         }
         if (item.speed){
             renderNumbers(item.speed, 0, borderThicness + 66, borderThicness + 96, -1, 'normal', 'green')
@@ -202,8 +203,16 @@ export class Shop {
             weaponOptions.splice(r, 1)
         }
         
-        if (!inventory.includes(steelShieldItem)){
-            this.gear.push(steelShieldItem)
+        let shieldSelected = false
+        let shieldOptions = [...shieldItems]
+        while (!shieldSelected && shieldOptions.length > 0){
+            const r = Math.floor(Math.random()*shieldOptions.length)
+            const shield = shieldOptions[r]
+            if (!(inventory.includes(shield))){
+                this.gear.push(shield)
+                shieldSelected = true
+            }
+            shieldOptions.splice(r, 1)
         }
 
         let armorSelected = false
@@ -246,15 +255,7 @@ export class Shop {
                     } else {
                     }
                 })
-            }
-
-            if(selectedItem instanceof Weapon){
-                gameManager.player.weapon = selectedItem
-            } else if (selectedItem instanceof Shield) {
-                gameManager.player.shield = selectedItem
-            } else if (selectedItem instanceof Armor){
-                gameManager.player.armor = selectedItem
-                gameManager.player.armorBlock = selectedItem.block
+                selectedItem.purchase()
             }
             gameManager.inventory.push(selectedItem)
             gameManager.gold -= selectedItem.cost

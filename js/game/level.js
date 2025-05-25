@@ -206,3 +206,6 @@ export class Level{
         gameManager.currentLevel.start(startX, startY)
     }
 }
+
+export const levelWithAShop = new Level({shop: new Shop({inventory:[]})})
+levelWithAShop.inShop = true

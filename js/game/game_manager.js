@@ -1,5 +1,5 @@
 import { findSprite } from "../sprites.js";
-import { Level } from "./level.js";
+import { Level, levelWithAShop } from "./level.js";
 import { detonatorItem, flagItem, picaxeItem, cursorItem, woodSwordItem, woodShieldItem, chainmailArmorItem, silverBellItem } from "./item.js";
 import { Timer } from "./timer.js";
 import { Player } from "./player.js";
@@ -11,6 +11,24 @@ const starterInventory = [picaxeItem, flagItem, woodSwordItem, woodShieldItem]
 
 export class GameManager{
     constructor({}){
+        if (GameManager.instance){
+            return GameManager.instance
+        }
+
+        this.currentLevel = new Level({}),
+        // this.currentLevel = levelWithAShop,
+        this.selectedTool = picaxeItem,
+        this.inventory = [...starterInventory],
+        this.gold = 0,
+        this.ended = false,
+        this.timer = new Timer({length: 60000, whenEnd: ()=>{this.timerEnded = true; loseGame();}}),
+        this.timerEnded = false;
+        this.player = new Player({inventory: this.inventory})
+        this.inTransition = false
+
+        GameManager.instance = this
+    }
+    restart(){
         this.currentLevel = new Level({}),
         this.selectedTool = picaxeItem,
         this.inventory = [...starterInventory],
@@ -23,10 +41,16 @@ export class GameManager{
     }
 }
 
-export let gameManager = new GameManager({})
+export const gameManager = new GameManager({})
+
+let gm_a = new GameManager({})
+let gm_b = new GameManager({})
+
+// console.log(gm_a === gameManager)
+// console.log(gm_b === gm_a)
 
 export function restart(){
-    gameManager = new GameManager({})
+    gameManager.restart()
 }
 
 export function pauseSwap(){
@@ -97,11 +121,11 @@ export const gameCursor = {
                 const tileX = Math.floor((this.posX - borderThicness)/(gameManager.currentLevel.levelScale * 16))
                 const tileY = Math.floor((this.posY - borderThicness)/(gameManager.currentLevel.levelScale * 16))
                 const block = gameManager.currentLevel.blocks[tileX][tileY]
-                if (block.content?.includes('door')){
-                    if (gameManager.inventory.includes(silverBellItem)){
-                        return findSprite('cursor_' + silverBellItem.name).img
-                    }
-                }
+                // if (block.content?.includes('door')){
+                //     if (gameManager.inventory.includes(silverBellItem)){
+                //         return findSprite('cursor_' + silverBellItem.name).img
+                //     }
+                // }
                 if (block.broken && block.wormLevel > 0){
                     if (gameManager.inventory.includes(detonatorItem)){
                         return findSprite('cursor_' + detonatorItem.name).img

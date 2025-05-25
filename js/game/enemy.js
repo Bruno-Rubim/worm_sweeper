@@ -49,7 +49,7 @@ class Enemy{
             ctx.drawImage(
                 findSprite('icon_heart').img,
                 (((borderLength - borderThicness - 64) - ((this.hp) * 4.5)) + (9 * i)) * renderScale,
-                (borderThicness + 64) * renderScale,
+                (borderThicness + 56) * renderScale,
                 8 * renderScale,
                 8 * renderScale
             )
@@ -80,7 +80,12 @@ class Enemy{
     }
 
     attack(){
-        let damage = this.damage - gameManager.player.totalBlock
+        let damage = this.damage
+        if (gameManager.player.totalReflection > 0){
+            damage -= gameManager.player.totalReflection
+            this.hp -= gameManager.player.totalReflection
+        }
+        damage -= gameManager.player.totalBlock
         if (damage > 0){
             gameManager.player.hp -= damage
         }
@@ -112,7 +117,7 @@ export class ScaleWormEnemy extends Enemy {
         super({
             depth: depth,
             name:'scale_worm',
-            hp: 6 + (Math.floor(depth/3)),
+            hp: 6 + (Math.floor(depth/2)),
             attackDelay: 8000 - (Math.floor(depth/2)*30),
             damage: 2 + (Math.floor(depth/3)),
         })

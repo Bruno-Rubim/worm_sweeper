@@ -53,7 +53,7 @@ export class Battle {
             swordShiftY = 22;
         }
         ctx.drawImage(
-            gameManager.player.weapon.spriteBig,
+            gameManager.player.weaponItem.spriteBig,
             (borderThicness + swordShiftX) * renderScale,
             (borderThicness + swordShiftY) * renderScale,
             128 * renderScale,
@@ -66,7 +66,7 @@ export class Battle {
             shieldShiftY = 22;
         }
         ctx.drawImage(
-            gameManager.player.shield.spriteBig,
+            gameManager.player.shieldItem.spriteBig,
             (borderThicness + shieldShiftX) * renderScale,
             (borderThicness + shieldShiftY) * renderScale,
             128 * renderScale,
@@ -83,24 +83,24 @@ export class Battle {
         )
         if (!gameManager.ended){
             if (gameCursor.posX < borderLength/2){
-                gameManager.player.weapon.selected = true
-                gameManager.player.shield.selected = false
+                gameManager.player.weaponItem.selected = true
+                gameManager.player.shieldItem.selected = false
             } else {
-                gameManager.player.weapon.selected = false
-                gameManager.player.shield.selected = true
+                gameManager.player.weaponItem.selected = false
+                gameManager.player.shieldItem.selected = true
             }
         }
         const shieldPosX = borderLength - borderThicness - 21
         const shieldPosY = borderLength - borderThicness - 21
         ctx.drawImage(
-            gameManager.player.weapon.sprite,
+            gameManager.player.weaponItem.sprite,
             (borderThicness + 5) * renderScale,
             (borderLength - borderThicness - 21) * renderScale,
             16 * renderScale,
             16 * renderScale
         )
         ctx.drawImage(
-            gameManager.player.shield.sprite,
+            gameManager.player.shieldItem.sprite,
             shieldPosX * renderScale,
             shieldPosY * renderScale,
             16 * renderScale,
@@ -121,7 +121,16 @@ export class Battle {
         for (let i = 0; i < player.totalBlock;i++){
             ctx.drawImage(
                 findSprite('icon_shield').img,
-                (((borderLength/2) - (player.totalBlock * 4.5)) + (9 * i)) * renderScale,
+                (((borderLength/2) - ((player.totalBlock + player.totalReflection) * 4.5)) + (9 * i)) * renderScale,
+                (borderLength - borderThicness - 22) * renderScale,
+                8 * renderScale,
+                8 * renderScale
+            )
+        }
+        for (let i = 0; i < player.totalReflection;i++){
+            ctx.drawImage(
+                findSprite('icon_reflection').img,
+                (((borderLength/2) - ((player.totalBlock + player.totalReflection) * 4.5)) + (9 * (i + player.totalBlock))) * renderScale,
                 (borderLength - borderThicness - 22) * renderScale,
                 8 * renderScale,
                 8 * renderScale

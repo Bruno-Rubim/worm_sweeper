@@ -1,6 +1,7 @@
 import { ctx, renderScale } from "../canvas_handler.js"
 import { findSprite } from "../sprites.js"
 import { borderLength, borderThicness, gameCursor, gameManager } from "./game_manager.js"
+import { checkTic } from "./game_tics.js"
 import { Tool } from "./item.js"
 
 function renderBorder(){
@@ -28,22 +29,22 @@ function renderInventory(){
         index++
     });
     ctx.drawImage(
-        findSprite(gameManager.player.shield.name).img,
+        findSprite(gameManager.player.shieldItem.name).img,
         (2) * renderScale,
         (borderLength - borderThicness - 34) * renderScale,
         16 * renderScale,
         16 * renderScale
     )
     ctx.drawImage(
-        findSprite(gameManager.player.weapon.name).img,
+        findSprite(gameManager.player.weaponItem.name).img,
         (2) * renderScale,
         (borderLength - borderThicness - 17) * renderScale,
         16 * renderScale,
         16 * renderScale
     )
-    if (gameManager.player.armor){
+    if (gameManager.player.armorItem){
         ctx.drawImage(
-            findSprite(gameManager.player.armor.name).img,
+            findSprite(gameManager.player.armorItem.name).img,
             (2) * renderScale,
             (borderLength - borderThicness - 53) * renderScale,
             16 * renderScale,
@@ -288,6 +289,7 @@ function renderCursor(){
 }
 
 export function renderGame(){
+    checkTic()
     gameManager.currentLevel.render()
     renderBorder()
     renderUI()

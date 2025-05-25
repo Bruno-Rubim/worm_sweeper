@@ -1,33 +1,42 @@
-import { daggerItem, steelShieldItem, Weapon, woodShieldItem, woodSwordItem } from "./item.js"
+import { chainmailArmorItem, daggerItem, jadeShieldItem, steelShieldItem, Weapon, woodShieldItem, woodSwordItem } from "./item.js"
 import { Timer } from "./timer.js"
 
 export class Player{
     constructor({}){
         this.hp = 5
         this.tired = false
-        this.weapon = woodSwordItem
-        this.shield = woodShieldItem
-        this.armor = null
+        this.weaponItem = woodSwordItem
+        this.shieldItem = woodShieldItem
+        this.armorItem = null
         this.shieldBlock = 0
-        this.armorBlock = 0
+        this.shieldDmgReflection = 0
         this.swingTimer = null
         this.shieldTimer = null
         this.actionTimer = null
     }
     get totalBlock(){
-        return this.armorBlock + this.shieldBlock
+        if (this.armorItem){
+            return this.armorItem.block + this.shieldBlock
+        }
+        return this.shieldBlock
+    }
+    get totalReflection(){
+        if (this.armorItem){
+            return this.armorItem.reflection + this.shieldDmgReflection
+        }
+        return this.shieldDmgReflection
     }
     act(type){
         let equipment;
         if (type == Weapon){
-            equipment = this.weapon
+            equipment = this.weaponItem
         } else {
-            equipment = this.shield
+            equipment = this.shieldItem
         }
 
         let armorSpeed = 0
-        if (this.armor){
-            armorSpeed = this.armor.speed
+        if (this.armorItem){
+            armorSpeed = this.armorItem.speed
         }
         equipment.action()
         this.tired = true
@@ -43,10 +52,12 @@ export class Player{
         }})
         this.swingTimer.start()
     }
-    block(ammount, seconds){
-        this.shieldBlock += ammount;
+    block(blocking, reflecting, seconds){
+        this.shieldBlock += blocking;
+        this.shieldDmgReflection += reflecting;
         this.shieldTimer = new Timer({length: seconds * 1000, whenEnd:()=>{
             this.shieldBlock = 0
+            this.shieldDmgReflection = 0
             this.shieldTimer = null
         }})
         this.shieldTimer.start()

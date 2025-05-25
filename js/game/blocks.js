@@ -2,7 +2,7 @@ import { ctx, renderScale } from "../canvas_handler.js"
 import { findSprite } from "../sprites.js"
 import { borderThicness, gameManager } from "./game_manager.js"
 import { Level } from "./level.js"
-import { detonatorItem, flagItem, cursorItem, drillItem, darkCrystalItem } from "./item.js"
+import { detonatorItem, flagItem, cursorItem, drillItem, darkCrystalItem, silverBellItem } from "./item.js"
 import { Battle } from "./battle.js"
 
 const THREAT = 'threat'
@@ -98,7 +98,7 @@ export class Block{
         if (this.broken){
             return findSprite('empty').img
         }
-        if (this.hidden){
+        if (this.hidden && !gameManager.inventory.includes(darkCrystalItem)){
             return findSprite(`dirt_block_hidden`).img
         }
         return findSprite(`dirt_block_unknown`).img
@@ -126,7 +126,7 @@ export class Block{
             (16 * levelScale) * renderScale,
         )
         if (this.broken){
-                if (!this.content){
+            if (!this.content){
                 ctx.drawImage(
                     this.contentSprite,
                     this.wormLevel*16,
@@ -159,6 +159,15 @@ export class Block{
                 (16 * levelScale) * renderScale,
             )
             return
+        }
+        if (this.content?.includes('door') && !this.broken && gameManager.inventory.includes(silverBellItem)){
+            ctx.drawImage(
+                findSprite('cursor_silver_bell').img,
+                ((this.posX * 16) * levelScale + borderThicness) * renderScale,
+                ((this.posY * 16) * levelScale + borderThicness) * renderScale,
+                (16 * levelScale) * renderScale,
+                (16 * levelScale) * renderScale,
+            )
         }
     }
 
@@ -217,7 +226,7 @@ export class Block{
         }
         if (this.content == 'worm' && !gameManager.ended){
             setTimeout(()=>{
-                this.content = 'worm_remains'
+                this.content = null
                 this.parentLevel.startBattle()
             }, 500)
         } else {
