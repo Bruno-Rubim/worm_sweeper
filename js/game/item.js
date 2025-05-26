@@ -129,5 +129,5 @@ export const healthPotionSmallItem = new Consumable({name:'potion_health_small',
 export const timePotionItem = new Consumable({name:'potion_time', cost: 10, secondsAdd: 60,
     description: 'TIME POTION%Gives you:',
     consume: ()=>{
-    gameManager.timer.addSeconds(this.secondsAdd)
+        gameManager.timer.addSeconds(timePotionItem.secondsAdd)
 }})

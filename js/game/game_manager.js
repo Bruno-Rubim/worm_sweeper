@@ -19,7 +19,7 @@ export class GameManager{
         // this.currentLevel = levelWithAShop,
         this.selectedTool = picaxeItem,
         this.inventory = [...starterInventory],
-        this.gold = 0,
+        this.gold = 10,
         this.ended = false,
         this.timer = new Timer({length: 60000, whenEnd: ()=>{this.timerEnded = true; loseGame();}}),
         this.timerEnded = false;
