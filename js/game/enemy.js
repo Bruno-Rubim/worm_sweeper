@@ -117,9 +117,9 @@ export class ScaleWormEnemy extends Enemy {
         super({
             depth: depth,
             name:'scale_worm',
-            hp: 6 + (Math.floor(depth/2)),
-            attackDelay: 8000 - (Math.floor(depth/2)*30),
-            damage: 2 + (Math.floor(depth/3)),
+            hp: 6 + (Math.floor(depth/3)),
+            attackDelay: 8000 - (Math.floor(depth/3)*20),
+            damage: 2 + (Math.floor(depth/5)),
         })
     }
 }
@@ -129,6 +129,7 @@ export const EnemyFactory = {
         return new WormEnemy({depth: depth})
     },
     getScaleWorm(depth){
+        console.log(depth)
         return new ScaleWormEnemy({depth: depth})
     },
 }

@@ -98,7 +98,7 @@ export class Block{
         if (this.broken){
             return findSprite('empty').img
         }
-        if (this.hidden && !gameManager.inventory.includes(darkCrystalItem)){
+        if (this.hidden){
             return findSprite(`dirt_block_hidden`).img
         }
         return findSprite(`dirt_block_unknown`).img

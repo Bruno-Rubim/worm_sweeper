@@ -5,7 +5,7 @@ import { borderLength, borderThicness, gameCursor, gameManager, loseGame } from 
 import { renderNumbers } from "./game_renderer.js"
 import { Shield, Weapon } from "./item.js"
 
-const enemies = [
+const enemyOptions = [
     'getWorm', 'getScaleWorm'
 ]
 
@@ -17,10 +17,10 @@ export class Battle {
     }
     start(){
         let r = Math.floor(Math.random()*this.parentLevel.depth)
-        if (r >= enemies.length){
-            r = enemies.length - 1
+        if (r >= enemyOptions.length){
+            r = enemyOptions.length - 1
         }
-        this.enemies[0] = EnemyFactory[enemies[r]]()
+        this.enemies[0] = EnemyFactory[enemyOptions[r]](this.parentLevel.depth)
         if (gameManager.player.actionTimer){
             gameManager.player.actionTimer.end()
         }

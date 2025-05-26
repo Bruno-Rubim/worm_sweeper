@@ -156,6 +156,217 @@ export function renderNumbers(number, digitSkip, posStartX, posStartY, numberGap
         })
     }
 }
+const shopLetterCellWidth = 9
+const shopLetter = {
+    'A': {posX: 0, posY: 0, width: 6},
+    'B': {posX: 1, posY: 0, width: 6},
+    'C': {posX: 2, posY: 0, width: 6},
+    'D': {posX: 3, posY: 0, width: 6},
+    'E': {posX: 4, posY: 0, width: 6},
+    'F': {posX: 5, posY: 0, width: 6},
+    'G': {posX: 6, posY: 0, width: 6},
+    'H': {posX: 7, posY: 0, width: 6},
+    'I': {posX: 8, posY: 0, width: 3},
+    'J': {posX: 9, posY: 0, width: 5},
+    'K': {posX: 10, posY: 0, width: 7},
+    'L': {posX: 11, posY: 0, width: 5},
+    'M': {posX: 12, posY: 0, width: 8},
+    'N': {posX: 13, posY: 0, width: 7},
+    'O': {posX: 0, posY: 1, width: 7},
+    'P': {posX: 1, posY: 1, width: 6},
+    'Q': {posX: 2, posY: 1, width: 7},
+    'R': {posX: 3, posY: 1, width: 6},
+    'S': {posX: 4, posY: 1, width: 5},
+    'T': {posX: 5, posY: 1, width: 7},
+    'U': {posX: 6, posY: 1, width: 6},
+    'V': {posX: 7, posY: 1, width: 7},
+    'W': {posX: 8, posY: 1, width: 8},
+    'X': {posX: 9, posY: 1, width: 7},
+    'Y': {posX: 10, posY: 1, width: 7},
+    'Z': {posX: 11, posY: 1, width: 6},
+    'a': {posX: 0, posY: 2, width: 6},
+    'b': {posX: 1, posY: 2, width: 6},
+    'c': {posX: 2, posY: 2, width: 5},
+    'd': {posX: 3, posY: 2, width: 6},
+    'e': {posX: 4, posY: 2, width: 6},
+    'f': {posX: 5, posY: 2, width: 4},
+    'g': {posX: 6, posY: 2, width: 6},
+    'h': {posX: 7, posY: 2, width: 6},
+    'i': {posX: 8, posY: 2, width: 3},
+    'j': {posX: 9, posY: 2, width: 4},
+    'k': {posX: 10, posY: 2, width: 6},
+    'l': {posX: 11, posY: 2, width: 3},
+    'm': {posX: 12, posY: 2, width: 8},
+    'n': {posX: 13, posY: 2, width: 6},
+    'o': {posX: 0, posY: 3, width: 6},
+    'p': {posX: 1, posY: 3, width: 6},
+    'q': {posX: 2, posY: 3, width: 6},
+    'r': {posX: 3, posY: 3, width: 5},
+    's': {posX: 4, posY: 3, width: 5},
+    't': {posX: 5, posY: 3, width: 4},
+    'u': {posX: 6, posY: 3, width: 6},
+    'v': {posX: 7, posY: 3, width: 6},
+    'w': {posX: 8, posY: 3, width: 8},
+    'x': {posX: 9, posY: 3, width: 6},
+    'y': {posX: 10, posY: 3, width: 6},
+    'z': {posX: 11, posY: 3, width: 6},
+    '0': {posX: 0, posY: 4, width: 6},
+    '1': {posX: 1, posY: 4, width: 4},
+    '2': {posX: 2, posY: 4, width: 6},
+    '3': {posX: 3, posY: 4, width: 6},
+    '4': {posX: 4, posY: 4, width: 6},
+    '5': {posX: 5, posY: 4, width: 6},
+    '6': {posX: 6, posY: 4, width: 6},
+    '7': {posX: 7, posY: 4, width: 6},
+    '8': {posX: 8, posY: 4, width: 6},
+    '9': {posX: 9, posY: 4, width: 6},
+    ':': {posX: 10, posY: 4, width: 3},
+    '.': {posX: 11, posY: 4, width: 3},
+    '-': {posX: 12, posY: 4, width: 5},
+    '/': {posX: 13, posY: 4, width: 4},
+    ' ': {posX: 6, posY: -1, width: 4},
+}
+
+function renderShopLetters(string, lineShiftY = 0, lineShiftX = 0, lineCount = 0, lineCharCount = 0, lineWidth = 0){
+    let vector = [...string]
+    function nextLine(){
+        lineCount++,
+        lineCharCount = 0
+        lineWidth = 0
+    }
+    vector.forEach(char => {
+        if (char == ' ' && lineCharCount == 0){
+            return
+        }
+        if (char == '%'){
+            lineShiftY += 3
+            nextLine()
+            return
+        }
+        if (char == '#'){
+            nextLine()
+            return
+        }
+        ctx.drawImage(
+            findSprite('letters_shop_description').img,
+            shopLetter[char].posX * shopLetterCellWidth,
+            shopLetter[char].posY * shopLetterCellWidth,
+            shopLetterCellWidth,
+            shopLetterCellWidth,
+            (24 + lineWidth + lineShiftX) * renderScale,
+            (96 + (shopLetterCellWidth * lineCount) + lineShiftY) * renderScale,
+            shopLetterCellWidth * renderScale,
+            shopLetterCellWidth * renderScale,
+        )
+        lineWidth += shopLetter[char].width
+        lineCharCount++
+        if (lineWidth >= 84){
+            nextLine()
+        }
+    })
+}
+
+export function renderShopDescription(item){
+    const description = item.description
+    if (!description){
+        console.warn('no description')
+        return
+    }
+
+    renderShopLetters(description)
+    
+    let statCount = 0
+    if (item.damage){
+        statCount++
+        ctx.drawImage(
+            findSprite('icon_sword').img,
+            (borderThicness + 4) * renderScale,
+            (borderThicness + 79 + (9 * statCount)) * renderScale,
+            8 * renderScale,
+            8 * renderScale
+        )
+        renderShopLetters('Damage:', (9 * statCount) + 3, 9)
+        renderNumbers(item.damage, 0, borderThicness + 54, borderThicness + 88, -1, 'normal', 'red')
+    }
+    if (item.block){
+        statCount++
+        ctx.drawImage(
+            findSprite('icon_shield').img,
+            (borderThicness + 4) * renderScale,
+            (borderThicness + 79 + (9 * statCount)) * renderScale,
+            8 * renderScale,
+            8 * renderScale
+        )
+        renderShopLetters('Block:', (9 * statCount) + 3, 9)
+        renderNumbers(item.block, 0, borderThicness + 42, borderThicness + 79 + (9 * statCount), -1, 'normal', 'blue')
+    }
+    if (item.reflection){
+        statCount++
+        ctx.drawImage(
+            findSprite('icon_reflection').img,
+            (borderThicness + 4) * renderScale,
+            (borderThicness + 79 + (9 * statCount)) * renderScale,
+            8 * renderScale,
+            8 * renderScale
+        )
+        renderShopLetters('Reflect:', (9 * statCount) + 3, 9)
+        renderNumbers(item.reflection, 0, borderThicness + 50, borderThicness + 79 + (9 * statCount), -1, 'normal', 'lime')
+    }
+    if (item.weight){
+        statCount++
+        ctx.drawImage(
+            findSprite('icon_weight').img,
+            (borderThicness + 4) * renderScale,
+            (borderThicness + 79 + (9 * statCount)) * renderScale,
+            8 * renderScale,
+            8 * renderScale
+        )
+        renderShopLetters('Weight:', (9 * statCount) + 3, 9)
+        renderNumbers(item.weight, 0, borderThicness + 49, borderThicness + 79 + (9 * statCount), -1, 'normal', 'gray')
+    }
+    if (item.speed){
+        if (item.speed > 0){
+            statCount++
+            ctx.drawImage(
+                findSprite('icon_time_reduction').img,
+                (borderThicness + 4) * renderScale,
+                (borderThicness + 79 + (9 * statCount)) * renderScale,
+                8 * renderScale,
+                8 * renderScale
+            )
+            renderShopLetters('Speed:', (9 * statCount) + 3, 9)
+            renderNumbers(item.speed, 0, borderThicness + 45, borderThicness + 79 + (9 * statCount), -1, 'normal', 'green')
+        }
+    }
+    if (item.healing) {
+        renderNumbers(item.healing, 0, borderThicness + 55, borderThicness + 97, -1, 'normal', 'red')
+        ctx.drawImage(
+            findSprite('icon_heart').img,
+            (borderThicness + 64) * renderScale,
+            (borderThicness + 97) * renderScale,
+            8 * renderScale,
+            8 * renderScale
+        )
+    }
+    if (item.secondsAdd) {
+        renderNumbers(item.secondsAdd, 0, borderThicness + 55, borderThicness + 88, -1, 'normal', 'blue')
+        ctx.drawImage(
+            findSprite('icon_clock').img,
+            (borderThicness + 71) * renderScale,
+            (borderThicness + 88) * renderScale,
+            8 * renderScale,
+            8 * renderScale
+        )
+    }
+    ctx.drawImage(
+        findSprite('icon_gold').img,
+        (borderThicness + 114) * renderScale,
+        (borderThicness + 78) * renderScale,
+        8 * renderScale,
+        8 * renderScale
+    )
+    renderNumbers(item.cost, 0, borderThicness + 16, borderThicness + 78, -1, 'reversed', 'gold')
+}
 
 function renderHealth(){
     if (gameManager.currentLevel.currentBattle){

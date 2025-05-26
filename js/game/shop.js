@@ -2,7 +2,7 @@ import { ctx, renderScale } from "../canvas_handler.js"
 import { findSprite } from "../sprites.js"
 import { getNow } from "../time_manager.js";
 import { borderLength, borderThicness, gameManager } from "./game_manager.js"
-import { renderNumbers } from "./game_renderer.js";
+import { renderNumbers, renderShopDescription } from "./game_renderer.js";
 import { Armor, bigSwordItem, chainmailArmorItem, Consumable, daggerItem, darkCrystalItem, detonatorItem, drillItem, healthPotionBigItem, healthPotionSmallItem, jadeShieldItem, Shield, silverBellItem, steelShieldItem, swiftVestItem, timePotionItem, Weapon } from "./item.js";
 
 const shelfHeightTool = 24
@@ -19,7 +19,7 @@ const consumableItems = [healthPotionBigItem, healthPotionSmallItem, timePotionI
 
 const buyButton = {
     posX: 94,
-    posY: 106,
+    posY: 88,
     width: 28,
     height: 17,
     getSprite(cost, playerGold){
@@ -111,13 +111,10 @@ export class Shop {
             return
         }
         const item = this.selectedItem
-        ctx.drawImage(
-            item.descriptionSprite,
-            (borderThicness + 4) * renderScale,
-            (borderThicness + 75) * renderScale,
-            98 * renderScale,
-            50 * renderScale
-        )
+
+        if (item.description){
+            renderShopDescription(item)
+        }
         ctx.drawImage(
             buyButton.getSprite(item.cost, gameManager.gold),
             (borderThicness + buyButton.posX) * renderScale,
@@ -125,29 +122,6 @@ export class Shop {
             buyButton.width * renderScale,
             buyButton.height * renderScale
         )
-        if (item instanceof Weapon){
-            renderNumbers(item.damage, 0, borderThicness + 55, borderThicness + 86, -1, 'normal', 'red')
-        }
-        if (item instanceof Shield || item instanceof Weapon){
-            renderNumbers(item.weight, 0, borderThicness + 49, borderThicness + 96, -1, 'normal', 'gray')
-        }
-        if (item.block){
-            renderNumbers(item.block, 0, borderThicness + 42, borderThicness + 86, -1, 'normal', 'blue')
-        }
-        if (item.reflection){
-            renderNumbers(item.reflection, 0, borderThicness + 74, borderThicness + 86, -1, 'normal', 'lime')
-        }
-        if (item.speed){
-            renderNumbers(item.speed, 0, borderThicness + 66, borderThicness + 96, -1, 'normal', 'green')
-        }
-        ctx.drawImage(
-            findSprite('icon_gold').img,
-            (borderThicness + 114) * renderScale,
-            (borderThicness + 96) * renderScale,
-            8 * renderScale,
-            8 * renderScale
-        )
-        renderNumbers(item.cost, 0, borderThicness + 16, borderThicness + 96, -1, 'reversed', 'gold')
     }
     render(){
         this.renderBG()

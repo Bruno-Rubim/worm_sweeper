@@ -109,6 +109,7 @@ const sprites = {
 	shop_bg: new Sprite('./images/shop_bg.png'),
 	shop_buy_button: new Sprite('./images/shop_buy_button.png'),
 	shop_buy_button_poor: new Sprite('./images/shop_buy_button_poor.png'),
+	letters_shop_description: new Sprite('./images/letters_shop_description.png'),
 	
 	//battle
 	battle_bar: new Sprite('./images/battle_bar.png'),
