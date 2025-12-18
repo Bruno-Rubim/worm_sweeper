@@ -1,36 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Worm Sweeper</title>
-    <link rel="shortcut icon" href="images/dirt_block_gold.png" type="image/x-icon" />
+    <link
+      rel="shortcut icon"
+      href="images/dirt_block_gold.png"
+      type="image/x-icon"
+    />
     <style>
-        body{
-            background-color: #111;
-            color: white;
-        }
-        canvas{
-            cursor: url('images/transparent_pixel.png'), auto;
-        }
-        input{
-            width: 50px;
-        }
-        img{
-            image-rendering: pixelated;
-        }
-        div{
-            background-color: transparent;
-            border: none;
-        }
-        button{
-            background-color: transparent;
-            border: none;
-        }
+      body {
+        background-color: #111;
+        color: white;
+      }
+      canvas {
+        cursor: url("images/transparent_pixel.png"), auto;
+      }
+      input {
+        width: 50px;
+      }
+      img {
+        image-rendering: pixelated;
+      }
+      div {
+        background-color: transparent;
+        border: none;
+      }
+      button {
+        background-color: transparent;
+        border: none;
+      }
     </style>
     <script type="module" src="js/index.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Size: <input type="number" id="size" min="3" max="16" value="8">
     
     Difficulty: <input type="number" min="1" max="10" id="difficulty"  value="5">
@@ -39,10 +43,12 @@
     
     <button id="new_game">New Game</button> -->
     Rules
-    <br><button popovertarget="rules"><img src="images/book.png" width="64"></button>
+    <br /><button popovertarget="rules">
+      <img src="images/rulebook.png" width="64" />
+    </button>
     <div popover id="rules">
-        <img src="images/rules.png" width="914" alt="">
+      <img src="images/rules.png" width="914" alt="" />
     </div>
     <canvas></canvas>
-</body>
+  </body>
 </html>
