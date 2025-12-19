@@ -1,7 +1,7 @@
 import type CanvasManager from "./canvasManager.js";
 import { cursor } from "./cursor.js";
-import { LEFT, RIGHT } from "./directions.js";
 import { GameManager } from "./gameManager.js";
+import { LEFT, RIGHT } from "./global.js";
 import { inputState } from "./inputState.js";
 
 export default function updateGame(

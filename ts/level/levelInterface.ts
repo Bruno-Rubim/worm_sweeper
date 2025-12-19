@@ -1,9 +1,7 @@
 import type CanvasManager from "../canvasManager.js";
 import { findSprite } from "../sprites/findSprite.js";
 import GameObject from "../gameObject.js";
-import Level from "./level.js";
 import Position from "../position.js";
-import { LEFT, type RIGHT } from "../directions.js";
 import {
   DOOREXIT,
   DOOREXITOPEN,
@@ -12,6 +10,8 @@ import {
   EMPTY,
   WORM,
 } from "./block.js";
+import type GameState from "../gameState.js";
+import { BORDERTHICKLEFT, BORDERTHICKTOP, LEFT, RIGHT } from "../global.js";
 
 const blockSheet = findSprite("block_sheet");
 const contentSheet = findSprite("content_sheet");
@@ -25,17 +25,17 @@ const contentToSheetPos = {
   [EMPTY]: new Position(0, 1),
 };
 
-export class levelInterface extends GameObject {
-  level: Level;
+export class LevelInterface extends GameObject {
+  gameState: GameState;
 
-  constructor(level: Level) {
+  constructor(gameState: GameState) {
     super({
-      pos: new Position(20, 20),
+      pos: new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
       spriteName: "transparent_pixel",
       width: 128,
       height: 128,
     });
-    this.level = level;
+    this.gameState = gameState;
     this.clickFunction = (
       cursorPos: Position,
       button: typeof RIGHT | typeof LEFT
@@ -45,31 +45,31 @@ export class levelInterface extends GameObject {
   }
 
   render(canvasManager: CanvasManager): void {
-    for (let i = 0; i < this.level.size; i++) {
-      for (let j = 0; j < this.level.size; j++) {
-        if (!this.level.started) {
+    for (let i = 0; i < this.gameState.level.size; i++) {
+      for (let j = 0; j < this.gameState.level.size; j++) {
+        if (!this.gameState.level.started) {
           canvasManager.renderSpriteFromSheet(
             blockSheet,
             new Position(
-              i * 16 * this.level.levelScale + 20,
-              j * 16 * this.level.levelScale + 20
-            ),
-            16 * this.level.levelScale,
-            16 * this.level.levelScale,
+              i * 16 * this.gameState.level.levelScale,
+              j * 16 * this.gameState.level.levelScale
+            ).addPos(this.pos),
+            16 * this.gameState.level.levelScale,
+            16 * this.gameState.level.levelScale,
             new Position(0, 0),
             16,
             16
           );
         }
-        const block = this.level.blockMatrix[i]![j]!;
+        const block = this.gameState.level.blockMatrix[i]![j]!;
         canvasManager.renderSpriteFromSheet(
           blockSheet,
           new Position(
-            i * 16 * this.level.levelScale + 20,
-            j * 16 * this.level.levelScale + 20
-          ),
-          16 * this.level.levelScale,
-          16 * this.level.levelScale,
+            i * 16 * this.gameState.level.levelScale,
+            j * 16 * this.gameState.level.levelScale
+          ).addPos(this.pos),
+          16 * this.gameState.level.levelScale,
+          16 * this.gameState.level.levelScale,
           block!.sheetPos,
           16,
           16
@@ -82,11 +82,11 @@ export class levelInterface extends GameObject {
           canvasManager.renderSpriteFromSheet(
             contentSheet,
             new Position(
-              i * 16 * this.level.levelScale + 20,
-              j * 16 * this.level.levelScale + 20
-            ),
-            16 * this.level.levelScale,
-            16 * this.level.levelScale,
+              i * 16 * this.gameState.level.levelScale,
+              j * 16 * this.gameState.level.levelScale
+            ).addPos(this.pos),
+            16 * this.gameState.level.levelScale,
+            16 * this.gameState.level.levelScale,
             sheetPos,
             16,
             16
@@ -98,24 +98,25 @@ export class levelInterface extends GameObject {
 
   handleClick(cursorPos: Position, button: typeof RIGHT | typeof LEFT) {
     const blockPos = cursorPos
-      .subtract(20, 20)
-      .divide(this.level.levelScale * 16);
-    if (!this.level.started) {
-      this.level.start(blockPos);
+      .subtractPos(this.pos)
+      .divide(this.gameState.level.levelScale * 16);
+    if (!this.gameState.level.started) {
+      this.gameState.level.start(blockPos);
       return;
     }
-    const block = this.level.blockMatrix[blockPos.x]![blockPos.y]!;
+    const block = this.gameState.level.blockMatrix[blockPos.x]![blockPos.y]!;
     if (button == LEFT) {
       if (!block.broken) {
-        this.level.breakBlock(block);
+        this.gameState.level.breakBlock(block);
       } else {
         switch (block.content) {
           case DOOREXIT:
             block.content = DOOREXITOPEN;
             break;
           case DOOREXITOPEN:
-            this.level = this.level.nextLevel();
-            this.level.start(blockPos);
+            this.gameState.time += 60;
+            this.gameState.level = this.gameState.level.nextLevel();
+            this.gameState.level.start(blockPos);
             break;
           case DOORSHOP:
             block.content = DOORSHOPOPEN;

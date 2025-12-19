@@ -1,4 +1,6 @@
-import type Position from "./position.js";
+import { fontMaps } from "./sprites/fontMaps.js";
+import { GAMEHEIGHT, GAMEWIDTH, LEFT, RIGHT } from "./global.js";
+import Position from "./position.js";
 import type Sprite from "./sprites/sprite.js";
 
 export default class CanvasManager {
@@ -7,8 +9,8 @@ export default class CanvasManager {
   renderScale = 1;
   scaleMultiplyer = 1;
   sizeConfig = {
-    originalWidth: 168,
-    originalHeight: 168,
+    originalWidth: GAMEWIDTH,
+    originalHeight: GAMEHEIGHT,
     width: 0,
     height: 0,
   };
@@ -61,9 +63,11 @@ export default class CanvasManager {
     width: number,
     height: number,
     posInSheet: Position,
-    widthInSheet: number,
-    heightInSheet: number
+    widthInSheet?: number,
+    heightInSheet?: number
   ) {
+    widthInSheet ??= width;
+    heightInSheet ??= height;
     this.ctx.drawImage(
       sprite.img,
       posInSheet.x * widthInSheet,
@@ -75,5 +79,30 @@ export default class CanvasManager {
       width * this.renderScale,
       height * this.renderScale
     );
+  }
+
+  renderText(
+    spriteSheet: Sprite,
+    font: string,
+    pos: Position,
+    text: string,
+    direction: typeof LEFT | typeof RIGHT = RIGHT
+  ) {
+    const chars = text.split("");
+    const fontMap = fontMaps[font]!;
+    let currentX = 0;
+    chars.forEach((c) => {
+      const charMap = fontMap.charMaps[c]!;
+      if (direction == RIGHT) {
+        this.renderSpriteFromSheet(
+          spriteSheet,
+          pos.add(currentX, 0),
+          fontMap.cellWidth,
+          fontMap.cellHeight,
+          charMap.pos
+        );
+      }
+      currentX += charMap.width;
+    });
   }
 }

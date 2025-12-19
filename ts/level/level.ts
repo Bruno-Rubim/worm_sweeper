@@ -179,7 +179,7 @@ export default class Level {
     //     this.startBattle();
     //   }, 500);
     // } else {
-    //   this.blockCount--;
+    this.blockCount--;
     // }
     this.updateBlockThreatLevel(block);
   }
@@ -274,7 +274,6 @@ export default class Level {
   }
 
   nextLevel() {
-    // gameManager.timer.addSeconds(60);
     const nextDepth = this.depth + 1;
     let nextSize = Math.floor(nextDepth / 3) + 6;
     let nextDificulty = (nextDepth % 3) + Math.floor(nextDepth / 3) + 4;
