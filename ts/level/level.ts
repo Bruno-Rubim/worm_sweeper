@@ -39,7 +39,14 @@ export default class Level {
     this.blockMatrix = Array.from({ length: this.size }, (_, i) =>
       Array.from(
         { length: this.size },
-        (_, j) => new Block({ pos: new Position(i, j) })
+        (_, j) =>
+          new Block({
+            gridPos: new Position(i, j),
+            gamePos: new Position(
+              i * 16 * this.levelScale,
+              j * 16 * this.levelScale
+            ),
+          })
       )
     );
   }
@@ -127,7 +134,7 @@ export default class Level {
 
   updateBlockThreatLevel(block: Block) {
     let threatLevel = 0;
-    this.getSurrBlocks(block.pos).forEach((b) => {
+    this.getSurrBlocks(block.gridPos).forEach((b) => {
       if (b.content == WORM) {
         threatLevel++;
       }
@@ -167,21 +174,30 @@ export default class Level {
       //   gameManager.gold++;
     }
     this.checkClear();
-    this.revealAdjc(block.pos);
+    this.revealAdjc(block.gridPos);
     // if (block.wormLevel == 0 && block.content != WORM) {
     //   if (gameManager.inventory.includes(drillItem)) {
     //     block.breakSurr();
     //   }
     // }
-    // if (block.content == "worm" && !gameManager.ended) {
-    //   setTimeout(() => {
-    //     block.content = null;
-    //     this.startBattle();
-    //   }, 500);
-    // } else {
-    this.blockCount--;
-    // }
+    if (block.content == WORM) {
+      //   setTimeout(() => {
+      //     block.content = null;
+      //     this.startBattle();
+      //   }, 500);
+    } else {
+      this.blockCount--;
+    }
     this.updateBlockThreatLevel(block);
+  }
+
+  markBlock(block: Block) {
+    block.marked = !block.marked;
+    if (block.marked) {
+      this.wormsLeft--;
+    } else {
+      this.wormsLeft++;
+    }
   }
 
   breakSurrBlocks(pos: Position) {
@@ -204,7 +220,7 @@ export default class Level {
     this.freeTiles.splice(r, 1);
     block.content = DOOREXIT;
 
-    this.getSurrBlocks(block.pos).forEach((b) => {
+    this.getSurrBlocks(block.gridPos).forEach((b) => {
       for (let i = 0; i < this.freeTiles.length; i++) {
         if (this.freeTiles[i] == b) {
           this.freeTiles.splice(i, 1);
@@ -251,7 +267,7 @@ export default class Level {
     const block = this.freeTiles[r]!;
     block.content = DOORSHOP;
     this.freeTiles.splice(r, 1);
-    this.emptySurrBlocks(block.pos);
+    this.emptySurrBlocks(block.gridPos);
   }
 
   start(startPos: Position) {
@@ -259,7 +275,7 @@ export default class Level {
     const firstBlock = this.blockMatrix[startPos.x]![startPos.y]!;
     firstBlock.starter = true;
     this.breakBlock(firstBlock);
-    this.getSurrBlocks(firstBlock.pos).forEach((block) => {
+    this.getSurrBlocks(firstBlock.gridPos).forEach((block) => {
       block.starter = true;
     });
     this.setFreeTiles();
@@ -269,7 +285,7 @@ export default class Level {
       this.placeShop();
     }
     this.placeWorms();
-    this.breakSurrBlocks(firstBlock.pos);
+    this.breakSurrBlocks(firstBlock.gridPos);
     this.started = true;
   }
 

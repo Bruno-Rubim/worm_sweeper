@@ -1,4 +1,5 @@
 import type CanvasManager from "./canvasManager.js";
+import GameObject from "./gameObject.js";
 import type GameState from "./gameState.js";
 import Position from "./position.js";
 import { findSprite } from "./sprites/findSprite.js";
@@ -15,10 +16,17 @@ const iconSheetPos = {
 
 const numberSheet = findSprite("number_sheet");
 
-export function renderGameInterface(
+const gameBorder = new GameObject({
+  spriteName: "game_border",
+  height: 168,
+  width: 200,
+});
+
+export function renderBorder(
   canvasManager: CanvasManager,
   gameState: GameState
 ) {
+  gameBorder.render(canvasManager);
   canvasManager.renderSpriteFromSheet(
     iconSheet,
     new Position(6, 6),
@@ -49,7 +57,7 @@ export function renderGameInterface(
 
   canvasManager.renderSpriteFromSheet(
     iconSheet,
-    new Position(88, 6),
+    new Position(87, 6),
     8,
     8,
     iconSheetPos.worm
@@ -77,7 +85,7 @@ export function renderGameInterface(
 
   canvasManager.renderSpriteFromSheet(
     iconSheet,
-    new Position(171, 6),
+    new Position(170, 6),
     8,
     8,
     iconSheetPos.gold

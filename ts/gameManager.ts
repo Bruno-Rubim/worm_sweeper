@@ -1,16 +1,16 @@
 import type GameObject from "./gameObject.js";
-import { LevelInterface } from "./level/levelInterface.js";
+import { LevelManager } from "./level/levelManager.js";
 import CanvasManager from "./canvasManager.js";
 import GameState from "./gameState.js";
-import { renderGameInterface } from "./renderGameInterface.js";
+import { renderBorder } from "./renderBorder.js";
 
 export class GameManager {
   gameState = new GameState();
-  levelInterface = new LevelInterface(this.gameState);
-  gameObjects: GameObject[] = [this.levelInterface];
+  levelManager = new LevelManager(this.gameState);
+  gameObjects: GameObject[] = [this.levelManager];
 
   render(canvasManager: CanvasManager) {
-    this.levelInterface.render(canvasManager);
-    renderGameInterface(canvasManager, this.gameState);
+    this.levelManager.render(canvasManager);
+    renderBorder(canvasManager, this.gameState);
   }
 }

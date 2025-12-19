@@ -3,6 +3,8 @@ import { findSprite } from "./sprites/findSprite.js";
 import Position from "./position.js";
 import type Sprite from "./sprites/sprite.js";
 import Hitbox from "./hitbox.js";
+import type { ObjectAction } from "./objectAction.js";
+import type { LEFT, RIGHT } from "./global.js";
 
 export default class GameObject {
   sprite: Sprite;
@@ -10,7 +12,11 @@ export default class GameObject {
   width: number;
   height: number;
   hitbox: Hitbox;
-  clickFunction?: Function;
+  clickFunction?: (
+    cursorPos: Position,
+    button: typeof LEFT | typeof RIGHT
+  ) => ObjectAction | void;
+  hoverFunction?: (cursorPos: Position) => ObjectAction | void;
 
   constructor(args: {
     spriteName: string;

@@ -16,17 +16,18 @@ type blockContent =
   | typeof WORM;
 
 export default class Block {
-  pos: Position;
-  hasGold: boolean;
+  gamePos: Position;
+  gridPos: Position;
+  hasGold: boolean = false;
   hidden = true;
   broken = false;
   content: blockContent = EMPTY;
   starter = false;
-  marker = null;
+  marked = false;
   threatLevel = 0;
-  constructor(args: { pos: Position; hasGold?: boolean }) {
-    this.pos = args.pos;
-    this.hasGold = Boolean(args.hasGold);
+  constructor(args: { gridPos: Position; gamePos: Position }) {
+    this.gridPos = args.gridPos;
+    this.gamePos = args.gamePos;
   }
 
   get sheetPos(): Position {
