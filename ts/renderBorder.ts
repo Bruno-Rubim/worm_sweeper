@@ -1,6 +1,6 @@
-import type CanvasManager from "./canvasManager.js";
+import CanvasManager from "./canvasManager.js";
 import GameObject from "./gameObject.js";
-import type GameState from "./gameState.js";
+import GameState from "./gameState.js";
 import Position from "./position.js";
 import { findSprite } from "./sprites/findSprite.js";
 
@@ -16,17 +16,7 @@ const iconSheetPos = {
 
 const numberSheet = findSprite("number_sheet");
 
-const gameBorder = new GameObject({
-  spriteName: "game_border",
-  height: 168,
-  width: 200,
-});
-
-export function renderBorder(
-  canvasManager: CanvasManager,
-  gameState: GameState
-) {
-  gameBorder.render(canvasManager);
+function renderStats(canvasManager: CanvasManager, gameState: GameState) {
   canvasManager.renderSpriteFromSheet(
     iconSheet,
     new Position(6, 6),
@@ -96,4 +86,73 @@ export function renderBorder(
     new Position(179, 6),
     gameState.gold.toString()
   );
+}
+
+const itemSheet = findSprite("item_sheet");
+
+function renderItems(canvasManager: CanvasManager, gameState: GameState) {
+  canvasManager.renderSpriteFromSheet(
+    itemSheet,
+    new Position(175, 19),
+    16,
+    16,
+    new Position(0, 3)
+  );
+  canvasManager.renderSpriteFromSheet(
+    itemSheet,
+    new Position(175, 37),
+    16,
+    16,
+    new Position(0, 1)
+  );
+  canvasManager.renderSpriteFromSheet(
+    itemSheet,
+    new Position(175, 55),
+    16,
+    16,
+    new Position(15, 2)
+  );
+  canvasManager.renderSpriteFromSheet(
+    itemSheet,
+    new Position(175, 73),
+    16,
+    16,
+    new Position(15, 0)
+  );
+  canvasManager.renderSpriteFromSheet(
+    itemSheet,
+    new Position(175, 91),
+    16,
+    16,
+    new Position(0, 7)
+  );
+  canvasManager.renderSpriteFromSheet(
+    itemSheet,
+    new Position(175, 109),
+    16,
+    16,
+    new Position(2, 7)
+  );
+  canvasManager.renderSpriteFromSheet(
+    itemSheet,
+    new Position(175, 127),
+    16,
+    16,
+    new Position(4, 7)
+  );
+}
+
+const gameBorder = new GameObject({
+  spriteName: "game_border",
+  height: 168,
+  width: 200,
+});
+
+export function renderBorder(
+  canvasManager: CanvasManager,
+  gameState: GameState
+) {
+  gameBorder.render(canvasManager);
+  renderItems(canvasManager, gameState);
+  renderStats(canvasManager, gameState);
 }

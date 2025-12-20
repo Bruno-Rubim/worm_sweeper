@@ -1,37 +1,19 @@
 import type CanvasManager from "../canvasManager.js";
-import { findSprite } from "../sprites/findSprite.js";
 import GameObject from "../gameObject.js";
 import Position from "../position.js";
 import {
+  blockSheet,
+  blockSheetPos,
   DOOREXIT,
   DOOREXITOPEN,
   DOORSHOP,
   DOORSHOPOPEN,
   EMPTY,
-  WORM,
 } from "./block.js";
 import type GameState from "../gameState.js";
 import { BORDERTHICKLEFT, BORDERTHICKTOP, LEFT, RIGHT } from "../global.js";
 import { ChangeCursorState } from "../objectAction.js";
-import { DEFAULT, PICAXE } from "../cursor.js";
-
-const blockSheet = findSprite("block_sheet");
-const contentSheet = findSprite("content_sheet");
-
-const blockSheetPos = {
-  [DOOREXIT]: new Position(0, 0),
-  [DOOREXITOPEN]: new Position(1, 0),
-  [DOORSHOP]: new Position(2, 0),
-  [DOORSHOPOPEN]: new Position(3, 0),
-  [WORM]: new Position(4, 0),
-  hidden: new Position(5, 0),
-  [EMPTY]: new Position(0, 1),
-  marked: new Position(9, 1),
-};
-
-function isAnyDoor(x: string) {
-  return [DOOREXIT, DOOREXITOPEN, DOORSHOP, DOORSHOPOPEN].includes(x);
-}
+import { PICAXE } from "../cursor.js";
 
 export class LevelManager extends GameObject {
   gameState: GameState;
@@ -55,63 +37,49 @@ export class LevelManager extends GameObject {
     };
   }
 
-  render(canvasManager: CanvasManager): void {
+  renderCave(canvasManager: CanvasManager) {
+    const blockSize = 16 * this.gameState.level.levelScale;
     for (let i = 0; i < this.gameState.level.size; i++) {
       for (let j = 0; j < this.gameState.level.size; j++) {
         if (!this.gameState.level.started) {
           canvasManager.renderSpriteFromSheet(
             blockSheet,
-            new Position(
-              i * 16 * this.gameState.level.levelScale,
-              j * 16 * this.gameState.level.levelScale
-            ),
-            16 * this.gameState.level.levelScale,
-            16 * this.gameState.level.levelScale,
+            new Position(i * blockSize, j * blockSize).addPos(this.pos),
+            blockSize,
+            blockSize,
             blockSheetPos.hidden,
             16,
             16
           );
+          continue;
         }
         const block = this.gameState.level.blockMatrix[i]![j]!;
         canvasManager.renderSpriteFromSheet(
           blockSheet,
-          new Position(
-            i * 16 * this.gameState.level.levelScale,
-            j * 16 * this.gameState.level.levelScale
-          ).addPos(this.pos),
-          16 * this.gameState.level.levelScale,
-          16 * this.gameState.level.levelScale,
-          block!.sheetPos,
+          new Position(i * blockSize, j * blockSize).addPos(this.pos),
+          blockSize,
+          blockSize,
+          block.sheetBlockPos,
           16,
           16
         );
-        if (block.broken) {
-          let sheetPos = blockSheetPos[block.content];
-          if (block.content == EMPTY) {
-            sheetPos.x = block.threatLevel;
-          }
+        if ((block.broken && block.content != EMPTY) || block.marked) {
           canvasManager.renderSpriteFromSheet(
-            contentSheet,
-            block.gamePos.addPos(this.pos),
-            16 * this.gameState.level.levelScale,
-            16 * this.gameState.level.levelScale,
-            sheetPos,
-            16,
-            16
-          );
-        } else if (block.marked) {
-          canvasManager.renderSpriteFromSheet(
-            contentSheet,
-            block.gamePos.addPos(this.pos),
-            16 * this.gameState.level.levelScale,
-            16 * this.gameState.level.levelScale,
-            blockSheetPos.marked,
+            blockSheet,
+            new Position(i * blockSize, j * blockSize).addPos(this.pos),
+            blockSize,
+            blockSize,
+            block.sheetContentPos,
             16,
             16
           );
         }
       }
     }
+  }
+
+  render(canvasManager: CanvasManager): void {
+    this.renderCave(canvasManager);
   }
 
   getBlockFromGamePos(pos: Position) {
@@ -122,7 +90,6 @@ export class LevelManager extends GameObject {
   }
 
   handleHover(cursorPos: Position) {
-    const block = this.getBlockFromGamePos(cursorPos);
     return new ChangeCursorState(PICAXE);
   }
 
@@ -133,7 +100,7 @@ export class LevelManager extends GameObject {
       return;
     }
     if (button == LEFT) {
-      if (!block.broken && !block.hidden) {
+      if (!block.broken && !block.hidden && !block.marked) {
         this.gameState.level.breakBlock(block);
       } else {
         switch (block.content) {
