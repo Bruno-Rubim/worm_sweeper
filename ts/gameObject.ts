@@ -12,6 +12,7 @@ export default class GameObject {
   width: number;
   height: number;
   hitbox: Hitbox;
+  mouseHovering: boolean = false;
   clickFunction?: (
     cursorPos: Position,
     button: typeof LEFT | typeof RIGHT
@@ -23,15 +24,18 @@ export default class GameObject {
     pos?: Position;
     width?: number;
     height?: number;
+    hitboxWidth?: number;
+    hitboxHeight?: number;
+    hitboxPosShift?: Position;
   }) {
     this.sprite = findSprite(args.spriteName);
     this.pos = args.pos ?? new Position();
     this.width = args.width ?? 16;
     this.height = args.height ?? 16;
     this.hitbox = new Hitbox({
-      pos: this.pos,
-      width: this.width,
-      height: this.height,
+      pos: this.pos.addPos(args.hitboxPosShift ?? new Position()),
+      width: args.hitboxWidth ?? this.width,
+      height: args.hitboxHeight ?? this.height,
     });
   }
 

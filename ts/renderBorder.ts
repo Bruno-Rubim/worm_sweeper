@@ -1,6 +1,7 @@
 import CanvasManager from "./canvasManager.js";
 import GameObject from "./gameObject.js";
-import GameState from "./gameState.js";
+import GameState, { type inventory } from "./gameState.js";
+import { GAMEHEIGHT, GAMEWIDTH } from "./global.js";
 import Position from "./position.js";
 import { findSprite } from "./sprites/findSprite.js";
 
@@ -33,21 +34,7 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
 
   canvasManager.renderSpriteFromSheet(
     iconSheet,
-    new Position(48, 6),
-    8,
-    8,
-    iconSheetPos.door
-  );
-  canvasManager.renderText(
-    numberSheet,
-    "numbers_green",
-    new Position(56, 6),
-    (gameState.level.depth + 1).toString()
-  );
-
-  canvasManager.renderSpriteFromSheet(
-    iconSheet,
-    new Position(87, 6),
+    new Position(54, 6),
     8,
     8,
     iconSheetPos.worm
@@ -55,13 +42,13 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
   canvasManager.renderText(
     numberSheet,
     "numbers_red",
-    new Position(96, 6),
+    new Position(64, 6),
     gameState.level.wormsLeft.toString()
   );
 
   canvasManager.renderSpriteFromSheet(
     iconSheet,
-    new Position(126, 6),
+    new Position(GAMEWIDTH - 78, 6),
     8,
     8,
     iconSheetPos.block
@@ -69,13 +56,13 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
   canvasManager.renderText(
     numberSheet,
     "numbers_brown",
-    new Position(134, 6),
+    new Position(GAMEWIDTH - 69, 6),
     gameState.level.blockCount.toString()
   );
 
   canvasManager.renderSpriteFromSheet(
     iconSheet,
-    new Position(170, 6),
+    new Position(GAMEWIDTH - 29, 6),
     8,
     8,
     iconSheetPos.gold
@@ -83,69 +70,25 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
   canvasManager.renderText(
     numberSheet,
     "numbers_gold",
-    new Position(179, 6),
+    new Position(GAMEWIDTH - 19, 6),
     gameState.gold.toString()
   );
 }
 
-const itemSheet = findSprite("item_sheet");
-
 function renderItems(canvasManager: CanvasManager, gameState: GameState) {
-  canvasManager.renderSpriteFromSheet(
-    itemSheet,
-    new Position(175, 19),
-    16,
-    16,
-    new Position(0, 3)
-  );
-  canvasManager.renderSpriteFromSheet(
-    itemSheet,
-    new Position(175, 37),
-    16,
-    16,
-    new Position(0, 1)
-  );
-  canvasManager.renderSpriteFromSheet(
-    itemSheet,
-    new Position(175, 55),
-    16,
-    16,
-    new Position(15, 2)
-  );
-  canvasManager.renderSpriteFromSheet(
-    itemSheet,
-    new Position(175, 73),
-    16,
-    16,
-    new Position(15, 0)
-  );
-  canvasManager.renderSpriteFromSheet(
-    itemSheet,
-    new Position(175, 91),
-    16,
-    16,
-    new Position(0, 7)
-  );
-  canvasManager.renderSpriteFromSheet(
-    itemSheet,
-    new Position(175, 109),
-    16,
-    16,
-    new Position(2, 7)
-  );
-  canvasManager.renderSpriteFromSheet(
-    itemSheet,
-    new Position(175, 127),
-    16,
-    16,
-    new Position(4, 7)
-  );
+  for (const key of Object.keys(gameState.inventory) as (keyof inventory)[]) {
+    const item = gameState.inventory[key];
+    if (!item) {
+      continue;
+    }
+    item.render(canvasManager);
+  }
 }
 
 const gameBorder = new GameObject({
   spriteName: "game_border",
-  height: 168,
-  width: 200,
+  height: GAMEHEIGHT,
+  width: GAMEWIDTH,
 });
 
 export function renderBorder(

@@ -16,10 +16,17 @@ export default function updateGame(
   let cursorStateAltered = false;
   cursor.pos = inputState.mouse.pos.divide(canvasManager.renderScale);
 
-  gameManager.gameObjects.forEach((obj) => {
+  const gameObjects = [
+    gameManager.levelManager,
+    ...Object.values(gameManager.gameState.inventory),
+  ];
+  gameObjects.forEach((obj) => {
     if (!obj.hitbox.positionInside(cursor.pos)) {
+      obj.mouseHovering = false;
       return;
     }
+    obj.mouseHovering = true;
+
     if (obj.hoverFunction) {
       const action = obj.hoverFunction(cursor.pos);
       if (action instanceof ChangeCursorState) {
@@ -27,22 +34,23 @@ export default function updateGame(
         cursorStateAltered = true;
       }
     }
-    if (inputState.mouse.clickedRight || inputState.mouse.clickedLeft) {
-      if (obj.clickFunction) {
-        const action = obj.clickFunction(
-          cursor.pos,
-          inputState.mouse.clickedRight ? LEFT : RIGHT
-        );
-      }
-      if (inputState.mouse.clickedRight) {
-        inputState.mouse.clickedRight = false;
-      }
-      if (inputState.mouse.clickedLeft) {
-        inputState.mouse.clickedLeft = false;
-      }
+    if (
+      obj.clickFunction &&
+      (inputState.mouse.clickedRight || inputState.mouse.clickedLeft)
+    ) {
+      const action = obj.clickFunction(
+        cursor.pos,
+        inputState.mouse.clickedRight ? LEFT : RIGHT
+      );
     }
   });
 
+  if (inputState.mouse.clickedRight) {
+    inputState.mouse.clickedRight = false;
+  }
+  if (inputState.mouse.clickedLeft) {
+    inputState.mouse.clickedLeft = false;
+  }
   if (!cursorStateAltered) {
     changeCursorState(DEFAULT);
   }
