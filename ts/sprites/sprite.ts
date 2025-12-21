@@ -1,8 +1,8 @@
 export default class Sprite {
   src: string;
   img: HTMLImageElement;
-  constructor(src: string) {
-    this.src = src;
+  constructor(imageName: string) {
+    this.src = "./images/" + imageName + ".png";
     this.img = new Image();
   }
 

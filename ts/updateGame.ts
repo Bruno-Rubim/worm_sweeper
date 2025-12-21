@@ -3,7 +3,7 @@ import { cursor, DEFAULT, type cursorState } from "./cursor.js";
 import { GameManager } from "./gameManager.js";
 import { LEFT, RIGHT } from "./global.js";
 import { inputState } from "./inputState.js";
-import { ChangeCursorState } from "./objectAction.js";
+import { ChangeCursorState, ChangeScene } from "./objectAction.js";
 
 function changeCursorState(newState: cursorState) {
   cursor.state = newState;

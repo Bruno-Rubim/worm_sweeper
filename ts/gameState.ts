@@ -49,6 +49,7 @@ export default class GameState {
     passive_5: getItem(ITEMEMPTY, new Position(4, 18 * 5)),
     passive_6: getItem(ITEMEMPTY, new Position(4, 18 * 6)),
   };
+  currentScene: "cave" | "shop" | "battle" = "cave";
 
   constructor() {
     this.gold = 0;

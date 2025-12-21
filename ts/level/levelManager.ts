@@ -11,9 +11,25 @@ import {
   CONTENTEMPTY,
 } from "./block.js";
 import type GameState from "../gameState.js";
-import { BORDERTHICKLEFT, BORDERTHICKTOP, LEFT, RIGHT } from "../global.js";
-import { ChangeCursorState } from "../objectAction.js";
+import {
+  BORDERTHICKBOTTOM,
+  BORDERTHICKLEFT,
+  BORDERTHICKRIGHT,
+  BORDERTHICKTOP,
+  GAMEHEIGHT,
+  GAMEWIDTH,
+  LEFT,
+  RIGHT,
+} from "../global.js";
+import {
+  ChangeCursorState,
+  ChangeScene,
+  ObjectAction,
+} from "../objectAction.js";
 import { PICAXE } from "../cursor.js";
+import { findSprite } from "../sprites/findSprite.js";
+
+const shopBgSprite = findSprite("bg_shop");
 
 export class LevelManager extends GameObject {
   gameState: GameState;
@@ -78,8 +94,29 @@ export class LevelManager extends GameObject {
     }
   }
 
+  renderShop(canvasManager: CanvasManager) {
+    canvasManager.renderSprite(
+      shopBgSprite,
+      new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
+      GAMEWIDTH - BORDERTHICKLEFT - BORDERTHICKRIGHT,
+      GAMEHEIGHT - BORDERTHICKTOP - BORDERTHICKBOTTOM
+    );
+    this.gameState.level.shop?.objects.forEach((obj) => {
+      obj.render(canvasManager);
+    });
+  }
+
   render(canvasManager: CanvasManager): void {
-    this.renderCave(canvasManager);
+    switch (this.gameState.currentScene) {
+      case "cave":
+        this.renderCave(canvasManager);
+        break;
+      case "shop":
+        this.renderShop(canvasManager);
+        break;
+      case "battle":
+        break;
+    }
   }
 
   getBlockFromGamePos(pos: Position) {
@@ -90,10 +127,17 @@ export class LevelManager extends GameObject {
   }
 
   handleHover(cursorPos: Position) {
-    return new ChangeCursorState(PICAXE);
+    switch (this.gameState.currentScene) {
+      case "cave":
+        return new ChangeCursorState(PICAXE);
+      case "shop":
+        break;
+      case "battle":
+        break;
+    }
   }
 
-  handleClick(cursorPos: Position, button: typeof RIGHT | typeof LEFT) {
+  handleClickCave(cursorPos: Position, button: typeof RIGHT | typeof LEFT) {
     const block = this.getBlockFromGamePos(cursorPos);
     if (!this.gameState.level.cave.started) {
       this.gameState.level.cave.start(block.gridPos);
@@ -115,12 +159,49 @@ export class LevelManager extends GameObject {
           case CONTENTDOORSHOP:
             block.content = CONTENTDOORSHOPOPEN;
             break;
+          case CONTENTDOORSHOPOPEN:
+            return new ChangeScene("shop");
         }
       }
     } else {
       if (!block.broken) {
         this.gameState.level.cave.markBlock(block);
       }
+    }
+  }
+
+  handleClickShop(cursorPos: Position, button: typeof RIGHT | typeof LEFT) {
+    if (button == RIGHT) {
+      return;
+    }
+    let action: ObjectAction | void | null = null;
+    this.gameState.level.shop?.objects.forEach((obj) => {
+      if (obj.clickFunction && obj.hitbox.positionInside(cursorPos)) {
+        action = obj.clickFunction(cursorPos, button);
+        console.log(action);
+        return action;
+      }
+    });
+    if (action) {
+      return action;
+    }
+  }
+
+  handleClick(cursorPos: Position, button: typeof RIGHT | typeof LEFT) {
+    let action;
+    switch (this.gameState.currentScene) {
+      case "cave":
+        action = this.handleClickCave(cursorPos, button);
+        break;
+      case "shop":
+        action = this.handleClickShop(cursorPos, button);
+        break;
+      case "battle":
+        break;
+    }
+    console.log(action);
+    if (action instanceof ChangeScene) {
+      this.gameState.currentScene = action.newScene;
     }
   }
 }

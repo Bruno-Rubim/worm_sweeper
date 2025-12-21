@@ -1,5 +1,5 @@
 import type CanvasManager from "./canvasManager.js";
-import { findSprite } from "./sprites/findSprite.js";
+import sprites, { findSprite } from "./sprites/findSprite.js";
 import Position from "./position.js";
 import type Sprite from "./sprites/sprite.js";
 import Hitbox from "./hitbox.js";
@@ -13,20 +13,26 @@ export default class GameObject {
   height: number;
   hitbox: Hitbox;
   mouseHovering: boolean = false;
-  clickFunction?: (
-    cursorPos: Position,
-    button: typeof LEFT | typeof RIGHT
-  ) => ObjectAction | void;
-  hoverFunction?: (cursorPos: Position) => ObjectAction | void;
+  clickFunction:
+    | ((
+        cursorPos: Position,
+        button: typeof LEFT | typeof RIGHT
+      ) => ObjectAction | void)
+    | undefined;
+  hoverFunction?: ((cursorPos: Position) => ObjectAction | void) | undefined;
 
   constructor(args: {
-    spriteName: string;
+    spriteName: keyof typeof sprites;
     pos?: Position;
     width?: number;
     height?: number;
     hitboxWidth?: number;
     hitboxHeight?: number;
     hitboxPosShift?: Position;
+    clickFunction?: (
+      cursorPos: Position,
+      button: typeof LEFT | typeof RIGHT
+    ) => ObjectAction | void;
   }) {
     this.sprite = findSprite(args.spriteName);
     this.pos = args.pos ?? new Position();
@@ -37,6 +43,7 @@ export default class GameObject {
       width: args.hitboxWidth ?? this.width,
       height: args.hitboxHeight ?? this.height,
     });
+    this.clickFunction = args.clickFunction;
   }
 
   render(canvasManager: CanvasManager) {

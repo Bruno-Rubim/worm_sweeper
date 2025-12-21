@@ -9,3 +9,11 @@ export class ChangeCursorState extends ObjectAction {
     this.newState = newState;
   }
 }
+
+export class ChangeScene extends ObjectAction {
+  newScene: "cave" | "shop" | "battle";
+  constructor(newScene: "cave" | "shop" | "battle") {
+    super();
+    this.newScene = newScene;
+  }
+}

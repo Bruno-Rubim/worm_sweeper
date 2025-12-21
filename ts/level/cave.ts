@@ -21,7 +21,7 @@ export default class Cave {
   constructor(depth: number) {
     this.difficulty = (depth % 3) + Math.floor(depth / 3) + 4;
     this.size = Math.floor(depth / 3) + 6;
-    this.hasShop = depth > 0;
+    this.hasShop = depth > -1;
     this.wormQuantity = Math.floor(
       this.difficulty * 0.033 * this.size * this.size
     );
