@@ -9,13 +9,13 @@ export const DETONATOR = "detonator";
 export const SWORD = "sword";
 export const SHIELD = "shield";
 
-const cursorSprites = {
-  [DEFAULT]: findSprite("cursor_default"),
-  [PICAXE]: findSprite("cursor_picaxe"),
-  [FLAG]: findSprite("cursor_flag"),
-  [DETONATOR]: findSprite("cursor_detonator"),
-  [SWORD]: findSprite("cursor_sword"),
-  [SHIELD]: findSprite("cursor_shield"),
+const cursorSheetPos = {
+  [DEFAULT]: new Position(0, 0),
+  [DETONATOR]: new Position(2, 0),
+  [FLAG]: new Position(4, 0),
+  [PICAXE]: new Position(0, 1),
+  [SHIELD]: new Position(4, 1),
+  [SWORD]: new Position(6, 1),
 };
 
 export type cursorState =
@@ -28,9 +28,16 @@ export type cursorState =
 
 class Cursor {
   pos = new Position();
+  sprite = findSprite("cursor_sheet");
   state: cursorState = DEFAULT;
   render(canvasManager: CanvasManager) {
-    canvasManager.renderSprite(cursorSprites[this.state], this.pos, 16, 16);
+    canvasManager.renderSpriteFromSheet(
+      this.sprite,
+      this.pos,
+      16,
+      16,
+      cursorSheetPos[this.state]
+    );
   }
 }
 

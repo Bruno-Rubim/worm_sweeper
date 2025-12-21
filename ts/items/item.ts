@@ -1,6 +1,5 @@
 import type CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
-import { GAMEWIDTH } from "../global.js";
 import Position from "../position.js";
 
 export class Item extends GameObject {
