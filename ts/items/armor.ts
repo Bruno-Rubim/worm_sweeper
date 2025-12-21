@@ -3,11 +3,11 @@ import Position from "../position.js";
 import { Item } from "./item.js";
 
 export class Armor extends Item {
-  constructor(pos: Position, spriteSheetPos: Position) {
-    super(pos, spriteSheetPos);
+  constructor(spriteSheetPos: Position) {
+    super(new Position(GAMEWIDTH - 20, 54), spriteSheetPos);
   }
 }
 
 export const armorList = {
-  empty: new Armor(new Position(GAMEWIDTH - 20, 54), new Position(14, 2)),
+  empty: new Armor(new Position(14, 2)),
 };

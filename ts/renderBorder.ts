@@ -43,7 +43,7 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
     numberSheet,
     "numbers_red",
     new Position(64, 6),
-    gameState.level.wormsLeft.toString()
+    gameState.level.cave.wormsLeft.toString()
   );
 
   canvasManager.renderSpriteFromSheet(
@@ -57,7 +57,7 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
     numberSheet,
     "numbers_brown",
     new Position(GAMEWIDTH - 69, 6),
-    gameState.level.blockCount.toString()
+    gameState.level.cave.blockCount.toString()
   );
 
   canvasManager.renderSpriteFromSheet(

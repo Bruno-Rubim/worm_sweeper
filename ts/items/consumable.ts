@@ -3,11 +3,11 @@ import Position from "../position.js";
 import { Item } from "./item.js";
 
 export class Consumable extends Item {
-  constructor(pos: Position, spriteSheetPos: Position) {
-    super(pos, spriteSheetPos);
+  constructor(spriteSheetPos: Position) {
+    super(new Position(GAMEWIDTH - 20, 72), spriteSheetPos);
   }
 }
 
 export const consumableList = {
-  empty: new Consumable(new Position(GAMEWIDTH - 20, 72), new Position(14, 0)),
+  empty: new Consumable(new Position(14, 0)),
 };

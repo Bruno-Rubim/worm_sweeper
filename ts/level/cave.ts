@@ -1,12 +1,14 @@
-import Block, { DOOREXIT, DOORSHOP, WORM } from "./block.js";
+import Block, {
+  CONTENTDOOREXIT,
+  CONTENTDOORSHOP,
+  CONTENTWORM,
+} from "./block.js";
 import Position from "../position.js";
-import Shop from "./shop.js";
 
 export default class Cave {
-  depth: number;
-  size: number;
   difficulty: number;
-  shop: Shop | undefined;
+  size: number;
+  hasShop: boolean;
   wormQuantity: number;
   wormsLeft: number;
   blockCount: number;
@@ -16,16 +18,10 @@ export default class Cave {
   started = false;
   cleared = false;
 
-  constructor(args: {
-    depth?: number;
-    size?: number;
-    difficulty?: number;
-    shop?: Shop;
-  }) {
-    this.depth = args.depth ?? 0;
-    this.size = args.size ?? 6;
-    this.difficulty = args.difficulty ?? 4;
-    this.shop = args.shop;
+  constructor(depth: number) {
+    this.difficulty = (depth % 3) + Math.floor(depth / 3) + 4;
+    this.size = Math.floor(depth / 3) + 6;
+    this.hasShop = depth > 0;
     this.wormQuantity = Math.floor(
       this.difficulty * 0.033 * this.size * this.size
     );
@@ -135,7 +131,7 @@ export default class Cave {
   updateBlockThreatLevel(block: Block) {
     let threatLevel = 0;
     this.getSurrBlocks(block.gridPos).forEach((b) => {
-      if (b.content == WORM) {
+      if (b.content == CONTENTWORM) {
         threatLevel++;
       }
     });
@@ -180,7 +176,7 @@ export default class Cave {
     //     block.breakSurr();
     //   }
     // }
-    if (block.content == WORM) {
+    if (block.content == CONTENTWORM) {
       //   setTimeout(() => {
       //     block.content = null;
       //     this.startBattle();
@@ -218,7 +214,7 @@ export default class Cave {
     const r = Math.floor(Math.random() * this.freeTiles.length);
     const block = this.freeTiles[r]!;
     this.freeTiles.splice(r, 1);
-    block.content = DOOREXIT;
+    block.content = CONTENTDOOREXIT;
 
     this.getSurrBlocks(block.gridPos).forEach((b) => {
       for (let i = 0; i < this.freeTiles.length; i++) {
@@ -265,7 +261,7 @@ export default class Cave {
     }
     const r = Math.floor(Math.random() * this.freeTiles.length);
     const block = this.freeTiles[r]!;
-    block.content = DOORSHOP;
+    block.content = CONTENTDOORSHOP;
     this.freeTiles.splice(r, 1);
     this.emptySurrBlocks(block.gridPos);
   }
@@ -281,24 +277,11 @@ export default class Cave {
     this.setFreeTiles();
     this.placeGold();
     this.placeExit();
-    if (this.shop) {
+    if (this.hasShop) {
       this.placeShop();
     }
     this.placeWorms();
     this.breakSurrBlocks(firstBlock.gridPos);
     this.started = true;
-  }
-
-  nextLevel() {
-    const nextDepth = this.depth + 1;
-    let nextSize = Math.floor(nextDepth / 3) + 6;
-    let nextDificulty = (nextDepth % 3) + Math.floor(nextDepth / 3) + 4;
-    let nextShop = new Shop({});
-    return new Cave({
-      difficulty: nextDificulty,
-      size: nextSize,
-      depth: nextDepth,
-      shop: nextShop,
-    });
   }
 }

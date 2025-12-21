@@ -1,32 +1,32 @@
 import Position from "../position.js";
 import { findSprite } from "../sprites/findSprite.js";
 
-export const EMPTY = "empty";
-export const DOOREXIT = "door_exit";
-export const DOOREXITOPEN = "door_exit_open";
-export const DOORSHOP = "door_shop";
-export const DOORSHOPOPEN = "door_shop_open";
-export const WORM = "worm";
+export const CONTENTEMPTY = "empty";
+export const CONTENTDOOREXIT = "door_exit";
+export const CONTENTDOOREXITOPEN = "door_exit_open";
+export const CONTENTDOORSHOP = "door_shop";
+export const CONTENTDOORSHOPOPEN = "door_shop_open";
+export const CONTENTWORM = "worm";
 
 type blockContent =
-  | typeof EMPTY
-  | typeof DOOREXIT
-  | typeof DOOREXITOPEN
-  | typeof DOORSHOP
-  | typeof DOORSHOPOPEN
-  | typeof WORM;
+  | typeof CONTENTEMPTY
+  | typeof CONTENTDOOREXIT
+  | typeof CONTENTDOOREXITOPEN
+  | typeof CONTENTDOORSHOP
+  | typeof CONTENTDOORSHOPOPEN
+  | typeof CONTENTWORM;
 
 export const blockSheet = findSprite("block_sheet");
 export const blockSheetPos = {
-  [DOOREXIT]: new Position(0, 0),
-  [DOOREXITOPEN]: new Position(1, 0),
-  [DOORSHOP]: new Position(2, 0),
-  [DOORSHOPOPEN]: new Position(3, 0),
-  [WORM]: new Position(4, 0),
+  [CONTENTDOOREXIT]: new Position(0, 0),
+  [CONTENTDOOREXITOPEN]: new Position(1, 0),
+  [CONTENTDOORSHOP]: new Position(2, 0),
+  [CONTENTDOORSHOPOPEN]: new Position(3, 0),
+  [CONTENTWORM]: new Position(4, 0),
   hidden: new Position(5, 0),
   dirt: new Position(6, 0),
   gold: new Position(7, 0),
-  [EMPTY]: new Position(0, 1),
+  [CONTENTEMPTY]: new Position(0, 1),
   marked: new Position(9, 1),
 };
 
@@ -36,7 +36,7 @@ export default class Block {
   hasGold: boolean = false;
   hidden = true;
   broken = false;
-  content: blockContent = EMPTY;
+  content: blockContent = CONTENTEMPTY;
   starter = false;
   marked = false;
   threatLevel = 0;
@@ -47,10 +47,10 @@ export default class Block {
 
   get sheetBlockPos(): Position {
     if (this.broken) {
-      if (this.content == EMPTY) {
-        return blockSheetPos[EMPTY].add(this.threatLevel, 0);
+      if (this.content == CONTENTEMPTY) {
+        return blockSheetPos[CONTENTEMPTY].add(this.threatLevel, 0);
       }
-      return blockSheetPos[EMPTY];
+      return blockSheetPos[CONTENTEMPTY];
     }
     if (this.hidden) {
       return blockSheetPos.hidden;

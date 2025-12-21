@@ -1,12 +1,21 @@
-import type Shop from "./shop.js";
+import type { inventory } from "../gameState.js";
+import Cave from "./cave.js";
+import Shop from "./shop.js";
 
 export default class Level {
   depth: number;
-  difficulty: number;
   shop: Shop | undefined;
-  constructor(args: { depth: number; difficulty: number; shop?: Shop }) {
-    this.depth = args.depth;
-    this.difficulty = args.difficulty;
-    this.shop = args.shop;
+  cave: Cave;
+  inventory: inventory;
+
+  constructor(depth: number, inventory: inventory) {
+    this.depth = depth;
+    this.cave = new Cave(depth);
+    this.shop = new Shop(inventory);
+    this.inventory = inventory;
+  }
+
+  nextLevel() {
+    return new Level(this.depth + 1, this.inventory);
   }
 }
