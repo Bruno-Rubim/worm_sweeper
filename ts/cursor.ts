@@ -2,34 +2,34 @@ import type CanvasManager from "./canvasManager.js";
 import Position from "./position.js";
 import { sprites } from "./sprite.js";
 
-export const DEFAULT = "default";
-export const PICAXE = "picaxe";
-export const FLAG = "flag";
-export const DETONATOR = "detonator";
-export const SWORD = "sword";
-export const SHIELD = "shield";
+export const CURSORDEFAULT = "cursor_default";
+export const CURSORPICAXE = "cursor_picaxe";
+export const CURSORFLAG = "cursor_flag";
+export const CURSORDETONATOR = "cursor_detonator";
+export const CURSORSWORD = "cursor_sword";
+export const CURSORSHIELD = "cursor_shield";
 
 const cursorSheetPos = {
-  [DEFAULT]: new Position(0, 0),
-  [DETONATOR]: new Position(2, 0),
-  [FLAG]: new Position(4, 0),
-  [PICAXE]: new Position(0, 1),
-  [SHIELD]: new Position(4, 1),
-  [SWORD]: new Position(6, 1),
+  [CURSORDEFAULT]: new Position(0, 0),
+  [CURSORDETONATOR]: new Position(2, 0),
+  [CURSORFLAG]: new Position(4, 0),
+  [CURSORPICAXE]: new Position(0, 1),
+  [CURSORSHIELD]: new Position(4, 1),
+  [CURSORSWORD]: new Position(6, 1),
 };
 
 export type cursorState =
-  | typeof DEFAULT
-  | typeof PICAXE
-  | typeof FLAG
-  | typeof DETONATOR
-  | typeof SWORD
-  | typeof SHIELD;
+  | typeof CURSORDEFAULT
+  | typeof CURSORPICAXE
+  | typeof CURSORFLAG
+  | typeof CURSORDETONATOR
+  | typeof CURSORSWORD
+  | typeof CURSORSHIELD;
 
 class Cursor {
   pos = new Position();
   sprite = sprites.cursor_sheet;
-  state: cursorState = DEFAULT;
+  state: cursorState = CURSORDEFAULT;
   render(canvasManager: CanvasManager) {
     canvasManager.renderSpriteFromSheet(
       this.sprite,

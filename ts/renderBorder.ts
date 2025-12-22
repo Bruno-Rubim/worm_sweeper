@@ -86,7 +86,7 @@ function renderItems(canvasManager: CanvasManager, gameState: GameState) {
 }
 
 const gameBorder = new GameObject({
-  spriteName: "game_border",
+  sprite: sprites.game_border,
   height: GAMEHEIGHT,
   width: GAMEWIDTH,
 });

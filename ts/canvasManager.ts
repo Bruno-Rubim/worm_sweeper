@@ -83,7 +83,7 @@ export default class CanvasManager {
 
   renderText(
     spriteSheet: Sprite,
-    font: string,
+    font: keyof typeof fontMaps,
     pos: Position,
     text: string,
     direction: typeof CLICKLEFT | typeof CLICKRIGHT = CLICKRIGHT
@@ -91,12 +91,18 @@ export default class CanvasManager {
     const chars = text.split("");
     const fontMap = fontMaps[font]!;
     let currentX = 0;
+    let currentY = 0;
     chars.forEach((c) => {
+      if (c == "\n") {
+        currentY += fontMap.cellHeight;
+        currentX = 0;
+        return;
+      }
       const charMap = fontMap.charMaps[c]!;
       if (direction == CLICKRIGHT) {
         this.renderSpriteFromSheet(
           spriteSheet,
-          pos.add(currentX, 0),
+          pos.add(currentX, currentY),
           fontMap.cellWidth,
           fontMap.cellHeight,
           charMap.pos

@@ -21,7 +21,7 @@ export default class GameObject {
     | undefined;
 
   constructor(args: {
-    spriteName: keyof typeof sprites;
+    sprite: Sprite;
     pos?: Position;
     width?: number;
     height?: number;
@@ -33,7 +33,7 @@ export default class GameObject {
       button: cursorClick
     ) => ObjectAction | void;
   }) {
-    this.sprite = sprites[args.spriteName];
+    this.sprite = args.sprite;
     this.pos = args.pos ?? new Position();
     this.width = args.width ?? 16;
     this.height = args.height ?? 16;

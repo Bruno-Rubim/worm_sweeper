@@ -21,12 +21,8 @@ import {
   CLICKLEFT,
   CLICKRIGHT,
 } from "../global.js";
-import {
-  ChangeCursorState,
-  ChangeScene,
-  ObjectAction,
-} from "../objectAction.js";
-import { PICAXE } from "../cursor.js";
+import { ChangeCursorState, ChangeScene } from "../objectAction.js";
+import { CURSORPICAXE } from "../cursor.js";
 import { handleMouseClick, handleMouseHover } from "../updateGame.js";
 import { sprites } from "../sprite.js";
 
@@ -38,7 +34,7 @@ export class LevelManager extends GameObject {
   constructor(gameState: GameState) {
     super({
       pos: new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
-      spriteName: "transparent_pixel",
+      sprite: sprites.transparent_pixel,
       width: 128,
       height: 128,
     });
@@ -130,7 +126,7 @@ export class LevelManager extends GameObject {
   handleHover() {
     switch (this.gameState.currentScene) {
       case "cave":
-        return new ChangeCursorState(PICAXE);
+        return new ChangeCursorState(CURSORPICAXE);
       case "shop":
         return handleMouseHover(this.gameState.level.shop!.objects);
       case "battle":

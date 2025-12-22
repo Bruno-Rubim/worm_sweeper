@@ -6,17 +6,19 @@ import {
   BORDERTHICKTOP,
   GAMEWIDTH,
 } from "../global.js";
-import { armorList, type Armor } from "../items/armor.js";
-import { consumableList, type Consumable } from "../items/consumable.js";
+import { armorDic, type Armor } from "../items/armor.js";
+import { consumableDic, type Consumable } from "../items/consumable.js";
 import { getItem, type Item } from "../items/item.js";
-import { shieldList, type Shield } from "../items/shield.js";
-import { weaponList, type Weapon } from "../items/weapon.js";
+import { shieldDic, type Shield } from "../items/shield.js";
+import { ShopItem } from "../items/shopItem.js";
+import { weaponDic, type Weapon } from "../items/weapon.js";
 import { ChangeScene } from "../objectAction.js";
 import Position from "../position.js";
+import { sprites } from "../sprite.js";
 import { utils } from "../utils.js";
 
 const exitBtn = new GameObject({
-  spriteName: "button_exit",
+  sprite: sprites.button_exit,
   pos: new Position(GAMEWIDTH - BORDERTHICKRIGHT - 16, BORDERTHICKTOP),
   clickFunction: () => {
     return new ChangeScene("cave");
@@ -31,29 +33,29 @@ const shopItemList: Item[] = [
   getItem("drill"),
 ];
 
-const shopArmorList: Armor[] = Object.values(armorList).filter(
+const shopArmorList: Armor[] = Object.values(armorDic).filter(
   (x) => x.name != "empty"
 );
 
-const shopWeaponList: Weapon[] = Object.values(weaponList).filter(
+const shopWeaponList: Weapon[] = Object.values(weaponDic).filter(
   (x) => !["empty", "wood_sword"].includes(x.name)
 );
 
-const shopShieldList: Shield[] = Object.values(shieldList).filter(
+const shopShieldList: Shield[] = Object.values(shieldDic).filter(
   (x) => !["empty", "wood_shield"].includes(x.name)
 );
 
-const shopConsList: Consumable[] = Object.values(consumableList).filter(
+const shopConsList: Consumable[] = Object.values(consumableDic).filter(
   (x) => !["empty"].includes(x.name)
 );
 
 export default class Shop {
   objects: GameObject[];
-  items: Item[];
-  armor: Armor | undefined;
-  weapon: Weapon | undefined;
-  shield: Shield | undefined;
-  consumable: Consumable;
+  items: ShopItem[];
+  armor: ShopItem | undefined;
+  weapon: ShopItem | undefined;
+  shield: ShopItem | undefined;
+  consumable: ShopItem;
   constructor(inventory: inventory) {
     const inventoryItemNames = [
       inventory.passive_1?.name,
@@ -67,24 +69,32 @@ export default class Shop {
       .shuffleArray(
         shopItemList.filter((x) => !inventoryItemNames.includes(x.name))
       )
-      .slice(0, 3);
+      .slice(0, 3)
+      .map((x) => new ShopItem(x.name, x.spriteSheetPos));
     this.items.forEach((item, i) => {
       item.pos.update(BORDERTHICKLEFT + 6 + i * 26, 28);
     });
 
-    this.armor = utils.shuffleArray(
+    const chosenarmor = utils.shuffleArray(
       shopArmorList.filter((x) => !inventoryItemNames.includes(x.name))
     )[0];
+    this.armor = new ShopItem(chosenarmor.name, chosenarmor.spriteSheetPos);
 
-    this.weapon = utils.shuffleArray(
+    const chosenWeapon = utils.shuffleArray(
       shopWeaponList.filter((x) => !inventoryItemNames.includes(x.name))
     )[0];
+    this.weapon = new ShopItem(chosenWeapon.name, chosenWeapon.spriteSheetPos);
 
-    this.shield = utils.shuffleArray(
+    const chosenShield = utils.shuffleArray(
       shopShieldList.filter((x) => !inventoryItemNames.includes(x.name))
     )[0];
+    this.shield = new ShopItem(chosenShield.name, chosenShield.spriteSheetPos);
 
-    this.consumable = utils.shuffleArray(shopConsList)[0];
+    const chosenConsumable = utils.shuffleArray(shopConsList)[0];
+    this.consumable = new ShopItem(
+      chosenConsumable.name,
+      chosenConsumable.spriteSheetPos
+    );
     this.consumable.pos.update(GAMEWIDTH - BORDERTHICKRIGHT - 28, 46);
 
     this.objects = [exitBtn, ...this.items, this.consumable];

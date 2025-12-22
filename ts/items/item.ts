@@ -1,6 +1,7 @@
 import type CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
 import Position from "../position.js";
+import { sprites } from "../sprite.js";
 
 export class Item extends GameObject {
   spriteSheetPos: Position;
@@ -9,7 +10,7 @@ export class Item extends GameObject {
   constructor(pos: Position, spriteSheetPos: Position, name: string) {
     super({
       pos: pos,
-      spriteName: "item_sheet",
+      sprite: sprites.item_sheet,
       hitboxHeight: 18,
       hitboxWidth: 18,
       hitboxPosShift: new Position(-1, -1),
@@ -33,26 +34,16 @@ export class Item extends GameObject {
   }
 }
 
-export const ITEMGOLDBUG = "gold_bug";
-export const ITEMSILVERBELL = "silver_bell";
-export const ITEMDARKCRYSTAL = "dark_crystal";
-export const ITEMDETONATOR = "detonator";
-export const ITEMDRILL = "drill";
-export const ITEMEMPTY = "empty";
-export const ITEMPICAXE = "picaxe";
-export const ITEMFLAG = "flag";
-export const ITEMBOOK = "book";
-
-const itemPosList = {
-  [ITEMGOLDBUG]: new Position(0, 4),
-  [ITEMSILVERBELL]: new Position(2, 4),
-  [ITEMDARKCRYSTAL]: new Position(4, 4),
-  [ITEMDETONATOR]: new Position(6, 4),
-  [ITEMDRILL]: new Position(8, 4),
-  [ITEMEMPTY]: new Position(14, 4),
-  [ITEMPICAXE]: new Position(0, 7),
-  [ITEMFLAG]: new Position(2, 7),
-  [ITEMBOOK]: new Position(4, 7),
+export const itemPosDic = {
+  gold_bug: new Position(0, 4),
+  silver_bell: new Position(2, 4),
+  dark_crystal: new Position(4, 4),
+  detonator: new Position(6, 4),
+  drill: new Position(8, 4),
+  empty: new Position(14, 4),
+  picaxe: new Position(0, 7),
+  flag: new Position(2, 7),
+  book: new Position(4, 7),
 };
 
 /**
@@ -62,8 +53,8 @@ const itemPosList = {
  * @returns
  */
 export function getItem(
-  itemName: keyof typeof itemPosList,
+  itemName: keyof typeof itemPosDic,
   screenPos: Position = new Position()
 ) {
-  return new Item(screenPos, itemPosList[itemName], itemName);
+  return new Item(screenPos, itemPosDic[itemName], itemName);
 }

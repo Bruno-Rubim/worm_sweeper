@@ -44,6 +44,8 @@ export const sprites = {
   item_potion_time_pointer_minute: new Sprite(
     "item_potion_time_pointer_minute"
   ),
+  letters_shop_description: new Sprite("letters_shop_description"),
+
   number_sheet: new Sprite("number_sheet"),
   numbers: new Sprite("numbers"),
   player_shadow: new Sprite("player_shadow"),

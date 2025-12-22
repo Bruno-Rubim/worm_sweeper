@@ -1,4 +1,4 @@
-import { cursor, DEFAULT, type cursorState } from "./cursor.js";
+import { cursor, CURSORDEFAULT, type cursorState } from "./cursor.js";
 import { GameManager } from "./gameManager.js";
 import type GameObject from "./gameObject.js";
 import { CLICKLEFT, CLICKRIGHT } from "./global.js";
@@ -110,7 +110,7 @@ export default function updateGame(
     }
   });
   if (!cursorChanged) {
-    changeCursorState(DEFAULT);
+    changeCursorState(CURSORDEFAULT);
   }
 
   if (inputState.mouse.clickedRight) {

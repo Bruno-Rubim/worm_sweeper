@@ -10,7 +10,7 @@ export class Consumable extends Item {
   }
 }
 
-export const consumableList = {
+export const consumableDic = {
   bomb: new Consumable(new Position(0, 0), "bomb"),
   health_potion: new Consumable(new Position(2, 0), "health_potion"),
   health_potion_big: new Consumable(new Position(4, 0), "health_potion_big"),
@@ -18,27 +18,26 @@ export const consumableList = {
   empty: new Consumable(new Position(14, 0), "empty"),
 };
 
-const pointerSheet = sprites.time_potion_pointer_sheet;
-consumableList.time_potion.render = (canvasManager: CanvasManager) => {
+consumableDic.time_potion.render = (canvasManager: CanvasManager) => {
   canvasManager.renderSpriteFromSheet(
-    consumableList.time_potion.sprite,
-    consumableList.time_potion.pos,
+    sprites.item_sheet,
+    consumableDic.time_potion.pos,
     16,
     16,
     new Position(6, 0)
   );
   canvasManager.renderSpriteFromSheet(
-    consumableList.time_potion.sprite,
-    consumableList.time_potion.pos,
+    sprites.time_potion_pointer_sheet,
+    consumableDic.time_potion.pos,
     16,
     16,
-    new Position(6, 0)
+    new Position(11, 0)
   );
   canvasManager.renderSpriteFromSheet(
-    consumableList.time_potion.sprite,
-    consumableList.time_potion.pos,
+    sprites.time_potion_pointer_sheet,
+    consumableDic.time_potion.pos,
     16,
     16,
-    new Position(6, 0)
+    new Position(2, 1)
   );
 };

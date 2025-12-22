@@ -8,7 +8,7 @@ export class Weapon extends Item {
   }
 }
 
-export const weaponList = {
+export const weaponDic = {
   wood_sword: new Weapon(new Position(0, 3), "wood_sword"),
   big_sword: new Weapon(new Position(2, 3), "big_sword"),
   dagger: new Weapon(new Position(4, 3), "dagger"),
