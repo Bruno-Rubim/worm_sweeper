@@ -1,12 +1,19 @@
 import Position from "./position.js";
 
 export default class Hitbox {
-  pos: Position;
+  objPos: Position;
+  shiftPos: Position;
   width: number;
   height: number;
 
-  constructor(args: { pos: Position; width: number; height: number }) {
-    this.pos = args.pos;
+  constructor(args: {
+    objPos: Position;
+    width: number;
+    height: number;
+    shiftPos: Position | undefined;
+  }) {
+    this.objPos = args.objPos;
+    this.shiftPos = args.shiftPos ?? new Position();
     this.width = args.width;
     this.height = args.height;
   }
@@ -17,7 +24,8 @@ export default class Hitbox {
    * @returns boolean
    */
   positionInside(targetPos: Position) {
-    const { pos, width, height } = this;
+    const pos = this.objPos.addPos(this.shiftPos);
+    const { width, height } = this;
     const { x, y } = targetPos;
     if (x < pos.x || y < pos.y) {
       return false;
@@ -28,5 +36,10 @@ export default class Hitbox {
       return false;
     }
     return true;
+  }
+
+  getPos() {
+    console.log(this.objPos);
+    return this.objPos.addPos(this.shiftPos);
   }
 }

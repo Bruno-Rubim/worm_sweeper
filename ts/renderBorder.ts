@@ -3,9 +3,9 @@ import GameObject from "./gameObject.js";
 import GameState, { type inventory } from "./gameState.js";
 import { GAMEHEIGHT, GAMEWIDTH } from "./global.js";
 import Position from "./position.js";
-import { findSprite } from "./sprites/findSprite.js";
+import { sprites } from "./sprite.js";
 
-const iconSheet = findSprite("icon_sheet");
+const iconSheet = sprites.icon_sheet;
 const iconSheetPos = {
   worm: new Position(0, 0),
   gold: new Position(1, 0),
@@ -15,7 +15,7 @@ const iconSheetPos = {
   heart: new Position(5, 0),
 };
 
-const numberSheet = findSprite("number_sheet");
+const numberSheet = sprites.number_sheet;
 
 function renderStats(canvasManager: CanvasManager, gameState: GameState) {
   canvasManager.renderSpriteFromSheet(

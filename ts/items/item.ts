@@ -4,8 +4,9 @@ import Position from "../position.js";
 
 export class Item extends GameObject {
   spriteSheetPos: Position;
+  name: string;
 
-  constructor(pos: Position, spriteSheetPos: Position) {
+  constructor(pos: Position, spriteSheetPos: Position, name: string) {
     super({
       pos: pos,
       spriteName: "item_sheet",
@@ -14,6 +15,7 @@ export class Item extends GameObject {
       hitboxPosShift: new Position(-1, -1),
     });
     this.spriteSheetPos = spriteSheetPos;
+    this.name = name;
   }
 
   render(canvasManager: CanvasManager): void {
@@ -63,5 +65,5 @@ export function getItem(
   itemName: keyof typeof itemPosList,
   screenPos: Position = new Position()
 ) {
-  return new Item(screenPos, itemPosList[itemName]);
+  return new Item(screenPos, itemPosList[itemName], itemName);
 }

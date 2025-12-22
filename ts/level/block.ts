@@ -1,5 +1,5 @@
 import Position from "../position.js";
-import { findSprite } from "../sprites/findSprite.js";
+import { sprites } from "../sprite.js";
 
 export const CONTENTEMPTY = "empty";
 export const CONTENTDOOREXIT = "door_exit";
@@ -16,7 +16,7 @@ type blockContent =
   | typeof CONTENTDOORSHOPOPEN
   | typeof CONTENTWORM;
 
-export const blockSheet = findSprite("block_sheet");
+export const blockSheet = sprites.block_sheet;
 export const blockSheetPos = {
   [CONTENTDOOREXIT]: new Position(0, 0),
   [CONTENTDOOREXITOPEN]: new Position(1, 0),

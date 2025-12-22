@@ -4,7 +4,7 @@ import Shop from "./shop.js";
 
 export default class Level {
   depth: number;
-  shop: Shop | undefined;
+  shop: Shop;
   cave: Cave;
   inventory: inventory;
 

@@ -1,4 +1,4 @@
-import Position from "../position.js";
+import Position from "./position.js";
 
 type charMap = {
   pos: Position;

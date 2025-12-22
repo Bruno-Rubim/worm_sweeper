@@ -1,10 +1,9 @@
 import type CanvasManager from "./canvasManager.js";
-import sprites, { findSprite } from "./sprites/findSprite.js";
 import Position from "./position.js";
-import type Sprite from "./sprites/sprite.js";
 import Hitbox from "./hitbox.js";
 import type { ObjectAction } from "./objectAction.js";
-import type { LEFT, RIGHT } from "./global.js";
+import type { cursorClick } from "./global.js";
+import { Sprite, sprites } from "./sprite.js";
 
 export default class GameObject {
   sprite: Sprite;
@@ -12,14 +11,14 @@ export default class GameObject {
   width: number;
   height: number;
   hitbox: Hitbox;
+  hitboxPosShift: Position | undefined;
   mouseHovering: boolean = false;
   clickFunction:
-    | ((
-        cursorPos: Position,
-        button: typeof LEFT | typeof RIGHT
-      ) => ObjectAction | void)
+    | ((cursorPos: Position, button: cursorClick) => ObjectAction | void | null)
     | undefined;
-  hoverFunction?: ((cursorPos: Position) => ObjectAction | void) | undefined;
+  hoverFunction?:
+    | ((cursorPos: Position) => ObjectAction | void | null)
+    | undefined;
 
   constructor(args: {
     spriteName: keyof typeof sprites;
@@ -31,19 +30,26 @@ export default class GameObject {
     hitboxPosShift?: Position;
     clickFunction?: (
       cursorPos: Position,
-      button: typeof LEFT | typeof RIGHT
+      button: cursorClick
     ) => ObjectAction | void;
   }) {
-    this.sprite = findSprite(args.spriteName);
+    this.sprite = sprites[args.spriteName];
     this.pos = args.pos ?? new Position();
     this.width = args.width ?? 16;
     this.height = args.height ?? 16;
+    this.hitboxPosShift = args.hitboxPosShift;
     this.hitbox = new Hitbox({
-      pos: this.pos.addPos(args.hitboxPosShift ?? new Position()),
+      objPos: this.pos,
       width: args.hitboxWidth ?? this.width,
       height: args.hitboxHeight ?? this.height,
+      shiftPos: args.hitboxPosShift,
     });
     this.clickFunction = args.clickFunction;
+  }
+
+  updatePosition(newPos: Position) {
+    this.pos = newPos;
+    this.hitbox.objPos = this.pos.addPos(this.hitboxPosShift ?? new Position());
   }
 
   render(canvasManager: CanvasManager) {

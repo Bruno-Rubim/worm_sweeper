@@ -1,6 +1,6 @@
 import type CanvasManager from "./canvasManager.js";
-import { findSprite } from "./sprites/findSprite.js";
 import Position from "./position.js";
+import { sprites } from "./sprite.js";
 
 export const DEFAULT = "default";
 export const PICAXE = "picaxe";
@@ -28,7 +28,7 @@ export type cursorState =
 
 class Cursor {
   pos = new Position();
-  sprite = findSprite("cursor_sheet");
+  sprite = sprites.cursor_sheet;
   state: cursorState = DEFAULT;
   render(canvasManager: CanvasManager) {
     canvasManager.renderSpriteFromSheet(

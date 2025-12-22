@@ -18,8 +18,8 @@ import {
   BORDERTHICKTOP,
   GAMEHEIGHT,
   GAMEWIDTH,
-  LEFT,
-  RIGHT,
+  CLICKLEFT,
+  CLICKRIGHT,
 } from "../global.js";
 import {
   ChangeCursorState,
@@ -27,9 +27,10 @@ import {
   ObjectAction,
 } from "../objectAction.js";
 import { PICAXE } from "../cursor.js";
-import { findSprite } from "../sprites/findSprite.js";
+import { handleMouseClick, handleMouseHover } from "../updateGame.js";
+import { sprites } from "../sprite.js";
 
-const shopBgSprite = findSprite("bg_shop");
+const shopBgSprite = sprites.bg_shop;
 
 export class LevelManager extends GameObject {
   gameState: GameState;
@@ -42,12 +43,12 @@ export class LevelManager extends GameObject {
       height: 128,
     });
     this.gameState = gameState;
-    this.hoverFunction = (cursorPos: Position) => {
-      return this.handleHover(cursorPos);
+    this.hoverFunction = () => {
+      return this.handleHover();
     };
     this.clickFunction = (
       cursorPos: Position,
-      button: typeof RIGHT | typeof LEFT
+      button: typeof CLICKRIGHT | typeof CLICKLEFT
     ) => {
       return this.handleClick(cursorPos, button);
     };
@@ -126,27 +127,30 @@ export class LevelManager extends GameObject {
     return this.gameState.level.cave.blockMatrix[blockPos.x]![blockPos.y]!;
   }
 
-  handleHover(cursorPos: Position) {
+  handleHover() {
     switch (this.gameState.currentScene) {
       case "cave":
         return new ChangeCursorState(PICAXE);
       case "shop":
-        break;
+        return handleMouseHover(this.gameState.level.shop!.objects);
       case "battle":
         break;
     }
   }
 
-  handleClickCave(cursorPos: Position, button: typeof RIGHT | typeof LEFT) {
+  handleClickCave(
+    cursorPos: Position,
+    button: typeof CLICKRIGHT | typeof CLICKLEFT
+  ) {
     const block = this.getBlockFromGamePos(cursorPos);
     if (!this.gameState.level.cave.started) {
       this.gameState.level.cave.start(block.gridPos);
       return;
     }
-    if (button == LEFT) {
+    if (button == CLICKLEFT) {
       if (!block.broken && !block.hidden && !block.marked) {
         this.gameState.level.cave.breakBlock(block);
-      } else {
+      } else if (block.broken) {
         switch (block.content) {
           case CONTENTDOOREXIT:
             block.content = CONTENTDOOREXITOPEN;
@@ -170,36 +174,21 @@ export class LevelManager extends GameObject {
     }
   }
 
-  handleClickShop(cursorPos: Position, button: typeof RIGHT | typeof LEFT) {
-    if (button == RIGHT) {
-      return;
-    }
-    let action: ObjectAction | void | null = null;
-    this.gameState.level.shop?.objects.forEach((obj) => {
-      if (obj.clickFunction && obj.hitbox.positionInside(cursorPos)) {
-        action = obj.clickFunction(cursorPos, button);
-        console.log(action);
-        return action;
-      }
-    });
-    if (action) {
-      return action;
-    }
-  }
-
-  handleClick(cursorPos: Position, button: typeof RIGHT | typeof LEFT) {
+  handleClick(
+    cursorPos: Position,
+    button: typeof CLICKRIGHT | typeof CLICKLEFT
+  ) {
     let action;
     switch (this.gameState.currentScene) {
       case "cave":
         action = this.handleClickCave(cursorPos, button);
         break;
       case "shop":
-        action = this.handleClickShop(cursorPos, button);
+        action = handleMouseClick(this.gameState.level.shop!.objects);
         break;
       case "battle":
         break;
     }
-    console.log(action);
     if (action instanceof ChangeScene) {
       this.gameState.currentScene = action.newScene;
     }

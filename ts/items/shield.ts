@@ -3,11 +3,13 @@ import Position from "../position.js";
 import { Item } from "./item.js";
 
 export class Shield extends Item {
-  constructor(spriteSheetPos: Position) {
-    super(new Position(GAMEWIDTH - 20, 36), spriteSheetPos);
+  constructor(spriteSheetPos: Position, name: string) {
+    super(new Position(GAMEWIDTH - 20, 36), spriteSheetPos, name);
   }
 }
 
 export const shieldList = {
-  wood_shield: new Shield(new Position(0, 1)),
+  wood_shield: new Shield(new Position(0, 1), "wood_shield"),
+  steel_shield: new Shield(new Position(2, 1), "steel_shield"),
+  jade_shield: new Shield(new Position(4, 1), "jade_shield"),
 };

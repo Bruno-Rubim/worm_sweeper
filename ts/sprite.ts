@@ -1,6 +1,25 @@
-import Sprite from "./sprite.js";
+export class Sprite {
+  src: string;
+  img: HTMLImageElement;
+  constructor(imageName: string) {
+    if (Math.floor(Math.random() * 1000000) == 999) {
+      imageName = "9s";
+    }
+    this.src = "./images/" + imageName + ".png";
+    this.img = new Image();
+  }
 
-const sprites = {
+  load() {
+    const { src, img } = this;
+    return new Promise((done, fail) => {
+      img.onload = () => done(img);
+      img.onerror = fail;
+      img.src = src;
+    });
+  }
+}
+
+export const sprites = {
   "9s": new Sprite("9s"),
   battle_bar: new Sprite("battle_bar"),
   bg_battle: new Sprite("bg_battle"),
@@ -28,6 +47,7 @@ const sprites = {
   number_sheet: new Sprite("number_sheet"),
   numbers: new Sprite("numbers"),
   player_shadow: new Sprite("player_shadow"),
+  time_potion_pointer_sheet: new Sprite("time_potion_pointer_sheet"),
   screen_defeat: new Sprite("screen_defeat"),
   screen_paused: new Sprite("screen_paused"),
   transparent_pixel: new Sprite("transparent_pixel"),
@@ -39,11 +59,4 @@ const spriteArr = Object.values(sprites);
 const promises = spriteArr.map((sprite) => sprite.load());
 await Promise.all(promises);
 
-export default sprites;
-
-export function findSprite(spriteName: keyof typeof sprites) {
-  if (Math.floor(Math.random() * 1000000) == 999) {
-    spriteName = "9s";
-  }
-  return sprites[spriteName];
-}
+sprites;

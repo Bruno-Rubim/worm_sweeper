@@ -1,7 +1,7 @@
-import { fontMaps } from "./sprites/fontMaps.js";
-import { GAMEHEIGHT, GAMEWIDTH, LEFT, RIGHT } from "./global.js";
+import { fontMaps } from "./fontMaps.js";
+import { GAMEHEIGHT, GAMEWIDTH, CLICKLEFT, CLICKRIGHT } from "./global.js";
 import Position from "./position.js";
-import type Sprite from "./sprites/sprite.js";
+import type { Sprite } from "./sprite.js";
 
 export default class CanvasManager {
   canvasElement = document.querySelector("canvas")!;
@@ -86,14 +86,14 @@ export default class CanvasManager {
     font: string,
     pos: Position,
     text: string,
-    direction: typeof LEFT | typeof RIGHT = RIGHT
+    direction: typeof CLICKLEFT | typeof CLICKRIGHT = CLICKRIGHT
   ) {
     const chars = text.split("");
     const fontMap = fontMaps[font]!;
     let currentX = 0;
     chars.forEach((c) => {
       const charMap = fontMap.charMaps[c]!;
-      if (direction == RIGHT) {
+      if (direction == CLICKRIGHT) {
         this.renderSpriteFromSheet(
           spriteSheet,
           pos.add(currentX, 0),

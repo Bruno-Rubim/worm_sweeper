@@ -7,6 +7,16 @@ export default class Position {
     this.y = y ?? 0;
   }
 
+  update(x: number | Position, y: number) {
+    if (x instanceof Position) {
+      this.x = x.x;
+      this.y = x.y;
+      return;
+    }
+    this.x = x;
+    this.y = y;
+  }
+
   /**
    *
    * @param pos

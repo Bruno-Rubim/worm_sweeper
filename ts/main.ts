@@ -10,7 +10,7 @@ const gameManager = new GameManager();
 bindListeners(canvasManager.canvasElement);
 
 function frameLoop() {
-  updateGame(canvasManager, gameManager);
+  updateGame(canvasManager.renderScale, gameManager);
   renderFrame(canvasManager, gameManager);
   requestAnimationFrame(frameLoop);
 }
