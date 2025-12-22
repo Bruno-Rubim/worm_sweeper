@@ -18,8 +18,8 @@ class Utils {
     const holdArr = [...arr];
     const shuffle: any[] = [];
     while (holdArr.length > 0) {
-      let r = this.randomArrayId(arr);
-      shuffle.push(arr[r]);
+      let r = this.randomArrayId(holdArr);
+      shuffle.push(holdArr[r]);
       holdArr.splice(r, 1);
     }
     return shuffle;
