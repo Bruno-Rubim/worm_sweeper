@@ -136,18 +136,18 @@ const shopItemSpecs: Record<itemName, itemSpecs> = {
 };
 
 export class ShopItem extends GameObject {
-  itemName: string;
+  itemName: itemName;
   spriteSheetPos: Position;
-  name: string;
+  shopName: string;
   cost: number;
   desc: string;
-  constructor(name: itemName, spriteSheetPos: Position) {
+  constructor(itemName: itemName, spriteSheetPos: Position) {
     super({ pos: new Position(), sprite: sprites.item_sheet });
-    this.itemName = name;
+    this.itemName = itemName;
     this.spriteSheetPos = spriteSheetPos;
-    this.name = shopItemSpecs[name].name;
-    this.cost = shopItemSpecs[name].cost;
-    this.desc = shopItemSpecs[name].desc;
+    this.shopName = shopItemSpecs[itemName].name;
+    this.cost = shopItemSpecs[itemName].cost;
+    this.desc = shopItemSpecs[itemName].desc;
     this.clickFunction = () => {
       return new BuyShopItem(this);
     };
@@ -160,12 +160,28 @@ export class ShopItem extends GameObject {
       16,
       this.spriteSheetPos.add(this.mouseHovering ? 1 : 0, 0)
     );
+    if (this.itemName == "time_potion") {
+      canvasManager.renderSpriteFromSheet(
+        sprites.time_potion_pointer_sheet,
+        this.pos,
+        16,
+        16,
+        new Position(11, 0)
+      );
+      canvasManager.renderSpriteFromSheet(
+        sprites.time_potion_pointer_sheet,
+        this.pos,
+        16,
+        16,
+        new Position(2, 1)
+      );
+    }
     if (this.mouseHovering) {
       canvasManager.renderText(
         sprites.letters_shop_description,
         "shop_description",
         new Position(27, 95),
-        this.name + "\n" + this.desc
+        this.shopName + "\n" + this.desc
       );
     }
   }
