@@ -10,6 +10,6 @@ export class Shield extends Item {
 
 export const shieldDic = {
   wood_shield: new Shield(new Position(0, 1), "wood_shield"),
-  steel_shield: new Shield(new Position(2, 1), "steel_shield"),
-  jade_shield: new Shield(new Position(4, 1), "jade_shield"),
+  jade_shield: new Shield(new Position(2, 1), "jade_shield"),
+  steel_shield: new Shield(new Position(4, 1), "steel_shield"),
 };

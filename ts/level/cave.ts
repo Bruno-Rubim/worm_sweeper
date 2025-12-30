@@ -71,54 +71,54 @@ export default class Cave {
     }
   }
 
-  getSurrBlocks(pos: Position): Block[] {
+  getSurrBlocks(gridPos: Position): Block[] {
     let surrBlocks: Block[] = [];
-    if (pos.x != 0) {
-      surrBlocks.push(this.blockMatrix[pos.x - 1]![pos.y]!);
-      if (pos.y != 0) {
-        surrBlocks.push(this.blockMatrix[pos.x - 1]![pos.y - 1]!);
+    if (gridPos.x != 0) {
+      surrBlocks.push(this.blockMatrix[gridPos.x - 1]![gridPos.y]!);
+      if (gridPos.y != 0) {
+        surrBlocks.push(this.blockMatrix[gridPos.x - 1]![gridPos.y - 1]!);
       }
     }
-    if (pos.y != 0) {
-      surrBlocks.push(this.blockMatrix[pos.x]![pos.y - 1]!);
-      if (pos.x != this.size - 1) {
-        surrBlocks.push(this.blockMatrix[pos.x + 1]![pos.y - 1]!);
+    if (gridPos.y != 0) {
+      surrBlocks.push(this.blockMatrix[gridPos.x]![gridPos.y - 1]!);
+      if (gridPos.x != this.size - 1) {
+        surrBlocks.push(this.blockMatrix[gridPos.x + 1]![gridPos.y - 1]!);
       }
     }
-    if (pos.x != this.size - 1) {
-      surrBlocks.push(this.blockMatrix[pos.x + 1]![pos.y]!);
-      if (pos.y != this.size - 1) {
-        surrBlocks.push(this.blockMatrix[pos.x + 1]![pos.y + 1]!);
+    if (gridPos.x != this.size - 1) {
+      surrBlocks.push(this.blockMatrix[gridPos.x + 1]![gridPos.y]!);
+      if (gridPos.y != this.size - 1) {
+        surrBlocks.push(this.blockMatrix[gridPos.x + 1]![gridPos.y + 1]!);
       }
     }
-    if (pos.y != this.size - 1) {
-      surrBlocks.push(this.blockMatrix[pos.x]![pos.y + 1]!);
-      if (pos.x != 0) {
-        surrBlocks.push(this.blockMatrix[pos.x - 1]![pos.y + 1]!);
+    if (gridPos.y != this.size - 1) {
+      surrBlocks.push(this.blockMatrix[gridPos.x]![gridPos.y + 1]!);
+      if (gridPos.x != 0) {
+        surrBlocks.push(this.blockMatrix[gridPos.x - 1]![gridPos.y + 1]!);
       }
     }
     return surrBlocks;
   }
 
-  getAdjcBlocks(pos: Position) {
+  getAdjcBlocks(gridPos: Position) {
     let surrBlocks = [];
-    if (pos.x != 0) {
-      surrBlocks.push(this.blockMatrix[pos.x - 1]![pos.y]!);
+    if (gridPos.x != 0) {
+      surrBlocks.push(this.blockMatrix[gridPos.x - 1]![gridPos.y]!);
     }
-    if (pos.y != 0) {
-      surrBlocks.push(this.blockMatrix[pos.x]![pos.y - 1]!);
+    if (gridPos.y != 0) {
+      surrBlocks.push(this.blockMatrix[gridPos.x]![gridPos.y - 1]!);
     }
-    if (pos.x != this.size - 1) {
-      surrBlocks.push(this.blockMatrix[pos.x + 1]![pos.y]!);
+    if (gridPos.x != this.size - 1) {
+      surrBlocks.push(this.blockMatrix[gridPos.x + 1]![gridPos.y]!);
     }
-    if (pos.y != this.size - 1) {
-      surrBlocks.push(this.blockMatrix[pos.x]![pos.y + 1]!);
+    if (gridPos.y != this.size - 1) {
+      surrBlocks.push(this.blockMatrix[gridPos.x]![gridPos.y + 1]!);
     }
     return surrBlocks;
   }
 
-  revealAdjc(pos: Position) {
-    this.getAdjcBlocks(pos).forEach((block) => {
+  revealAdjc(gridPos: Position) {
+    this.getAdjcBlocks(gridPos).forEach((block) => {
       if (block == undefined) {
         return;
       }
@@ -167,29 +167,29 @@ export default class Cave {
   }
 
   breakBlock(block: Block) {
-    // if (block.marker != null) {
-    //   return;
-    // }
     block.broken = true;
     if (block.hasGold) {
       //   gameManager.gold++;
     }
     this.checkClear();
     this.revealAdjc(block.gridPos);
-    // if (block.wormLevel == 0 && block.content != WORM) {
-    //   if (gameManager.inventory.includes(drillItem)) {
-    //     block.breakSurr();
-    //   }
-    // }
-    if (block.content == CONTENTWORM) {
-      //   setTimeout(() => {
-      //     block.content = null;
-      //     this.startBattle();
-      //   }, 500);
-    } else {
+
+    if (block.content != CONTENTWORM) {
       this.blockCount--;
     }
     this.updateBlockStats(block);
+  }
+
+  breakConnectedEmpty(block: Block) {
+    if (block.threatLevel == 0 && !block.marked) {
+      this.breakSurrBlocks(block.gridPos);
+    }
+    this.getSurrBlocks(block.gridPos).forEach((b) => {
+      if (b.threatLevel == 0 && !b.drilled) {
+        b.drilled = true;
+        this.breakConnectedEmpty(b);
+      }
+    });
   }
 
   markBlock(block: Block) {
@@ -274,7 +274,7 @@ export default class Cave {
     this.emptySurrBlocks(block.gridPos);
   }
 
-  start(startPos: Position) {
+  start(startPos: Position, hasDrill: boolean) {
     this.fillEmptyBlocks();
     const firstBlock = this.blockMatrix[startPos.x]![startPos.y]!;
     firstBlock.starter = true;
@@ -291,5 +291,8 @@ export default class Cave {
     this.placeWorms();
     this.breakSurrBlocks(firstBlock.gridPos);
     this.started = true;
+    if (hasDrill) {
+      this.breakConnectedEmpty(firstBlock);
+    }
   }
 }

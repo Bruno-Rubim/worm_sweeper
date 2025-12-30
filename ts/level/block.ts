@@ -39,6 +39,7 @@ export default class Block {
   content: blockContent = CONTENTEMPTY;
   starter = false;
   marked = false;
+  drilled = false;
   threatLevel = 0;
   markerLevel = 0;
   constructor(args: { gridPos: Position; gamePos: Position }) {

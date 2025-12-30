@@ -5,13 +5,9 @@ import { sprites } from "../sprite.js";
 
 export class Item extends GameObject {
   spriteSheetPos: Position;
-  name: keyof typeof itemPosDic;
+  name: string;
 
-  constructor(
-    pos: Position,
-    spriteSheetPos: Position,
-    name: keyof typeof itemPosDic
-  ) {
+  constructor(pos: Position, spriteSheetPos: Position, name: string) {
     super({
       pos: pos,
       sprite: sprites.item_sheet,

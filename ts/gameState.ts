@@ -50,7 +50,7 @@ export default class GameState {
     this.level = new Level(0, this.inventory);
   }
 
-  get passiveItemNames(): (keyof typeof itemPosDic)[] {
+  get passiveItemNames() {
     return [
       this.inventory.passive_1.name,
       this.inventory.passive_2.name,
@@ -59,5 +59,9 @@ export default class GameState {
       this.inventory.passive_5.name,
       this.inventory.passive_6.name,
     ];
+  }
+
+  hasItem(itemName: string) {
+    return this.passiveItemNames.includes(itemName);
   }
 }

@@ -137,7 +137,7 @@ export class LevelManager extends GameObject {
     const block = this.getBlockFromGamePos(cursorPos);
     if (
       block.broken &&
-      this.gameState.passiveItemNames.includes("detonator") &&
+      this.gameState.hasItem("detonator") &&
       block.threatLevel > 0 &&
       block.threatLevel == block.markerLevel
     ) {
@@ -163,17 +163,22 @@ export class LevelManager extends GameObject {
   ) {
     const block = this.getBlockFromGamePos(cursorPos);
     if (!this.gameState.level.cave.started) {
-      this.gameState.level.cave.start(block.gridPos);
+      this.gameState.level.cave.start(
+        block.gridPos,
+        this.gameState.hasItem("drill")
+      );
       return;
     }
     if (button == CLICKLEFT) {
       if (
         !block.broken &&
-        (!block.hidden ||
-          this.gameState.passiveItemNames.includes("dark_crystal")) &&
+        (!block.hidden || this.gameState.hasItem("dark_crystal")) &&
         !block.marked
       ) {
         this.gameState.level.cave.breakBlock(block);
+        if (this.gameState.hasItem("drill") && block.threatLevel == 0) {
+          this.gameState.level.cave.breakConnectedEmpty(block);
+        }
       } else if (block.broken) {
         switch (block.content) {
           case CONTENTDOOREXIT:
@@ -182,7 +187,10 @@ export class LevelManager extends GameObject {
           case CONTENTDOOREXITOPEN:
             this.gameState.time += 60;
             this.gameState.level = this.gameState.level.nextLevel();
-            this.gameState.level.cave.start(block.gridPos);
+            this.gameState.level.cave.start(
+              block.gridPos,
+              this.gameState.hasItem("drill")
+            );
             break;
           case CONTENTDOORSHOP:
             block.content = CONTENTDOORSHOPOPEN;
@@ -191,12 +199,14 @@ export class LevelManager extends GameObject {
             return new ChangeScene("shop");
           case CONTENTEMPTY:
             if (
-              this.gameState.passiveItemNames.includes("detonator") &&
+              this.gameState.hasItem("detonator") &&
               block.threatLevel > 0 &&
               block.threatLevel == block.markerLevel
             ) {
-              console.log("detonating");
               this.gameState.level.cave.breakSurrBlocks(block.gridPos);
+              if (this.gameState.hasItem("drill")) {
+                this.gameState.level.cave.breakConnectedEmpty(block);
+              }
             }
             break;
         }

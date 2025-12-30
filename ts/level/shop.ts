@@ -1,3 +1,4 @@
+import CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
 import type { inventory } from "../gameState.js";
 import {
@@ -24,6 +25,15 @@ const exitBtn = new GameObject({
     return new ChangeScene("cave");
   },
 });
+exitBtn.render = (canvasManager: CanvasManager) => {
+  canvasManager.renderSpriteFromSheet(
+    exitBtn.sprite,
+    exitBtn.pos,
+    16,
+    16,
+    new Position().add(exitBtn.mouseHovering ? 1 : 0, 0)
+  );
+};
 
 const shopItemList: Item[] = [
   getItem("gold_bug"),
