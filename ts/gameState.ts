@@ -1,6 +1,6 @@
 import { armorDic, type Armor } from "./items/armor.js";
 import { consumableDic, type Consumable } from "./items/consumable.js";
-import { Item, getItem } from "./items/item.js";
+import { Item, getItem, itemPosDic } from "./items/item.js";
 import { shieldDic, type Shield } from "./items/shield.js";
 import { weaponDic, type Weapon } from "./items/weapon.js";
 import Position from "./position.js";
@@ -48,5 +48,16 @@ export default class GameState {
     this.gold = 0;
     this.time = 0;
     this.level = new Level(0, this.inventory);
+  }
+
+  get passiveItemNames(): (keyof typeof itemPosDic)[] {
+    return [
+      this.inventory.passive_1.name,
+      this.inventory.passive_2.name,
+      this.inventory.passive_3.name,
+      this.inventory.passive_4.name,
+      this.inventory.passive_5.name,
+      this.inventory.passive_6.name,
+    ];
   }
 }

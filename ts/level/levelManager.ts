@@ -154,7 +154,12 @@ export class LevelManager extends GameObject {
       return;
     }
     if (button == CLICKLEFT) {
-      if (!block.broken && !block.hidden && !block.marked) {
+      if (
+        !block.broken &&
+        (!block.hidden ||
+          this.gameState.passiveItemNames.includes("dark_crystal")) &&
+        !block.marked
+      ) {
         this.gameState.level.cave.breakBlock(block);
       } else if (block.broken) {
         switch (block.content) {
