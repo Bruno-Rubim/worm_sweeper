@@ -183,7 +183,7 @@ export class LevelManager extends GameObject {
     if (!this.gameState.level.cave.started) {
       this.gameState.level.cave.start(
         block.gridPos,
-        this.gameState.hasItem("drill")
+        this.gameState.passiveItemNames
       );
       return;
     }
@@ -207,7 +207,7 @@ export class LevelManager extends GameObject {
             this.gameState.level = this.gameState.level.nextLevel();
             this.gameState.level.cave.start(
               block.gridPos,
-              this.gameState.hasItem("drill")
+              this.gameState.passiveItemNames
             );
             break;
           case CONTENTDOORSHOP:

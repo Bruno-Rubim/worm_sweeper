@@ -9,6 +9,7 @@ export default class Cave {
   difficulty: number;
   size: number;
   hasShop: boolean;
+  goldChance = 1.7;
   wormQuantity: number;
   wormsLeft: number;
   blockCount: number;
@@ -59,16 +60,21 @@ export default class Cave {
   }
 
   placeGold() {
+    let c = 0;
     for (let i = 0; i < this.size; i++) {
       for (let j = 0; j < this.size; j++) {
         const block = this.blockMatrix[i]![j]!;
         if (block.starter) {
           continue;
         }
-        const rngGold = Math.floor(Math.random() * 1.7);
+        const rngGold = Math.floor(Math.random() * this.goldChance);
         block.hasGold = rngGold >= 1;
+        if (rngGold >= 1) {
+          c++;
+        }
       }
     }
+    console.log("gold:", c);
   }
 
   getSurrBlocks(gridPos: Position): Block[] {
@@ -274,7 +280,11 @@ export default class Cave {
     this.emptySurrBlocks(block.gridPos);
   }
 
-  start(startPos: Position, hasDrill: boolean) {
+  start(startPos: Position, passiveItemNames: string[]) {
+    if (passiveItemNames.includes("gold_bug")) {
+      this.wormQuantity = Math.ceil(this.wormQuantity * 1.3);
+      this.goldChance += 0.3;
+    }
     this.fillEmptyBlocks();
     const firstBlock = this.blockMatrix[startPos.x]![startPos.y]!;
     firstBlock.starter = true;
@@ -291,8 +301,9 @@ export default class Cave {
     this.placeWorms();
     this.breakSurrBlocks(firstBlock.gridPos);
     this.started = true;
-    if (hasDrill) {
+    if (passiveItemNames.includes("drill")) {
       this.breakConnectedEmpty(firstBlock);
     }
+    console.log("worms:", this.wormQuantity);
   }
 }
