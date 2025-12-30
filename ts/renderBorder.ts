@@ -29,7 +29,7 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
   canvasManager.renderText(
     "numbers_blue",
     new Position(14, 6),
-    gameState.time.toString()
+    Math.floor(gameState.timer.secondsRemaining).toString()
   );
 
   canvasManager.renderSpriteFromSheet(

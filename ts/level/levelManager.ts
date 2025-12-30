@@ -185,8 +185,10 @@ export class LevelManager extends GameObject {
         block.gridPos,
         this.gameState.passiveItemNames
       );
+      this.gameState.timer.pause();
       return;
     }
+
     if (button == CLICKLEFT) {
       if (
         !block.broken &&
@@ -206,7 +208,6 @@ export class LevelManager extends GameObject {
             block.content = CONTENTDOOREXITOPEN;
             break;
           case CONTENTDOOREXITOPEN:
-            this.gameState.time += 60;
             this.gameState.level = this.gameState.level.nextLevel();
             this.gameState.level.cave.start(
               block.gridPos,
@@ -255,6 +256,7 @@ export class LevelManager extends GameObject {
         break;
     }
     if (action instanceof ChangeScene) {
+      this.gameState.timer.pause();
       this.gameState.currentScene = action.newScene;
     } else if (action instanceof BuyShopItem) {
       if (action.shopItem.cost > this.gameState.gold) {
