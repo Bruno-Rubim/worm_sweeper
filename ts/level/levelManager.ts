@@ -26,7 +26,7 @@ import {
   ChangeCursorState,
   ChangeScene,
 } from "../objectAction.js";
-import { CURSORPICAXE } from "../cursor.js";
+import { CURSORDETONATOR, CURSORPICAXE } from "../cursor.js";
 import { handleMouseClick, handleMouseHover } from "../updateGame.js";
 import { sprites } from "../sprite.js";
 import { Armor, armorDic } from "../items/armor.js";
@@ -47,8 +47,8 @@ export class LevelManager extends GameObject {
       height: 128,
     });
     this.gameState = gameState;
-    this.hoverFunction = () => {
-      return this.handleHover();
+    this.hoverFunction = (cursorPos: Position) => {
+      return this.handleHover(cursorPos);
     };
     this.clickFunction = (
       cursorPos: Position,
@@ -133,10 +133,23 @@ export class LevelManager extends GameObject {
     return this.gameState.level.cave.blockMatrix[blockPos.x]![blockPos.y]!;
   }
 
-  handleHover() {
+  handleMouseHoverCave(cursorPos: Position) {
+    const block = this.getBlockFromGamePos(cursorPos);
+    if (
+      block.broken &&
+      this.gameState.passiveItemNames.includes("detonator") &&
+      block.threatLevel > 0 &&
+      block.threatLevel == block.markerLevel
+    ) {
+      return new ChangeCursorState(CURSORDETONATOR);
+    }
+    return new ChangeCursorState(CURSORPICAXE);
+  }
+
+  handleHover(cursorPos: Position) {
     switch (this.gameState.currentScene) {
       case "cave":
-        return new ChangeCursorState(CURSORPICAXE);
+        return this.handleMouseHoverCave(cursorPos);
       case "shop":
         return handleMouseHover(this.gameState.level.shop!.objects);
       case "battle":
@@ -176,6 +189,16 @@ export class LevelManager extends GameObject {
             break;
           case CONTENTDOORSHOPOPEN:
             return new ChangeScene("shop");
+          case CONTENTEMPTY:
+            if (
+              this.gameState.passiveItemNames.includes("detonator") &&
+              block.threatLevel > 0 &&
+              block.threatLevel == block.markerLevel
+            ) {
+              console.log("detonating");
+              this.gameState.level.cave.breakSurrBlocks(block.gridPos);
+            }
+            break;
         }
       }
     } else {

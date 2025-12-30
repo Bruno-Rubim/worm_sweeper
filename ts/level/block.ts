@@ -40,6 +40,7 @@ export default class Block {
   starter = false;
   marked = false;
   threatLevel = 0;
+  markerLevel = 0;
   constructor(args: { gridPos: Position; gamePos: Position }) {
     this.gridPos = args.gridPos;
     this.gamePos = args.gamePos;

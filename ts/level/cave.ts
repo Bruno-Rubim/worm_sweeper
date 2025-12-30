@@ -128,14 +128,19 @@ export default class Cave {
     });
   }
 
-  updateBlockThreatLevel(block: Block) {
+  updateBlockStats(block: Block) {
     let threatLevel = 0;
+    let markerLevel = 0;
     this.getSurrBlocks(block.gridPos).forEach((b) => {
       if (b.content == CONTENTWORM) {
         threatLevel++;
       }
+      if (b.marked) {
+        markerLevel++;
+      }
     });
     block.threatLevel = threatLevel;
+    block.markerLevel = markerLevel;
   }
 
   countBrokenBlocks() {
@@ -184,11 +189,14 @@ export default class Cave {
     } else {
       this.blockCount--;
     }
-    this.updateBlockThreatLevel(block);
+    this.updateBlockStats(block);
   }
 
   markBlock(block: Block) {
     block.marked = !block.marked;
+    this.getSurrBlocks(block.gridPos).forEach((b) => {
+      this.updateBlockStats(b);
+    });
     if (block.marked) {
       this.wormsLeft--;
     } else {
@@ -199,7 +207,7 @@ export default class Cave {
   breakSurrBlocks(pos: Position) {
     const surrBlocks = this.getSurrBlocks(pos);
     surrBlocks.forEach((block) => {
-      if (block.broken) {
+      if (block.broken || block.marked) {
         return;
       }
       this.breakBlock(block);
