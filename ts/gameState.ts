@@ -1,6 +1,6 @@
 import { armorDic, type Armor } from "./items/armor.js";
 import { consumableDic, type Consumable } from "./items/consumable.js";
-import { Item, getItem, itemPosDic } from "./items/item.js";
+import { Item, getItem } from "./items/item.js";
 import { shieldDic, type Shield } from "./items/shield.js";
 import { weaponDic, type Weapon } from "./items/weapon.js";
 import Position from "./position.js";
@@ -24,7 +24,7 @@ export type inventory = {
 };
 
 export default class GameState {
-  gold: number;
+  gold: number = 0;
   time: number;
   level: Level;
   inventory: inventory = {

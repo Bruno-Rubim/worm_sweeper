@@ -1,4 +1,5 @@
 import Position from "./position.js";
+import { sprites, type Sprite } from "./sprite.js";
 
 type charMap = {
   pos: Position;
@@ -6,6 +7,7 @@ type charMap = {
 };
 
 type fontMap = {
+  spriteSheet: Sprite;
   cellWidth: number;
   cellHeight: number;
   charMaps: Record<string, charMap>;
@@ -13,6 +15,7 @@ type fontMap = {
 
 export const fontMaps: Record<string, fontMap> = {
   shop_description: {
+    spriteSheet: sprites.letters_shop_description,
     cellHeight: 9,
     cellWidth: 9,
     charMaps: {
@@ -279,6 +282,7 @@ export const fontMaps: Record<string, fontMap> = {
     },
   },
   numbers_yellow: {
+    spriteSheet: sprites.number_sheet,
     cellHeight: 8,
     cellWidth: 8,
     charMaps: {
@@ -333,6 +337,7 @@ export const fontMaps: Record<string, fontMap> = {
     },
   },
   numbers_red: {
+    spriteSheet: sprites.number_sheet,
     cellHeight: 8,
     cellWidth: 8,
     charMaps: {
@@ -387,6 +392,7 @@ export const fontMaps: Record<string, fontMap> = {
     },
   },
   numbers_lime: {
+    spriteSheet: sprites.number_sheet,
     cellHeight: 8,
     cellWidth: 8,
     charMaps: {
@@ -441,6 +447,7 @@ export const fontMaps: Record<string, fontMap> = {
     },
   },
   numbers_green: {
+    spriteSheet: sprites.number_sheet,
     cellHeight: 8,
     cellWidth: 8,
     charMaps: {
@@ -495,6 +502,7 @@ export const fontMaps: Record<string, fontMap> = {
     },
   },
   numbers_gray: {
+    spriteSheet: sprites.number_sheet,
     cellHeight: 8,
     cellWidth: 8,
     charMaps: {
@@ -549,6 +557,7 @@ export const fontMaps: Record<string, fontMap> = {
     },
   },
   numbers_blue: {
+    spriteSheet: sprites.number_sheet,
     cellHeight: 8,
     cellWidth: 8,
     charMaps: {
@@ -603,6 +612,7 @@ export const fontMaps: Record<string, fontMap> = {
     },
   },
   numbers_brown: {
+    spriteSheet: sprites.number_sheet,
     cellHeight: 8,
     cellWidth: 8,
     charMaps: {
@@ -657,6 +667,7 @@ export const fontMaps: Record<string, fontMap> = {
     },
   },
   numbers_gold: {
+    spriteSheet: sprites.number_sheet,
     cellHeight: 8,
     cellWidth: 8,
     charMaps: {

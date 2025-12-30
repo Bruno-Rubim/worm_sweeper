@@ -82,7 +82,6 @@ export default class CanvasManager {
   }
 
   renderText(
-    spriteSheet: Sprite,
     font: keyof typeof fontMaps,
     pos: Position,
     text: string,
@@ -101,7 +100,7 @@ export default class CanvasManager {
       const charMap = fontMap.charMaps[c]!;
       if (direction == CLICKRIGHT) {
         this.renderSpriteFromSheet(
-          spriteSheet,
+          fontMap.spriteSheet,
           pos.add(currentX, currentY),
           fontMap.cellWidth,
           fontMap.cellHeight,

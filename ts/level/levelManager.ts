@@ -194,6 +194,9 @@ export class LevelManager extends GameObject {
         !block.marked
       ) {
         this.gameState.level.cave.breakBlock(block);
+        if (block.hasGold) {
+          this.gameState.gold++;
+        }
         if (this.gameState.hasItem("drill") && block.threatLevel == 0) {
           this.gameState.level.cave.breakConnectedEmpty(block);
         }
@@ -254,8 +257,12 @@ export class LevelManager extends GameObject {
     if (action instanceof ChangeScene) {
       this.gameState.currentScene = action.newScene;
     } else if (action instanceof BuyShopItem) {
-      const inventory = this.gameState.inventory;
+      if (action.shopItem.cost > this.gameState.gold) {
+        return;
+      }
+      this.gameState.gold -= action.shopItem.cost;
       const item = action.shopItem.item;
+      const inventory = this.gameState.inventory;
       if (item instanceof Armor) {
         inventory.armor = item;
         action.shopItem.hidden = true;

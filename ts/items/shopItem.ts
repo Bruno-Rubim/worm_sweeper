@@ -26,13 +26,13 @@ type itemSpecs = {
 const shopItemSpecs: Record<itemName, itemSpecs> = {
   big_sword: {
     name: "Big Sword",
-    cost: 0,
+    cost: 52,
     desc: "0",
     item: weaponDic.big_sword,
   },
   bomb: {
     name: "Bomb",
-    cost: 0,
+    cost: 13,
     desc: "0",
     item: consumableDic.bomb,
   },
@@ -44,31 +44,31 @@ const shopItemSpecs: Record<itemName, itemSpecs> = {
   },
   chainmail: {
     name: "Chainmail",
-    cost: 0,
+    cost: 50,
     desc: "0",
     item: armorDic.chainmail,
   },
   dagger: {
     name: "Dagger",
-    cost: 0,
+    cost: 37,
     desc: "0",
     item: weaponDic.dagger,
   },
   dark_crystal: {
     name: "Dark Crystal",
-    cost: 0,
+    cost: 25,
     desc: "0",
     item: getItem("dark_crystal"),
   },
   detonator: {
     name: "Detonator",
-    cost: 0,
+    cost: 20,
     desc: "0",
     item: getItem("detonator"),
   },
   drill: {
     name: "Drill",
-    cost: 0,
+    cost: 36,
     desc: "0",
     item: getItem("drill"),
   },
@@ -86,25 +86,25 @@ const shopItemSpecs: Record<itemName, itemSpecs> = {
   },
   gold_bug: {
     name: "Gold Bug",
-    cost: 0,
+    cost: 20,
     desc: "0",
     item: getItem("gold_bug"),
   },
   health_potion: {
     name: "Health Potion",
-    cost: 0,
+    cost: 10,
     desc: "0",
     item: consumableDic.health_potion,
   },
   health_potion_big: {
     name: "Big Health Potion",
-    cost: 0,
+    cost: 15,
     desc: "0",
     item: consumableDic.health_potion_big,
   },
   jade_shield: {
     name: "Jade Shield",
-    cost: 0,
+    cost: 30,
     desc: "0",
     item: shieldDic.jade_shield,
   },
@@ -116,31 +116,31 @@ const shopItemSpecs: Record<itemName, itemSpecs> = {
   },
   silver_bell: {
     name: "Silver Bell",
-    cost: 0,
+    cost: 38,
     desc: "0",
     item: getItem("silver_bell"),
   },
   steel_shield: {
     name: "Steel Shield",
-    cost: 0,
+    cost: 35,
     desc: "0",
     item: shieldDic.steel_shield,
   },
   swift_vest: {
     name: "Swift Vest",
-    cost: 0,
+    cost: 40,
     desc: "0",
     item: armorDic.swift_vest,
   },
   time_blade: {
     name: "Time Blade",
-    cost: 0,
+    cost: 55,
     desc: "0",
     item: weaponDic.time_blade,
   },
   time_potion: {
     name: "Time Potion",
-    cost: 0,
+    cost: 10,
     desc: "0",
     item: consumableDic.time_potion,
   },
@@ -205,10 +205,19 @@ export class ShopItem extends GameObject {
     }
     if (this.mouseHovering) {
       canvasManager.renderText(
-        sprites.letters_shop_description,
         "shop_description",
         new Position(27, 95),
         this.shopName + "\n" + this.desc
+      );
+      canvasManager.renderText(
+        "shop_description",
+        new Position(112, 95),
+        "Buy: "
+      );
+      canvasManager.renderText(
+        "numbers_gold",
+        new Position(136, 95),
+        this.cost.toString()
       );
     }
   }

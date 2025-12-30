@@ -26,7 +26,6 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
     iconSheetPos.clock
   );
   canvasManager.renderText(
-    numberSheet,
     "numbers_blue",
     new Position(14, 6),
     gameState.time.toString()
@@ -40,7 +39,6 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
     iconSheetPos.worm
   );
   canvasManager.renderText(
-    numberSheet,
     "numbers_red",
     new Position(64, 6),
     gameState.level.cave.wormsLeft.toString()
@@ -54,7 +52,6 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
     iconSheetPos.block
   );
   canvasManager.renderText(
-    numberSheet,
     "numbers_brown",
     new Position(GAMEWIDTH - 69, 6),
     gameState.level.cave.blockCount.toString()
@@ -68,7 +65,6 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
     iconSheetPos.gold
   );
   canvasManager.renderText(
-    numberSheet,
     "numbers_gold",
     new Position(GAMEWIDTH - 19, 6),
     gameState.gold.toString()
