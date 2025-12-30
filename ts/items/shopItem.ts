@@ -194,23 +194,27 @@ export class ShopItem extends GameObject {
       this.spriteSheetPos.add(this.mouseHovering ? 1 : 0, 0)
     );
     if (this.itemName == "time_potion") {
-      canvasManager.renderSpriteFromSheet(
+      canvasManager.renderAnimationFrame(
         sprites.time_potion_pointer_sheet,
         this.pos,
         16,
         16,
-        new Position((timeTracker.currentGameTic - this.birthTic) % 12, 0)
+        12,
+        1,
+        this.birthTic,
+        timeTracker.currentGameTic
       );
-      canvasManager.renderSpriteFromSheet(
+      canvasManager.renderAnimationFrame(
         sprites.time_potion_pointer_sheet,
         this.pos,
         16,
         16,
-        new Position(
-          Math.floor((timeTracker.currentGameTic - this.birthTic) / 12) % 12,
-
-          1
-        )
+        12,
+        1,
+        this.birthTic,
+        timeTracker.currentGameTic,
+        1 / 12,
+        new Position(0, 1)
       );
     }
     if (this.mouseHovering) {

@@ -38,6 +38,6 @@ class TimeTracker {
   }
 }
 
-const timeTracker = new TimeTracker(10);
+const timeTracker = new TimeTracker(12);
 
 export default timeTracker;

@@ -59,7 +59,7 @@ export default class CanvasManager {
   }
 
   renderSpriteFromSheet(
-    sprite: Sprite,
+    spriteSheet: Sprite,
     pos: Position,
     width: number,
     height: number,
@@ -70,11 +70,43 @@ export default class CanvasManager {
     widthInSheet ??= width;
     heightInSheet ??= height;
     this.ctx.drawImage(
-      sprite.img,
+      spriteSheet.img,
       posInSheet.x * widthInSheet,
       posInSheet.y * heightInSheet,
       widthInSheet,
       heightInSheet,
+      pos.x * this.renderScale,
+      pos.y * this.renderScale,
+      width * this.renderScale,
+      height * this.renderScale
+    );
+  }
+
+  renderAnimationFrame(
+    spriteSheet: Sprite,
+    pos: Position,
+    width: number,
+    height: number,
+    sheetWidthInFrames: number,
+    sheetHeightInFrames: number,
+    birthTic: number,
+    currentTic: number,
+    animationSpeed: number = 1,
+    sheetPosShift: Position = new Position()
+  ) {
+    const currentFrame =
+      Math.floor((currentTic - birthTic) * animationSpeed) %
+      (sheetWidthInFrames * sheetHeightInFrames);
+    const sheetPos = new Position(
+      currentFrame % sheetWidthInFrames,
+      Math.floor(currentFrame / sheetWidthInFrames)
+    ).addPos(sheetPosShift);
+    this.ctx.drawImage(
+      spriteSheet.img,
+      sheetPos.x * width,
+      sheetPos.y * height,
+      width,
+      height,
       pos.x * this.renderScale,
       pos.y * this.renderScale,
       width * this.renderScale,
