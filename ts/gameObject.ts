@@ -13,6 +13,7 @@ export default class GameObject {
   hitbox: Hitbox;
   hitboxPosShift: Position | undefined;
   mouseHovering: boolean = false;
+  hidden: boolean = false;
   clickFunction:
     | ((cursorPos: Position, button: cursorClick) => ObjectAction | void | null)
     | undefined;

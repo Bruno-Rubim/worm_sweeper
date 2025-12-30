@@ -13,7 +13,7 @@ function changeCursorState(newState: cursorState) {
 export function handleMouseClick(objects: GameObject[]): ObjectAction | void {
   let action: ObjectAction | null = null;
   objects.forEach((obj) => {
-    if (!obj.hitbox.positionInside(cursor.pos)) {
+    if (!obj.hitbox.positionInside(cursor.pos) || obj.hidden) {
       return null;
     }
     if (
@@ -37,7 +37,7 @@ export function handleMouseClick(objects: GameObject[]): ObjectAction | void {
 export function handleMouseHover(objects: GameObject[]): ObjectAction | void {
   let action: ObjectAction | null = null;
   objects.forEach((obj) => {
-    if (!obj.hitbox.positionInside(cursor.pos)) {
+    if (!obj.hitbox.positionInside(cursor.pos) || obj.hidden) {
       obj.mouseHovering = false;
       return null;
     }

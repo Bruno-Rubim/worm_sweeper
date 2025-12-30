@@ -15,12 +15,12 @@ export type inventory = {
   picaxe: Item;
   flag: Item;
   book: Item;
-  passive_1?: Item;
-  passive_2?: Item;
-  passive_3?: Item;
-  passive_4?: Item;
-  passive_5?: Item;
-  passive_6?: Item;
+  passive_1: Item;
+  passive_2: Item;
+  passive_3: Item;
+  passive_4: Item;
+  passive_5: Item;
+  passive_6: Item;
 };
 
 export default class GameState {
@@ -42,7 +42,7 @@ export default class GameState {
     passive_5: getItem("empty", new Position(4, 18 * 5)),
     passive_6: getItem("empty", new Position(4, 18 * 6)),
   };
-  currentScene: "cave" | "shop" | "battle" = "cave";
+  currentScene: "cave" | "shop" | "battle" = "shop";
 
   constructor() {
     this.gold = 0;

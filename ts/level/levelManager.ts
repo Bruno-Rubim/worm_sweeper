@@ -21,10 +21,18 @@ import {
   CLICKLEFT,
   CLICKRIGHT,
 } from "../global.js";
-import { ChangeCursorState, ChangeScene } from "../objectAction.js";
+import {
+  BuyShopItem,
+  ChangeCursorState,
+  ChangeScene,
+} from "../objectAction.js";
 import { CURSORPICAXE } from "../cursor.js";
 import { handleMouseClick, handleMouseHover } from "../updateGame.js";
 import { sprites } from "../sprite.js";
+import { Armor, armorDic } from "../items/armor.js";
+import { Shield } from "../items/shield.js";
+import { Weapon } from "../items/weapon.js";
+import { Consumable } from "../items/consumable.js";
 
 const shopBgSprite = sprites.bg_shop;
 
@@ -99,7 +107,9 @@ export class LevelManager extends GameObject {
       GAMEHEIGHT - BORDERTHICKTOP - BORDERTHICKBOTTOM
     );
     this.gameState.level.shop?.objects.forEach((obj) => {
-      obj.render(canvasManager);
+      if (!obj.hidden) {
+        obj.render(canvasManager);
+      }
     });
   }
 
@@ -187,6 +197,48 @@ export class LevelManager extends GameObject {
     }
     if (action instanceof ChangeScene) {
       this.gameState.currentScene = action.newScene;
+    } else if (action instanceof BuyShopItem) {
+      const inventory = this.gameState.inventory;
+      const item = action.shopItem.item;
+      if (item instanceof Armor) {
+        inventory.armor = item;
+        action.shopItem.hidden = true;
+      } else if (item instanceof Shield) {
+        inventory.shield = item;
+        action.shopItem.hidden = true;
+      } else if (item instanceof Weapon) {
+        inventory.weapon = item;
+        action.shopItem.hidden = true;
+      } else if (item instanceof Consumable) {
+        inventory.consumable = item;
+        action.shopItem.hidden = true;
+      } else {
+        if (inventory.passive_1.name == "empty") {
+          item.pos.update(4, 18 * 1);
+          inventory.passive_1 = item;
+          action.shopItem.hidden = true;
+        } else if (inventory.passive_2.name == "empty") {
+          item.pos.update(4, 18 * 2);
+          inventory.passive_2 = item;
+          action.shopItem.hidden = true;
+        } else if (inventory.passive_3.name == "empty") {
+          item.pos.update(4, 18 * 3);
+          inventory.passive_3 = item;
+          action.shopItem.hidden = true;
+        } else if (inventory.passive_4.name == "empty") {
+          item.pos.update(4, 18 * 4);
+          inventory.passive_4 = item;
+          action.shopItem.hidden = true;
+        } else if (inventory.passive_5.name == "empty") {
+          item.pos.update(4, 18 * 5);
+          inventory.passive_5 = item;
+          action.shopItem.hidden = true;
+        } else if (inventory.passive_6.name == "empty") {
+          item.pos.update(4, 18 * 6);
+          inventory.passive_6 = item;
+          action.shopItem.hidden = true;
+        }
+      }
     }
   }
 }
