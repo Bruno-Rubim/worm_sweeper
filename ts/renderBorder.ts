@@ -4,6 +4,7 @@ import GameState, { type inventory } from "./gameState.js";
 import { GAMEHEIGHT, GAMEWIDTH } from "./global.js";
 import Position from "./position.js";
 import { sprites } from "./sprite.js";
+import timeTracker from "./timeTracker.js";
 
 const iconSheet = sprites.icon_sheet;
 const iconSheetPos = {

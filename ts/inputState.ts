@@ -1,6 +1,19 @@
 import Position from "./position.js";
 
-export const inputState = {
+export type keyStates = "pressed" | "unpressed" | "read";
+
+type inputStateType = {
+  mouse: {
+    pos: Position;
+    clickedRight: boolean;
+    clickedLeft: boolean;
+    heldRight: boolean;
+    heldLeft: boolean;
+  };
+  keyboard: Record<string, keyStates>;
+};
+
+export const inputState: inputStateType = {
   mouse: {
     pos: new Position(),
     clickedRight: false,
@@ -8,6 +21,7 @@ export const inputState = {
     heldRight: false,
     heldLeft: false,
   },
+  keyboard: {},
 };
 
 export function bindListeners(element: HTMLElement) {
@@ -32,5 +46,12 @@ export function bindListeners(element: HTMLElement) {
       inputState.mouse.heldLeft = false;
       inputState.mouse.clickedLeft = true;
     }
+  });
+  element.addEventListener("keydown", (e) => {
+    if (inputState.keyboard[e.key] != "read")
+      inputState.keyboard[e.key] = "pressed";
+  });
+  element.addEventListener("keyup", (e) => {
+    inputState.keyboard[e.key] = "unpressed";
   });
 }

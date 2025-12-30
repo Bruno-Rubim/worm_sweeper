@@ -4,6 +4,7 @@ import Hitbox from "./hitbox.js";
 import type { ObjectAction } from "./objectAction.js";
 import type { cursorClick } from "./global.js";
 import { Sprite, sprites } from "./sprite.js";
+import timeTracker from "./timeTracker.js";
 
 export default class GameObject {
   sprite: Sprite;
@@ -14,6 +15,7 @@ export default class GameObject {
   hitboxPosShift: Position | undefined;
   mouseHovering: boolean = false;
   hidden: boolean = false;
+  birthTic: number;
   clickFunction:
     | ((cursorPos: Position, button: cursorClick) => ObjectAction | void | null)
     | undefined;
@@ -46,6 +48,7 @@ export default class GameObject {
       shiftPos: args.hitboxPosShift,
     });
     this.clickFunction = args.clickFunction;
+    this.birthTic = timeTracker.currentGameTic;
   }
 
   updatePosition(newPos: Position) {

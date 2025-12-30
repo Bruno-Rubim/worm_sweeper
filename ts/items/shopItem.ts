@@ -3,6 +3,7 @@ import GameObject from "../gameObject.js";
 import { BuyShopItem } from "../objectAction.js";
 import Position from "../position.js";
 import { sprites } from "../sprite.js";
+import timeTracker from "../timeTracker.js";
 import { armorDic } from "./armor.js";
 import { consumableDic } from "./consumable.js";
 import { getItem, type Item, type itemPosDic } from "./item.js";
@@ -198,14 +199,18 @@ export class ShopItem extends GameObject {
         this.pos,
         16,
         16,
-        new Position(11, 0)
+        new Position((timeTracker.currentGameTic - this.birthTic) % 12, 0)
       );
       canvasManager.renderSpriteFromSheet(
         sprites.time_potion_pointer_sheet,
         this.pos,
         16,
         16,
-        new Position(2, 1)
+        new Position(
+          Math.floor((timeTracker.currentGameTic - this.birthTic) / 12) % 12,
+
+          1
+        )
       );
     }
     if (this.mouseHovering) {

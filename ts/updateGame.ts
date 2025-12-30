@@ -4,6 +4,7 @@ import type GameObject from "./gameObject.js";
 import { CLICKLEFT, CLICKRIGHT } from "./global.js";
 import { inputState } from "./inputState.js";
 import { ChangeCursorState, ObjectAction } from "./objectAction.js";
+import timeTracker from "./timeTracker.js";
 import { utils } from "./utils.js";
 
 function changeCursorState(newState: cursorState) {
@@ -89,6 +90,13 @@ function handleMouseInput(objects: GameObject[]): ObjectAction[] | void {
   }
 }
 
+function handleKeyInput() {
+  if (inputState.keyboard.Escape == "pressed") {
+    timeTracker.pause();
+    inputState.keyboard.Escape = "read";
+  }
+}
+
 export default function updateGame(
   renderScale: number,
   gameManager: GameManager
@@ -121,4 +129,6 @@ export default function updateGame(
   }
 
   cursor.pos = cursor.pos.subtract(8, 8);
+
+  handleKeyInput();
 }
