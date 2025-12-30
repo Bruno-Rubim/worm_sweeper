@@ -58,6 +58,9 @@ export default class Shop {
   consumable: ShopItem;
   constructor(inventory: inventory) {
     const inventoryItemNames = [
+      inventory.weapon.name,
+      inventory.shield.name,
+      inventory.armor.name,
       inventory.passive_1?.name,
       inventory.passive_2?.name,
       inventory.passive_3?.name,
