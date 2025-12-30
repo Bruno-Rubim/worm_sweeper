@@ -74,7 +74,6 @@ export default class Cave {
         }
       }
     }
-    console.log("gold:", c);
   }
 
   getSurrBlocks(gridPos: Position): Block[] {
@@ -305,6 +304,5 @@ export default class Cave {
     if (passiveItemNames.includes("drill")) {
       this.breakConnectedEmpty(firstBlock);
     }
-    console.log("worms:", this.wormQuantity);
   }
 }

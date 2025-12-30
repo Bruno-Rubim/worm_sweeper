@@ -27,31 +27,31 @@ const shopItemSpecs: Record<itemName, itemSpecs> = {
   big_sword: {
     name: "Big Sword",
     cost: 52,
-    desc: "0",
+    desc: "Not implemented",
     item: weaponDic.big_sword,
   },
   bomb: {
     name: "Bomb",
     cost: 13,
-    desc: "0",
+    desc: "Not implemented",
     item: consumableDic.bomb,
   },
   book: {
     name: "Book",
     cost: 0,
-    desc: "0",
+    desc: "Not implemented",
     item: getItem("book"),
   },
   chainmail: {
     name: "Chainmail",
     cost: 50,
-    desc: "0",
+    desc: "Not implemented",
     item: armorDic.chainmail,
   },
   dagger: {
     name: "Dagger",
     cost: 37,
-    desc: "0",
+    desc: "Not implemented",
     item: weaponDic.dagger,
   },
   dark_crystal: {
@@ -75,13 +75,13 @@ const shopItemSpecs: Record<itemName, itemSpecs> = {
   empty: {
     name: "Empty",
     cost: 0,
-    desc: "0",
+    desc: "Not implemented",
     item: armorDic.empty,
   },
   flag: {
     name: "Flag",
     cost: 0,
-    desc: "0",
+    desc: "Not implemented",
     item: getItem("flag"),
   },
   gold_bug: {
@@ -105,13 +105,13 @@ const shopItemSpecs: Record<itemName, itemSpecs> = {
   jade_shield: {
     name: "Jade Shield",
     cost: 30,
-    desc: "0",
+    desc: "Not implemented",
     item: shieldDic.jade_shield,
   },
   picaxe: {
     name: "Picaxe",
     cost: 0,
-    desc: "0",
+    desc: "Not implemented",
     item: getItem("picaxe"),
   },
   silver_bell: {
@@ -123,19 +123,19 @@ const shopItemSpecs: Record<itemName, itemSpecs> = {
   steel_shield: {
     name: "Steel Shield",
     cost: 35,
-    desc: "0",
+    desc: "Not implemented",
     item: shieldDic.steel_shield,
   },
   swift_vest: {
     name: "Swift Vest",
     cost: 40,
-    desc: "0",
+    desc: "Not implemented",
     item: armorDic.swift_vest,
   },
   time_blade: {
     name: "Time Blade",
     cost: 55,
-    desc: "0",
+    desc: "Not implemented",
     item: weaponDic.time_blade,
   },
   time_potion: {
@@ -147,13 +147,13 @@ const shopItemSpecs: Record<itemName, itemSpecs> = {
   wood_shield: {
     name: "Wood Shield",
     cost: 0,
-    desc: "0",
+    desc: "Not implemented",
     item: shieldDic.wood_shield,
   },
   wood_sword: {
     name: "Wood Sword",
     cost: 0,
-    desc: "0",
+    desc: "Not implemented",
     item: weaponDic.wood_sword,
   },
 };
@@ -167,7 +167,12 @@ export class ShopItem extends GameObject {
   item: Item;
 
   constructor(itemName: itemName, spriteSheetPos: Position) {
-    super({ pos: new Position(), sprite: sprites.item_sheet });
+    super({
+      pos: new Position(),
+      sprite: sprites.item_sheet,
+      hitboxWidth: 20,
+      hitboxPosShift: new Position(-2, 0),
+    });
     this.itemName = itemName;
     this.spriteSheetPos = spriteSheetPos;
     this.shopName = shopItemSpecs[itemName].name;

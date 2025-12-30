@@ -59,6 +59,9 @@ const shopConsList: Consumable[] = Object.values(consumableDic).filter(
   (x) => !["empty"].includes(x.name)
 );
 
+const shelfItemDistance = 20;
+const shelfStartDistance = 12;
+
 export default class Shop {
   objects: GameObject[];
   items: ShopItem[];
@@ -85,7 +88,10 @@ export default class Shop {
       .slice(0, 3)
       .map((x) => new ShopItem(x.name, x.spriteSheetPos));
     this.items.forEach((item, i) => {
-      item.pos.update(BORDERTHICKLEFT + 6 + i * 26, 28);
+      item.pos.update(
+        BORDERTHICKLEFT + shelfStartDistance + i * shelfItemDistance,
+        28
+      );
     });
 
     const chosenarmor = utils.shuffleArray(
@@ -111,16 +117,16 @@ export default class Shop {
     this.consumable.pos.update(GAMEWIDTH - BORDERTHICKRIGHT - 28, 46);
 
     this.objects = [exitBtn, ...this.items, this.consumable];
-    let xShift = 6;
+    let xShift = shelfStartDistance;
     if (this.armor) {
       this.armor.pos.update(BORDERTHICKLEFT + xShift, 60);
       this.objects.push(this.armor);
-      xShift += 26;
+      xShift += shelfItemDistance;
     }
     if (this.shield) {
       this.shield.pos.update(BORDERTHICKLEFT + xShift, 60);
       this.objects.push(this.shield);
-      xShift += 26;
+      xShift += shelfItemDistance;
     }
     if (this.weapon) {
       this.weapon.pos.update(BORDERTHICKLEFT + xShift, 60);
