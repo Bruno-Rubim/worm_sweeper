@@ -27,6 +27,7 @@ export const blockSheetPos = {
   dirt: new Position(6, 0),
   gold: new Position(7, 0),
   [CONTENTEMPTY]: new Position(0, 1),
+  bell: new Position(9, 0),
   marked: new Position(9, 1),
 };
 

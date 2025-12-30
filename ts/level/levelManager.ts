@@ -62,10 +62,14 @@ export class LevelManager extends GameObject {
     const blockSize = 16 * this.gameState.level.cave.levelScale;
     for (let i = 0; i < this.gameState.level.cave.size; i++) {
       for (let j = 0; j < this.gameState.level.cave.size; j++) {
+        const blockPos = new Position(i * blockSize, j * blockSize).addPos(
+          this.pos
+        );
+        const block = this.gameState.level.cave.blockMatrix[i]![j]!;
         if (!this.gameState.level.cave.started) {
           canvasManager.renderSpriteFromSheet(
             blockSheet,
-            new Position(i * blockSize, j * blockSize).addPos(this.pos),
+            blockPos,
             blockSize,
             blockSize,
             blockSheetPos.hidden,
@@ -74,10 +78,9 @@ export class LevelManager extends GameObject {
           );
           continue;
         }
-        const block = this.gameState.level.cave.blockMatrix[i]![j]!;
         canvasManager.renderSpriteFromSheet(
           blockSheet,
-          new Position(i * blockSize, j * blockSize).addPos(this.pos),
+          blockPos,
           blockSize,
           blockSize,
           block.sheetBlockPos,
@@ -87,10 +90,25 @@ export class LevelManager extends GameObject {
         if ((block.broken && block.content != CONTENTEMPTY) || block.marked) {
           canvasManager.renderSpriteFromSheet(
             blockSheet,
-            new Position(i * blockSize, j * blockSize).addPos(this.pos),
+            blockPos,
             blockSize,
             blockSize,
             block.sheetContentPos,
+            16,
+            16
+          );
+        }
+        if (
+          this.gameState.hasItem("silver_bell") &&
+          [CONTENTDOOREXIT, CONTENTDOORSHOP].includes(block.content) &&
+          !block.broken
+        ) {
+          canvasManager.renderSpriteFromSheet(
+            blockSheet,
+            blockPos,
+            blockSize,
+            blockSize,
+            blockSheetPos.bell,
             16,
             16
           );
