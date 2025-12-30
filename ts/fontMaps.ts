@@ -275,6 +275,10 @@ export const fontMaps: Record<string, fontMap> = {
         pos: new Position(11, 4),
         width: 3,
       },
+      "'": {
+        pos: new Position(12, 4),
+        width: 2,
+      },
       " ": {
         pos: new Position(13, 8),
         width: 3,
@@ -722,3 +726,11 @@ export const fontMaps: Record<string, fontMap> = {
     },
   },
 };
+
+export function measureTextWidth(font: string, text: string) {
+  let width = 0;
+  text.split("").forEach((char) => {
+    width += fontMaps[font]?.charMaps[char]?.width ?? 0;
+  });
+  return width;
+}

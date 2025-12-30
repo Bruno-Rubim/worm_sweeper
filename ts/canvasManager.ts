@@ -1,7 +1,8 @@
-import { fontMaps } from "./fontMaps.js";
+import { fontMaps, measureTextWidth } from "./fontMaps.js";
 import { GAMEHEIGHT, GAMEWIDTH, CLICKLEFT, CLICKRIGHT } from "./global.js";
 import Position from "./position.js";
 import type { Sprite } from "./sprite.js";
+import { utils } from "./utils.js";
 
 export default class CanvasManager {
   canvasElement = document.querySelector("canvas")!;
@@ -85,10 +86,32 @@ export default class CanvasManager {
     font: keyof typeof fontMaps,
     pos: Position,
     text: string,
-    direction: typeof CLICKLEFT | typeof CLICKRIGHT = CLICKRIGHT
+    direction: typeof CLICKLEFT | typeof CLICKRIGHT = CLICKRIGHT,
+    limitWidth: number = Infinity
   ) {
-    const chars = text.split("");
     const fontMap = fontMaps[font]!;
+    const words = text.split(" ");
+    let lineWidth = 0;
+    words.forEach((word, i) => {
+      if (word.includes("\n")) {
+        const breakWords = word.split("\n");
+        const firstWidth = measureTextWidth(font, breakWords[0]!);
+        const lastWidth = measureTextWidth(font, utils.lastOfArray(breakWords));
+        if (lineWidth + firstWidth > limitWidth) {
+          words[i] = "\n" + words[i];
+        }
+        lineWidth = lastWidth;
+        return;
+      }
+      const wordWidth = measureTextWidth(font, word);
+      if (lineWidth + wordWidth > limitWidth) {
+        words[i] = "\n" + words[i];
+        lineWidth = wordWidth;
+      } else {
+        lineWidth += wordWidth + (fontMap.charMaps[" "]?.width ?? 0);
+      }
+    });
+    const chars = words.join(" ").replaceAll(" \n", "\n").split("");
     let currentX = 0;
     let currentY = 0;
     chars.forEach((c) => {

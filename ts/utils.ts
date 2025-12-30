@@ -1,13 +1,13 @@
-class Utils {
-  logDict: Record<string, boolean> = {};
+const logDict: Record<string, boolean> = {};
 
+class Utils {
   logOnce(thing: any) {
     const text = JSON.stringify(thing);
-    if (this.logDict[text]) {
+    if (logDict[text]) {
       return;
     }
     console.log(text);
-    this.logDict[text] = true;
+    logDict[text] = true;
   }
 
   randomArrayId(arr: any[]): number {
@@ -23,6 +23,10 @@ class Utils {
       holdArr.splice(r, 1);
     }
     return shuffle;
+  }
+
+  lastOfArray(arr: any[]) {
+    return arr[arr.length - 1];
   }
 }
 

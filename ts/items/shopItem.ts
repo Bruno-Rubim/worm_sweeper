@@ -57,19 +57,19 @@ const shopItemSpecs: Record<itemName, itemSpecs> = {
   dark_crystal: {
     name: "Dark Crystal",
     cost: 25,
-    desc: "0",
+    desc: "Allows you to break blocks you can't see.",
     item: getItem("dark_crystal"),
   },
   detonator: {
     name: "Detonator",
     cost: 20,
-    desc: "0",
+    desc: "Use this to break all unmarked blocks around a block instantly.",
     item: getItem("detonator"),
   },
   drill: {
     name: "Drill",
     cost: 36,
-    desc: "0",
+    desc: "When breaking a safe block all connected safe blocks are also broken.",
     item: getItem("drill"),
   },
   empty: {
@@ -87,19 +87,19 @@ const shopItemSpecs: Record<itemName, itemSpecs> = {
   gold_bug: {
     name: "Gold Bug",
     cost: 20,
-    desc: "0",
+    desc: "More gold. More worms.",
     item: getItem("gold_bug"),
   },
   health_potion: {
     name: "Health Potion",
     cost: 10,
-    desc: "0",
+    desc: "Gain 1 heart.",
     item: consumableDic.health_potion,
   },
   health_potion_big: {
     name: "Big Health Potion",
     cost: 15,
-    desc: "0",
+    desc: "Gain 2 hearts",
     item: consumableDic.health_potion_big,
   },
   jade_shield: {
@@ -117,7 +117,7 @@ const shopItemSpecs: Record<itemName, itemSpecs> = {
   silver_bell: {
     name: "Silver Bell",
     cost: 38,
-    desc: "0",
+    desc: "Reveals location of doors",
     item: getItem("silver_bell"),
   },
   steel_shield: {
@@ -141,7 +141,7 @@ const shopItemSpecs: Record<itemName, itemSpecs> = {
   time_potion: {
     name: "Time Potion",
     cost: 10,
-    desc: "0",
+    desc: "Recover 10 seconds",
     item: consumableDic.time_potion,
   },
   wood_shield: {
@@ -207,7 +207,9 @@ export class ShopItem extends GameObject {
       canvasManager.renderText(
         "shop_description",
         new Position(27, 95),
-        this.shopName + "\n" + this.desc
+        this.shopName + "\n\n" + this.desc,
+        "right",
+        120
       );
       canvasManager.renderText(
         "shop_description",

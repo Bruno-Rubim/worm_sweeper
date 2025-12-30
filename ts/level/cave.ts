@@ -283,6 +283,7 @@ export default class Cave {
   start(startPos: Position, passiveItemNames: string[]) {
     if (passiveItemNames.includes("gold_bug")) {
       this.wormQuantity = Math.ceil(this.wormQuantity * 1.3);
+      this.wormsLeft = this.wormQuantity;
       this.goldChance += 0.3;
     }
     this.fillEmptyBlocks();
