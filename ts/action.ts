@@ -1,9 +1,9 @@
 import type { cursorState } from "./cursor.js";
 import type { ShopItem } from "./items/shopItem.js";
 
-export class ObjectAction {}
+export class Action {}
 
-export class ChangeCursorState extends ObjectAction {
+export class ChangeCursorState extends Action {
   newState: cursorState;
   constructor(newState: cursorState) {
     super();
@@ -11,7 +11,7 @@ export class ChangeCursorState extends ObjectAction {
   }
 }
 
-export class ChangeScene extends ObjectAction {
+export class ChangeScene extends Action {
   newScene: "cave" | "shop" | "battle";
   constructor(newScene: "cave" | "shop" | "battle") {
     super();
@@ -19,7 +19,7 @@ export class ChangeScene extends ObjectAction {
   }
 }
 
-export class BuyShopItem extends ObjectAction {
+export class BuyShopItem extends Action {
   shopItem: ShopItem;
   constructor(shopItem: ShopItem) {
     super();
@@ -27,10 +27,24 @@ export class BuyShopItem extends ObjectAction {
   }
 }
 
-export class ConsumeItem extends ObjectAction {
+export class ConsumeItem extends Action {
   itemName: string;
   constructor(itemName: string) {
     super();
     this.itemName = itemName;
+  }
+}
+
+export class EnemyAtack extends Action {
+  damage: number;
+  constructor(damage: number) {
+    super();
+    this.damage = damage;
+  }
+}
+
+export class PlayerAtack extends Action {
+  constructor() {
+    super();
   }
 }

@@ -2,7 +2,7 @@ import type CanvasManager from "./canvasManager.js";
 import { inputState } from "./inputState.js";
 import Position from "./position.js";
 import { sprites } from "./sprite.js";
-import timeTracker from "./timeTracker.js";
+import timeTracker from "./timer/timeTracker.js";
 
 export const CURSORDEFAULT = "cursor_default";
 export const CURSORPICAXE = "cursor_picaxe";

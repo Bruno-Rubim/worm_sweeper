@@ -6,8 +6,9 @@ import { weaponDic, type Weapon } from "./items/weapon.js";
 import Position from "./position.js";
 import Level from "./level/level.js";
 import { GAMEWIDTH } from "./global.js";
-import { Timer } from "./timer.js";
+import { Timer } from "./timer/timer.js";
 import { Battle } from "./level/battle.js";
+import { timerQueue } from "./timer/timerQueue.js";
 
 export type inventory = {
   armor: Armor;
@@ -27,11 +28,11 @@ export type inventory = {
 
 export default class GameState {
   gold: number = 0;
-  timer: Timer;
+  gameTimer: Timer;
   level: Level;
-  battle: Battle | null = new Battle();
+  battle: Battle | null = null;
   health: number = 5;
-  tiredTimer: Timer | null = null;
+  tiredTimer: Timer;
   inTransition: boolean = false;
   currentScene: "cave" | "shop" | "battle" = "cave";
   inventory: inventory = {
@@ -52,8 +53,10 @@ export default class GameState {
 
   constructor() {
     this.gold = 0;
-    this.timer = new Timer(180);
+    this.gameTimer = new Timer(180, undefined, false, false);
     this.level = new Level(0, this.inventory);
+    this.tiredTimer = new Timer(0, undefined, false, false);
+    timerQueue.push(this.tiredTimer);
   }
 
   get passiveItemNames() {

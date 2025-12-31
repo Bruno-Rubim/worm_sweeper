@@ -21,12 +21,15 @@ import {
   GAMEWIDTH,
   CLICKLEFT,
   CLICKRIGHT,
+  type cursorClick,
 } from "../global.js";
 import {
+  Action,
   BuyShopItem,
   ChangeCursorState,
   ChangeScene,
-} from "../objectAction.js";
+  PlayerAtack,
+} from "../action.js";
 import {
   CURSORARROW,
   CURSORDEFAULT,
@@ -41,9 +44,9 @@ import { Armor } from "../items/armor.js";
 import { Shield } from "../items/shield.js";
 import { Weapon } from "../items/weapon.js";
 import { Consumable } from "../items/consumable.js";
-import timeTracker from "../timeTracker.js";
-import { Timer } from "../timer.js";
-import { timerQueue } from "../timerQueue.js";
+import timeTracker from "../timer/timeTracker.js";
+import { Timer } from "../timer/timer.js";
+import { timerQueue } from "../timer/timerQueue.js";
 import { Battle } from "./battle.js";
 import { utils } from "../utils.js";
 
@@ -94,6 +97,12 @@ export class LevelManager extends GameObject {
       button: typeof CLICKRIGHT | typeof CLICKLEFT
     ) => {
       return this.handleClick(cursorPos, button);
+    };
+    this.heldFunction = (
+      cursorPos: Position,
+      button: typeof CLICKRIGHT | typeof CLICKLEFT
+    ) => {
+      return this.handleHeld(cursorPos, button);
     };
   }
 
@@ -171,24 +180,11 @@ export class LevelManager extends GameObject {
   }
 
   renderBattle(canvasManager: CanvasManager) {
-    const inventory = this.gameState.inventory;
     canvasManager.renderSprite(
       sprites.bg_battle,
       new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
       GAMEWIDTH - BORDERTHICKLEFT - BORDERTHICKRIGHT,
       GAMEHEIGHT - BORDERTHICKTOP - BORDERTHICKBOTTOM
-    );
-    canvasManager.renderSprite(
-      inventory.shield.bigSprite,
-      new Position(BORDERTHICKLEFT + 24, BORDERTHICKTOP + 45),
-      128,
-      128
-    );
-    canvasManager.renderSprite(
-      inventory.weapon.bigSprite,
-      new Position(BORDERTHICKLEFT - 24, BORDERTHICKTOP + 45),
-      128,
-      128
     );
     this.gameState.battle?.enemies.forEach((enemy) => {
       canvasManager.renderSpriteFromSheet(
@@ -230,6 +226,32 @@ export class LevelManager extends GameObject {
         new Position(counterFrame % 8, Math.floor(counterFrame / 8))
       );
     });
+
+    const inventory = this.gameState.inventory;
+    canvasManager.renderSprite(
+      inventory.shield.bigSprite,
+      new Position(BORDERTHICKLEFT + 24, BORDERTHICKTOP + 45),
+      128,
+      128
+    );
+    canvasManager.renderSprite(
+      inventory.weapon.bigSprite,
+      new Position(BORDERTHICKLEFT - 24, BORDERTHICKTOP + 45),
+      128,
+      128
+    );
+    if (!this.gameState.tiredTimer.ended) {
+      let counterFrame = Math.floor(
+        Math.min(15, (this.gameState.tiredTimer.percentage / 100) * 16)
+      );
+      canvasManager.renderSpriteFromSheet(
+        sprites.counter_sheet,
+        new Position(GAMEWIDTH / 2 - 4, GAMEHEIGHT - 32),
+        8,
+        8,
+        new Position(counterFrame % 8, Math.floor(counterFrame / 8))
+      );
+    }
   }
 
   render(canvasManager: CanvasManager): void {
@@ -301,11 +323,14 @@ export class LevelManager extends GameObject {
   checkCaveClear() {
     if (this.gameState.level.cave.checkClear()) {
       this.gameState.gold += 5;
-      this.gameState.timer.addSecs(5);
+      this.gameState.gameTimer.addSecs(5);
     }
   }
 
-  screenTransition(transitionFunc: Function, delay: number = 0) {
+  screenTransition(
+    transitionFunc: (() => Action | void | null) | undefined,
+    delay: number = 0
+  ) {
     this.gameState.inTransition = true;
     const delayTimer = new Timer(delay, () => {
       transitionObject.hidden = false;
@@ -338,7 +363,7 @@ export class LevelManager extends GameObject {
         block.gridPos,
         this.gameState.passiveItemNames
       );
-      this.gameState.timer.start();
+      this.gameState.gameTimer.start();
       return;
     }
 
@@ -349,15 +374,18 @@ export class LevelManager extends GameObject {
         !block.marked
       ) {
         this.gameState.level.cave.breakBlock(block);
-        this.checkCaveClear();
         if (block.hasGold) {
           this.gameState.gold++;
         }
         if (block.content == CONTENTWORM) {
           this.screenTransition(() => {
+            block.content = CONTENTEMPTY;
+            this.gameState.level.cave.updateAllStats();
             this.gameState.battle = new Battle();
             this.gameState.currentScene = "battle";
           }, 0.5);
+        } else {
+          this.checkCaveClear();
         }
         if (this.gameState.hasItem("drill") && block.threatLevel == 0) {
           this.gameState.level.cave.breakConnectedEmpty(block);
@@ -370,7 +398,7 @@ export class LevelManager extends GameObject {
           case CONTENTDOOREXITOPEN:
             this.screenTransition(() => {
               this.gameState.level = this.gameState.level.nextLevel();
-              this.gameState.timer.addSecs(60);
+              this.gameState.gameTimer.addSecs(60);
               this.gameState.level.cave.start(
                 block.gridPos,
                 this.gameState.passiveItemNames
@@ -424,7 +452,7 @@ export class LevelManager extends GameObject {
     }
     if (action instanceof ChangeScene) {
       this.screenTransition(() => {
-        this.gameState.timer.pause();
+        this.gameState.gameTimer.pause();
         this.gameState.currentScene = action.newScene;
       });
     } else if (action instanceof BuyShopItem) {
@@ -472,6 +500,57 @@ export class LevelManager extends GameObject {
           inventory.passive_6 = item;
           action.shopItem.hidden = true;
         }
+      }
+    }
+  }
+
+  handleHeldBattle(
+    cursorPos: Position,
+    button: typeof CLICKRIGHT | typeof CLICKLEFT
+  ) {
+    if (!this.gameState.battle) {
+      return;
+    }
+    if (button == CLICKLEFT) {
+      return new PlayerAtack();
+    }
+  }
+
+  handleHeld(cursorPos: Position, button: cursorClick) {
+    if (this.gameState.inTransition) {
+      return;
+    }
+    let action: Action | undefined;
+    switch (this.gameState.currentScene) {
+      case "cave":
+        action = undefined;
+        break;
+      case "shop":
+        action = undefined;
+        break;
+      case "battle":
+        action = this.handleHeldBattle(cursorPos, button);
+        break;
+    }
+    if (action instanceof PlayerAtack) {
+      const tiredTimer = this.gameState.tiredTimer;
+      if (tiredTimer.ended || !tiredTimer.started) {
+        const rId = utils.randomArrayId(this.gameState.battle!.enemies);
+        const enemy = this.gameState.battle!.enemies[rId]!;
+        enemy.health -= this.gameState.inventory.weapon.damage;
+        if (enemy.health < 1) {
+          timerQueue.splice(timerQueue.indexOf(enemy.cooldownTimer), 1);
+          this.gameState.battle!.enemies.splice(rId, 1);
+          if (this.gameState.battle!.enemies.length <= 0) {
+            this.screenTransition(() => {
+              this.gameState.level.cave.wormsLeft--;
+              this.checkCaveClear();
+              this.gameState.currentScene = "cave";
+            }, 0.5);
+          }
+        }
+        tiredTimer.goalSecs = this.gameState.inventory.weapon.cooldown;
+        tiredTimer.start();
       }
     }
   }

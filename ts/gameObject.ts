@@ -1,10 +1,10 @@
 import type CanvasManager from "./canvasManager.js";
 import Position from "./position.js";
 import Hitbox from "./hitbox.js";
-import type { ObjectAction } from "./objectAction.js";
+import type { Action } from "./action.js";
 import type { cursorClick } from "./global.js";
-import { Sprite, sprites } from "./sprite.js";
-import timeTracker from "./timeTracker.js";
+import { Sprite } from "./sprite.js";
+import timeTracker from "./timer/timeTracker.js";
 
 export default class GameObject {
   sprite: Sprite;
@@ -14,14 +14,17 @@ export default class GameObject {
   hitbox: Hitbox;
   hitboxPosShift: Position | undefined;
   mouseHovering: boolean = false;
+  mouseHeldLeft: boolean = false;
+  mouseHeldRight: boolean = false;
   hidden: boolean = false;
   birthTic: number;
   clickFunction:
-    | ((cursorPos: Position, button: cursorClick) => ObjectAction | void | null)
+    | ((cursorPos: Position, button: cursorClick) => Action | void | null)
     | undefined;
-  hoverFunction?:
-    | ((cursorPos: Position) => ObjectAction | void | null)
+  heldFunction:
+    | ((cursorPos: Position, button: cursorClick) => Action | void | null)
     | undefined;
+  hoverFunction: ((cursorPos: Position) => Action | void | null) | undefined;
 
   constructor(args: {
     sprite: Sprite;
@@ -31,10 +34,7 @@ export default class GameObject {
     hitboxWidth?: number;
     hitboxHeight?: number;
     hitboxPosShift?: Position;
-    clickFunction?: (
-      cursorPos: Position,
-      button: cursorClick
-    ) => ObjectAction | void;
+    clickFunction?: (cursorPos: Position, button: cursorClick) => Action | void;
   }) {
     this.sprite = args.sprite;
     this.pos = args.pos ?? new Position();

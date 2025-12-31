@@ -13,7 +13,7 @@ import { getItem, type Item } from "../items/item.js";
 import { shieldDic, type Shield } from "../items/shield.js";
 import { ShopItem } from "../items/shopItem.js";
 import { weaponDic, type Weapon } from "../items/weapon.js";
-import { ChangeScene } from "../objectAction.js";
+import { ChangeScene } from "../action.js";
 import Position from "../position.js";
 import { sprites } from "../sprite.js";
 import { utils } from "../utils.js";

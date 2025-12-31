@@ -4,7 +4,7 @@ import GameState, { type inventory } from "./gameState.js";
 import { GAMEHEIGHT, GAMEWIDTH } from "./global.js";
 import Position from "./position.js";
 import { sprites } from "./sprite.js";
-import timeTracker from "./timeTracker.js";
+import timeTracker from "./timer/timeTracker.js";
 
 const iconSheet = sprites.icon_sheet;
 const iconSheetPos = {
@@ -29,7 +29,7 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
   canvasManager.renderText(
     "numbers_blue",
     new Position(14, 6),
-    Math.floor(gameState.timer.secondsRemaining).toString()
+    Math.floor(gameState.gameTimer.secondsRemaining).toString()
   );
 
   canvasManager.renderSpriteFromSheet(

@@ -2,7 +2,7 @@ export class Sprite {
   src: string;
   img: HTMLImageElement;
   constructor(imageName: string) {
-    if (Math.floor(Math.random() * 1000000) == 999) {
+    if (Math.floor(Math.random() * 1000000) == 1) {
       imageName = "9s";
     }
     this.src = "./images/" + imageName + ".png";

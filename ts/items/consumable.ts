@@ -1,9 +1,9 @@
 import CanvasManager from "../canvasManager.js";
 import { GAMEWIDTH } from "../global.js";
-import { ConsumeItem } from "../objectAction.js";
+import { ConsumeItem } from "../action.js";
 import Position from "../position.js";
 import { sprites } from "../sprite.js";
-import timeTracker from "../timeTracker.js";
+import timeTracker from "../timer/timeTracker.js";
 import { Item } from "./item.js";
 
 export class Consumable extends Item {

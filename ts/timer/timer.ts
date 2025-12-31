@@ -1,3 +1,4 @@
+import type { Action } from "../action.js";
 import timeTracker from "./timeTracker.js";
 
 export class Timer {
@@ -6,22 +7,28 @@ export class Timer {
   totalPauseLapse: number = 0;
   isPaused: boolean = true;
   goalSecs: number;
-  goalTics: number;
   extraTics: number = 0;
-  goalFunc: Function | undefined;
+  goalFunc: (() => Action | void | null) | undefined;
   loop: boolean;
+  started: boolean = false;
   ended: boolean = false;
+  deleteAtEnd: boolean;
 
   constructor(
     goalSecs: number = Infinity,
-    goalFunc?: Function,
-    loop: boolean = false
+    goalFunc?: (() => Action | void | null) | undefined,
+    loop: boolean = false,
+    deleteAtEnd: boolean = true
   ) {
     this.startTic = timeTracker.currentGameTic;
     this.goalSecs = goalSecs;
-    this.goalTics = goalSecs * timeTracker.ticsPerSecond;
     this.goalFunc = goalFunc;
     this.loop = loop;
+    this.deleteAtEnd = deleteAtEnd;
+  }
+
+  get goalTics() {
+    return this.goalSecs * timeTracker.ticsPerSecond;
   }
 
   get ticsRemaining() {
@@ -39,10 +46,12 @@ export class Timer {
   }
 
   get percentage() {
-    return (this.ticsRemaining / this.goalTics) * 100;
+    return Math.max(0, (this.ticsRemaining / this.goalTics) * 100);
   }
 
   start() {
+    this.started = true;
+    this.ended = false;
     this.startTic = timeTracker.currentGameTic;
     this.isPaused = false;
   }

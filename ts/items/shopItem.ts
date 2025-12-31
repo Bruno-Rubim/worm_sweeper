@@ -1,10 +1,10 @@
 import type CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
 import { CLICKLEFT, type cursorClick } from "../global.js";
-import { BuyShopItem } from "../objectAction.js";
+import { BuyShopItem } from "../action.js";
 import Position from "../position.js";
 import { sprites } from "../sprite.js";
-import timeTracker from "../timeTracker.js";
+import timeTracker from "../timer/timeTracker.js";
 import { armorDic } from "./armor.js";
 import { consumableDic } from "./consumable.js";
 import { getItem, type Item, type itemPosDic } from "./item.js";

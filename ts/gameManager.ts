@@ -2,7 +2,8 @@ import { LevelManager } from "./level/levelManager.js";
 import CanvasManager from "./canvasManager.js";
 import GameState from "./gameState.js";
 import { renderBorder } from "./renderBorder.js";
-import { timerQueue } from "./timerQueue.js";
+import { timerQueue } from "./timer/timerQueue.js";
+import { EnemyAtack } from "./action.js";
 
 export class GameManager {
   gameState = new GameState();
@@ -10,15 +11,21 @@ export class GameManager {
 
   render(canvasManager: CanvasManager) {
     timerQueue.forEach((timer, i) => {
+      let action;
       if (timer.ticsRemaining <= 0 && !timer.ended) {
         if (timer.goalFunc) {
-          timer.goalFunc();
+          action = timer.goalFunc();
         }
         if (timer.loop) {
           timer.reset();
         } else {
           timer.ended = true;
-          timerQueue.splice(i, 1);
+          if (timer.deleteAtEnd) {
+            timerQueue.splice(i, 1);
+          }
+        }
+        if (action instanceof EnemyAtack) {
+          this.gameState.health -= action.damage;
         }
       }
     });

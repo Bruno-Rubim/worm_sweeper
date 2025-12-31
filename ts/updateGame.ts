@@ -4,19 +4,15 @@ import type GameObject from "./gameObject.js";
 import { CLICKLEFT, CLICKRIGHT } from "./global.js";
 import { inputState } from "./inputState.js";
 import { consumableDic } from "./items/consumable.js";
-import {
-  ChangeCursorState,
-  ConsumeItem,
-  ObjectAction,
-} from "./objectAction.js";
-import timeTracker from "./timeTracker.js";
+import { ChangeCursorState, ConsumeItem, Action } from "./action.js";
+import timeTracker from "./timer/timeTracker.js";
 
 function changeCursorState(newState: cursorState) {
   cursor.state = newState;
 }
 
-export function handleMouseClick(objects: GameObject[]): ObjectAction | void {
-  let action: ObjectAction | null = null;
+export function handleMouseClick(objects: GameObject[]): Action | void {
+  let action: Action | null = null;
   objects.forEach((obj) => {
     if (!obj.hitbox.positionInside(cursor.pos) || obj.hidden) {
       return null;
@@ -29,7 +25,7 @@ export function handleMouseClick(objects: GameObject[]): ObjectAction | void {
         cursor.pos,
         inputState.mouse.clickedRight ? CLICKRIGHT : CLICKLEFT
       );
-      if (clickAction instanceof ObjectAction) {
+      if (clickAction instanceof Action) {
         action = clickAction;
       }
     }
@@ -39,8 +35,8 @@ export function handleMouseClick(objects: GameObject[]): ObjectAction | void {
   }
 }
 
-export function handleMouseHover(objects: GameObject[]): ObjectAction | void {
-  let action: ObjectAction | null = null;
+export function handleMouseHover(objects: GameObject[]): Action | void {
+  let action: Action | null = null;
   objects.forEach((obj) => {
     if (!obj.hitbox.positionInside(cursor.pos) || obj.hidden) {
       obj.mouseHovering = false;
@@ -52,7 +48,7 @@ export function handleMouseHover(objects: GameObject[]): ObjectAction | void {
       return null;
     }
     let hoverAction = obj.hoverFunction(cursor.pos);
-    if (hoverAction instanceof ObjectAction) {
+    if (hoverAction instanceof Action) {
       action = hoverAction;
     }
   });
@@ -61,18 +57,20 @@ export function handleMouseHover(objects: GameObject[]): ObjectAction | void {
   }
 }
 
-function handleMouseInput(objects: GameObject[]): ObjectAction[] | void {
-  let actions: ObjectAction[] = [];
+function handleMouseInput(objects: GameObject[]): Action[] | void {
+  let actions: Action[] = [];
   objects.forEach((obj) => {
     if (!obj.hitbox.positionInside(cursor.pos)) {
       obj.mouseHovering = false;
+      obj.mouseHeldLeft = false;
+      obj.mouseHeldRight = false;
       return null;
     }
     obj.mouseHovering = true;
 
     if (obj.hoverFunction) {
       let hoverAction = obj.hoverFunction(cursor.pos);
-      if (hoverAction instanceof ObjectAction) {
+      if (hoverAction instanceof Action) {
         actions.push(hoverAction);
       }
     }
@@ -84,8 +82,19 @@ function handleMouseInput(objects: GameObject[]): ObjectAction[] | void {
         cursor.pos,
         inputState.mouse.clickedRight ? CLICKRIGHT : CLICKLEFT
       );
-      if (clickAction instanceof ObjectAction) {
+      if (clickAction instanceof Action) {
         actions.push(clickAction);
+      }
+    }
+    if (inputState.mouse.heldLeft || inputState.mouse.clickedLeft) {
+      obj.mouseHeldLeft = true;
+      if (obj.heldFunction) {
+        obj.heldFunction(cursor.pos, CLICKLEFT);
+      }
+    } else if (inputState.mouse.heldRight || inputState.mouse.clickedRight) {
+      obj.mouseHeldRight = true;
+      if (obj.heldFunction) {
+        obj.heldFunction(cursor.pos, CLICKRIGHT);
       }
     }
   });
@@ -112,7 +121,7 @@ export default function updateGame(
     ...Object.values(gameManager.gameState.inventory),
   ];
 
-  const actions: ObjectAction[] | void = handleMouseInput(gameObjects);
+  const actions: Action[] | void = handleMouseInput(gameObjects);
 
   let cursorChanged = false;
   actions?.forEach((action) => {
@@ -122,7 +131,7 @@ export default function updateGame(
     } else if (action instanceof ConsumeItem) {
       switch (action.itemName) {
         case "time_potion":
-          gameManager.gameState.timer.addSecs(60);
+          gameManager.gameState.gameTimer.addSecs(60);
           break;
         case "health_potion":
           gameManager.gameState.health += 1;

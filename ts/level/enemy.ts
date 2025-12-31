@@ -1,5 +1,6 @@
+import { EnemyAtack } from "../action.js";
 import type Position from "../position.js";
-import { Timer } from "../timer.js";
+import { Timer } from "../timer/timer.js";
 
 export class Enemy {
   health: number;
@@ -15,6 +16,12 @@ export class Enemy {
     this.health = health;
     this.damage = damage;
     this.pos = pos;
-    this.cooldownTimer = new Timer(attackCooldown, undefined, true);
+    this.cooldownTimer = new Timer(
+      attackCooldown,
+      () => {
+        return new EnemyAtack(this.damage);
+      },
+      true
+    );
   }
 }

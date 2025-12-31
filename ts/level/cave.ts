@@ -148,6 +148,14 @@ export default class Cave {
     block.markerLevel = markerLevel;
   }
 
+  updateAllStats() {
+    this.blockMatrix.forEach((line) => {
+      line.forEach((block) => {
+        this.updateBlockStats(block);
+      });
+    });
+  }
+
   countBrokenBlocks() {
     let counter = this.size * this.size;
     for (let i = 0; i < this.size; i++) {
