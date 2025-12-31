@@ -26,7 +26,13 @@ import {
   ChangeCursorState,
   ChangeScene,
 } from "../objectAction.js";
-import { CURSORDETONATOR, CURSORNONE, CURSORPICAXE } from "../cursor.js";
+import {
+  CURSORARROW,
+  CURSORDEFAULT,
+  CURSORDETONATOR,
+  CURSORNONE,
+  CURSORPICAXE,
+} from "../cursor.js";
 import { handleMouseClick, handleMouseHover } from "../updateGame.js";
 import { sprites } from "../sprite.js";
 import { Armor } from "../items/armor.js";
@@ -192,6 +198,18 @@ export class LevelManager extends GameObject {
       block.threatLevel == block.markerLevel
     ) {
       return new ChangeCursorState(CURSORDETONATOR);
+    }
+    if (
+      block.broken &&
+      [CONTENTDOOREXIT, CONTENTDOORSHOP].includes(block.content)
+    ) {
+      return new ChangeCursorState(CURSORDEFAULT);
+    }
+    if (
+      block.broken &&
+      [CONTENTDOOREXITOPEN, CONTENTDOORSHOPOPEN].includes(block.content)
+    ) {
+      return new ChangeCursorState(CURSORARROW);
     }
     return new ChangeCursorState(CURSORPICAXE);
   }

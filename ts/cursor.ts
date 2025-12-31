@@ -6,6 +6,7 @@ import { sprites } from "./sprite.js";
 export const CURSORDEFAULT = "cursor_default";
 export const CURSORPICAXE = "cursor_picaxe";
 export const CURSORFLAG = "cursor_flag";
+export const CURSORARROW = "cursor_arrow";
 export const CURSORDETONATOR = "cursor_detonator";
 export const CURSORSWORD = "cursor_sword";
 export const CURSORSHIELD = "cursor_shield";
@@ -15,6 +16,7 @@ const cursorSheetPos = {
   [CURSORDEFAULT]: new Position(0, 0),
   [CURSORDETONATOR]: new Position(2, 0),
   [CURSORFLAG]: new Position(4, 0),
+  [CURSORARROW]: new Position(6, 0),
   [CURSORPICAXE]: new Position(0, 1),
   [CURSORSHIELD]: new Position(4, 1),
   [CURSORSWORD]: new Position(6, 1),

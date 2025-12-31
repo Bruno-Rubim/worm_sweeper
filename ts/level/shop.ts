@@ -20,7 +20,8 @@ import { utils } from "../utils.js";
 
 const exitBtn = new GameObject({
   sprite: sprites.button_exit,
-  pos: new Position(GAMEWIDTH - BORDERTHICKRIGHT - 16, BORDERTHICKTOP),
+  pos: new Position(GAMEWIDTH - BORDERTHICKRIGHT - 32, BORDERTHICKTOP),
+  width: 32,
   clickFunction: () => {
     return new ChangeScene("cave");
   },
@@ -29,7 +30,7 @@ exitBtn.render = (canvasManager: CanvasManager) => {
   canvasManager.renderSpriteFromSheet(
     exitBtn.sprite,
     exitBtn.pos,
-    16,
+    32,
     16,
     new Position().add(exitBtn.mouseHovering ? 1 : 0, 0)
   );
