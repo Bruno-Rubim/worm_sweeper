@@ -7,6 +7,7 @@ import Position from "./position.js";
 import Level from "./level/level.js";
 import { GAMEWIDTH } from "./global.js";
 import { Timer } from "./timer.js";
+import { Battle } from "./level/battle.js";
 
 export type inventory = {
   armor: Armor;
@@ -28,7 +29,11 @@ export default class GameState {
   gold: number = 0;
   timer: Timer;
   level: Level;
+  battle: Battle | null = new Battle();
+  health: number = 5;
+  tiredTimer: Timer | null = null;
   inTransition: boolean = false;
+  currentScene: "cave" | "shop" | "battle" = "cave";
   inventory: inventory = {
     picaxe: getItem("picaxe", new Position(GAMEWIDTH - 20, 90)),
     flag: getItem("flag", new Position(GAMEWIDTH - 20, 109)),
@@ -44,7 +49,6 @@ export default class GameState {
     passive_5: getItem("empty", new Position(4, 18 * 5)),
     passive_6: getItem("empty", new Position(4, 18 * 6)),
   };
-  currentScene: "cave" | "shop" | "battle" = "cave";
 
   constructor() {
     this.gold = 0;

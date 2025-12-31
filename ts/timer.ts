@@ -38,6 +38,10 @@ export class Timer {
     return this.ticsRemaining / timeTracker.ticsPerSecond;
   }
 
+  get percentage() {
+    return (this.ticsRemaining / this.goalTics) * 100;
+  }
+
   start() {
     this.startTic = timeTracker.currentGameTic;
     this.isPaused = false;

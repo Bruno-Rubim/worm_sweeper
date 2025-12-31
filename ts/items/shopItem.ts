@@ -1,5 +1,6 @@
 import type CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
+import { CLICKLEFT, type cursorClick } from "../global.js";
 import { BuyShopItem } from "../objectAction.js";
 import Position from "../position.js";
 import { sprites } from "../sprite.js";
@@ -180,8 +181,8 @@ export class ShopItem extends GameObject {
     this.cost = shopItemSpecs[itemName].cost;
     this.desc = shopItemSpecs[itemName].desc;
     this.item = shopItemSpecs[itemName].item;
-    this.clickFunction = () => {
-      return new BuyShopItem(this);
+    this.clickFunction = (cursorPos: Position, button: cursorClick) => {
+      if (button == CLICKLEFT) return new BuyShopItem(this);
     };
   }
 

@@ -9,6 +9,7 @@ import {
   CONTENTDOORSHOP,
   CONTENTDOORSHOPOPEN,
   CONTENTEMPTY,
+  CONTENTWORM,
 } from "./block.js";
 import type GameState from "../gameState.js";
 import {
@@ -32,6 +33,7 @@ import {
   CURSORDETONATOR,
   CURSORNONE,
   CURSORPICAXE,
+  CURSORBATTLE,
 } from "../cursor.js";
 import { handleMouseClick, handleMouseHover } from "../updateGame.js";
 import { sprites } from "../sprite.js";
@@ -42,8 +44,8 @@ import { Consumable } from "../items/consumable.js";
 import timeTracker from "../timeTracker.js";
 import { Timer } from "../timer.js";
 import { timerQueue } from "../timerQueue.js";
-
-const shopBgSprite = sprites.bg_shop;
+import { Battle } from "./battle.js";
+import { utils } from "../utils.js";
 
 const transitionObject = new GameObject({
   sprite: sprites.scene_transition,
@@ -156,7 +158,7 @@ export class LevelManager extends GameObject {
 
   renderShop(canvasManager: CanvasManager) {
     canvasManager.renderSprite(
-      shopBgSprite,
+      sprites.bg_shop,
       new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
       GAMEWIDTH - BORDERTHICKLEFT - BORDERTHICKRIGHT,
       GAMEHEIGHT - BORDERTHICKTOP - BORDERTHICKBOTTOM
@@ -165,6 +167,68 @@ export class LevelManager extends GameObject {
       if (!obj.hidden) {
         obj.render(canvasManager);
       }
+    });
+  }
+
+  renderBattle(canvasManager: CanvasManager) {
+    const inventory = this.gameState.inventory;
+    canvasManager.renderSprite(
+      sprites.bg_battle,
+      new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
+      GAMEWIDTH - BORDERTHICKLEFT - BORDERTHICKRIGHT,
+      GAMEHEIGHT - BORDERTHICKTOP - BORDERTHICKBOTTOM
+    );
+    canvasManager.renderSprite(
+      inventory.shield.bigSprite,
+      new Position(BORDERTHICKLEFT + 24, BORDERTHICKTOP + 45),
+      128,
+      128
+    );
+    canvasManager.renderSprite(
+      inventory.weapon.bigSprite,
+      new Position(BORDERTHICKLEFT - 24, BORDERTHICKTOP + 45),
+      128,
+      128
+    );
+    this.gameState.battle?.enemies.forEach((enemy) => {
+      canvasManager.renderSpriteFromSheet(
+        sprites.enemy_worm,
+        enemy.pos,
+        64,
+        64,
+        new Position()
+      );
+      for (let i = 0; i < enemy.health; i++) {
+        canvasManager.renderSpriteFromSheet(
+          sprites.icon_sheet,
+          enemy.pos.add(33 + i * 9 - (9 * enemy.health) / 2, 64),
+          8,
+          8,
+          new Position(5, 0)
+        );
+      }
+      canvasManager.renderSpriteFromSheet(
+        sprites.icon_sheet,
+        enemy.pos.add(25, 8),
+        8,
+        8,
+        new Position(3, 1)
+      );
+      canvasManager.renderText(
+        "numbers_gray",
+        enemy.pos.add(18, 8),
+        enemy.damage.toString()
+      );
+      let counterFrame = Math.floor(
+        Math.min(15, (enemy.cooldownTimer.percentage / 100) * 16)
+      );
+      canvasManager.renderSpriteFromSheet(
+        sprites.counter_sheet,
+        enemy.pos.add(34, 8),
+        8,
+        8,
+        new Position(counterFrame % 8, Math.floor(counterFrame / 8))
+      );
     });
   }
 
@@ -177,6 +241,7 @@ export class LevelManager extends GameObject {
         this.renderShop(canvasManager);
         break;
       case "battle":
+        this.renderBattle(canvasManager);
         break;
     }
     transitionObject.render(canvasManager);
@@ -214,20 +279,8 @@ export class LevelManager extends GameObject {
     return new ChangeCursorState(CURSORPICAXE);
   }
 
-  screenTransition(transitionFunc: Function) {
-    this.gameState.inTransition = true;
-    transitionObject.hidden = false;
-    transitionObject.resetAnimation();
-    const transitionFuncTimer = new Timer(
-      8 / timeTracker.ticsPerSecond,
-      transitionFunc
-    );
-    const transitionEndTimer = new Timer(16 / timeTracker.ticsPerSecond, () => {
-      this.gameState.inTransition = false;
-    });
-    timerQueue.push(transitionFuncTimer, transitionEndTimer);
-    transitionFuncTimer.start();
-    transitionEndTimer.start();
+  handleMouseHoverBattle() {
+    return new ChangeCursorState(CURSORBATTLE);
   }
 
   handleHover(cursorPos: Position) {
@@ -240,6 +293,7 @@ export class LevelManager extends GameObject {
       case "shop":
         return handleMouseHover(this.gameState.level.shop!.objects);
       case "battle":
+        return this.handleMouseHoverBattle();
         break;
     }
   }
@@ -249,6 +303,29 @@ export class LevelManager extends GameObject {
       this.gameState.gold += 5;
       this.gameState.timer.addSecs(5);
     }
+  }
+
+  screenTransition(transitionFunc: Function, delay: number = 0) {
+    this.gameState.inTransition = true;
+    const delayTimer = new Timer(delay, () => {
+      transitionObject.hidden = false;
+      transitionObject.resetAnimation();
+      const transitionFuncTimer = new Timer(
+        8 / timeTracker.ticsPerSecond,
+        transitionFunc
+      );
+      const transitionEndTimer = new Timer(
+        16 / timeTracker.ticsPerSecond,
+        () => {
+          this.gameState.inTransition = false;
+        }
+      );
+      timerQueue.push(transitionFuncTimer, transitionEndTimer);
+      transitionFuncTimer.start();
+      transitionEndTimer.start();
+    });
+    timerQueue.push(delayTimer);
+    delayTimer.start();
   }
 
   handleClickCave(
@@ -275,6 +352,12 @@ export class LevelManager extends GameObject {
         this.checkCaveClear();
         if (block.hasGold) {
           this.gameState.gold++;
+        }
+        if (block.content == CONTENTWORM) {
+          this.screenTransition(() => {
+            this.gameState.battle = new Battle();
+            this.gameState.currentScene = "battle";
+          }, 0.5);
         }
         if (this.gameState.hasItem("drill") && block.threatLevel == 0) {
           this.gameState.level.cave.breakConnectedEmpty(block);
