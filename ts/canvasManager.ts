@@ -92,11 +92,16 @@ export default class CanvasManager {
     birthTic: number,
     currentTic: number,
     animationSpeed: number = 1,
-    sheetPosShift: Position = new Position()
+    sheetPosShift: Position = new Position(),
+    loop: boolean = true
   ) {
+    const totalFrames = sheetWidthInFrames * sheetHeightInFrames;
     const currentFrame =
       Math.floor((currentTic - birthTic) * animationSpeed) %
-      (sheetWidthInFrames * sheetHeightInFrames);
+      (loop ? sheetWidthInFrames * sheetHeightInFrames : Infinity);
+    if (!loop && currentFrame > totalFrames) {
+      return;
+    }
     const sheetPos = new Position(
       currentFrame % sheetWidthInFrames,
       Math.floor(currentFrame / sheetWidthInFrames)

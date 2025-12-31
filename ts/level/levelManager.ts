@@ -1,4 +1,4 @@
-import type CanvasManager from "../canvasManager.js";
+import CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
 import Position from "../position.js";
 import {
@@ -26,15 +26,46 @@ import {
   ChangeCursorState,
   ChangeScene,
 } from "../objectAction.js";
-import { CURSORDETONATOR, CURSORPICAXE } from "../cursor.js";
+import { CURSORDETONATOR, CURSORNONE, CURSORPICAXE } from "../cursor.js";
 import { handleMouseClick, handleMouseHover } from "../updateGame.js";
 import { sprites } from "../sprite.js";
-import { Armor, armorDic } from "../items/armor.js";
+import { Armor } from "../items/armor.js";
 import { Shield } from "../items/shield.js";
 import { Weapon } from "../items/weapon.js";
 import { Consumable } from "../items/consumable.js";
+import timeTracker from "../timeTracker.js";
+import { Timer } from "../timer.js";
+import { timerQueue } from "../timerQueue.js";
 
 const shopBgSprite = sprites.bg_shop;
+
+const transitionObject = new GameObject({
+  sprite: sprites.scene_transition,
+  height: 128,
+  width: 128,
+  pos: new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
+});
+
+transitionObject.render = (canvasManager: CanvasManager) => {
+  if (transitionObject.hidden) {
+    return;
+  }
+  canvasManager.renderAnimationFrame(
+    transitionObject.sprite,
+    transitionObject.pos,
+    transitionObject.width,
+    transitionObject.height,
+    4,
+    4,
+    transitionObject.birthTic,
+    timeTracker.currentGameTic,
+    1,
+    new Position(),
+    false
+  );
+};
+
+transitionObject.hidden = true;
 
 export class LevelManager extends GameObject {
   gameState: GameState;
@@ -142,6 +173,7 @@ export class LevelManager extends GameObject {
       case "battle":
         break;
     }
+    transitionObject.render(canvasManager);
   }
 
   getBlockFromGamePos(pos: Position) {
@@ -164,7 +196,27 @@ export class LevelManager extends GameObject {
     return new ChangeCursorState(CURSORPICAXE);
   }
 
+  screenTransition(transitionFunc: Function) {
+    this.gameState.inTransition = true;
+    transitionObject.hidden = false;
+    transitionObject.resetAnimation();
+    const transitionFuncTimer = new Timer(
+      8 / timeTracker.ticsPerSecond,
+      transitionFunc
+    );
+    const transitionEndTimer = new Timer(16 / timeTracker.ticsPerSecond, () => {
+      console.log("out of transition");
+      this.gameState.inTransition = false;
+    });
+    timerQueue.push(transitionFuncTimer, transitionEndTimer);
+    transitionFuncTimer.start();
+    transitionEndTimer.start();
+  }
+
   handleHover(cursorPos: Position) {
+    if (this.gameState.inTransition) {
+      return new ChangeCursorState(CURSORNONE);
+    }
     switch (this.gameState.currentScene) {
       case "cave":
         return this.handleMouseHoverCave(cursorPos);
@@ -185,7 +237,7 @@ export class LevelManager extends GameObject {
         block.gridPos,
         this.gameState.passiveItemNames
       );
-      this.gameState.timer.pause();
+      this.gameState.timer.start();
       return;
     }
 
@@ -208,12 +260,14 @@ export class LevelManager extends GameObject {
             block.content = CONTENTDOOREXITOPEN;
             break;
           case CONTENTDOOREXITOPEN:
-            this.gameState.level = this.gameState.level.nextLevel();
-            this.gameState.timer.addSecs(60);
-            this.gameState.level.cave.start(
-              block.gridPos,
-              this.gameState.passiveItemNames
-            );
+            this.screenTransition(() => {
+              this.gameState.level = this.gameState.level.nextLevel();
+              this.gameState.timer.addSecs(60);
+              this.gameState.level.cave.start(
+                block.gridPos,
+                this.gameState.passiveItemNames
+              );
+            });
             break;
           case CONTENTDOORSHOP:
             block.content = CONTENTDOORSHOPOPEN;
@@ -245,6 +299,9 @@ export class LevelManager extends GameObject {
     cursorPos: Position,
     button: typeof CLICKRIGHT | typeof CLICKLEFT
   ) {
+    if (this.gameState.inTransition) {
+      return;
+    }
     let action;
     switch (this.gameState.currentScene) {
       case "cave":
@@ -257,8 +314,10 @@ export class LevelManager extends GameObject {
         break;
     }
     if (action instanceof ChangeScene) {
-      this.gameState.timer.pause();
-      this.gameState.currentScene = action.newScene;
+      this.screenTransition(() => {
+        this.gameState.timer.pause();
+        this.gameState.currentScene = action.newScene;
+      });
     } else if (action instanceof BuyShopItem) {
       if (action.shopItem.cost > this.gameState.gold) {
         return;

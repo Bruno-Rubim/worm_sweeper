@@ -8,6 +8,7 @@ export const CURSORFLAG = "cursor_flag";
 export const CURSORDETONATOR = "cursor_detonator";
 export const CURSORSWORD = "cursor_sword";
 export const CURSORSHIELD = "cursor_shield";
+export const CURSORNONE = "cursor_none";
 
 const cursorSheetPos = {
   [CURSORDEFAULT]: new Position(0, 0),
@@ -16,15 +17,10 @@ const cursorSheetPos = {
   [CURSORPICAXE]: new Position(0, 1),
   [CURSORSHIELD]: new Position(4, 1),
   [CURSORSWORD]: new Position(6, 1),
+  [CURSORNONE]: new Position(6, 3),
 };
 
-export type cursorState =
-  | typeof CURSORDEFAULT
-  | typeof CURSORPICAXE
-  | typeof CURSORFLAG
-  | typeof CURSORDETONATOR
-  | typeof CURSORSWORD
-  | typeof CURSORSHIELD;
+export type cursorState = keyof typeof cursorSheetPos;
 
 class Cursor {
   pos = new Position();

@@ -28,6 +28,7 @@ export default class GameState {
   gold: number = 0;
   timer: Timer;
   level: Level;
+  inTransition: boolean = false;
   inventory: inventory = {
     picaxe: getItem("picaxe", new Position(GAMEWIDTH - 20, 90)),
     flag: getItem("flag", new Position(GAMEWIDTH - 20, 109)),
@@ -35,7 +36,7 @@ export default class GameState {
     weapon: weaponDic.wood_sword,
     shield: shieldDic.wood_shield,
     armor: armorDic.empty,
-    consumable: consumableDic.time_potion,
+    consumable: consumableDic.empty,
     passive_1: getItem("empty", new Position(4, 18 * 1)),
     passive_2: getItem("empty", new Position(4, 18 * 2)),
     passive_3: getItem("empty", new Position(4, 18 * 3)),

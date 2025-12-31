@@ -57,6 +57,13 @@ export default class GameObject {
   }
 
   render(canvasManager: CanvasManager) {
+    if (this.hidden) {
+      return;
+    }
     canvasManager.renderSprite(this.sprite, this.pos, this.width, this.height);
+  }
+
+  resetAnimation() {
+    this.birthTic = timeTracker.currentGameTic;
   }
 }
