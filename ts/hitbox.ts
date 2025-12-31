@@ -37,9 +37,4 @@ export default class Hitbox {
     }
     return true;
   }
-
-  getPos() {
-    console.log(this.objPos);
-    return this.objPos.addPos(this.shiftPos);
-  }
 }

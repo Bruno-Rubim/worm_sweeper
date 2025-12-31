@@ -30,9 +30,9 @@ export function bindListeners(element: HTMLElement) {
   });
   element.addEventListener("mousedown", (e) => {
     if (e.button == 0) {
-      inputState.mouse.heldRight = true;
-    } else if (e.button == 2) {
       inputState.mouse.heldLeft = true;
+    } else if (e.button == 2) {
+      inputState.mouse.heldRight = true;
     }
   });
   element.addEventListener("contextmenu", (e) => {
@@ -40,11 +40,11 @@ export function bindListeners(element: HTMLElement) {
   });
   element.addEventListener("mouseup", (e) => {
     if (e.button == 0) {
-      inputState.mouse.heldRight = false;
-      inputState.mouse.clickedRight = true;
-    } else if (e.button == 2) {
       inputState.mouse.heldLeft = false;
       inputState.mouse.clickedLeft = true;
+    } else if (e.button == 2) {
+      inputState.mouse.heldRight = false;
+      inputState.mouse.clickedRight = true;
     }
   });
   element.addEventListener("keydown", (e) => {

@@ -205,7 +205,6 @@ export class LevelManager extends GameObject {
       transitionFunc
     );
     const transitionEndTimer = new Timer(16 / timeTracker.ticsPerSecond, () => {
-      console.log("out of transition");
       this.gameState.inTransition = false;
     });
     timerQueue.push(transitionFuncTimer, transitionEndTimer);

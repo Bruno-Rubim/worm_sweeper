@@ -10,7 +10,6 @@ import {
   ObjectAction,
 } from "./objectAction.js";
 import timeTracker from "./timeTracker.js";
-import { utils } from "./utils.js";
 
 function changeCursorState(newState: cursorState) {
   cursor.state = newState;
@@ -28,7 +27,7 @@ export function handleMouseClick(objects: GameObject[]): ObjectAction | void {
     ) {
       let clickAction = obj.clickFunction(
         cursor.pos,
-        inputState.mouse.clickedRight ? CLICKLEFT : CLICKRIGHT
+        inputState.mouse.clickedRight ? CLICKRIGHT : CLICKLEFT
       );
       if (clickAction instanceof ObjectAction) {
         action = clickAction;
@@ -83,7 +82,7 @@ function handleMouseInput(objects: GameObject[]): ObjectAction[] | void {
     ) {
       let clickAction = obj.clickFunction(
         cursor.pos,
-        inputState.mouse.clickedRight ? CLICKLEFT : CLICKRIGHT
+        inputState.mouse.clickedRight ? CLICKRIGHT : CLICKLEFT
       );
       if (clickAction instanceof ObjectAction) {
         actions.push(clickAction);

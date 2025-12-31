@@ -46,10 +46,8 @@ export class Timer {
   pause() {
     this.isPaused = !this.isPaused;
     if (this.isPaused) {
-      console.log("pausing");
       this.lastPausedTic = timeTracker.currentGameTic;
     } else {
-      console.log("unpausing");
       this.totalPauseLapse += timeTracker.currentGameTic - this.lastPausedTic;
     }
   }

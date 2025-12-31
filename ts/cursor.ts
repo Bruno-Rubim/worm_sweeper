@@ -1,4 +1,5 @@
 import type CanvasManager from "./canvasManager.js";
+import { inputState } from "./inputState.js";
 import Position from "./position.js";
 import { sprites } from "./sprite.js";
 
@@ -32,7 +33,7 @@ class Cursor {
       this.pos,
       16,
       16,
-      cursorSheetPos[this.state]
+      cursorSheetPos[this.state].add(inputState.mouse.heldLeft ? 1 : 0, 0)
     );
   }
 }
