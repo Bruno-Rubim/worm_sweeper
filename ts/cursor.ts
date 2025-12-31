@@ -33,7 +33,10 @@ class Cursor {
       this.pos,
       16,
       16,
-      cursorSheetPos[this.state].add(inputState.mouse.heldLeft ? 1 : 0, 0)
+      cursorSheetPos[this.state].add(
+        inputState.mouse.heldLeft || inputState.mouse.heldRight ? 1 : 0,
+        0
+      )
     );
   }
 }
