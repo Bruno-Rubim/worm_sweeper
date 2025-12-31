@@ -123,9 +123,15 @@ export default function updateGame(
       switch (action.itemName) {
         case "time_potion":
           gameManager.gameState.timer.addSecs(60);
-          gameManager.gameState.inventory.consumable = consumableDic.empty;
+          break;
+        case "health_potion":
+          gameManager.gameState.health += 1;
+          break;
+        case "health_potion_big":
+          gameManager.gameState.health += 2;
           break;
       }
+      gameManager.gameState.inventory.consumable = consumableDic.empty;
     }
   });
   if (!cursorChanged) {

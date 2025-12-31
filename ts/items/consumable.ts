@@ -17,8 +17,8 @@ export class Consumable extends Item {
 
 export const consumableDic = {
   bomb: new Consumable(new Position(0, 0), "bomb"),
-  health_potion: new Consumable(new Position(2, 0), "health_potion"),
-  health_potion_big: new Consumable(new Position(4, 0), "health_potion_big"),
+  health_potion_big: new Consumable(new Position(2, 0), "health_potion_big"),
+  health_potion: new Consumable(new Position(4, 0), "health_potion"),
   time_potion: new Consumable(new Position(6, 0), "time_potion"),
   empty: new Consumable(new Position(14, 0), "empty"),
 };

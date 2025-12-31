@@ -70,6 +70,16 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
     new Position(GAMEWIDTH - 19, 6),
     gameState.gold.toString()
   );
+
+  for (let i = 0; i < gameState.health; i++) {
+    canvasManager.renderSpriteFromSheet(
+      sprites.icon_sheet,
+      new Position(88 + i * 9 - (9 * gameState.health) / 2, GAMEHEIGHT - 14),
+      8,
+      8,
+      new Position(5, 0)
+    );
+  }
 }
 
 function renderItems(canvasManager: CanvasManager, gameState: GameState) {
