@@ -142,7 +142,7 @@ const shopItemSpecs: Record<itemName, itemSpecs> = {
   time_potion: {
     name: "Time Potion",
     cost: 10,
-    desc: "Recover 10 seconds",
+    desc: "Recover 60 seconds",
     item: consumableDic.time_potion,
   },
   wood_shield: {

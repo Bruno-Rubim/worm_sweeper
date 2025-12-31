@@ -3,7 +3,12 @@ import { GameManager } from "./gameManager.js";
 import type GameObject from "./gameObject.js";
 import { CLICKLEFT, CLICKRIGHT } from "./global.js";
 import { inputState } from "./inputState.js";
-import { ChangeCursorState, ObjectAction } from "./objectAction.js";
+import { consumableDic } from "./items/consumable.js";
+import {
+  ChangeCursorState,
+  ConsumeItem,
+  ObjectAction,
+} from "./objectAction.js";
 import timeTracker from "./timeTracker.js";
 import { utils } from "./utils.js";
 
@@ -115,6 +120,13 @@ export default function updateGame(
     if (action instanceof ChangeCursorState) {
       changeCursorState(action.newState);
       cursorChanged = true;
+    } else if (action instanceof ConsumeItem) {
+      switch (action.itemName) {
+        case "time_potion":
+          gameManager.gameState.timer.addSecs(60);
+          gameManager.gameState.inventory.consumable = consumableDic.empty;
+          break;
+      }
     }
   });
   if (!cursorChanged) {

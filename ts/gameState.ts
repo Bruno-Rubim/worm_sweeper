@@ -35,7 +35,7 @@ export default class GameState {
     weapon: weaponDic.wood_sword,
     shield: shieldDic.wood_shield,
     armor: armorDic.empty,
-    consumable: consumableDic.empty,
+    consumable: consumableDic.time_potion,
     passive_1: getItem("empty", new Position(4, 18 * 1)),
     passive_2: getItem("empty", new Position(4, 18 * 2)),
     passive_3: getItem("empty", new Position(4, 18 * 3)),
@@ -47,7 +47,7 @@ export default class GameState {
 
   constructor() {
     this.gold = 0;
-    this.timer = new Timer(300);
+    this.timer = new Timer(180);
     this.level = new Level(0, this.inventory);
   }
 

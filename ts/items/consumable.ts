@@ -1,12 +1,17 @@
 import CanvasManager from "../canvasManager.js";
 import { GAMEWIDTH } from "../global.js";
+import { ConsumeItem } from "../objectAction.js";
 import Position from "../position.js";
 import { sprites } from "../sprite.js";
+import timeTracker from "../timeTracker.js";
 import { Item } from "./item.js";
 
 export class Consumable extends Item {
   constructor(spriteSheetPos: Position, name: string) {
     super(new Position(GAMEWIDTH - 20, 72), spriteSheetPos, name);
+    this.clickFunction = () => {
+      return new ConsumeItem(this.name);
+    };
   }
 }
 
@@ -19,25 +24,37 @@ export const consumableDic = {
 };
 
 consumableDic.time_potion.render = (canvasManager: CanvasManager) => {
+  let sheetPos = consumableDic.time_potion.spriteSheetPos;
+  if (consumableDic.time_potion.mouseHovering) {
+    sheetPos = sheetPos.add(1, 0);
+  }
   canvasManager.renderSpriteFromSheet(
-    sprites.item_sheet,
+    consumableDic.time_potion.sprite,
     consumableDic.time_potion.pos,
-    16,
-    16,
-    new Position(6, 0)
+    consumableDic.time_potion.width,
+    consumableDic.time_potion.height,
+    sheetPos
   );
-  canvasManager.renderSpriteFromSheet(
+  canvasManager.renderAnimationFrame(
     sprites.time_potion_pointer_sheet,
     consumableDic.time_potion.pos,
     16,
     16,
-    new Position(11, 0)
+    12,
+    1,
+    consumableDic.time_potion.birthTic,
+    timeTracker.currentGameTic
   );
-  canvasManager.renderSpriteFromSheet(
+  canvasManager.renderAnimationFrame(
     sprites.time_potion_pointer_sheet,
     consumableDic.time_potion.pos,
     16,
     16,
-    new Position(2, 1)
+    12,
+    1,
+    consumableDic.time_potion.birthTic,
+    timeTracker.currentGameTic,
+    1 / 12,
+    new Position(0, 1)
   );
 };

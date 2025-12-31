@@ -26,3 +26,11 @@ export class BuyShopItem extends ObjectAction {
     this.shopItem = shopItem;
   }
 }
+
+export class ConsumeItem extends ObjectAction {
+  itemName: string;
+  constructor(itemName: string) {
+    super();
+    this.itemName = itemName;
+  }
+}

@@ -209,6 +209,7 @@ export class LevelManager extends GameObject {
             break;
           case CONTENTDOOREXITOPEN:
             this.gameState.level = this.gameState.level.nextLevel();
+            this.gameState.timer.addSecs(60);
             this.gameState.level.cave.start(
               block.gridPos,
               this.gameState.passiveItemNames

@@ -6,6 +6,7 @@ export class Timer {
   totalPauseLapse: number = 0;
   isPaused: boolean = true;
   goalTics: number;
+  extraTics: number = 0;
 
   constructor(goalSecs: number = Infinity) {
     this.startTic = timeTracker.currentGameTic;
@@ -16,6 +17,7 @@ export class Timer {
     return (
       this.startTic +
       this.goalTics +
+      this.extraTics +
       this.totalPauseLapse -
       (this.isPaused ? this.lastPausedTic : timeTracker.currentGameTic)
     );
@@ -32,5 +34,9 @@ export class Timer {
     } else {
       this.totalPauseLapse += timeTracker.currentGameTic - this.lastPausedTic;
     }
+  }
+
+  addSecs(seconds: number) {
+    this.extraTics += seconds * timeTracker.ticsPerSecond;
   }
 }
