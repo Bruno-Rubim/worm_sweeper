@@ -12,7 +12,7 @@ export default class Cave {
   goldChance = 1.7;
   wormQuantity: number;
   wormsLeft: number;
-  blockCount: number;
+  blocksLeft: number;
   levelScale: number;
   blockMatrix: Block[][] = [];
   freeTiles: Block[] = [];
@@ -27,7 +27,7 @@ export default class Cave {
       this.difficulty * 0.033 * this.size * this.size
     );
     this.wormsLeft = this.wormQuantity;
-    this.blockCount = this.size * this.size - this.wormsLeft;
+    this.blocksLeft = this.size * this.size - this.wormsLeft;
     this.levelScale = 128 / (this.size * 16);
     this.fillEmptyBlocks();
   }
@@ -167,20 +167,17 @@ export default class Cave {
       !this.cleared
     ) {
       this.cleared = true;
-      // gameManager.gold += 5;
+      return true;
     }
+    return false;
   }
 
   breakBlock(block: Block) {
     block.broken = true;
-    if (block.hasGold) {
-      //   gameManager.gold++;
-    }
-    this.checkClear();
     this.revealAdjc(block.gridPos);
 
     if (block.content != CONTENTWORM) {
-      this.blockCount--;
+      this.blocksLeft--;
     }
     this.updateBlockStats(block);
   }
@@ -284,6 +281,7 @@ export default class Cave {
       this.wormQuantity = Math.ceil(this.wormQuantity * 1.3);
       this.wormsLeft = this.wormQuantity;
       this.goldChance += 0.3;
+      this.blocksLeft = this.size * this.size - this.wormsLeft;
     }
     this.fillEmptyBlocks();
     const firstBlock = this.blockMatrix[startPos.x]![startPos.y]!;

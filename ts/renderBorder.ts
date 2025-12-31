@@ -55,7 +55,7 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
   canvasManager.renderText(
     "numbers_brown",
     new Position(GAMEWIDTH - 69, 6),
-    gameState.level.cave.blockCount.toString()
+    gameState.level.cave.blocksLeft.toString()
   );
 
   canvasManager.renderSpriteFromSheet(

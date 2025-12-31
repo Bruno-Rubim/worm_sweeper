@@ -227,6 +227,13 @@ export class LevelManager extends GameObject {
     }
   }
 
+  checkCaveClear() {
+    if (this.gameState.level.cave.checkClear()) {
+      this.gameState.gold += 5;
+      this.gameState.timer.addSecs(5);
+    }
+  }
+
   handleClickCave(
     cursorPos: Position,
     button: typeof CLICKRIGHT | typeof CLICKLEFT
@@ -248,6 +255,7 @@ export class LevelManager extends GameObject {
         !block.marked
       ) {
         this.gameState.level.cave.breakBlock(block);
+        this.checkCaveClear();
         if (block.hasGold) {
           this.gameState.gold++;
         }
@@ -291,6 +299,7 @@ export class LevelManager extends GameObject {
     } else {
       if (!block.broken) {
         this.gameState.level.cave.markBlock(block);
+        this.checkCaveClear();
       }
     }
   }
