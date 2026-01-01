@@ -1,6 +1,7 @@
 import Block, {
   CONTENTDOOREXIT,
   CONTENTDOORSHOP,
+  CONTENTEMPTY,
   CONTENTWORM,
 } from "./block.js";
 import Position from "../position.js";
@@ -146,6 +147,16 @@ export default class Cave {
     });
     block.threatLevel = threatLevel;
     block.markerLevel = markerLevel;
+  }
+
+  clearExposedWorms() {
+    this.blockMatrix.forEach((line) => {
+      line.forEach((block) => {
+        if (block.content == CONTENTWORM && block.broken) {
+          block.content = CONTENTEMPTY;
+        }
+      });
+    });
   }
 
   updateAllStats() {

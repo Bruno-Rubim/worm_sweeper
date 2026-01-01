@@ -1,5 +1,6 @@
 import type { cursorState } from "./cursor.js";
 import type { ShopItem } from "./items/shopItem.js";
+import type Position from "./position.js";
 
 export class Action {}
 
@@ -8,6 +9,28 @@ export class ChangeCursorState extends Action {
   constructor(newState: cursorState) {
     super();
     this.newState = newState;
+  }
+}
+
+export class Transition extends Action {
+  transFunc?: Function;
+  transDelay?: number;
+  constructor(transFunc?: Function, transDelay?: number) {
+    super();
+    if (transFunc) {
+      this.transFunc = transFunc;
+    }
+    if (transDelay) {
+      this.transDelay = transDelay;
+    }
+  }
+}
+
+export class NextLevel extends Action {
+  starterGridPos: Position;
+  constructor(starterGridPos: Position) {
+    super();
+    this.starterGridPos = starterGridPos;
   }
 }
 

@@ -200,6 +200,11 @@ export class ShopItem extends GameObject {
       16,
       this.spriteSheetPos.add(this.mouseHovering ? 1 : 0, 0)
     );
+    canvasManager.renderText(
+      "numbers_cost",
+      this.pos.add(2, 18),
+      this.cost.toString()
+    );
     if (this.itemName == "time_potion") {
       canvasManager.renderAnimationFrame(
         sprites.time_potion_pointer_sheet,
@@ -231,16 +236,6 @@ export class ShopItem extends GameObject {
         this.shopName + "\n\n" + this.desc,
         "right",
         120
-      );
-      canvasManager.renderText(
-        "shop_description",
-        new Position(112, 95),
-        "Buy: "
-      );
-      canvasManager.renderText(
-        "numbers_gold",
-        new Position(136, 95),
-        this.cost.toString()
       );
     }
   }

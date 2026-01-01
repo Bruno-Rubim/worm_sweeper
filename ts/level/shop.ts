@@ -41,6 +41,7 @@ const shopItemList: Item[] = [
   getItem("silver_bell"),
   getItem("dark_crystal"),
   getItem("detonator"),
+  getItem("health_insurance"),
   getItem("drill"),
 ];
 

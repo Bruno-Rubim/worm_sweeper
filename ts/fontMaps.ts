@@ -725,6 +725,61 @@ export const fontMaps: Record<string, fontMap> = {
       },
     },
   },
+  numbers_cost: {
+    spriteSheet: sprites.number_sheet,
+    cellHeight: 8,
+    cellWidth: 8,
+    charMaps: {
+      0: {
+        width: 7,
+        pos: new Position(0, 8),
+      },
+      1: {
+        width: 7,
+        pos: new Position(1, 8),
+      },
+      2: {
+        width: 7,
+        pos: new Position(2, 8),
+      },
+      3: {
+        width: 7,
+        pos: new Position(3, 8),
+      },
+      4: {
+        width: 7,
+        pos: new Position(4, 8),
+      },
+      5: {
+        width: 7,
+        pos: new Position(5, 8),
+      },
+      6: {
+        width: 7,
+        pos: new Position(6, 8),
+      },
+      7: {
+        width: 7,
+        pos: new Position(7, 8),
+      },
+      8: {
+        width: 7,
+        pos: new Position(8, 8),
+      },
+      9: {
+        width: 7,
+        pos: new Position(9, 8),
+      },
+      ".": {
+        width: 4,
+        pos: new Position(10, 8),
+      },
+      "-": {
+        width: 7,
+        pos: new Position(11, 8),
+      },
+    },
+  },
 };
 
 export function measureTextWidth(font: string, text: string) {
