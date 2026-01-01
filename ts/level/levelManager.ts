@@ -322,6 +322,9 @@ export class LevelManager extends GameObject {
 
   checkCaveClear() {
     if (this.gameState.level.cave.checkClear()) {
+      if (this.gameState.hasItem("health_insurance")) {
+        this.gameState.health++;
+      }
       this.gameState.gold += 5;
       this.gameState.gameTimer.addSecs(5);
     }

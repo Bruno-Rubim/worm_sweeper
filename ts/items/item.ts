@@ -40,6 +40,7 @@ export const itemPosDic = {
   dark_crystal: new Position(4, 4),
   detonator: new Position(6, 4),
   drill: new Position(8, 4),
+  health_insurance: new Position(10, 4),
   empty: new Position(14, 4),
   picaxe: new Position(0, 7),
   flag: new Position(2, 7),

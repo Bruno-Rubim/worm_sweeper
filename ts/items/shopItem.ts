@@ -98,6 +98,12 @@ const shopItemSpecs: Record<itemName, itemSpecs> = {
     desc: "Gain 1 heart.",
     item: consumableDic.health_potion,
   },
+  health_insurance: {
+    name: "Health Insurance",
+    cost: 40,
+    desc: "Gain 1 heart when clearing a level.",
+    item: getItem("health_insurance"),
+  },
   health_potion_big: {
     name: "Big Health Potion",
     cost: 15,
