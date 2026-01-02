@@ -180,11 +180,7 @@ export default class Cave {
   }
 
   checkClear() {
-    if (
-      this.countBrokenBlocks() == this.wormQuantity &&
-      this.wormsLeft == 0 &&
-      !this.cleared
-    ) {
+    if (this.blocksLeft == 0 && this.wormsLeft == 0 && !this.cleared) {
       this.cleared = true;
       return true;
     }
