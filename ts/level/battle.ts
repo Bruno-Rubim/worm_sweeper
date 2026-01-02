@@ -1,10 +1,14 @@
 import { timerQueue } from "../timer/timerQueue.js";
-import { Enemy, Worm } from "./enemy.js";
+import { utils } from "../utils.js";
+import { Enemy, ScaleWorm, Worm } from "./enemy.js";
 
 export class Battle {
   enemies: Enemy[];
   constructor(depth: number) {
-    this.enemies = [new Worm(depth)];
+    this.enemies = [];
+    let arr: Enemy[] = [new Worm(depth), new ScaleWorm(depth)];
+    let x = depth > 2 ? 1 : 0;
+    this.enemies.push(arr[Math.min(x, utils.randomArrayId(arr))]!);
     this.enemies.forEach((e) => {
       e.cooldownTimer.start();
       timerQueue.push(e.cooldownTimer, e.attackAnimTimer, e.damagedTimer);

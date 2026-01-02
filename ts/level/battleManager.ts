@@ -32,7 +32,7 @@ export default class BattleManager extends SceneManager {
     );
     this.gameState.battle?.enemies.forEach((enemy) => {
       canvasManager.renderSpriteFromSheet(
-        sprites.enemy_worm,
+        enemy.spriteSheet,
         enemy.pos,
         64,
         64,
