@@ -159,6 +159,7 @@ function handleAction(
     cursor.description.hidden = false;
     cursor.description.side = action.side;
     cursor.description.text = action.description;
+    cursor.description.fontSize = action.descFontSize;
     return "itemDescription";
   }
 }

@@ -164,13 +164,8 @@ export default class CanvasManager {
         continue;
       }
       if (c == "$") {
-        let j = i;
-        let iconWord = "";
-        do {
-          iconWord += chars[j];
-          j++;
-        } while (chars[j] != " " && chars[j] != "\n" && chars[j] != undefined);
-        if (!fontMaps.icons) {
+        let iconWord = chars.slice(i, i + 4).join("");
+        if (!fontMaps.icons || !iconWord) {
           return;
         }
         const iconChar = fontMaps.icons.charMaps[iconWord];
@@ -185,17 +180,16 @@ export default class CanvasManager {
             fontMaps.icons.cellHeight
           );
           currentX += iconChar.width * fontSize;
-          utils.logOnce(iconChar);
         } else {
           console.warn(iconWord, "ain't no icon chief");
         }
-        i = j;
+        i += 3;
         continue;
       }
       if (c == "\n") {
         currentY += fontMap.cellHeight * fontSize;
         currentX = 0;
-        return;
+        continue;
       }
       const charMap = fontMap.charMaps[c]!;
       if (direction == CLICKRIGHT) {

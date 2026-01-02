@@ -7,8 +7,8 @@ import timeTracker from "../timer/timeTracker.js";
 import { Item } from "./item.js";
 
 export class Consumable extends Item {
-  constructor(spriteSheetPos: Position, name: string) {
-    super(new Position(GAMEWIDTH - 20, 72), spriteSheetPos, name);
+  constructor(spriteSheetPos: Position, name: string, description?: string) {
+    super(new Position(GAMEWIDTH - 20, 72), spriteSheetPos, name, description);
     this.clickFunction = () => {
       return new ConsumeItem(this.name);
     };
@@ -17,9 +17,21 @@ export class Consumable extends Item {
 
 export const consumableDic = {
   bomb: new Consumable(new Position(0, 0), "bomb"),
-  health_potion_big: new Consumable(new Position(2, 0), "health_potion_big"),
-  health_potion: new Consumable(new Position(4, 0), "health_potion"),
-  time_potion: new Consumable(new Position(6, 0), "time_potion"),
+  health_potion_big: new Consumable(
+    new Position(2, 0),
+    "health_potion_big",
+    "Gain 2 hearts."
+  ),
+  health_potion: new Consumable(
+    new Position(4, 0),
+    "health_potion",
+    "Gain 1 heart."
+  ),
+  time_potion: new Consumable(
+    new Position(6, 0),
+    "time_potion",
+    "Recover 60 seconds"
+  ),
   empty: new Consumable(new Position(14, 0), "empty"),
 };
 

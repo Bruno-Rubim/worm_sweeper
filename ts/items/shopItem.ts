@@ -7,20 +7,19 @@ import { sprites } from "../sprite.js";
 import timeTracker from "../timer/timeTracker.js";
 import { armorDic } from "./armor.js";
 import { consumableDic } from "./consumable.js";
-import { getItem, type Item, type itemPosDic } from "./item.js";
+import { getItem, itemDic, type Item } from "./item.js";
 import { shieldDic } from "./shield.js";
 import { weaponDic } from "./weapon.js";
 
 type itemName =
   | keyof typeof armorDic
-  | keyof typeof itemPosDic
+  | keyof typeof itemDic
   | keyof typeof consumableDic
   | keyof typeof weaponDic
   | keyof typeof shieldDic;
 
 type itemSpecs = {
   cost: number;
-  desc: string;
   name: string;
   item: Item;
 };
@@ -29,139 +28,116 @@ const shopItemSpecs: Record<itemName, itemSpecs> = {
   big_sword: {
     name: "Big Sword",
     cost: 52,
-    desc: "Not implemented",
     item: weaponDic.big_sword,
   },
   bomb: {
     name: "Bomb",
     cost: 13,
-    desc: "Not implemented",
     item: consumableDic.bomb,
   },
   book: {
     name: "Book",
     cost: 0,
-    desc: "Not implemented",
     item: getItem("book"),
   },
   chainmail: {
     name: "Chainmail",
     cost: 50,
-    desc: "Not implemented",
     item: armorDic.chainmail,
   },
   dagger: {
     name: "Dagger",
     cost: 37,
-    desc: "Not implemented",
     item: weaponDic.dagger,
   },
   dark_crystal: {
     name: "Dark Crystal",
     cost: 25,
-    desc: "Allows you to break blocks you can't see.",
     item: getItem("dark_crystal"),
   },
   detonator: {
     name: "Detonator",
     cost: 20,
-    desc: "Use this to break all unmarked blocks around a block instantly.",
     item: getItem("detonator"),
   },
   drill: {
     name: "Drill",
     cost: 36,
-    desc: "When breaking a safe block all connected safe blocks are also broken.",
     item: getItem("drill"),
   },
   empty: {
     name: "Empty",
     cost: 0,
-    desc: "Not implemented",
     item: armorDic.empty,
   },
   flag: {
     name: "Flag",
     cost: 0,
-    desc: "Not implemented",
     item: getItem("flag"),
   },
   gold_bug: {
     name: "Gold Bug",
     cost: 20,
-    desc: "More gold. More worms.",
     item: getItem("gold_bug"),
   },
   health_potion: {
     name: "Health Potion",
     cost: 10,
-    desc: "Gain 1 heart.",
     item: consumableDic.health_potion,
   },
   health_insurance: {
     name: "Health Insurance",
     cost: 40,
-    desc: "Gain 1 heart when clearing a level.",
     item: getItem("health_insurance"),
   },
   health_potion_big: {
     name: "Big Health Potion",
     cost: 15,
-    desc: "Gain 2 hearts",
     item: consumableDic.health_potion_big,
   },
   jade_shield: {
     name: "Jade Shield",
     cost: 30,
-    desc: "Not implemented",
     item: shieldDic.jade_shield,
   },
   picaxe: {
     name: "Picaxe",
     cost: 0,
-    desc: "Not implemented",
     item: getItem("picaxe"),
   },
   silver_bell: {
     name: "Silver Bell",
     cost: 38,
-    desc: "Reveals location of doors",
     item: getItem("silver_bell"),
   },
   steel_shield: {
     name: "Steel Shield",
     cost: 35,
-    desc: "Not implemented",
     item: shieldDic.steel_shield,
   },
   swift_vest: {
     name: "Swift Vest",
     cost: 40,
-    desc: "Not implemented",
     item: armorDic.swift_vest,
   },
   time_blade: {
     name: "Time Blade",
     cost: 55,
-    desc: "Not implemented",
     item: weaponDic.time_blade,
   },
   time_potion: {
     name: "Time Potion",
     cost: 10,
-    desc: "Recover 60 seconds",
     item: consumableDic.time_potion,
   },
   wood_shield: {
     name: "Wood Shield",
     cost: 0,
-    desc: "Not implemented",
     item: shieldDic.wood_shield,
   },
   wood_sword: {
     name: "Wood Sword",
     cost: 0,
-    desc: "Not implemented",
     item: weaponDic.wood_sword,
   },
 };
@@ -171,7 +147,7 @@ export class ShopItem extends GameObject {
   spriteSheetPos: Position;
   shopName: string;
   cost: number;
-  desc: string;
+  desc: string | undefined;
   item: Item;
 
   constructor(itemName: itemName, spriteSheetPos: Position) {
@@ -185,7 +161,7 @@ export class ShopItem extends GameObject {
     this.spriteSheetPos = spriteSheetPos;
     this.shopName = shopItemSpecs[itemName].name;
     this.cost = shopItemSpecs[itemName].cost;
-    this.desc = shopItemSpecs[itemName].desc;
+    this.desc = shopItemSpecs[itemName].item.description;
     this.item = shopItemSpecs[itemName].item;
     this.clickFunction = (cursorPos: Position, button: cursorClick) => {
       if (button == CLICKLEFT) return new BuyShopItem(this);
@@ -233,7 +209,7 @@ export class ShopItem extends GameObject {
       canvasManager.renderText(
         "shop_description",
         new Position(27, 95),
-        this.shopName + "\n\n" + this.desc,
+        this.shopName + "\n\n" + this.item.description,
         "right",
         120
       );

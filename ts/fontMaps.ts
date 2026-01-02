@@ -609,6 +609,10 @@ export const fontMaps: Record<string, fontMap> = {
         width: 7,
         pos: new Position(11, 0),
       },
+      " ": {
+        width: 0,
+        pos: new Position(-1, -1),
+      },
     },
   },
   numbers_red: {
@@ -663,6 +667,10 @@ export const fontMaps: Record<string, fontMap> = {
       "-": {
         width: 7,
         pos: new Position(11, 1),
+      },
+      " ": {
+        width: 0,
+        pos: new Position(-1, -1),
       },
     },
   },
@@ -719,6 +727,10 @@ export const fontMaps: Record<string, fontMap> = {
         width: 7,
         pos: new Position(11, 2),
       },
+      " ": {
+        width: 0,
+        pos: new Position(-1, -1),
+      },
     },
   },
   numbers_green: {
@@ -773,6 +785,10 @@ export const fontMaps: Record<string, fontMap> = {
       "-": {
         width: 7,
         pos: new Position(11, 3),
+      },
+      " ": {
+        width: 0,
+        pos: new Position(-1, -1),
       },
     },
   },
@@ -829,6 +845,10 @@ export const fontMaps: Record<string, fontMap> = {
         width: 7,
         pos: new Position(11, 4),
       },
+      " ": {
+        width: 0,
+        pos: new Position(-1, -1),
+      },
     },
   },
   numbers_blue: {
@@ -883,6 +903,10 @@ export const fontMaps: Record<string, fontMap> = {
       "-": {
         width: 7,
         pos: new Position(11, 5),
+      },
+      " ": {
+        width: 0,
+        pos: new Position(-1, -1),
       },
     },
   },
@@ -939,6 +963,10 @@ export const fontMaps: Record<string, fontMap> = {
         width: 7,
         pos: new Position(11, 6),
       },
+      " ": {
+        width: 0,
+        pos: new Position(-1, -1),
+      },
     },
   },
   numbers_gold: {
@@ -994,6 +1022,10 @@ export const fontMaps: Record<string, fontMap> = {
         width: 7,
         pos: new Position(11, 7),
       },
+      " ": {
+        width: 0,
+        pos: new Position(-1, -1),
+      },
     },
   },
   numbers_cost: {
@@ -1048,6 +1080,10 @@ export const fontMaps: Record<string, fontMap> = {
       "-": {
         width: 7,
         pos: new Position(11, 8),
+      },
+      " ": {
+        width: 0,
+        pos: new Position(-1, -1),
       },
     },
   },

@@ -29,6 +29,7 @@ export type cursorState = keyof typeof cursorSheetPos;
 class Description extends GameObject {
   side: typeof RIGHT | typeof LEFT = RIGHT;
   text: string = "";
+  fontSize: number = 0.4;
   constructor(cursorPos: Position) {
     super({
       sprite: sprites.description_box,
@@ -43,17 +44,17 @@ class Description extends GameObject {
     }
     canvasManager.renderSprite(
       this.sprite,
-      this.pos.add(this.side == RIGHT ? -57 : 15, 6),
+      this.pos.add(this.side == RIGHT ? -59 : 15, 6),
       this.width,
       this.height
     );
     canvasManager.renderText(
       "description",
-      this.pos.add(this.side == RIGHT ? -55 : 17, 8),
+      this.pos.add(this.side == RIGHT ? -57 : 17, 8),
       this.text,
       RIGHT,
       this.width - 3,
-      0.4
+      this.fontSize
     );
   }
 }

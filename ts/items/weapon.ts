@@ -19,6 +19,9 @@ export class Weapon extends Item {
     this.bigSprite = bigSprite;
     this.damage = damage;
     this.cooldown = cooldown;
+    this.description =
+      "$dmgDamage: " + this.damage + "\n$spdCooldown: " + this.cooldown + "s";
+    this.descFontSize = 0.6;
   }
 }
 

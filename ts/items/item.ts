@@ -9,6 +9,7 @@ export class Item extends GameObject {
   spriteSheetPos: Position;
   name: string;
   description?: string;
+  descFontSize = 0.4;
 
   constructor(
     pos: Position,
@@ -66,36 +67,47 @@ export class Item extends GameObject {
       } else {
         side = LEFT;
       }
-      return new ItemDescription(this.description, side);
+      return new ItemDescription(this.description, side, this.descFontSize);
     }
   };
 }
 
-export const itemList = {
+export const itemDic = {
   gold_bug: new Item(
     new Position(),
     new Position(0, 4),
     "gold_bug",
-    "The bug's curse is everlasting."
+    "More gold. More worms.\nThe bug's curse is everlasting."
   ),
-  silver_bell: new Item(new Position(), new Position(2, 4), "silver_bell"),
-  dark_crystal: new Item(new Position(), new Position(4, 4), "dark_crystal"),
+  silver_bell: new Item(
+    new Position(),
+    new Position(2, 4),
+    "silver_bell",
+    "Reveals location of doors"
+  ),
+  dark_crystal: new Item(
+    new Position(),
+    new Position(4, 4),
+    "dark_crystal",
+    "Allows you to break blocks you can't see."
+  ),
   detonator: new Item(
     new Position(),
     new Position(6, 4),
     "detonator",
-    "Right click a number that has that many markers aroudnd it to break all unmarked blocks."
+    "Use this to break all unmarked blocks around a block instantly."
   ),
   drill: new Item(
     new Position(),
     new Position(8, 4),
     "drill",
-    "Any safe block you break will break all safe blocks next to it."
+    "When breaking a safe block all connected safe blocks are also broken."
   ),
   health_insurance: new Item(
     new Position(),
     new Position(10, 4),
-    "health_insurance"
+    "health_insurance",
+    "Gain 1 heart when clearing a level."
   ),
   empty: new Item(new Position(), new Position(14, 4), "empty"),
   picaxe: new Item(
@@ -114,7 +126,7 @@ export const itemList = {
     new Position(),
     new Position(4, 7),
     "book",
-    "A book for you to read stuff."
+    "Click to open the guide book."
   ),
 };
 
@@ -125,10 +137,10 @@ export const itemList = {
  * @returns
  */
 export function getItem(
-  itemName: keyof typeof itemList,
+  itemName: keyof typeof itemDic,
   screenPos: Position = new Position()
 ) {
-  let item = itemList[itemName].clone();
+  let item = itemDic[itemName].clone();
   item.pos.update(screenPos);
   return item;
 }

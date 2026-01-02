@@ -44,21 +44,13 @@ export default class BattleManager extends SceneManager {
         new Position()
       );
       for (let i = 0; i < enemy.health; i++) {
-        canvasManager.renderSpriteFromSheet(
-          sprites.icon_sheet,
+        canvasManager.renderText(
+          "icons",
           enemy.pos.add(33 + i * 9 - (9 * enemy.health) / 2, 64),
-          8,
-          8,
-          new Position(5, 0)
+          "$hrt"
         );
       }
-      canvasManager.renderSpriteFromSheet(
-        sprites.icon_sheet,
-        enemy.pos.add(25, 8),
-        8,
-        8,
-        new Position(3, 1)
-      );
+      canvasManager.renderText("icons", enemy.pos.add(25, 8), "$dmg");
       canvasManager.renderText(
         "numbers_gray",
         enemy.pos.add(18, 8),

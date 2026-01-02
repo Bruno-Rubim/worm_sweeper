@@ -82,9 +82,15 @@ export class OpenBook extends Action {
 export class ItemDescription extends Action {
   description: string;
   side: typeof LEFT | typeof RIGHT;
-  constructor(description: string, side: typeof LEFT | typeof RIGHT) {
+  descFontSize: number;
+  constructor(
+    description: string,
+    side: typeof LEFT | typeof RIGHT,
+    descFontSize: number
+  ) {
     super();
     this.description = description;
     this.side = side;
+    this.descFontSize = descFontSize;
   }
 }
