@@ -36,7 +36,10 @@ export default class BattleManager extends SceneManager {
         enemy.pos,
         64,
         64,
-        new Position(enemy.attackAnimTimer.inMotion ? 1 : 0, 0)
+        new Position(
+          enemy.attackAnimTimer.inMotion ? 1 : 0,
+          enemy.damagedTimer.inMotion ? 1 : 0
+        )
       );
       for (let i = 0; i < enemy.health; i++) {
         canvasManager.renderText(
@@ -132,6 +135,8 @@ export default class BattleManager extends SceneManager {
     const rId = utils.randomArrayId(this.gameState.battle!.enemies);
     const enemy = this.gameState.battle!.enemies[rId]!;
     enemy.health -= this.gameState.inventory.weapon.totalDamage;
+    enemy.damagedTimer.start();
+    timerQueue.push(enemy.damagedTimer);
     this.gameState.attackAnimationTimer.goalSecs =
       this.gameState.inventory.weapon.cooldown / 3;
     this.gameState.attackAnimationTimer.start();

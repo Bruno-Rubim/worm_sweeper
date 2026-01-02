@@ -18,8 +18,8 @@ export class Enemy {
     this.health = health;
     this.damage = damage;
     this.pos = pos;
-    this.attackAnimTimer = new Timer(0.5);
-    this.damagedTimer = new Timer(0.3);
+    this.attackAnimTimer = new Timer(0.3);
+    this.damagedTimer = new Timer(0.16);
     this.cooldownTimer = new Timer(
       attackCooldown,
       () => {
