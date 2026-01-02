@@ -32,6 +32,7 @@ export const sprites = {
   big_sword_big: new Sprite("big_sword_big"),
   big_sword_dagger: new Sprite("big_sword_dagger"),
   big_sword_wood: new Sprite("big_sword_wood"),
+  big_time_blade: new Sprite("big_time_blade"),
   block_sheet: new Sprite("block_sheet"),
   button_exit: new Sprite("button_exit"),
   counter_sheet: new Sprite("counter_sheet"),

@@ -43,10 +43,10 @@ export default class ShopManager extends SceneManager {
       return;
     }
     if (action instanceof BuyShopItem) {
-      if (action.shopItem.cost > this.gameState.gold) {
+      if (action.shopItem.item.cost > this.gameState.gold) {
         return;
       }
-      this.gameState.gold -= action.shopItem.cost;
+      this.gameState.gold -= action.shopItem.item.cost;
       const item = action.shopItem.item;
       const inventory = this.gameState.inventory;
       if (item instanceof Armor) {

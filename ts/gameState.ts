@@ -38,7 +38,7 @@ export default class GameState {
   inTransition: boolean = false;
   inBook: boolean = false;
   bookPage: number = 0;
-  currentScene: "cave" | "shop" | "battle" = "shop";
+  currentScene: "cave" | "shop" | "battle" = "cave";
   paused: boolean = false;
   defending: boolean = false;
   gameOver: boolean = false;
@@ -46,7 +46,7 @@ export default class GameState {
     picaxe: getItem("picaxe", new Position(GAMEWIDTH - 20, 90)),
     flag: getItem("flag", new Position(GAMEWIDTH - 20, 109)),
     book: getItem("book", new Position(GAMEWIDTH - 20, 127)),
-    weapon: weaponDic.wood_sword,
+    weapon: weaponDic.time_blade,
     shield: shieldDic.wood_shield,
     armor: armorDic.empty,
     consumable: consumableDic.empty,
@@ -59,7 +59,7 @@ export default class GameState {
   };
 
   constructor() {
-    this.gameTimer = new Timer(180, () => this.lose(), false, false);
+    this.gameTimer = new Timer(120, () => this.lose(), false, false);
     this.level = new Level(0, this.inventory);
     timerQueue.push(this.gameTimer);
     timerQueue.push(this.tiredTimer);

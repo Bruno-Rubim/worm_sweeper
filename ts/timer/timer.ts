@@ -57,6 +57,7 @@ export class Timer {
     this.started = true;
     this.ended = false;
     this.startTic = timeTracker.currentGameTic;
+    this.totalPauseLapse = 0;
     this.isPaused = false;
   }
 

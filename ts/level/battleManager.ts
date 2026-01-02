@@ -134,7 +134,17 @@ export default class BattleManager extends SceneManager {
     const tiredTimer = this.gameState.tiredTimer;
     const rId = utils.randomArrayId(this.gameState.battle!.enemies);
     const enemy = this.gameState.battle!.enemies[rId]!;
-    enemy.health -= this.gameState.inventory.weapon.totalDamage;
+    let damage = this.gameState.inventory.weapon.totalDamage;
+    if (this.gameState.inventory.weapon.name == "time_blade") {
+      damage = Math.max(
+        1,
+        Math.min(
+          10,
+          Math.floor(6 / (this.gameState.gameTimer.secondsRemaining / 60) - 1)
+        )
+      );
+    }
+    enemy.health -= damage;
     enemy.damagedTimer.start();
     timerQueue.push(enemy.damagedTimer);
     this.gameState.attackAnimationTimer.goalSecs =

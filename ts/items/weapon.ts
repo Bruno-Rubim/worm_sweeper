@@ -17,12 +17,15 @@ export class Weapon extends Item {
     damage: number;
     cooldown: number;
   }) {
-    super({ ...args, pos: new Position(GAMEWIDTH - 20, 18) });
+    super({
+      ...args,
+      pos: new Position(GAMEWIDTH - 20, 18),
+      description:
+        "$dmgDamage: " + args.damage + "\n$spdCooldown: " + args.cooldown + "s",
+    });
     this.bigSprite = args.bigSprite;
     this.damage = args.damage;
     this.cooldown = args.cooldown;
-    this.description =
-      "$dmgDamage: " + this.damage + "\n$spdCooldown: " + this.cooldown + "s";
     this.descFontSize = 0.6;
   }
 
@@ -35,15 +38,15 @@ class TimeBlade extends Weapon {
   constructor() {
     super({
       spriteSheetPos: new Position(6, 3),
-      bigSprite: sprites.big_sword_wood,
+      bigSprite: sprites.big_time_blade,
       name: "time_blade",
       shopName: "Time Blade",
       cost: 56,
       damage: 1,
-      cooldown: 2.5,
+      cooldown: 2.8,
     });
     this.description =
-      "The less time the more damage." +
+      "The less time you have the deadlier." +
       "\n$spdCooldown: " +
       this.cooldown +
       "s";
@@ -51,7 +54,7 @@ class TimeBlade extends Weapon {
   }
 
   get totalDamage() {
-    return 0;
+    return this.damage;
   }
 }
 
