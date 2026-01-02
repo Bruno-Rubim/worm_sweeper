@@ -70,11 +70,7 @@ export class EnemyAtack extends Action {
   }
 }
 
-export class OpenBook extends Action {
-  constructor() {
-    super();
-  }
-}
+export class ToggleBook extends Action {}
 
 export class ItemDescription extends Action {
   description: string;
@@ -91,3 +87,5 @@ export class ItemDescription extends Action {
     this.descFontSize = descFontSize;
   }
 }
+
+export class RestartGame extends Action {}

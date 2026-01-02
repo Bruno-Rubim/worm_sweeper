@@ -9,6 +9,11 @@ export class GameManager {
   gameState = new GameState();
   levelManager = new LevelManager(this.gameState);
 
+  restart() {
+    this.gameState.restart();
+    this.levelManager = new LevelManager(this.gameState);
+  }
+
   render(canvasManager: CanvasManager) {
     timerQueue.forEach((timer, i) => {
       let action;
@@ -17,7 +22,7 @@ export class GameManager {
           action = timer.goalFunc();
         }
         if (timer.loop) {
-          timer.reset();
+          timer.rewind();
         } else {
           timer.ended = true;
           if (timer.deleteAtEnd) {
@@ -32,6 +37,9 @@ export class GameManager {
             action.damage - this.gameState.currentDefense
           );
           action.enemy.health -= this.gameState.currentReflection;
+          if (this.gameState.health < 1) {
+            this.gameState.lose();
+          }
           this.levelManager.checkBattleEnd();
         }
       }

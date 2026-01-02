@@ -1,4 +1,4 @@
-import { ItemDescription, OpenBook } from "../action.js";
+import { ItemDescription, ToggleBook } from "../action.js";
 import type CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
 import { GAMEWIDTH, LEFT, RIGHT } from "../global.js";
@@ -28,7 +28,7 @@ export class Item extends GameObject {
     this.name = name;
     if (name == "book") {
       this.clickFunction = () => {
-        return new OpenBook();
+        return new ToggleBook();
       };
     }
     if (description) {

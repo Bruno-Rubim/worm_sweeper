@@ -14,8 +14,9 @@ import {
   ChangeCursorState,
   ChangeScene,
   NextLevel,
+  RestartGame,
 } from "../action.js";
-import { CURSORARROW, CURSORDEFAULT, CURSORNONE } from "../cursor.js";
+import { CURSORDEFAULT, CURSORNONE } from "../cursor.js";
 import { sprites } from "../sprite.js";
 
 import timeTracker from "../timer/timeTracker.js";
@@ -100,6 +101,7 @@ export class LevelManager extends GameObject {
         this.currentSceneManager = this.shopManager;
         break;
     }
+    transitionObject.endAnimation();
   }
 
   render(canvasManager: CanvasManager): void {
@@ -112,6 +114,7 @@ export class LevelManager extends GameObject {
       );
       return;
     }
+
     if (this.gameState.inBook) {
       canvasManager.renderSprite(
         sprites.bg_rules,
@@ -123,6 +126,14 @@ export class LevelManager extends GameObject {
     }
     this.currentSceneManager.render(canvasManager);
     transitionObject.render(canvasManager);
+    if (this.gameState.gameOver) {
+      canvasManager.renderSprite(
+        sprites.screen_defeat,
+        this.pos,
+        this.width,
+        this.height
+      );
+    }
   }
 
   screenTransition(
@@ -215,7 +226,7 @@ export class LevelManager extends GameObject {
     if (this.gameState.inTransition) {
       action = new ChangeCursorState(CURSORNONE);
     }
-    if (this.gameState.inBook) {
+    if (this.gameState.inBook || this.gameState.gameOver) {
       action = new ChangeCursorState(CURSORDEFAULT);
     }
     return action;
@@ -225,6 +236,9 @@ export class LevelManager extends GameObject {
     cursorPos: Position,
     button: typeof CLICKRIGHT | typeof CLICKLEFT
   ) {
+    if (this.gameState.gameOver) {
+      return new RestartGame();
+    }
     if (this.gameState.inTransition) {
       return;
     }
@@ -235,10 +249,11 @@ export class LevelManager extends GameObject {
   }
 
   handleHeld(cursorPos: Position, button: cursorClick) {
-    if (this.gameState.inTransition) {
-      return;
-    }
-    if (this.gameState.inBook) {
+    if (
+      this.gameState.inTransition ||
+      this.gameState.inBook ||
+      this.gameState.gameOver
+    ) {
       return;
     }
     this.handleAction(this.currentSceneManager.handleHeld(cursorPos, button));

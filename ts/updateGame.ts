@@ -1,4 +1,4 @@
-import { cursor, CURSORDEFAULT, type cursorState } from "./cursor.js";
+import { cursor, type cursorState } from "./cursor.js";
 import { GameManager } from "./gameManager.js";
 import type GameObject from "./gameObject.js";
 import { CLICKLEFT, CLICKRIGHT } from "./global.js";
@@ -8,8 +8,9 @@ import {
   ChangeCursorState,
   ConsumeItem,
   Action,
-  OpenBook as ToggleBook,
+  ToggleBook as ToggleBook,
   ItemDescription,
+  RestartGame,
 } from "./action.js";
 import timeTracker from "./timer/timeTracker.js";
 
@@ -118,6 +119,9 @@ function handleKeyInput(gameManager: GameManager) {
     timeTracker.togglePause();
     gameManager.gameState.paused = timeTracker.isPaused;
   }
+  if (inputState.keyboard.q == "pressed") {
+    gameManager.restart();
+  }
 }
 
 type actionResponse = "cursorChange" | "itemDescription" | void;
@@ -160,6 +164,9 @@ function handleAction(
     cursor.description.text = action.description;
     cursor.description.fontSize = action.descFontSize;
     return "itemDescription";
+  }
+  if (action instanceof RestartGame) {
+    gameManager.restart();
   }
 }
 

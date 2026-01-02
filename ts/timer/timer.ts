@@ -85,7 +85,17 @@ export class Timer {
     this.extraTics += seconds * timeTracker.ticsPerSecond;
   }
 
-  reset() {
+  rewind() {
     this.addSecs(this.goalSecs);
+  }
+
+  restart() {
+    this.startTic = timeTracker.currentGameTic;
+    this.started = false;
+    this.ended = false;
+    this.isPaused = true;
+    this.lastPausedTic = timeTracker.currentGameTic;
+    this.totalPauseLapse = 0;
+    this.extraTics = 0;
   }
 }

@@ -66,4 +66,8 @@ export default class GameObject {
   resetAnimation() {
     this.birthTic = timeTracker.currentGameTic;
   }
+
+  endAnimation() {
+    this.birthTic = -Infinity;
+  }
 }
