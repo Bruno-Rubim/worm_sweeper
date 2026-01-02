@@ -19,15 +19,23 @@ export class Shield extends Item {
     bigSprite: Sprite;
     reflection?: number;
   }) {
-    super({ ...args, pos: new Position(GAMEWIDTH - 20, 36) });
+    args.defense = args.defense ?? 0;
+    args.reflection = args.reflection ?? 0;
+    super({
+      ...args,
+      pos: new Position(GAMEWIDTH - 20, 36),
+      description:
+        (args.defense > 0 ? "$dfsDefense: " + args.defense + "\n" : "") +
+        (args.reflection > 0
+          ? "$refReflection: " + args.reflection + "\n"
+          : "") +
+        (args.cooldown > 0 ? "$spdCooldown: " + args.cooldown + "s\n" : ""),
+    });
     this.cooldown = args.cooldown;
     this.bigSprite = args.bigSprite;
     this.defense = args.defense ?? 0;
     this.reflection = args.reflection ?? 0;
-    this.description =
-      (this.defense > 0 ? "$dfsDefense: " + this.defense + "\n" : "") +
-      (this.reflection > 0 ? "$refReflection: " + this.reflection + "\n" : "") +
-      (this.cooldown > 0 ? "$spdCooldown: " + this.cooldown + "s\n" : "");
+
     this.descFontSize = 0.6;
   }
 }
