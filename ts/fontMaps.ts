@@ -123,6 +123,11 @@ export const fontMaps: Record<string, fontMap> = {
         pos: new Position(11, 1),
         width: 6,
       },
+      "-": {
+        pos: new Position(12, 1),
+        width: 4,
+      },
+
       a: {
         pos: new Position(0, 2),
         width: 6,
@@ -393,6 +398,10 @@ export const fontMaps: Record<string, fontMap> = {
       Z: {
         pos: new Position(11, 1),
         width: 6,
+      },
+      "-": {
+        pos: new Position(12, 1),
+        width: 4,
       },
       a: {
         pos: new Position(0, 2),

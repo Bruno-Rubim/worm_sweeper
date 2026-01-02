@@ -55,7 +55,6 @@ export default class GameState {
   };
 
   constructor() {
-    this.gold = 0;
     this.gameTimer = new Timer(180, undefined, false, false);
     this.level = new Level(0, this.inventory);
     this.tiredTimer = new Timer(0, undefined, false, false);
