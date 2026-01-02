@@ -152,7 +152,6 @@ export class LevelManager extends GameObject {
   }
 
   changeScene(action: ChangeScene) {
-    this.gameState.gameTimer.pause();
     const currentScene = this.gameState.currentScene;
     this.screenTransition(
       () => {
@@ -160,15 +159,17 @@ export class LevelManager extends GameObject {
           case "battle":
             this.gameState.level.cave.clearExposedWorms();
             this.gameState.level.cave.updateAllStats();
-            this.gameState.battle = new Battle();
+            this.gameState.battle = new Battle(this.gameState.level.depth);
             this.currentSceneManager = this.battleManager;
             break;
           case "cave":
+            this.gameState.gameTimer.unpause();
             switch (currentScene) {
               case "battle":
                 this.gameState.level.cave.wormsLeft--;
                 this.caveManager.checkCaveClear();
               case "shop":
+                this.gameState.gameTimer.pause();
                 this.currentSceneManager = this.caveManager;
                 break;
             }
@@ -205,7 +206,7 @@ export class LevelManager extends GameObject {
         );
       });
     } else {
-      console.log("unhandled action", action);
+      console.warn("unhandled action", action);
     }
   }
 

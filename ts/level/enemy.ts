@@ -1,5 +1,5 @@
 import { EnemyAtack } from "../action.js";
-import type Position from "../position.js";
+import Position from "../position.js";
 import { Timer } from "../timer/timer.js";
 
 export class Enemy {
@@ -22,6 +22,17 @@ export class Enemy {
         return new EnemyAtack(this.damage, this);
       },
       true
+    );
+  }
+}
+
+export class Worm extends Enemy {
+  constructor(depth: number) {
+    super(
+      3 + Math.floor(depth / 3),
+      1 + Math.floor(depth / 5),
+      new Position(56, 36),
+      5 - (Math.floor(depth / 2) * 50) / 1000
     );
   }
 }

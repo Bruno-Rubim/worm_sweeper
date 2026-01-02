@@ -30,7 +30,7 @@ export const consumableDic = {
   time_potion: new Consumable(
     new Position(6, 0),
     "time_potion",
-    "Recover 60 seconds $tim"
+    "Recover 60 seconds$tim"
   ),
   empty: new Consumable(new Position(14, 0), "empty"),
 };

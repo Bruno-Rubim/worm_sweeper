@@ -65,14 +65,28 @@ export default class BattleManager extends SceneManager {
 
     const inventory = this.gameState.inventory;
     canvasManager.renderSprite(
-      inventory.shield.bigSprite,
-      new Position(BORDERTHICKLEFT + 24, BORDERTHICKTOP + 45),
+      inventory.weapon.bigSprite,
+      new Position(
+        BORDERTHICKLEFT -
+          (this.gameState.attackAnimationTimer.ended ||
+          !this.gameState.attackAnimationTimer.started
+            ? 24
+            : 0),
+        BORDERTHICKTOP +
+          (this.gameState.attackAnimationTimer.ended ||
+          !this.gameState.attackAnimationTimer.started
+            ? 45
+            : 26)
+      ),
       128,
       128
     );
     canvasManager.renderSprite(
-      inventory.weapon.bigSprite,
-      new Position(BORDERTHICKLEFT - 24, BORDERTHICKTOP + 45),
+      inventory.shield.bigSprite,
+      new Position(
+        BORDERTHICKLEFT + (this.gameState.defending ? 0 : 24),
+        BORDERTHICKTOP + (this.gameState.defending ? 26 : 45)
+      ),
       128,
       128
     );
@@ -101,6 +115,35 @@ export default class BattleManager extends SceneManager {
     }
   };
 
+  playerAttack() {
+    const tiredTimer = this.gameState.tiredTimer;
+    const rId = utils.randomArrayId(this.gameState.battle!.enemies);
+    const enemy = this.gameState.battle!.enemies[rId]!;
+    enemy.health -= this.gameState.inventory.weapon.totalDamage;
+    this.gameState.attackAnimationTimer.goalSecs =
+      this.gameState.inventory.weapon.cooldown / 3;
+    this.gameState.attackAnimationTimer.start();
+    tiredTimer.goalSecs = this.gameState.inventory.weapon.cooldown;
+    tiredTimer.start();
+    if (enemy.health < 1) {
+      timerQueue.splice(timerQueue.indexOf(enemy.cooldownTimer), 1);
+      this.gameState.battle!.enemies.splice(rId, 1);
+      if (this.gameState.battle!.enemies.length <= 0) {
+        return new ChangeScene("cave");
+      }
+    }
+  }
+
+  playerDefend() {
+    const tiredTimer = this.gameState.tiredTimer;
+    this.gameState.defending = true;
+    tiredTimer.goalSecs = this.gameState.inventory.shield.cooldown;
+    tiredTimer.goalFunc = () => {
+      this.gameState.defending = false;
+    };
+    tiredTimer.start();
+  }
+
   handleHeld = (
     cursorPos: Position,
     button: typeof CLICKRIGHT | typeof CLICKLEFT
@@ -111,25 +154,9 @@ export default class BattleManager extends SceneManager {
     const tiredTimer = this.gameState.tiredTimer;
     if (tiredTimer.ended || !tiredTimer.started) {
       if (button == CLICKLEFT) {
-        const rId = utils.randomArrayId(this.gameState.battle!.enemies);
-        const enemy = this.gameState.battle!.enemies[rId]!;
-        enemy.health -= this.gameState.inventory.weapon.totalDamage;
-        if (enemy.health < 1) {
-          timerQueue.splice(timerQueue.indexOf(enemy.cooldownTimer), 1);
-          this.gameState.battle!.enemies.splice(rId, 1);
-          if (this.gameState.battle!.enemies.length <= 0) {
-            return new ChangeScene("cave");
-          }
-        }
-        tiredTimer.goalSecs = this.gameState.inventory.weapon.cooldown;
-        tiredTimer.start();
+        return this.playerAttack();
       } else {
-        this.gameState.defending = true;
-        tiredTimer.goalSecs = this.gameState.inventory.shield.cooldown;
-        tiredTimer.goalFunc = () => {
-          this.gameState.defending = false;
-        };
-        tiredTimer.start();
+        return this.playerDefend();
       }
     }
   };

@@ -32,7 +32,8 @@ export default class GameState {
   level: Level;
   battle: Battle | null = null;
   health: number = 5;
-  tiredTimer: Timer;
+  tiredTimer = new Timer(0, undefined, false, false);
+  attackAnimationTimer = new Timer(0, undefined, false, false);
   inTransition: boolean = false;
   inBook: boolean = false;
   bookPage: number = 0;
@@ -58,8 +59,8 @@ export default class GameState {
   constructor() {
     this.gameTimer = new Timer(180, undefined, false, false);
     this.level = new Level(0, this.inventory);
-    this.tiredTimer = new Timer(0, undefined, false, false);
     timerQueue.push(this.tiredTimer);
+    timerQueue.push(this.attackAnimationTimer);
   }
 
   get passiveItemNames() {

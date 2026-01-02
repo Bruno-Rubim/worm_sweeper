@@ -57,11 +57,23 @@ export class Timer {
   }
 
   pause() {
-    this.isPaused = !this.isPaused;
-    if (this.isPaused) {
+    if (!this.isPaused) {
       this.lastPausedTic = timeTracker.currentGameTic;
-    } else {
+      this.isPaused = !this.isPaused;
+    }
+  }
+  unpause() {
+    if (this.isPaused) {
       this.totalPauseLapse += timeTracker.currentGameTic - this.lastPausedTic;
+      this.isPaused = !this.isPaused;
+    }
+  }
+
+  togglePause() {
+    if (this.isPaused) {
+      this.unpause();
+    } else {
+      this.pause();
     }
   }
 

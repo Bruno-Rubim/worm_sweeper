@@ -115,7 +115,6 @@ function handleKeyInput(gameManager: GameManager) {
     if (gameManager.gameState.inBook) {
       return new ToggleBook();
     }
-    console.log("pausing");
     timeTracker.togglePause();
     gameManager.gameState.paused = timeTracker.isPaused;
   }
@@ -208,5 +207,5 @@ export default function updateGame(
 
   cursor.pos.update(cursor.pos.subtract(8, 8));
 
-  handleKeyInput(gameManager);
+  handleAction(gameManager, handleKeyInput(gameManager));
 }
