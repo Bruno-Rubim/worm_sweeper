@@ -7,6 +7,8 @@ export class Enemy {
   damage: number;
   pos: Position;
   cooldownTimer: Timer;
+  attackAnimTimer: Timer;
+  damagedTimer: Timer;
   constructor(
     health: number,
     damage: number,
@@ -16,6 +18,8 @@ export class Enemy {
     this.health = health;
     this.damage = damage;
     this.pos = pos;
+    this.attackAnimTimer = new Timer(0.5);
+    this.damagedTimer = new Timer(0.3);
     this.cooldownTimer = new Timer(
       attackCooldown,
       () => {

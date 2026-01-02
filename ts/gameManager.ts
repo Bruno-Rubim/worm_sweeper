@@ -25,6 +25,8 @@ export class GameManager {
           }
         }
         if (action instanceof EnemyAtack) {
+          action.enemy.attackAnimTimer.start();
+          timerQueue.push(action.enemy.attackAnimTimer);
           this.gameState.health -= Math.max(
             0,
             action.damage - this.gameState.currentDefense

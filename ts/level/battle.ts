@@ -7,7 +7,7 @@ export class Battle {
     this.enemies = [new Worm(depth)];
     this.enemies.forEach((e) => {
       e.cooldownTimer.start();
-      timerQueue.push(e.cooldownTimer);
+      timerQueue.push(e.cooldownTimer, e.attackAnimTimer, e.damagedTimer);
     });
   }
 }

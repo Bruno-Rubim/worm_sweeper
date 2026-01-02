@@ -36,7 +36,7 @@ export default class BattleManager extends SceneManager {
         enemy.pos,
         64,
         64,
-        new Position()
+        new Position(enemy.attackAnimTimer.inMotion ? 1 : 0, 0)
       );
       for (let i = 0; i < enemy.health; i++) {
         canvasManager.renderText(

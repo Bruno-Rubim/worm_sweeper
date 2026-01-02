@@ -49,6 +49,10 @@ export class Timer {
     return Math.max(0, (this.ticsRemaining / this.goalTics) * 100);
   }
 
+  get inMotion() {
+    return this.started && !this.ended;
+  }
+
   start() {
     this.started = true;
     this.ended = false;
