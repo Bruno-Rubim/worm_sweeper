@@ -103,10 +103,11 @@ function handleMouseInput(objects: GameObject[]): Action[] | void {
   }
 }
 
-function handleKeyInput() {
+function handleKeyInput(gameManager: GameManager) {
   if (inputState.keyboard.Escape == "pressed") {
     timeTracker.pause();
     inputState.keyboard.Escape = "read";
+    gameManager.gameState.paused = timeTracker.isPaused;
   }
 }
 
@@ -156,5 +157,5 @@ export default function updateGame(
 
   cursor.pos = cursor.pos.subtract(8, 8);
 
-  handleKeyInput();
+  handleKeyInput(gameManager);
 }

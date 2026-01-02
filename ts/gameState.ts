@@ -34,7 +34,8 @@ export default class GameState {
   health: number = 5;
   tiredTimer: Timer;
   inTransition: boolean = false;
-  currentScene: "cave" | "shop" | "battle" = "shop";
+  currentScene: "cave" | "shop" | "battle" = "cave";
+  paused: boolean = false;
   inventory: inventory = {
     picaxe: getItem("picaxe", new Position(GAMEWIDTH - 20, 90)),
     flag: getItem("flag", new Position(GAMEWIDTH - 20, 109)),

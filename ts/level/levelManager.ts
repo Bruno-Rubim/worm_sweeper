@@ -108,6 +108,15 @@ export class LevelManager extends GameObject {
   }
 
   render(canvasManager: CanvasManager): void {
+    if (this.gameState.paused) {
+      canvasManager.renderSprite(
+        sprites.screen_paused,
+        this.pos,
+        this.width,
+        this.height
+      );
+      return;
+    }
     this.currentSceneManager.render(canvasManager);
     transitionObject.render(canvasManager);
   }
@@ -167,6 +176,7 @@ export class LevelManager extends GameObject {
             );
             break;
         }
+        this.gameState.currentScene = action.newScene;
       },
       currentScene + action.newScene == "battlecave" ||
         action.newScene == "battle"
