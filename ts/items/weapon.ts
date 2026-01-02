@@ -8,17 +8,19 @@ export class Weapon extends Item {
   damage: number;
   cooldown: number;
 
-  constructor(
-    spriteSheetPos: Position,
-    name: string,
-    bigSprite: Sprite,
-    damage: number,
-    cooldown: number
-  ) {
-    super(new Position(GAMEWIDTH - 20, 18), spriteSheetPos, name);
-    this.bigSprite = bigSprite;
-    this.damage = damage;
-    this.cooldown = cooldown;
+  constructor(args: {
+    spriteSheetPos: Position;
+    bigSprite: Sprite;
+    name: string;
+    shopName: string;
+    cost: number;
+    damage: number;
+    cooldown: number;
+  }) {
+    super({ ...args, pos: new Position(GAMEWIDTH - 20, 18) });
+    this.bigSprite = args.bigSprite;
+    this.damage = args.damage;
+    this.cooldown = args.cooldown;
     this.description =
       "$dmgDamage: " + this.damage + "\n$spdCooldown: " + this.cooldown + "s";
     this.descFontSize = 0.6;
@@ -31,7 +33,15 @@ export class Weapon extends Item {
 
 class TimeBlade extends Weapon {
   constructor() {
-    super(new Position(6, 3), "time_blade", sprites.big_sword_wood, 1, 2.5);
+    super({
+      spriteSheetPos: new Position(6, 3),
+      bigSprite: sprites.big_sword_wood,
+      name: "time_blade",
+      shopName: "Time Blade",
+      cost: 56,
+      damage: 1,
+      cooldown: 2.5,
+    });
     this.description =
       "The less time the more damage." +
       "\n$spdCooldown: " +
@@ -46,26 +56,32 @@ class TimeBlade extends Weapon {
 }
 
 export const weaponDic = {
-  wood_sword: new Weapon(
-    new Position(0, 3),
-    "wood_sword",
-    sprites.big_sword_wood,
-    1,
-    2
-  ),
-  big_sword: new Weapon(
-    new Position(2, 3),
-    "big_sword",
-    sprites.big_sword_big,
-    2,
-    2.5
-  ),
-  dagger: new Weapon(
-    new Position(4, 3),
-    "dagger",
-    sprites.big_sword_dagger,
-    1,
-    0.7
-  ),
+  wood_sword: new Weapon({
+    spriteSheetPos: new Position(0, 3),
+    bigSprite: sprites.big_sword_wood,
+    name: "wood_sword",
+    shopName: "",
+    cost: 0,
+    damage: 1,
+    cooldown: 2,
+  }),
+  big_sword: new Weapon({
+    spriteSheetPos: new Position(2, 3),
+    bigSprite: sprites.big_sword_big,
+    name: "big_sword",
+    shopName: "Big Sword",
+    cost: 50,
+    damage: 3,
+    cooldown: 3,
+  }),
+  dagger: new Weapon({
+    spriteSheetPos: new Position(4, 3),
+    bigSprite: sprites.big_sword_dagger,
+    name: "dagger",
+    shopName: "Dagger",
+    cost: 37,
+    damage: 1,
+    cooldown: 0.7,
+  }),
   time_blade: new TimeBlade(),
 };

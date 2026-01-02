@@ -9,7 +9,7 @@ import {
 } from "../global.js";
 import { armorDic, type Armor } from "../items/armor.js";
 import { consumableDic, type Consumable } from "../items/consumable.js";
-import { getItem, type Item } from "../items/item.js";
+import { getItem, itemDic, type Item } from "../items/item.js";
 import { shieldDic, type Shield } from "../items/shield.js";
 import { ShopItem } from "../items/shopItem.js";
 import { weaponDic, type Weapon } from "../items/weapon.js";
@@ -36,29 +36,22 @@ exitBtn.render = (canvasManager: CanvasManager) => {
   );
 };
 
-const shopItemList: Item[] = [
-  getItem("gold_bug"),
-  getItem("silver_bell"),
-  getItem("dark_crystal"),
-  getItem("detonator"),
-  getItem("health_insurance"),
-  getItem("drill"),
-];
+const shopItemList: Item[] = Object.values(itemDic).filter((x) => x.cost > 0);
 
 const shopArmorList: Armor[] = Object.values(armorDic).filter(
-  (x) => x.name != "empty"
+  (x) => x.cost > 0
 );
 
 const shopWeaponList: Weapon[] = Object.values(weaponDic).filter(
-  (x) => !["empty", "wood_sword"].includes(x.name)
+  (x) => x.cost > 0
 );
 
 const shopShieldList: Shield[] = Object.values(shieldDic).filter(
-  (x) => !["empty", "wood_shield"].includes(x.name)
+  (x) => x.cost > 0
 );
 
 const shopConsList: Consumable[] = Object.values(consumableDic).filter(
-  (x) => !["empty"].includes(x.name)
+  (x) => x.cost > 0
 );
 
 const shelfItemDistance = 20;
@@ -88,7 +81,7 @@ export default class Shop {
         shopItemList.filter((x) => !inventoryItemNames.includes(x.name))
       )
       .slice(0, 3)
-      .map((x) => new ShopItem(x.name, x.spriteSheetPos));
+      .map((x) => new ShopItem(x.name));
     this.items.forEach((item, i) => {
       item.pos.update(
         BORDERTHICKLEFT + shelfStartDistance + i * shelfItemDistance,
@@ -99,23 +92,20 @@ export default class Shop {
     const chosenarmor = utils.shuffleArray(
       shopArmorList.filter((x) => !inventoryItemNames.includes(x.name))
     )[0];
-    this.armor = new ShopItem(chosenarmor.name, chosenarmor.spriteSheetPos);
+    this.armor = new ShopItem(chosenarmor.name);
 
     const chosenWeapon = utils.shuffleArray(
       shopWeaponList.filter((x) => !inventoryItemNames.includes(x.name))
     )[0];
-    this.weapon = new ShopItem(chosenWeapon.name, chosenWeapon.spriteSheetPos);
+    this.weapon = new ShopItem(chosenWeapon.name);
 
     const chosenShield = utils.shuffleArray(
       shopShieldList.filter((x) => !inventoryItemNames.includes(x.name))
     )[0];
-    this.shield = new ShopItem(chosenShield.name, chosenShield.spriteSheetPos);
+    this.shield = new ShopItem(chosenShield.name);
 
     const chosenConsumable = utils.shuffleArray(shopConsList)[0];
-    this.consumable = new ShopItem(
-      chosenConsumable.name,
-      chosenConsumable.spriteSheetPos
-    );
+    this.consumable = new ShopItem(chosenConsumable.name);
     this.consumable.pos.update(GAMEWIDTH - BORDERTHICKRIGHT - 28, 46);
 
     this.objects = [exitBtn, ...this.items, this.consumable];

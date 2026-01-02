@@ -7,17 +7,19 @@ export class Armor extends Item {
   speed: number;
   reflection: number;
 
-  constructor(
-    spriteSheetPos: Position,
-    name: string,
-    defense: number,
-    delay?: number,
-    reflection?: 0
-  ) {
-    super(new Position(GAMEWIDTH - 20, 54), spriteSheetPos, name);
-    this.defense = defense;
-    this.speed = delay ?? 0;
-    this.reflection = reflection ?? 0;
+  constructor(args: {
+    spriteSheetPos: Position;
+    name: string;
+    shopName: string;
+    cost: number;
+    defense: number;
+    speed?: number;
+    reflection?: 0;
+  }) {
+    super({ ...args, pos: new Position(GAMEWIDTH - 20, 54) });
+    this.defense = args.defense;
+    this.speed = args.speed ?? 0;
+    this.reflection = args.reflection ?? 0;
     this.description =
       (this.defense > 0 ? "$dfsDefense: " + this.defense + "\n" : "") +
       (this.reflection > 0 ? "$refDefense: " + this.reflection + "\n" : "") +
@@ -28,7 +30,27 @@ export class Armor extends Item {
 }
 
 export const armorDic = {
-  chainmail: new Armor(new Position(0, 2), "chainmail", 2, -0.2),
-  swift_vest: new Armor(new Position(2, 2), "swift_vest", 0, 0.2),
-  empty: new Armor(new Position(14, 2), "empty", 0),
+  chainmail: new Armor({
+    spriteSheetPos: new Position(0, 2),
+    name: "chainmail",
+    shopName: "chainmail",
+    cost: 50,
+    defense: 2,
+    speed: -0.1,
+  }),
+  swift_vest: new Armor({
+    spriteSheetPos: new Position(2, 2),
+    name: "swift_vest",
+    shopName: "swift_vest",
+    cost: 0,
+    defense: 1,
+    speed: 0.3,
+  }),
+  empty: new Armor({
+    spriteSheetPos: new Position(14, 2),
+    name: "empty",
+    shopName: "empty",
+    cost: 0,
+    defense: 0,
+  }),
 };

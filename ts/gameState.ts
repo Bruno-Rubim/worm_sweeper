@@ -38,7 +38,7 @@ export default class GameState {
   inTransition: boolean = false;
   inBook: boolean = false;
   bookPage: number = 0;
-  currentScene: "cave" | "shop" | "battle" = "cave";
+  currentScene: "cave" | "shop" | "battle" = "shop";
   paused: boolean = false;
   defending: boolean = false;
   gameOver: boolean = false;

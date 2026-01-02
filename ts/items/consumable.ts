@@ -7,8 +7,14 @@ import timeTracker from "../timer/timeTracker.js";
 import { Item } from "./item.js";
 
 export class Consumable extends Item {
-  constructor(spriteSheetPos: Position, name: string, description?: string) {
-    super(new Position(GAMEWIDTH - 20, 72), spriteSheetPos, name, description);
+  constructor(args: {
+    spriteSheetPos: Position;
+    name: string;
+    shopName: string;
+    cost: number;
+    description: string;
+  }) {
+    super({ ...args, pos: new Position(GAMEWIDTH - 20, 72) });
     this.clickFunction = () => {
       return new ConsumeItem(this.name);
     };
@@ -16,23 +22,41 @@ export class Consumable extends Item {
 }
 
 export const consumableDic = {
-  bomb: new Consumable(new Position(0, 0), "bomb"),
-  health_potion_big: new Consumable(
-    new Position(2, 0),
-    "health_potion_big",
-    "Gain 2 hearts."
-  ),
-  health_potion: new Consumable(
-    new Position(4, 0),
-    "health_potion",
-    "Gain 1 heart."
-  ),
-  time_potion: new Consumable(
-    new Position(6, 0),
-    "time_potion",
-    "Recover 60 seconds$tim"
-  ),
-  empty: new Consumable(new Position(14, 0), "empty"),
+  bomb: new Consumable({
+    spriteSheetPos: new Position(0, 0),
+    name: "bomb",
+    shopName: "Bomb",
+    cost: 13,
+    description: "",
+  }),
+  health_potion_big: new Consumable({
+    spriteSheetPos: new Position(2, 0),
+    name: "health_potion_big",
+    shopName: "Big Health Potion",
+    cost: 15,
+    description: "Gain 2 hearts.",
+  }),
+  health_potion: new Consumable({
+    spriteSheetPos: new Position(4, 0),
+    name: "health_potion",
+    shopName: "Health Potion",
+    cost: 10,
+    description: "Gain 1 heart.",
+  }),
+  time_potion: new Consumable({
+    spriteSheetPos: new Position(6, 0),
+    name: "time_potion",
+    shopName: "Time Potion",
+    cost: 10,
+    description: "Recover 60 seconds$tim",
+  }),
+  empty: new Consumable({
+    spriteSheetPos: new Position(14, 0),
+    name: "empty",
+    shopName: "",
+    cost: 0,
+    description: "",
+  }),
 };
 
 consumableDic.time_potion.render = (canvasManager: CanvasManager) => {

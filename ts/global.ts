@@ -12,3 +12,5 @@ export const CLICKRIGHT = "right";
 export const CLICKLEFT = "Left";
 
 export type cursorClick = typeof CLICKRIGHT | typeof CLICKLEFT;
+
+export const DEV = localStorage.getItem("is_dev") == "true";
