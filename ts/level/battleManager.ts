@@ -115,6 +115,18 @@ export default class BattleManager extends SceneManager {
     }
   };
 
+  checkBattleEnd() {
+    this.gameState.battle?.enemies.forEach((e, i) => {
+      if (e.health < 1) {
+        timerQueue.splice(timerQueue.indexOf(e.cooldownTimer), 1);
+        this.gameState.battle!.enemies.splice(i, 1);
+      }
+    });
+    if (this.gameState.battle!.enemies.length <= 0) {
+      return new ChangeScene("cave");
+    }
+  }
+
   playerAttack() {
     const tiredTimer = this.gameState.tiredTimer;
     const rId = utils.randomArrayId(this.gameState.battle!.enemies);
@@ -125,13 +137,7 @@ export default class BattleManager extends SceneManager {
     this.gameState.attackAnimationTimer.start();
     tiredTimer.goalSecs = this.gameState.inventory.weapon.cooldown;
     tiredTimer.start();
-    if (enemy.health < 1) {
-      timerQueue.splice(timerQueue.indexOf(enemy.cooldownTimer), 1);
-      this.gameState.battle!.enemies.splice(rId, 1);
-      if (this.gameState.battle!.enemies.length <= 0) {
-        return new ChangeScene("cave");
-      }
-    }
+    return this.checkBattleEnd();
   }
 
   playerDefend() {

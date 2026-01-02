@@ -243,4 +243,8 @@ export class LevelManager extends GameObject {
     }
     this.handleAction(this.currentSceneManager.handleHeld(cursorPos, button));
   }
+
+  checkBattleEnd() {
+    this.handleAction(this.battleManager.checkBattleEnd());
+  }
 }

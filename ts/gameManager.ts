@@ -30,6 +30,7 @@ export class GameManager {
             action.damage - this.gameState.currentDefense
           );
           action.enemy.health -= this.gameState.currentReflection;
+          this.levelManager.checkBattleEnd();
         }
       }
     });
