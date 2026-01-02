@@ -140,7 +140,9 @@ export default class BattleManager extends SceneManager {
     this.gameState.attackAnimationTimer.goalSecs =
       this.gameState.inventory.weapon.cooldown / 3;
     this.gameState.attackAnimationTimer.start();
-    tiredTimer.goalSecs = this.gameState.inventory.weapon.cooldown;
+    tiredTimer.goalSecs =
+      this.gameState.inventory.weapon.cooldown -
+      this.gameState.inventory.armor.speed;
     tiredTimer.start();
     return this.checkBattleEnd();
   }
@@ -148,7 +150,9 @@ export default class BattleManager extends SceneManager {
   playerDefend() {
     const tiredTimer = this.gameState.tiredTimer;
     this.gameState.defending = true;
-    tiredTimer.goalSecs = this.gameState.inventory.shield.cooldown;
+    tiredTimer.goalSecs =
+      this.gameState.inventory.shield.cooldown -
+      this.gameState.inventory.armor.speed;
     tiredTimer.goalFunc = () => {
       this.gameState.defending = false;
     };
