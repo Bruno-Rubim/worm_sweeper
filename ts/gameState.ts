@@ -59,7 +59,7 @@ export default class GameState {
   };
 
   constructor() {
-    this.gameTimer = new Timer(120, () => this.lose(), false, false);
+    this.gameTimer = new Timer(180, () => this.lose(), false, false);
     this.level = new Level(0, this.inventory);
     timerQueue.push(this.gameTimer);
     timerQueue.push(this.tiredTimer);
