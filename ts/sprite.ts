@@ -25,6 +25,7 @@ export const sprites = {
   bg_battle: new Sprite("bg_battle"),
   bg_game: new Sprite("bg_game"),
   bg_shop: new Sprite("bg_shop"),
+  bg_rules: new Sprite("bg_rules"),
   big_shield_jade: new Sprite("big_shield_jade"),
   big_shield_steel: new Sprite("big_shield_steel"),
   big_shield_wood: new Sprite("big_shield_wood"),

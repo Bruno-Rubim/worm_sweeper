@@ -29,11 +29,24 @@ class TimeTracker {
   }
 
   pause() {
-    this.isPaused = !this.isPaused;
-    if (this.isPaused) {
+    if (!this.isPaused) {
       this.lastPausedStamp = this.currentStamp;
-    } else {
+      this.isPaused = !this.isPaused;
+    }
+  }
+
+  unpause() {
+    if (this.isPaused) {
       this.totalPauseLapse += this.currentStamp - this.lastPausedStamp;
+      this.isPaused = !this.isPaused;
+    }
+  }
+
+  togglePause() {
+    if (this.isPaused) {
+      this.unpause();
+    } else {
+      this.pause();
     }
   }
 }

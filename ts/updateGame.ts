@@ -4,7 +4,12 @@ import type GameObject from "./gameObject.js";
 import { CLICKLEFT, CLICKRIGHT } from "./global.js";
 import { inputState } from "./inputState.js";
 import { consumableDic } from "./items/consumable.js";
-import { ChangeCursorState, ConsumeItem, Action } from "./action.js";
+import {
+  ChangeCursorState,
+  ConsumeItem,
+  Action,
+  OpenBook as ToggleBook,
+} from "./action.js";
 import timeTracker from "./timer/timeTracker.js";
 
 function changeCursorState(newState: cursorState) {
@@ -105,9 +110,44 @@ function handleMouseInput(objects: GameObject[]): Action[] | void {
 
 function handleKeyInput(gameManager: GameManager) {
   if (inputState.keyboard.Escape == "pressed") {
-    timeTracker.pause();
     inputState.keyboard.Escape = "read";
+    if (gameManager.gameState.inBook) {
+      return new ToggleBook();
+    }
+    console.log("pausing");
+    timeTracker.togglePause();
     gameManager.gameState.paused = timeTracker.isPaused;
+  }
+}
+
+function handleAction(gameManager: GameManager, action: Action | void) {
+  if (action instanceof ChangeCursorState) {
+    changeCursorState(action.newState);
+    return true;
+  }
+  if (action instanceof ConsumeItem) {
+    switch (action.itemName) {
+      case "time_potion":
+        gameManager.gameState.gameTimer.addSecs(60);
+        break;
+      case "health_potion":
+        gameManager.gameState.health += 1;
+        break;
+      case "health_potion_big":
+        gameManager.gameState.health += 2;
+        break;
+    }
+    gameManager.gameState.inventory.consumable = consumableDic.empty;
+    return;
+  }
+  if (action instanceof ToggleBook) {
+    gameManager.gameState.inBook = !gameManager.gameState.inBook;
+    if (gameManager.gameState.inBook) {
+      timeTracker.pause();
+    } else if (!gameManager.gameState.paused) {
+      timeTracker.unpause();
+    }
+    return;
   }
 }
 
@@ -125,27 +165,15 @@ export default function updateGame(
   const actions: Action[] | void = handleMouseInput(gameObjects);
 
   let cursorChanged = false;
+
   actions?.forEach((action) => {
-    if (action instanceof ChangeCursorState) {
-      changeCursorState(action.newState);
+    if (handleAction(gameManager, action)) {
       cursorChanged = true;
-    } else if (action instanceof ConsumeItem) {
-      switch (action.itemName) {
-        case "time_potion":
-          gameManager.gameState.gameTimer.addSecs(60);
-          break;
-        case "health_potion":
-          gameManager.gameState.health += 1;
-          break;
-        case "health_potion_big":
-          gameManager.gameState.health += 2;
-          break;
-      }
-      gameManager.gameState.inventory.consumable = consumableDic.empty;
     }
   });
+
   if (!cursorChanged) {
-    changeCursorState(CURSORDEFAULT);
+    changeCursorState("cursor_default");
   }
 
   if (inputState.mouse.clickedRight) {

@@ -71,3 +71,9 @@ export class PlayerAtack extends Action {
     super();
   }
 }
+
+export class OpenBook extends Action {
+  constructor() {
+    super();
+  }
+}

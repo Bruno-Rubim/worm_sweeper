@@ -11,22 +11,17 @@ import {
 } from "../global.js";
 import {
   Action,
-  BuyShopItem,
   ChangeCursorState,
   ChangeScene,
   NextLevel,
-  PlayerAtack,
 } from "../action.js";
-import { CURSORNONE } from "../cursor.js";
+import { CURSORARROW, CURSORDEFAULT, CURSORNONE } from "../cursor.js";
 import { sprites } from "../sprite.js";
-import { Armor } from "../items/armor.js";
-import { Shield } from "../items/shield.js";
-import { Weapon } from "../items/weapon.js";
-import { Consumable } from "../items/consumable.js";
+
 import timeTracker from "../timer/timeTracker.js";
 import { Timer } from "../timer/timer.js";
 import { timerQueue } from "../timer/timerQueue.js";
-import { utils } from "../utils.js";
+
 import type SceneManager from "./sceneManager.js";
 import CaveManager from "./caveManager.js";
 import BattleManager from "./battleManager.js";
@@ -111,6 +106,15 @@ export class LevelManager extends GameObject {
     if (this.gameState.paused) {
       canvasManager.renderSprite(
         sprites.screen_paused,
+        this.pos,
+        this.width,
+        this.height
+      );
+      return;
+    }
+    if (this.gameState.inBook) {
+      canvasManager.renderSprite(
+        sprites.bg_rules,
         this.pos,
         this.width,
         this.height
@@ -210,6 +214,9 @@ export class LevelManager extends GameObject {
     if (this.gameState.inTransition) {
       action = new ChangeCursorState(CURSORNONE);
     }
+    if (this.gameState.inBook) {
+      action = new ChangeCursorState(CURSORDEFAULT);
+    }
     return action;
   }
 
@@ -220,11 +227,17 @@ export class LevelManager extends GameObject {
     if (this.gameState.inTransition) {
       return;
     }
+    if (this.gameState.inBook) {
+      return;
+    }
     this.handleAction(this.currentSceneManager.handleClick(cursorPos, button));
   }
 
   handleHeld(cursorPos: Position, button: cursorClick) {
     if (this.gameState.inTransition) {
+      return;
+    }
+    if (this.gameState.inBook) {
       return;
     }
     this.handleAction(this.currentSceneManager.handleHeld(cursorPos, button));

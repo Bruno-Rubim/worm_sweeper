@@ -1,3 +1,4 @@
+import { OpenBook } from "../action.js";
 import type CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
 import Position from "../position.js";
@@ -17,6 +18,11 @@ export class Item extends GameObject {
     });
     this.spriteSheetPos = spriteSheetPos;
     this.name = name;
+    if (name == "book") {
+      this.clickFunction = () => {
+        return new OpenBook();
+      };
+    }
   }
 
   render(canvasManager: CanvasManager): void {

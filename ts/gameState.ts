@@ -34,6 +34,8 @@ export default class GameState {
   health: number = 5;
   tiredTimer: Timer;
   inTransition: boolean = false;
+  inBook: boolean = false;
+  bookPage: number = 0;
   currentScene: "cave" | "shop" | "battle" = "cave";
   paused: boolean = false;
   inventory: inventory = {
