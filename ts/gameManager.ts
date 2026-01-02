@@ -25,7 +25,10 @@ export class GameManager {
           }
         }
         if (action instanceof EnemyAtack) {
-          this.gameState.health -= action.damage;
+          this.gameState.health -= Math.max(
+            0,
+            action.damage - this.gameState.currentDefense
+          );
         }
       }
     });

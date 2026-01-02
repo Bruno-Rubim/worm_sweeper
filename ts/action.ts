@@ -67,12 +67,6 @@ export class EnemyAtack extends Action {
   }
 }
 
-export class PlayerAtack extends Action {
-  constructor() {
-    super();
-  }
-}
-
 export class OpenBook extends Action {
   constructor() {
     super();

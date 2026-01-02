@@ -7,20 +7,25 @@ export class Shield extends Item {
   bigSprite: Sprite;
   defense: number;
   cooldown: number;
+  reflection: number;
 
   constructor(
     spriteSheetPos: Position,
     name: string,
     defense: number,
     cooldown: number,
-    bigSprite: Sprite
+    bigSprite: Sprite,
+    reflection?: number
   ) {
     super(new Position(GAMEWIDTH - 20, 36), spriteSheetPos, name);
     this.defense = defense;
     this.cooldown = cooldown;
     this.bigSprite = bigSprite;
+    this.reflection = reflection ?? 0;
     this.description =
-      "$dfsDefense: " + this.defense + "\n$spdCooldown: " + this.cooldown + "s";
+      (this.defense > 0 ? "$dfsDefense: " + this.defense + "\n" : "") +
+      (this.reflection > 0 ? "$rfcDefense: " + this.reflection + "\n" : "") +
+      (this.cooldown > 0 ? "$spdSpeed: " + this.cooldown + "s\n" : "");
     this.descFontSize = 0.6;
   }
 }
@@ -36,9 +41,10 @@ export const shieldDic = {
   jade_shield: new Shield(
     new Position(2, 1),
     "jade_shield",
-    1,
+    0,
     2,
-    sprites.big_shield_jade
+    sprites.big_shield_jade,
+    1
   ),
   steel_shield: new Shield(
     new Position(4, 1),

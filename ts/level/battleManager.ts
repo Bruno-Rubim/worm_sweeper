@@ -1,9 +1,4 @@
-import {
-  ChangeCursorState,
-  ChangeScene,
-  PlayerAtack,
-  Transition,
-} from "../action.js";
+import { ChangeCursorState, ChangeScene } from "../action.js";
 import type CanvasManager from "../canvasManager.js";
 import { CURSORBATTLE } from "../cursor.js";
 import type GameState from "../gameState.js";
@@ -81,16 +76,27 @@ export default class BattleManager extends SceneManager {
       128,
       128
     );
-    if (!this.gameState.tiredTimer.ended) {
+    if (!this.gameState.tiredTimer.ended && this.gameState.tiredTimer.started) {
       let counterFrame = Math.floor(
         Math.min(15, (this.gameState.tiredTimer.percentage / 100) * 16)
       );
       canvasManager.renderSpriteFromSheet(
         sprites.counter_sheet,
-        new Position(GAMEWIDTH / 2 - 4, GAMEHEIGHT - 32),
+        new Position(GAMEWIDTH / 2 - 4, GAMEHEIGHT - BORDERTHICKBOTTOM - 22),
         8,
         8,
         new Position(counterFrame % 8, Math.floor(counterFrame / 8))
+      );
+    }
+
+    for (let i = 0; i < this.gameState.currentDefense; i++) {
+      canvasManager.renderText(
+        "icons",
+        new Position(
+          88 + i * 9 - (9 * this.gameState.currentDefense) / 2,
+          GAMEHEIGHT - BORDERTHICKBOTTOM - 11
+        ),
+        "$dfs"
       );
     }
   };
@@ -102,9 +108,9 @@ export default class BattleManager extends SceneManager {
     if (!this.gameState.battle) {
       return;
     }
-    if (button == CLICKLEFT) {
-      const tiredTimer = this.gameState.tiredTimer;
-      if (tiredTimer.ended || !tiredTimer.started) {
+    const tiredTimer = this.gameState.tiredTimer;
+    if (tiredTimer.ended || !tiredTimer.started) {
+      if (button == CLICKLEFT) {
         const rId = utils.randomArrayId(this.gameState.battle!.enemies);
         const enemy = this.gameState.battle!.enemies[rId]!;
         enemy.health -= this.gameState.inventory.weapon.damage;
@@ -116,6 +122,13 @@ export default class BattleManager extends SceneManager {
           }
         }
         tiredTimer.goalSecs = this.gameState.inventory.weapon.cooldown;
+        tiredTimer.start();
+      } else {
+        this.gameState.defending = true;
+        tiredTimer.goalSecs = this.gameState.inventory.shield.cooldown;
+        tiredTimer.goalFunc = () => {
+          this.gameState.defending = false;
+        };
         tiredTimer.start();
       }
     }

@@ -38,6 +38,7 @@ export default class GameState {
   bookPage: number = 0;
   currentScene: "cave" | "shop" | "battle" = "cave";
   paused: boolean = false;
+  defending: boolean = false;
   inventory: inventory = {
     picaxe: getItem("picaxe", new Position(GAMEWIDTH - 20, 90)),
     flag: getItem("flag", new Position(GAMEWIDTH - 20, 109)),
@@ -70,6 +71,13 @@ export default class GameState {
       this.inventory.passive_5.name,
       this.inventory.passive_6.name,
     ];
+  }
+
+  get currentDefense() {
+    return (
+      this.inventory.armor.defense +
+      (this.defending ? this.inventory.shield.defense : 0)
+    );
   }
 
   hasItem(itemName: string) {
