@@ -211,7 +211,8 @@ export class ShopItem extends GameObject {
         new Position(27, 95),
         this.shopName + "\n\n" + this.item.description,
         "right",
-        120
+        120,
+        0.8
       );
     }
   }

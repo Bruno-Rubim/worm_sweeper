@@ -23,6 +23,26 @@ export class Weapon extends Item {
       "$dmgDamage: " + this.damage + "\n$spdCooldown: " + this.cooldown + "s";
     this.descFontSize = 0.6;
   }
+
+  get totalDamage() {
+    return this.damage;
+  }
+}
+
+class TimeBlade extends Weapon {
+  constructor() {
+    super(new Position(6, 3), "time_blade", sprites.big_sword_wood, 1, 2.5);
+    this.description =
+      "The less time the more damage." +
+      "\n$spdCooldown: " +
+      this.cooldown +
+      "s";
+    this.descFontSize = 0.4;
+  }
+
+  get totalDamage() {
+    return 0;
+  }
 }
 
 export const weaponDic = {
@@ -31,27 +51,21 @@ export const weaponDic = {
     "wood_sword",
     sprites.big_sword_wood,
     1,
-    1
+    2
   ),
   big_sword: new Weapon(
     new Position(2, 3),
     "big_sword",
     sprites.big_sword_big,
-    1,
-    1
+    2,
+    2.5
   ),
   dagger: new Weapon(
     new Position(4, 3),
     "dagger",
     sprites.big_sword_dagger,
     1,
-    1
+    0.7
   ),
-  time_blade: new Weapon(
-    new Position(6, 3),
-    "time_blade",
-    sprites.big_sword_wood,
-    1,
-    1
-  ),
+  time_blade: new TimeBlade(),
 };

@@ -96,7 +96,7 @@ export default class BattleManager extends SceneManager {
           88 + i * 9 - (9 * this.gameState.currentDefense) / 2,
           GAMEHEIGHT - BORDERTHICKBOTTOM - 11
         ),
-        "$dfs"
+        i < this.gameState.currentReflection ? "$ref" : "$dfs"
       );
     }
   };
@@ -113,7 +113,7 @@ export default class BattleManager extends SceneManager {
       if (button == CLICKLEFT) {
         const rId = utils.randomArrayId(this.gameState.battle!.enemies);
         const enemy = this.gameState.battle!.enemies[rId]!;
-        enemy.health -= this.gameState.inventory.weapon.damage;
+        enemy.health -= this.gameState.inventory.weapon.totalDamage;
         if (enemy.health < 1) {
           timerQueue.splice(timerQueue.indexOf(enemy.cooldownTimer), 1);
           this.gameState.battle!.enemies.splice(rId, 1);

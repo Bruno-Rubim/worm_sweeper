@@ -24,8 +24,8 @@ export class Shield extends Item {
     this.reflection = reflection ?? 0;
     this.description =
       (this.defense > 0 ? "$dfsDefense: " + this.defense + "\n" : "") +
-      (this.reflection > 0 ? "$rfcDefense: " + this.reflection + "\n" : "") +
-      (this.cooldown > 0 ? "$spdSpeed: " + this.cooldown + "s\n" : "");
+      (this.reflection > 0 ? "$refReflection: " + this.reflection + "\n" : "") +
+      (this.cooldown > 0 ? "$spdCooldown: " + this.cooldown + "s\n" : "");
     this.descFontSize = 0.6;
   }
 }
@@ -49,7 +49,7 @@ export const shieldDic = {
   steel_shield: new Shield(
     new Position(4, 1),
     "steel_shield",
-    1,
+    2,
     2,
     sprites.big_shield_steel
   ),

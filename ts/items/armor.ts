@@ -20,7 +20,7 @@ export class Armor extends Item {
     this.reflection = reflection ?? 0;
     this.description =
       (this.defense > 0 ? "$dfsDefense: " + this.defense + "\n" : "") +
-      (this.reflection > 0 ? "$rfcDefense: " + this.reflection + "\n" : "") +
+      (this.reflection > 0 ? "$refDefense: " + this.reflection + "\n" : "") +
       (this.speed < 0 ? "$slwSlowness: " + Math.abs(this.speed) + "s\n" : "") +
       (this.speed > 0 ? "$spdAgility: " + this.speed + "s\n" : "");
     this.descFontSize = 0.6;

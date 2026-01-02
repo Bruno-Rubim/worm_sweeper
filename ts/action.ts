@@ -1,6 +1,7 @@
 import type { cursorState } from "./cursor.js";
 import type { LEFT, RIGHT } from "./global.js";
 import type { ShopItem } from "./items/shopItem.js";
+import type { Enemy } from "./level/enemy.js";
 import type Position from "./position.js";
 
 export class Action {}
@@ -61,9 +62,11 @@ export class ConsumeItem extends Action {
 
 export class EnemyAtack extends Action {
   damage: number;
-  constructor(damage: number) {
+  enemy: Enemy;
+  constructor(damage: number, enemy: Enemy) {
     super();
     this.damage = damage;
+    this.enemy = enemy;
   }
 }
 

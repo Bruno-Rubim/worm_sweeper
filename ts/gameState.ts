@@ -76,7 +76,17 @@ export default class GameState {
   get currentDefense() {
     return (
       this.inventory.armor.defense +
-      (this.defending ? this.inventory.shield.defense : 0)
+      +this.inventory.armor.reflection +
+      (this.defending
+        ? this.inventory.shield.defense + this.inventory.shield.reflection
+        : 0)
+    );
+  }
+
+  get currentReflection() {
+    return (
+      this.inventory.armor.reflection +
+      (this.defending ? this.inventory.shield.reflection : 0)
     );
   }
 

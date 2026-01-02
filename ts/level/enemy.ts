@@ -19,7 +19,7 @@ export class Enemy {
     this.cooldownTimer = new Timer(
       attackCooldown,
       () => {
-        return new EnemyAtack(this.damage);
+        return new EnemyAtack(this.damage, this);
       },
       true
     );

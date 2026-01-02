@@ -29,6 +29,7 @@ export class GameManager {
             0,
             action.damage - this.gameState.currentDefense
           );
+          action.enemy.health -= this.gameState.currentReflection;
         }
       }
     });
