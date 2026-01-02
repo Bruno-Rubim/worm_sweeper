@@ -12,11 +12,26 @@ export class Armor extends Item {
     name: string;
     shopName: string;
     cost: number;
-    defense: number;
+    defense?: number;
     speed?: number;
     reflection?: 0;
   }) {
-    super({ ...args, pos: new Position(GAMEWIDTH - 20, 54) });
+    args.defense = args.defense ?? 0;
+    args.reflection = args.reflection ?? 0;
+    args.speed = args.speed ?? 0;
+    super({
+      ...args,
+      pos: new Position(GAMEWIDTH - 20, 54),
+      description:
+        (args.defense > 0 ? "$dfsDefense: " + args.defense + "\n" : "") +
+        (args.reflection ?? 0 > 0
+          ? "$refDefense: " + args.reflection + "\n"
+          : "") +
+        (args.speed < 0
+          ? "$slwSlowness: " + Math.abs(args.speed) + "s\n"
+          : "") +
+        (args.speed > 0 ? "$spdAgility: " + args.speed + "s\n" : ""),
+    });
     this.defense = args.defense;
     this.speed = args.speed ?? 0;
     this.reflection = args.reflection ?? 0;

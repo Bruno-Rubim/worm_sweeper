@@ -10,6 +10,7 @@ export class GameManager {
   levelManager = new LevelManager(this.gameState);
 
   restart() {
+    timerQueue.splice(0, Infinity);
     this.gameState.restart();
     this.levelManager = new LevelManager(this.gameState);
   }

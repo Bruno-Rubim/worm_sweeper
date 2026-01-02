@@ -181,12 +181,12 @@ export class LevelManager extends GameObject {
                 this.gameState.level.cave.wormQuantity--;
                 this.caveManager.checkCaveClear();
               case "shop":
-                this.gameState.gameTimer.pause();
                 this.currentSceneManager = this.caveManager;
                 break;
             }
             break;
           case "shop":
+            this.gameState.gameTimer.pause();
             this.currentSceneManager = new ShopManager(
               this.gameState,
               this.pos

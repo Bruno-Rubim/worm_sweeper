@@ -46,7 +46,7 @@ export default class GameState {
     picaxe: getItem("picaxe", new Position(GAMEWIDTH - 20, 90)),
     flag: getItem("flag", new Position(GAMEWIDTH - 20, 109)),
     book: getItem("book", new Position(GAMEWIDTH - 20, 127)),
-    weapon: weaponDic.time_blade,
+    weapon: weaponDic.wood_sword,
     shield: shieldDic.wood_shield,
     armor: armorDic.empty,
     consumable: consumableDic.empty,
@@ -98,7 +98,6 @@ export default class GameState {
       passive_6: getItem("empty", new Position(4, 18 * 6)),
     };
     this.gameOver = false;
-    timerQueue.splice(0, Infinity);
     timerQueue.push(this.gameTimer);
     timerQueue.push(this.tiredTimer);
     timerQueue.push(this.attackAnimationTimer);
