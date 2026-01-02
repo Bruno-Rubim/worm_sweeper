@@ -1,4 +1,4 @@
-import { fontMaps, measureTextWidth } from "./fontMaps.js";
+import { fontMaps, isIcon, measureTextWidth } from "./fontMaps.js";
 import { GAMEHEIGHT, GAMEWIDTH, CLICKLEFT, CLICKRIGHT } from "./global.js";
 import Position from "./position.js";
 import type { Sprite } from "./sprite.js";
@@ -131,18 +131,23 @@ export default class CanvasManager {
     const words = text.split(" ");
     let lineWidth = 0;
     words.forEach((word, i) => {
+      let currFont = font;
+      if (isIcon(word)) {
+        currFont = "icons";
+      }
       if (word.includes("\n")) {
         const breakWords = word.split("\n");
-        const firstWidth = measureTextWidth(font, breakWords[0]!) * fontSize;
+        const firstWidth =
+          measureTextWidth(currFont, breakWords[0]!) * fontSize;
         const lastWidth =
-          measureTextWidth(font, utils.lastOfArray(breakWords)) * fontSize;
+          measureTextWidth(currFont, utils.lastOfArray(breakWords)) * fontSize;
         if (lineWidth + firstWidth > limitWidth) {
           words[i] = "\n" + words[i];
         }
         lineWidth = lastWidth;
         return;
       }
-      const wordWidth = measureTextWidth(font, word) * fontSize;
+      const wordWidth = measureTextWidth(currFont, word) * fontSize;
       if (lineWidth + wordWidth > limitWidth) {
         words[i] = "\n" + words[i];
         lineWidth = wordWidth;
@@ -153,7 +158,40 @@ export default class CanvasManager {
     const chars = words.join(" ").replaceAll(" \n", "\n").split("");
     let currentX = 0;
     let currentY = 0;
-    chars.forEach((c) => {
+    for (let i = 0; i < chars.length; i++) {
+      const c = chars[i];
+      if (!c) {
+        continue;
+      }
+      if (c == "$") {
+        let j = i;
+        let iconWord = "";
+        do {
+          iconWord += chars[j];
+          j++;
+        } while (chars[j] != " " && chars[j] != "\n" && chars[j] != undefined);
+        if (!fontMaps.icons) {
+          return;
+        }
+        const iconChar = fontMaps.icons.charMaps[iconWord];
+        if (iconChar) {
+          this.renderSpriteFromSheet(
+            fontMaps.icons.spriteSheet,
+            pos.add(currentX, currentY),
+            fontMaps.icons.cellWidth * fontSize,
+            fontMaps.icons.cellHeight * fontSize,
+            fontMaps.icons.charMaps[iconWord]!.pos,
+            fontMaps.icons.cellWidth,
+            fontMaps.icons.cellHeight
+          );
+          currentX += iconChar.width * fontSize;
+          utils.logOnce(iconChar);
+        } else {
+          console.warn(iconWord, "ain't no icon chief");
+        }
+        i = j;
+        continue;
+      }
       if (c == "\n") {
         currentY += fontMap.cellHeight * fontSize;
         currentX = 0;
@@ -172,6 +210,6 @@ export default class CanvasManager {
         );
       }
       currentX += charMap.width * fontSize;
-    });
+    }
   }
 }

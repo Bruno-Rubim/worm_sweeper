@@ -76,7 +76,7 @@ export const itemList = {
     new Position(),
     new Position(0, 4),
     "gold_bug",
-    "The bug's curse is everlasting"
+    "The bug's curse is everlasting."
   ),
   silver_bell: new Item(new Position(), new Position(2, 4), "silver_bell"),
   dark_crystal: new Item(new Position(), new Position(4, 4), "dark_crystal"),

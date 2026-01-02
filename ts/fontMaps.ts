@@ -1051,6 +1051,61 @@ export const fontMaps: Record<string, fontMap> = {
       },
     },
   },
+  icons: {
+    spriteSheet: sprites.icon_sheet,
+    cellHeight: 9,
+    cellWidth: 9,
+    charMaps: {
+      $wrm: {
+        pos: new Position(0, 0),
+        width: 9,
+      },
+      $gld: {
+        pos: new Position(1, 0),
+        width: 9,
+      },
+      $dor: {
+        pos: new Position(2, 0),
+        width: 9,
+      },
+      $blk: {
+        pos: new Position(3, 0),
+        width: 9,
+      },
+      $tim: {
+        pos: new Position(4, 0),
+        width: 9,
+      },
+      $hrt: {
+        pos: new Position(5, 0),
+        width: 9,
+      },
+      $wgt: {
+        pos: new Position(0, 1),
+        width: 9,
+      },
+      $spd: {
+        pos: new Position(1, 1),
+        width: 9,
+      },
+      $slw: {
+        pos: new Position(2, 1),
+        width: 9,
+      },
+      $dmg: {
+        pos: new Position(3, 1),
+        width: 9,
+      },
+      $dfs: {
+        pos: new Position(4, 1),
+        width: 9,
+      },
+      $ref: {
+        pos: new Position(5, 1),
+        width: 9,
+      },
+    },
+  },
 };
 
 export function measureTextWidth(font: string, text: string) {
@@ -1059,4 +1114,21 @@ export function measureTextWidth(font: string, text: string) {
     width += fontMaps[font]?.charMaps[char]?.width ?? 0;
   });
   return width;
+}
+
+export function isIcon(word: string) {
+  return [
+    "$wrm",
+    "$gld",
+    "$dor",
+    "$blk",
+    "$tim",
+    "$hrt",
+    "$wgt",
+    "$spd",
+    "$slw",
+    "$dmg",
+    "$dfs",
+    "$ref",
+  ].includes(word);
 }
