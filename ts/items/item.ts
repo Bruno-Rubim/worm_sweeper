@@ -1,14 +1,21 @@
-import { OpenBook } from "../action.js";
+import { ItemDescription, OpenBook } from "../action.js";
 import type CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
+import { GAMEWIDTH, LEFT, RIGHT } from "../global.js";
 import Position from "../position.js";
 import { sprites } from "../sprite.js";
 
 export class Item extends GameObject {
   spriteSheetPos: Position;
   name: string;
+  description?: string;
 
-  constructor(pos: Position, spriteSheetPos: Position, name: string) {
+  constructor(
+    pos: Position,
+    spriteSheetPos: Position,
+    name: string,
+    description?: string
+  ) {
     super({
       pos: pos,
       sprite: sprites.item_sheet,
@@ -23,6 +30,18 @@ export class Item extends GameObject {
         return new OpenBook();
       };
     }
+    if (description) {
+      this.description = description;
+    }
+  }
+
+  clone(): Item {
+    return new Item(
+      new Position().addPos(this.pos),
+      this.spriteSheetPos,
+      this.name,
+      this.description
+    );
   }
 
   render(canvasManager: CanvasManager): void {
@@ -38,19 +57,65 @@ export class Item extends GameObject {
       sheetPos
     );
   }
+
+  hoverFunction = (cursorPos: Position) => {
+    if (this.description) {
+      let side: typeof LEFT | typeof RIGHT;
+      if (cursorPos.x > GAMEWIDTH / 2) {
+        side = RIGHT;
+      } else {
+        side = LEFT;
+      }
+      return new ItemDescription(this.description, side);
+    }
+  };
 }
 
-export const itemPosDic = {
-  gold_bug: new Position(0, 4),
-  silver_bell: new Position(2, 4),
-  dark_crystal: new Position(4, 4),
-  detonator: new Position(6, 4),
-  drill: new Position(8, 4),
-  health_insurance: new Position(10, 4),
-  empty: new Position(14, 4),
-  picaxe: new Position(0, 7),
-  flag: new Position(2, 7),
-  book: new Position(4, 7),
+export const itemList = {
+  gold_bug: new Item(
+    new Position(),
+    new Position(0, 4),
+    "gold_bug",
+    "The bug's curse is everlasting"
+  ),
+  silver_bell: new Item(new Position(), new Position(2, 4), "silver_bell"),
+  dark_crystal: new Item(new Position(), new Position(4, 4), "dark_crystal"),
+  detonator: new Item(
+    new Position(),
+    new Position(6, 4),
+    "detonator",
+    "Right click a number that has that many markers aroudnd it to break all unmarked blocks."
+  ),
+  drill: new Item(
+    new Position(),
+    new Position(8, 4),
+    "drill",
+    "Any safe block you break will break all safe blocks next to it."
+  ),
+  health_insurance: new Item(
+    new Position(),
+    new Position(10, 4),
+    "health_insurance"
+  ),
+  empty: new Item(new Position(), new Position(14, 4), "empty"),
+  picaxe: new Item(
+    new Position(),
+    new Position(0, 7),
+    "picaxe",
+    "Left click any block that's not hidden to break it."
+  ),
+  flag: new Item(
+    new Position(),
+    new Position(2, 7),
+    "flag",
+    "Right click any block to mark it as a possible threat."
+  ),
+  book: new Item(
+    new Position(),
+    new Position(4, 7),
+    "book",
+    "A book for you to read stuff."
+  ),
 };
 
 /**
@@ -60,8 +125,10 @@ export const itemPosDic = {
  * @returns
  */
 export function getItem(
-  itemName: keyof typeof itemPosDic,
+  itemName: keyof typeof itemList,
   screenPos: Position = new Position()
 ) {
-  return new Item(screenPos, itemPosDic[itemName], itemName);
+  let item = itemList[itemName].clone();
+  item.pos.update(screenPos);
+  return item;
 }

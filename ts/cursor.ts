@@ -1,4 +1,6 @@
 import type CanvasManager from "./canvasManager.js";
+import GameObject from "./gameObject.js";
+import { RIGHT, type LEFT } from "./global.js";
 import { inputState } from "./inputState.js";
 import Position from "./position.js";
 import { sprites } from "./sprite.js";
@@ -24,10 +26,43 @@ const cursorSheetPos = {
 
 export type cursorState = keyof typeof cursorSheetPos;
 
+class Description extends GameObject {
+  side: typeof RIGHT | typeof LEFT = RIGHT;
+  text: string = "";
+  constructor(cursorPos: Position) {
+    super({
+      sprite: sprites.description_box,
+      pos: cursorPos,
+      width: 66,
+      height: 14,
+    });
+  }
+  render(canvasManager: CanvasManager): void {
+    if (this.hidden) {
+      return;
+    }
+    canvasManager.renderSprite(
+      this.sprite,
+      this.pos.add(this.side == RIGHT ? -57 : 15, 6),
+      this.width,
+      this.height
+    );
+    canvasManager.renderText(
+      "description",
+      this.pos.add(this.side == RIGHT ? -55 : 17, 8),
+      this.text,
+      RIGHT,
+      this.width - 3,
+      0.4
+    );
+  }
+}
+
 class Cursor {
   pos = new Position();
   state: cursorState = CURSORDEFAULT;
   loadStart = 0;
+  description = new Description(this.pos);
   render(canvasManager: CanvasManager) {
     canvasManager.renderSpriteFromSheet(
       sprites.cursor_sheet,
@@ -39,6 +74,7 @@ class Cursor {
         inputState.mouse.heldLeft ? 1 : inputState.mouse.heldRight ? 2 : 0
       )
     );
+    this.description.render(canvasManager);
   }
 }
 

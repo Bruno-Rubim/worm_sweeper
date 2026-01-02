@@ -1,4 +1,5 @@
 import type { cursorState } from "./cursor.js";
+import type { LEFT, RIGHT } from "./global.js";
 import type { ShopItem } from "./items/shopItem.js";
 import type Position from "./position.js";
 
@@ -75,5 +76,15 @@ export class PlayerAtack extends Action {
 export class OpenBook extends Action {
   constructor() {
     super();
+  }
+}
+
+export class ItemDescription extends Action {
+  description: string;
+  side: typeof LEFT | typeof RIGHT;
+  constructor(description: string, side: typeof LEFT | typeof RIGHT) {
+    super();
+    this.description = description;
+    this.side = side;
   }
 }

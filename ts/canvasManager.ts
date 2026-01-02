@@ -124,7 +124,8 @@ export default class CanvasManager {
     pos: Position,
     text: string,
     direction: typeof CLICKLEFT | typeof CLICKRIGHT = CLICKRIGHT,
-    limitWidth: number = Infinity
+    limitWidth: number = Infinity,
+    fontSize = 1
   ) {
     const fontMap = fontMaps[font]!;
     const words = text.split(" ");
@@ -132,20 +133,21 @@ export default class CanvasManager {
     words.forEach((word, i) => {
       if (word.includes("\n")) {
         const breakWords = word.split("\n");
-        const firstWidth = measureTextWidth(font, breakWords[0]!);
-        const lastWidth = measureTextWidth(font, utils.lastOfArray(breakWords));
+        const firstWidth = measureTextWidth(font, breakWords[0]!) * fontSize;
+        const lastWidth =
+          measureTextWidth(font, utils.lastOfArray(breakWords)) * fontSize;
         if (lineWidth + firstWidth > limitWidth) {
           words[i] = "\n" + words[i];
         }
         lineWidth = lastWidth;
         return;
       }
-      const wordWidth = measureTextWidth(font, word);
+      const wordWidth = measureTextWidth(font, word) * fontSize;
       if (lineWidth + wordWidth > limitWidth) {
         words[i] = "\n" + words[i];
         lineWidth = wordWidth;
       } else {
-        lineWidth += wordWidth + (fontMap.charMaps[" "]?.width ?? 0);
+        lineWidth += wordWidth + (fontMap.charMaps[" "]?.width ?? 0) * fontSize;
       }
     });
     const chars = words.join(" ").replaceAll(" \n", "\n").split("");
@@ -153,7 +155,7 @@ export default class CanvasManager {
     let currentY = 0;
     chars.forEach((c) => {
       if (c == "\n") {
-        currentY += fontMap.cellHeight;
+        currentY += fontMap.cellHeight * fontSize;
         currentX = 0;
         return;
       }
@@ -162,12 +164,14 @@ export default class CanvasManager {
         this.renderSpriteFromSheet(
           fontMap.spriteSheet,
           pos.add(currentX, currentY),
+          fontMap.cellWidth * fontSize,
+          fontMap.cellHeight * fontSize,
+          charMap.pos,
           fontMap.cellWidth,
-          fontMap.cellHeight,
-          charMap.pos
+          fontMap.cellHeight
         );
       }
-      currentX += charMap.width;
+      currentX += charMap.width * fontSize;
     });
   }
 }

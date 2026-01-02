@@ -9,6 +9,7 @@ import {
   ConsumeItem,
   Action,
   OpenBook as ToggleBook,
+  ItemDescription,
 } from "./action.js";
 import timeTracker from "./timer/timeTracker.js";
 
@@ -120,10 +121,15 @@ function handleKeyInput(gameManager: GameManager) {
   }
 }
 
-function handleAction(gameManager: GameManager, action: Action | void) {
+type actionResponse = "cursorChange" | "itemDescription" | void;
+
+function handleAction(
+  gameManager: GameManager,
+  action: Action | void
+): actionResponse {
   if (action instanceof ChangeCursorState) {
     changeCursorState(action.newState);
-    return true;
+    return "cursorChange";
   }
   if (action instanceof ConsumeItem) {
     switch (action.itemName) {
@@ -149,13 +155,19 @@ function handleAction(gameManager: GameManager, action: Action | void) {
     }
     return;
   }
+  if (action instanceof ItemDescription) {
+    cursor.description.hidden = false;
+    cursor.description.side = action.side;
+    cursor.description.text = action.description;
+    return "itemDescription";
+  }
 }
 
 export default function updateGame(
   renderScale: number,
   gameManager: GameManager
 ) {
-  cursor.pos = inputState.mouse.pos.divide(renderScale);
+  cursor.pos.update(inputState.mouse.pos.divide(renderScale));
 
   const gameObjects = [
     gameManager.levelManager,
@@ -165,15 +177,25 @@ export default function updateGame(
   const actions: Action[] | void = handleMouseInput(gameObjects);
 
   let cursorChanged = false;
+  let itemDescription = false;
 
   actions?.forEach((action) => {
-    if (handleAction(gameManager, action)) {
-      cursorChanged = true;
+    let response = handleAction(gameManager, action);
+    switch (response) {
+      case "cursorChange":
+        cursorChanged = true;
+        break;
+      case "itemDescription":
+        itemDescription = true;
+        break;
     }
   });
 
   if (!cursorChanged) {
     changeCursorState("cursor_default");
+  }
+  if (!itemDescription) {
+    cursor.description.hidden = true;
   }
 
   if (inputState.mouse.clickedRight) {
@@ -183,7 +205,7 @@ export default function updateGame(
     inputState.mouse.clickedLeft = false;
   }
 
-  cursor.pos = cursor.pos.subtract(8, 8);
+  cursor.pos.update(cursor.pos.subtract(8, 8));
 
   handleKeyInput(gameManager);
 }
