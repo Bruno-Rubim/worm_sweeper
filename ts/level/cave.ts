@@ -5,6 +5,7 @@ import Block, {
   CONTENTWORM,
 } from "./block.js";
 import Position from "../position.js";
+import { StartBattle } from "../action.js";
 
 export default class Cave {
   difficulty: number;
@@ -188,13 +189,17 @@ export default class Cave {
   }
 
   breakBlock(block: Block) {
+    let action;
     block.broken = true;
     this.revealAdjc(block.gridPos);
 
     if (block.content != CONTENTWORM) {
       this.blocksLeft--;
+    } else {
+      action = new StartBattle(1);
     }
     this.updateBlockStats(block);
+    return action;
   }
 
   breakConnectedEmpty(block: Block) {
@@ -222,13 +227,18 @@ export default class Cave {
   }
 
   breakSurrBlocks(pos: Position) {
+    let battle: StartBattle = new StartBattle(0);
     const surrBlocks = this.getSurrBlocks(pos);
     surrBlocks.forEach((block) => {
       if (block.broken || block.marked) {
         return;
       }
-      this.breakBlock(block);
+      let action = this.breakBlock(block);
+      if (action instanceof StartBattle) {
+        battle.enemyCount += action.enemyCount;
+      }
     });
+    return battle;
   }
 
   placeExit() {

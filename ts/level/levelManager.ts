@@ -15,6 +15,7 @@ import {
   ChangeScene,
   NextLevel,
   RestartGame,
+  StartBattle,
 } from "../action.js";
 import { CURSORDEFAULT, CURSORNONE } from "../cursor.js";
 import { sprites } from "../sprite.js";
@@ -162,16 +163,16 @@ export class LevelManager extends GameObject {
     delayTimer.start();
   }
 
-  changeScene(action: ChangeScene) {
+  changeScene(scene: "battle" | "cave" | "shop") {
     const currentScene = this.gameState.currentScene;
     this.screenTransition(
       () => {
-        switch (action.newScene) {
+        switch (scene) {
           case "battle":
             this.gameState.level.cave.clearExposedWorms();
             this.gameState.level.cave.updateAllStats();
-            this.gameState.battle = new Battle(this.gameState.level.depth);
             this.currentSceneManager = this.battleManager;
+            this.gameState.battle?.start();
             break;
           case "cave":
             this.gameState.gameTimer.unpause();
@@ -193,12 +194,9 @@ export class LevelManager extends GameObject {
             );
             break;
         }
-        this.gameState.currentScene = action.newScene;
+        this.gameState.currentScene = scene;
       },
-      currentScene + action.newScene == "battlecave" ||
-        action.newScene == "battle"
-        ? 0.5
-        : 0
+      currentScene + scene == "battlecave" || scene == "battle" ? 0.5 : 0
     );
   }
 
@@ -207,7 +205,7 @@ export class LevelManager extends GameObject {
       return;
     }
     if (action instanceof ChangeScene) {
-      this.changeScene(action);
+      this.changeScene(action.newScene);
     } else if (action instanceof NextLevel) {
       this.screenTransition(() => {
         this.gameState.level = this.gameState.level.nextLevel();
@@ -217,6 +215,12 @@ export class LevelManager extends GameObject {
           this.gameState.passiveItemNames
         );
       });
+    } else if (action instanceof StartBattle) {
+      this.gameState.battle = new Battle(
+        this.gameState.level.depth,
+        action.enemyCount
+      );
+      this.changeScene("battle");
     } else {
       console.warn("unhandled action", action);
     }

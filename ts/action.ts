@@ -89,3 +89,10 @@ export class ItemDescription extends Action {
 }
 
 export class RestartGame extends Action {}
+export class StartBattle extends Action {
+  enemyCount: number;
+  constructor(enemyCount: number) {
+    super();
+    this.enemyCount = enemyCount;
+  }
+}
