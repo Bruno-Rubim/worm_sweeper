@@ -75,9 +75,6 @@ export default class Block {
       return blockSheetPos.marked;
     }
     if (this.bombTimer instanceof Timer) {
-      console.log(
-        Math.min(2, Math.floor(this.bombTimer.percentage / ((1 / 3) * 100)))
-      );
       return blockSheetPos.bomb.add(
         Math.min(2, Math.floor(this.bombTimer.percentage / ((1 / 3) * 100))),
         0

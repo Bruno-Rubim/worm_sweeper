@@ -126,7 +126,7 @@ export default class CaveManager extends SceneManager {
     if (button == CLICKLEFT) {
       if (this.gameState.holdingBomb) {
         block.content = CONTENTBOMB;
-        block.bombTimer = new Timer(3, () => {
+        block.bombTimer = new Timer(2, () => {
           this.gameState.level.cave.bomb(block);
           this.checkCaveClear();
         });
