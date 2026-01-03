@@ -15,16 +15,17 @@ import {
 import type GameState from "../gameState.js";
 import { CLICKLEFT, type CLICKRIGHT } from "../global.js";
 import Position from "../position.js";
-import { Battle } from "./battle.js";
+import { sprites } from "../sprite.js";
+import { Timer } from "../timer/timer.js";
+import { timerQueue } from "../timer/timerQueue.js";
 import {
-  blockSheet,
   blockSheetPos,
+  CONTENTBOMB,
   CONTENTDOOREXIT,
   CONTENTDOOREXITOPEN,
   CONTENTDOORSHOP,
   CONTENTDOORSHOPOPEN,
   CONTENTEMPTY,
-  CONTENTWORM,
 } from "./block.js";
 import SceneManager from "./sceneManager.js";
 
@@ -59,7 +60,7 @@ export default class CaveManager extends SceneManager {
         const block = this.gameState.level.cave.blockMatrix[i]![j]!;
         if (!this.gameState.level.cave.started) {
           canvasManager.renderSpriteFromSheet(
-            blockSheet,
+            sprites.block_sheet,
             blockPos,
             blockSize,
             blockSize,
@@ -70,7 +71,7 @@ export default class CaveManager extends SceneManager {
           continue;
         }
         canvasManager.renderSpriteFromSheet(
-          blockSheet,
+          sprites.block_sheet,
           blockPos,
           blockSize,
           blockSize,
@@ -80,7 +81,7 @@ export default class CaveManager extends SceneManager {
         );
         if ((block.broken && block.content != CONTENTEMPTY) || block.marked) {
           canvasManager.renderSpriteFromSheet(
-            blockSheet,
+            sprites.block_sheet,
             blockPos,
             blockSize,
             blockSize,
@@ -95,7 +96,7 @@ export default class CaveManager extends SceneManager {
           !block.broken
         ) {
           canvasManager.renderSpriteFromSheet(
-            blockSheet,
+            sprites.block_sheet,
             blockPos,
             blockSize,
             blockSize,
@@ -123,6 +124,17 @@ export default class CaveManager extends SceneManager {
     }
 
     if (button == CLICKLEFT) {
+      if (this.gameState.holdingBomb) {
+        block.content = CONTENTBOMB;
+        block.bombTimer = new Timer(2, () => {
+          this.gameState.level.cave.bomb(block);
+          this.checkCaveClear();
+        });
+        timerQueue.push(block.bombTimer);
+        block.bombTimer.start();
+        this.gameState.holdingBomb = false;
+        return;
+      }
       let enemyCount = 0;
       if (
         !block.broken &&
@@ -183,6 +195,11 @@ export default class CaveManager extends SceneManager {
 
   handleHover = (cursorPos: Position) => {
     const block = this.getBlockFromGamePos(cursorPos);
+    if (this.gameState.holdingBomb) {
+      this.gameState.level.cave.setBombOverlay(block);
+    } else {
+      this.gameState.level.cave.setBombOverlay();
+    }
     if (
       block.broken &&
       this.gameState.hasItem("detonator") &&

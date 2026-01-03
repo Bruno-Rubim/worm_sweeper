@@ -1,5 +1,6 @@
 import type { cursorState } from "./cursor.js";
 import type { LEFT, RIGHT } from "./global.js";
+import type { consumableDic } from "./items/consumable.js";
 import type { ShopItem } from "./items/shopItem.js";
 import type { Enemy } from "./level/enemy.js";
 import type Position from "./position.js";

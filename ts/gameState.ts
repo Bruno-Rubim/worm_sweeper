@@ -41,6 +41,7 @@ export default class GameState {
   currentScene: "cave" | "shop" | "battle" = "cave";
   paused: boolean = false;
   defending: boolean = false;
+  holdingBomb: boolean = false;
   gameOver: boolean = false;
   inventory: inventory = {
     picaxe: getItem("picaxe", new Position(GAMEWIDTH - 20, 90)),
@@ -68,6 +69,7 @@ export default class GameState {
 
   lose() {
     this.gameOver = true;
+    this.level.cave.revealAllBlocks();
     timeTracker.pause();
   }
 
@@ -80,6 +82,8 @@ export default class GameState {
     this.inTransition = false;
     this.battle = null;
     this.defending = false;
+    this.holdingBomb = false;
+
     this.gold = 0;
     this.health = 5;
     this.inventory = {
