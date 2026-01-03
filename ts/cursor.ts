@@ -4,15 +4,13 @@ import { RIGHT, type LEFT } from "./global.js";
 import { inputState } from "./inputState.js";
 import Position from "./position.js";
 import { sprites } from "./sprite.js";
-import timeTracker from "./timer/timeTracker.js";
 
 export const CURSORDEFAULT = "cursor_default";
 export const CURSORPICAXE = "cursor_picaxe";
-export const CURSORFLAG = "cursor_flag";
-export const CURSORARROW = "cursor_arrow";
 export const CURSORDETONATOR = "cursor_detonator";
+export const CURSORARROW = "cursor_arrow";
 export const CURSORBATTLE = "cursor_battle";
-export const CURSORSHIELD = "cursor_shield";
+export const CURSORBOMB = "cursor_bomb";
 export const CURSORNONE = "cursor_none";
 
 const cursorSheetPos = {
@@ -21,6 +19,7 @@ const cursorSheetPos = {
   [CURSORDETONATOR]: new Position(2, 0),
   [CURSORARROW]: new Position(3, 0),
   [CURSORBATTLE]: new Position(4, 0),
+  [CURSORBOMB]: new Position(5, 0),
   [CURSORNONE]: new Position(6, 3),
 };
 

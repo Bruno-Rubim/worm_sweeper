@@ -1,4 +1,6 @@
 import Block, {
+  CONTENTBOMB,
+  CONTENTBOMBOVERLAY,
   CONTENTDOOREXIT,
   CONTENTDOORSHOP,
   CONTENTEMPTY,
@@ -160,12 +162,47 @@ export default class Cave {
     });
   }
 
+  setBombOverlay(block?: Block) {
+    if (block?.broken && block.content == CONTENTEMPTY) {
+      block.content = CONTENTBOMBOVERLAY;
+    }
+    this.blockMatrix.forEach((line) => {
+      line.forEach((b) => {
+        if (b.content == CONTENTBOMBOVERLAY && b != block) {
+          b.content = CONTENTEMPTY;
+        }
+      });
+    });
+  }
+
+  bomb(block: Block) {
+    block.content = CONTENTEMPTY;
+    this.getSurrBlocks(block.gridPos).forEach((b) => {
+      if (b.content == CONTENTWORM) {
+        b.content = CONTENTEMPTY;
+        this.wormsLeft--;
+        this.blocksLeft++;
+      }
+    });
+    this.breakSurrBlocks(block.gridPos, true);
+    this.updateAllStats();
+  }
+
   updateAllStats() {
     this.blockMatrix.forEach((line) => {
       line.forEach((block) => {
         this.updateBlockStats(block);
       });
     });
+  }
+
+  revealAllBlocks() {
+    this.blockMatrix.forEach((line) => {
+      line.forEach((block) => {
+        block.broken = true;
+      });
+    });
+    this.updateAllStats();
   }
 
   countBrokenBlocks() {
@@ -226,14 +263,18 @@ export default class Cave {
     }
   }
 
-  breakSurrBlocks(pos: Position) {
+  breakSurrBlocks(pos: Position, ignoreMarks: boolean = false) {
     let battle: StartBattle = new StartBattle(0);
     const surrBlocks = this.getSurrBlocks(pos);
     surrBlocks.forEach((block) => {
-      if (block.broken || block.marked) {
+      if (block.broken || (block.marked && !ignoreMarks)) {
         return;
       }
       let action = this.breakBlock(block);
+      if (block.marked) {
+        block.marked = false;
+        this.wormsLeft++;
+      }
       if (action instanceof StartBattle) {
         battle.enemyCount += action.enemyCount;
       }

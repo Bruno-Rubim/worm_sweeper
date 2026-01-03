@@ -27,7 +27,8 @@ export const consumableDic = {
     name: "bomb",
     shopName: "Bomb",
     cost: 13,
-    description: "",
+    description:
+      "Place this on an empty block to break all its surrounding blocks killing any worms, or throw it in battle to deal 5 damage.",
   }),
   health_potion_big: new Consumable({
     spriteSheetPos: new Position(2, 0),
