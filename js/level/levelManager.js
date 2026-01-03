@@ -2,7 +2,7 @@ import CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
 import Position from "../position.js";
 import { BORDERTHICKLEFT, BORDERTHICKTOP, CLICKLEFT, CLICKRIGHT, } from "../global.js";
-import { Action, ChangeCursorState, ChangeScene, NextLevel, RestartGame, } from "../action.js";
+import { Action, ChangeCursorState, ChangeScene, NextLevel, RestartGame, StartBattle, } from "../action.js";
 import { CURSORDEFAULT, CURSORNONE } from "../cursor.js";
 import { sprites } from "../sprite.js";
 import timeTracker from "../timer/timeTracker.js";
@@ -65,12 +65,12 @@ export class LevelManager extends GameObject {
         transitionObject.endAnimation();
     }
     render(canvasManager) {
-        if (this.gameState.paused) {
-            canvasManager.renderSprite(sprites.screen_paused, this.pos, this.width, this.height);
-            return;
-        }
         if (this.gameState.inBook) {
             canvasManager.renderSprite(sprites.bg_rules, this.pos, this.width, this.height);
+            return;
+        }
+        if (this.gameState.paused) {
+            canvasManager.renderSprite(sprites.screen_paused, this.pos, this.width, this.height);
             return;
         }
         this.currentSceneManager.render(canvasManager);
@@ -95,15 +95,15 @@ export class LevelManager extends GameObject {
         timerQueue.push(delayTimer);
         delayTimer.start();
     }
-    changeScene(action) {
+    changeScene(scene) {
         const currentScene = this.gameState.currentScene;
         this.screenTransition(() => {
-            switch (action.newScene) {
+            switch (scene) {
                 case "battle":
                     this.gameState.level.cave.clearExposedWorms();
                     this.gameState.level.cave.updateAllStats();
-                    this.gameState.battle = new Battle(this.gameState.level.depth);
                     this.currentSceneManager = this.battleManager;
+                    this.gameState.battle?.start();
                     break;
                 case "cave":
                     this.gameState.gameTimer.unpause();
@@ -122,18 +122,15 @@ export class LevelManager extends GameObject {
                     this.currentSceneManager = new ShopManager(this.gameState, this.pos);
                     break;
             }
-            this.gameState.currentScene = action.newScene;
-        }, currentScene + action.newScene == "battlecave" ||
-            action.newScene == "battle"
-            ? 0.5
-            : 0);
+            this.gameState.currentScene = scene;
+        }, currentScene + scene == "battlecave" || scene == "battle" ? 0.5 : 0);
     }
     handleAction(action) {
         if (!action) {
             return;
         }
         if (action instanceof ChangeScene) {
-            this.changeScene(action);
+            this.changeScene(action.newScene);
         }
         else if (action instanceof NextLevel) {
             this.screenTransition(() => {
@@ -141,6 +138,10 @@ export class LevelManager extends GameObject {
                 this.gameState.gameTimer.addSecs(60);
                 this.gameState.level.cave.start(action.starterGridPos, this.gameState.passiveItemNames);
             });
+        }
+        else if (action instanceof StartBattle) {
+            this.gameState.battle = new Battle(this.gameState.level.depth, action.enemyCount);
+            this.changeScene("battle");
         }
         else {
             console.warn("unhandled action", action);

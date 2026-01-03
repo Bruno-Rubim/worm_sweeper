@@ -1,5 +1,6 @@
 import Block, { CONTENTDOOREXIT, CONTENTDOORSHOP, CONTENTEMPTY, CONTENTWORM, } from "./block.js";
 import Position from "../position.js";
+import { StartBattle } from "../action.js";
 export default class Cave {
     difficulty;
     size;
@@ -158,12 +159,17 @@ export default class Cave {
         return false;
     }
     breakBlock(block) {
+        let action;
         block.broken = true;
         this.revealAdjc(block.gridPos);
         if (block.content != CONTENTWORM) {
             this.blocksLeft--;
         }
+        else {
+            action = new StartBattle(1);
+        }
         this.updateBlockStats(block);
+        return action;
     }
     breakConnectedEmpty(block) {
         if (block.threatLevel == 0 && !block.marked) {
@@ -189,13 +195,18 @@ export default class Cave {
         }
     }
     breakSurrBlocks(pos) {
+        let battle = new StartBattle(0);
         const surrBlocks = this.getSurrBlocks(pos);
         surrBlocks.forEach((block) => {
             if (block.broken || block.marked) {
                 return;
             }
-            this.breakBlock(block);
+            let action = this.breakBlock(block);
+            if (action instanceof StartBattle) {
+                battle.enemyCount += action.enemyCount;
+            }
         });
+        return battle;
     }
     placeExit() {
         if (this.freeTiles.length == 0) {

@@ -1,4 +1,4 @@
-import { ChangeCursorState, ChangeScene, NextLevel, Transition, } from "../action.js";
+import { ChangeCursorState, ChangeScene, NextLevel, StartBattle, Transition, } from "../action.js";
 import { CURSORARROW, CURSORDEFAULT, CURSORDETONATOR, CURSORPICAXE, } from "../cursor.js";
 import { CLICKLEFT } from "../global.js";
 import Position from "../position.js";
@@ -54,18 +54,16 @@ export default class CaveManager extends SceneManager {
             return;
         }
         if (button == CLICKLEFT) {
+            let enemyCount = 0;
             if (!block.broken &&
                 (!block.hidden || this.gameState.hasItem("dark_crystal")) &&
                 !block.marked) {
-                this.gameState.level.cave.breakBlock(block);
+                let action = this.gameState.level.cave.breakBlock(block);
+                if (action instanceof StartBattle) {
+                    enemyCount += action.enemyCount;
+                }
                 if (block.hasGold) {
                     this.gameState.gold++;
-                }
-                if (block.content == CONTENTWORM) {
-                    return new ChangeScene("battle");
-                }
-                else {
-                    this.checkCaveClear();
                 }
                 if (this.gameState.hasItem("drill") && block.threatLevel == 0) {
                     this.gameState.level.cave.breakConnectedEmpty(block);
@@ -87,13 +85,20 @@ export default class CaveManager extends SceneManager {
                         if (this.gameState.hasItem("detonator") &&
                             block.threatLevel > 0 &&
                             block.threatLevel == block.markerLevel) {
-                            this.gameState.level.cave.breakSurrBlocks(block.gridPos);
+                            let battle = this.gameState.level.cave.breakSurrBlocks(block.gridPos);
+                            enemyCount += battle.enemyCount;
                             if (this.gameState.hasItem("drill")) {
                                 this.gameState.level.cave.breakConnectedEmpty(block);
                             }
                         }
                         break;
                 }
+            }
+            if (enemyCount > 0) {
+                return new StartBattle(enemyCount);
+            }
+            else {
+                this.checkCaveClear();
             }
         }
         else {
