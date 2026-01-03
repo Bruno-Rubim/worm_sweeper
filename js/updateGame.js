@@ -1,4 +1,4 @@
-import { cursor } from "./cursor.js";
+import { cursor, CURSORBATTLE, CURSORBOMB, CURSORDEFAULT, } from "./cursor.js";
 import { GameManager } from "./gameManager.js";
 import { CLICKLEFT, CLICKRIGHT } from "./global.js";
 import { inputState } from "./inputState.js";
@@ -115,8 +115,19 @@ function handleAction(gameManager, action) {
             case "health_potion_big":
                 gameManager.gameState.health += 2;
                 break;
+            case "bomb":
+                gameManager.gameState.holdingBomb = true;
+                break;
+            case "empty":
+                if (gameManager.gameState.holdingBomb) {
+                    gameManager.gameState.holdingBomb = false;
+                    gameManager.gameState.inventory.consumable = consumableDic.bomb;
+                }
+                break;
         }
-        gameManager.gameState.inventory.consumable = consumableDic.empty;
+        if (action.itemName != "empty") {
+            gameManager.gameState.inventory.consumable = consumableDic.empty;
+        }
         return;
     }
     if (action instanceof ToggleBook) {
@@ -160,8 +171,12 @@ export default function updateGame(renderScale, gameManager) {
                 break;
         }
     });
+    if (gameManager.gameState.holdingBomb) {
+        changeCursorState(CURSORBOMB);
+        cursorChanged = true;
+    }
     if (!cursorChanged) {
-        changeCursorState("cursor_default");
+        changeCursorState(CURSORDEFAULT);
     }
     if (!itemDescription) {
         cursor.description.hidden = true;

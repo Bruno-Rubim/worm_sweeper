@@ -1,4 +1,4 @@
-import Block, { CONTENTDOOREXIT, CONTENTDOORSHOP, CONTENTEMPTY, CONTENTWORM, } from "./block.js";
+import Block, { CONTENTBOMB, CONTENTBOMBOVERLAY, CONTENTDOOREXIT, CONTENTDOORSHOP, CONTENTEMPTY, CONTENTWORM, } from "./block.js";
 import Position from "../position.js";
 import { StartBattle } from "../action.js";
 export default class Cave {
@@ -133,12 +133,44 @@ export default class Cave {
             });
         });
     }
+    setBombOverlay(block) {
+        if (block?.broken && block.content == CONTENTEMPTY) {
+            block.content = CONTENTBOMBOVERLAY;
+        }
+        this.blockMatrix.forEach((line) => {
+            line.forEach((b) => {
+                if (b.content == CONTENTBOMBOVERLAY && b != block) {
+                    b.content = CONTENTEMPTY;
+                }
+            });
+        });
+    }
+    bomb(block) {
+        block.content = CONTENTEMPTY;
+        this.getSurrBlocks(block.gridPos).forEach((b) => {
+            if (b.content == CONTENTWORM) {
+                b.content = CONTENTEMPTY;
+                this.wormsLeft--;
+                this.blocksLeft++;
+            }
+        });
+        this.breakSurrBlocks(block.gridPos, true);
+        this.updateAllStats();
+    }
     updateAllStats() {
         this.blockMatrix.forEach((line) => {
             line.forEach((block) => {
                 this.updateBlockStats(block);
             });
         });
+    }
+    revealAllBlocks() {
+        this.blockMatrix.forEach((line) => {
+            line.forEach((block) => {
+                block.broken = true;
+            });
+        });
+        this.updateAllStats();
     }
     countBrokenBlocks() {
         let counter = this.size * this.size;
@@ -194,14 +226,18 @@ export default class Cave {
             this.wormsLeft++;
         }
     }
-    breakSurrBlocks(pos) {
+    breakSurrBlocks(pos, ignoreMarks = false) {
         let battle = new StartBattle(0);
         const surrBlocks = this.getSurrBlocks(pos);
         surrBlocks.forEach((block) => {
-            if (block.broken || block.marked) {
+            if (block.broken || (block.marked && !ignoreMarks)) {
                 return;
             }
             let action = this.breakBlock(block);
+            if (block.marked) {
+                block.marked = false;
+                this.wormsLeft++;
+            }
             if (action instanceof StartBattle) {
                 battle.enemyCount += action.enemyCount;
             }

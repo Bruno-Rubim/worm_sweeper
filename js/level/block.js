@@ -1,12 +1,13 @@
 import Position from "../position.js";
-import { sprites } from "../sprite.js";
+import { Timer } from "../timer/timer.js";
 export const CONTENTEMPTY = "empty";
 export const CONTENTDOOREXIT = "door_exit";
 export const CONTENTDOOREXITOPEN = "door_exit_open";
 export const CONTENTDOORSHOP = "door_shop";
 export const CONTENTDOORSHOPOPEN = "door_shop_open";
+export const CONTENTBOMB = "bomb";
+export const CONTENTBOMBOVERLAY = "bomb_overlay";
 export const CONTENTWORM = "worm";
-export const blockSheet = sprites.block_sheet;
 export const blockSheetPos = {
     [CONTENTDOOREXIT]: new Position(0, 0),
     [CONTENTDOOREXITOPEN]: new Position(1, 0),
@@ -19,6 +20,8 @@ export const blockSheetPos = {
     [CONTENTEMPTY]: new Position(0, 1),
     bell: new Position(9, 0),
     marked: new Position(9, 1),
+    [CONTENTBOMBOVERLAY]: new Position(0, 2),
+    [CONTENTBOMB]: new Position(1, 2),
 };
 export default class Block {
     gamePos;
@@ -32,6 +35,7 @@ export default class Block {
     drilled = false;
     threatLevel = 0;
     markerLevel = 0;
+    bombTimer = null;
     constructor(args) {
         this.gridPos = args.gridPos;
         this.gamePos = args.gamePos;
@@ -54,6 +58,9 @@ export default class Block {
     get sheetContentPos() {
         if (this.marked) {
             return blockSheetPos.marked;
+        }
+        if (this.bombTimer instanceof Timer) {
+            return blockSheetPos.bomb.add(Math.min(2, Math.floor(this.bombTimer.percentage / ((1 / 3) * 100))), 0);
         }
         return blockSheetPos[this.content];
     }

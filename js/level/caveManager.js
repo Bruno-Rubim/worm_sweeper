@@ -2,8 +2,10 @@ import { ChangeCursorState, ChangeScene, NextLevel, StartBattle, Transition, } f
 import { CURSORARROW, CURSORDEFAULT, CURSORDETONATOR, CURSORPICAXE, } from "../cursor.js";
 import { CLICKLEFT } from "../global.js";
 import Position from "../position.js";
-import { Battle } from "./battle.js";
-import { blockSheet, blockSheetPos, CONTENTDOOREXIT, CONTENTDOOREXITOPEN, CONTENTDOORSHOP, CONTENTDOORSHOPOPEN, CONTENTEMPTY, CONTENTWORM, } from "./block.js";
+import { sprites } from "../sprite.js";
+import { Timer } from "../timer/timer.js";
+import { timerQueue } from "../timer/timerQueue.js";
+import { blockSheetPos, CONTENTBOMB, CONTENTDOOREXIT, CONTENTDOOREXITOPEN, CONTENTDOORSHOP, CONTENTDOORSHOPOPEN, CONTENTEMPTY, } from "./block.js";
 import SceneManager from "./sceneManager.js";
 export default class CaveManager extends SceneManager {
     constructor(gameState, scenePos) {
@@ -31,17 +33,17 @@ export default class CaveManager extends SceneManager {
                 const blockPos = new Position(i * blockSize, j * blockSize).addPos(this.pos);
                 const block = this.gameState.level.cave.blockMatrix[i][j];
                 if (!this.gameState.level.cave.started) {
-                    canvasManager.renderSpriteFromSheet(blockSheet, blockPos, blockSize, blockSize, blockSheetPos.hidden, 16, 16);
+                    canvasManager.renderSpriteFromSheet(sprites.block_sheet, blockPos, blockSize, blockSize, blockSheetPos.hidden, 16, 16);
                     continue;
                 }
-                canvasManager.renderSpriteFromSheet(blockSheet, blockPos, blockSize, blockSize, block.sheetBlockPos, 16, 16);
+                canvasManager.renderSpriteFromSheet(sprites.block_sheet, blockPos, blockSize, blockSize, block.sheetBlockPos, 16, 16);
                 if ((block.broken && block.content != CONTENTEMPTY) || block.marked) {
-                    canvasManager.renderSpriteFromSheet(blockSheet, blockPos, blockSize, blockSize, block.sheetContentPos, 16, 16);
+                    canvasManager.renderSpriteFromSheet(sprites.block_sheet, blockPos, blockSize, blockSize, block.sheetContentPos, 16, 16);
                 }
                 if (this.gameState.hasItem("silver_bell") &&
                     [CONTENTDOOREXIT, CONTENTDOORSHOP].includes(block.content) &&
                     !block.broken) {
-                    canvasManager.renderSpriteFromSheet(blockSheet, blockPos, blockSize, blockSize, blockSheetPos.bell, 16, 16);
+                    canvasManager.renderSpriteFromSheet(sprites.block_sheet, blockPos, blockSize, blockSize, blockSheetPos.bell, 16, 16);
                 }
             }
         }
@@ -54,6 +56,17 @@ export default class CaveManager extends SceneManager {
             return;
         }
         if (button == CLICKLEFT) {
+            if (this.gameState.holdingBomb) {
+                block.content = CONTENTBOMB;
+                block.bombTimer = new Timer(2, () => {
+                    this.gameState.level.cave.bomb(block);
+                    this.checkCaveClear();
+                });
+                timerQueue.push(block.bombTimer);
+                block.bombTimer.start();
+                this.gameState.holdingBomb = false;
+                return;
+            }
             let enemyCount = 0;
             if (!block.broken &&
                 (!block.hidden || this.gameState.hasItem("dark_crystal")) &&
@@ -110,6 +123,12 @@ export default class CaveManager extends SceneManager {
     };
     handleHover = (cursorPos) => {
         const block = this.getBlockFromGamePos(cursorPos);
+        if (this.gameState.holdingBomb) {
+            this.gameState.level.cave.setBombOverlay(block);
+        }
+        else {
+            this.gameState.level.cave.setBombOverlay();
+        }
         if (block.broken &&
             this.gameState.hasItem("detonator") &&
             block.threatLevel > 0 &&

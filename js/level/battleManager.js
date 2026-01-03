@@ -72,6 +72,17 @@ export default class BattleManager extends SceneManager {
         tiredTimer.start();
         return this.checkBattleEnd();
     }
+    bomb() {
+        const tiredTimer = this.gameState.tiredTimer;
+        const rId = utils.randomArrayId(this.gameState.battle.enemies);
+        const enemy = this.gameState.battle.enemies[rId];
+        enemy.health -= 5;
+        enemy.damagedTimer.start();
+        timerQueue.push(enemy.damagedTimer);
+        tiredTimer.goalSecs = 2 - this.gameState.inventory.armor.speed;
+        tiredTimer.start();
+        return this.checkBattleEnd();
+    }
     playerDefend() {
         const tiredTimer = this.gameState.tiredTimer;
         this.gameState.defending = true;
@@ -90,6 +101,10 @@ export default class BattleManager extends SceneManager {
         const tiredTimer = this.gameState.tiredTimer;
         if (tiredTimer.ended || !tiredTimer.started) {
             if (button == CLICKLEFT) {
+                if (this.gameState.holdingBomb) {
+                    this.gameState.holdingBomb = false;
+                    return this.bomb();
+                }
                 return this.playerAttack();
             }
             else {
