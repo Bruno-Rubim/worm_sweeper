@@ -97,3 +97,5 @@ export class StartBattle extends Action {
     this.enemyCount = enemyCount;
   }
 }
+
+export class RingBell extends Action {}

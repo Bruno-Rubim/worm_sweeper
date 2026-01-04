@@ -1,5 +1,5 @@
 import Position from "./position.js";
-import { sprites, type Sprite } from "./sprite.js";
+import { sprites, type Sprite } from "./sprites.js";
 
 type charMap = {
   pos: Position;

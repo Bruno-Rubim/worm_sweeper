@@ -3,7 +3,7 @@ import Position from "./position.js";
 import Hitbox from "./hitbox.js";
 import type { Action } from "./action.js";
 import type { cursorClick } from "./global.js";
-import { Sprite } from "./sprite.js";
+import { Sprite } from "./sprites.js";
 import timeTracker from "./timer/timeTracker.js";
 
 export default class GameObject {

@@ -8,7 +8,7 @@ import {
   GAMEWIDTH,
 } from "./global.js";
 import Position from "./position.js";
-import { sprites } from "./sprite.js";
+import { sprites } from "./sprites.js";
 import { utils } from "./utils.js";
 
 function renderStats(canvasManager: CanvasManager, gameState: GameState) {
@@ -45,7 +45,7 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
   canvasManager.renderText(
     "numbers_red",
     new Position(GAMEWIDTH - 20, GAMEHEIGHT - 14),
-    "$run" + gameState.runCount.toString()
+    "$run" + gameState.deathCount.toString()
   );
 
   canvasManager.renderText(

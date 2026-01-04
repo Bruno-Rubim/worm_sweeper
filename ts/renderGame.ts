@@ -6,6 +6,7 @@ export function renderGame(
   canvasManager: CanvasManager,
   gameManager: GameManager
 ) {
+  canvasManager.updateElementSize();
   canvasManager.clearCanvas();
   gameManager.render(canvasManager);
   cursor.render(canvasManager);

@@ -3,7 +3,6 @@ import {
   ChangeScene,
   NextLevel,
   StartBattle,
-  Transition,
 } from "../action.js";
 import type CanvasManager from "../canvasManager.js";
 import {
@@ -15,7 +14,9 @@ import {
 import type GameState from "../gameState.js";
 import { CLICKLEFT, type CLICKRIGHT } from "../global.js";
 import Position from "../position.js";
-import { sprites } from "../sprite.js";
+import type { SoundManager } from "../soundManager.js";
+import sounds from "../sounds.js";
+import { sprites } from "../sprites.js";
 import { Timer } from "../timer/timer.js";
 import { timerQueue } from "../timer/timerQueue.js";
 import {
@@ -31,8 +32,12 @@ import {
 import SceneManager from "./sceneManager.js";
 
 export default class CaveManager extends SceneManager {
-  constructor(gameState: GameState, scenePos: Position) {
-    super(gameState, scenePos);
+  constructor(
+    gameState: GameState,
+    scenePos: Position,
+    soundManager: SoundManager
+  ) {
+    super(gameState, scenePos, soundManager);
   }
   getBlockFromGamePos(pos: Position) {
     const blockPos = pos
@@ -48,6 +53,7 @@ export default class CaveManager extends SceneManager {
       }
       this.gameState.gold += 5;
       this.gameState.gameTimer.addSecs(5);
+      this.soundManager.playSound(sounds.clear);
     }
   }
 
@@ -92,7 +98,7 @@ export default class CaveManager extends SceneManager {
           );
         }
         if (
-          this.gameState.hasItem("silver_bell") &&
+          this.gameState.level.cave.bellRang &&
           [CONTENTDOOREXIT, CONTENTDOORSHOP].includes(block.content) &&
           !block.broken
         ) {
@@ -131,12 +137,17 @@ export default class CaveManager extends SceneManager {
           return;
         }
         block.content = CONTENTBOMB;
-        block.bombTimer = new Timer(2, () => {
-          this.gameState.level.cave.bomb(block);
-          this.checkCaveClear();
+        block.bombTimer = new Timer({
+          goalSecs: 2,
+          goalFunc: () => {
+            this.gameState.level.cave.bomb(block);
+            this.checkCaveClear();
+          },
         });
         timerQueue.push(block.bombTimer);
         block.bombTimer.start();
+        this.soundManager.playSound(sounds.bomb);
+
         this.gameState.holdingBomb = false;
         return;
       }
@@ -146,27 +157,27 @@ export default class CaveManager extends SceneManager {
         (!block.hidden || this.gameState.hasItem("dark_crystal")) &&
         !block.marked
       ) {
-        let action = this.gameState.level.cave.breakBlock(block);
-        if (action instanceof StartBattle) {
-          enemyCount += action.enemyCount;
-        }
-        if (block.hasGold) {
-          this.gameState.gold++;
-        }
+        let breakResult = this.gameState.level.cave.breakBlock(block);
+        enemyCount += breakResult.battle.enemyCount;
+        this.gameState.gold += breakResult.gold;
         if (this.gameState.hasItem("drill") && block.threatLevel == 0) {
           this.gameState.level.cave.breakConnectedEmpty(block);
         }
       } else if (block.broken) {
         switch (block.content) {
           case CONTENTDOOREXIT:
+            this.soundManager.playSound(sounds.door);
             block.content = CONTENTDOOREXITOPEN;
             break;
           case CONTENTDOOREXITOPEN:
+            this.soundManager.playSound(sounds.steps);
             return new NextLevel(block.gridPos);
           case CONTENTDOORSHOP:
+            this.soundManager.playSound(sounds.door);
             block.content = CONTENTDOORSHOPOPEN;
             break;
           case CONTENTDOORSHOPOPEN:
+            this.soundManager.playSound(sounds.steps);
             return new ChangeScene("shop");
           case CONTENTEMPTY:
             if (
@@ -174,13 +185,16 @@ export default class CaveManager extends SceneManager {
               block.threatLevel > 0 &&
               block.threatLevel == block.markerLevel
             ) {
-              let battle = this.gameState.level.cave.breakSurrBlocks(
+              let breakResult = this.gameState.level.cave.breakSurrBlocks(
                 block.gridPos
               );
-              enemyCount += battle.enemyCount;
+              this.soundManager.playSound(sounds.detonate);
               if (this.gameState.hasItem("drill")) {
-                this.gameState.level.cave.breakConnectedEmpty(block);
+                breakResult.gold +=
+                  this.gameState.level.cave.breakConnectedEmpty(block).gold;
               }
+              enemyCount += breakResult.battle.enemyCount;
+              this.gameState.gold += breakResult.gold;
             }
             break;
         }

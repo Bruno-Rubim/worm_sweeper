@@ -1,15 +1,17 @@
 import type CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
 import { CLICKLEFT, type cursorClick } from "../global.js";
-import { BuyShopItem } from "../action.js";
+import { BuyShopItem, RingBell } from "../action.js";
 import Position from "../position.js";
-import { sprites } from "../sprite.js";
+import { sprites } from "../sprites.js";
 import timeTracker from "../timer/timeTracker.js";
 import { armorDic } from "./armor.js";
 import { consumableDic } from "./consumable.js";
 import { itemDic, type Item } from "./item.js";
 import { shieldDic } from "./shield.js";
 import { weaponDic } from "./weapon.js";
+import { timerQueue } from "../timer/timerQueue.js";
+import { Timer } from "../timer/timer.js";
 
 type itemName =
   | keyof typeof armorDic
@@ -18,7 +20,7 @@ type itemName =
   | keyof typeof weaponDic
   | keyof typeof shieldDic;
 
-const shopItemSpecs: Record<itemName, Item> = {
+const items: Record<itemName, Item> = {
   ...weaponDic,
   ...armorDic,
   ...consumableDic,
@@ -36,7 +38,25 @@ export class ShopItem extends GameObject {
       hitboxWidth: 20,
       hitboxPosShift: new Position(-2, 0),
     });
-    this.item = shopItemSpecs[itemName];
+    this.item = items[itemName];
+    if (itemName == "silver_bell") {
+      this.clickFunction = (cursorPos: Position, button: cursorClick) => {
+        if (button == CLICKLEFT) {
+          const bellTimer = new Timer({
+            goalSecs: 60,
+            goalFunc: () => {
+              return new RingBell();
+            },
+            loop: true,
+            classes: ["gameTimer_sync"],
+          });
+          bellTimer.start();
+          timerQueue.push(bellTimer);
+          return new BuyShopItem(this);
+        }
+      };
+      return;
+    }
     this.clickFunction = (cursorPos: Position, button: cursorClick) => {
       if (button == CLICKLEFT) return new BuyShopItem(this);
     };

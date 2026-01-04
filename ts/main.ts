@@ -1,7 +1,7 @@
 import CanvasManager from "./canvasManager.js";
 import { GameManager } from "./gameManager.js";
 import { bindListeners } from "./inputState.js";
-import { renderFrame } from "./rendering.js";
+import { renderGame } from "./renderGame.js";
 import updateGame from "./updateGame.js";
 
 const canvasManager = new CanvasManager();
@@ -11,7 +11,7 @@ bindListeners(canvasManager.canvasElement);
 
 function frameLoop() {
   updateGame(canvasManager.renderScale, gameManager);
-  renderFrame(canvasManager, gameManager);
+  renderGame(canvasManager, gameManager);
   requestAnimationFrame(frameLoop);
 }
 

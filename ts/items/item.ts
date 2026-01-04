@@ -3,7 +3,7 @@ import type CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
 import { GAMEWIDTH, LEFT, RIGHT } from "../global.js";
 import Position from "../position.js";
-import { sprites } from "../sprite.js";
+import { sprites } from "../sprites.js";
 
 export class Item extends GameObject {
   spriteSheetPos: Position;
@@ -90,8 +90,8 @@ export const itemDic = {
     spriteSheetPos: new Position(2, 4),
     name: "silver_bell",
     shopName: "Silver Bell",
-    cost: 38,
-    description: "Reveals location of doors",
+    cost: 20,
+    description: "Reveals the location of doors every 60 seconds",
   }),
   dark_crystal: new Item({
     spriteSheetPos: new Position(4, 4),

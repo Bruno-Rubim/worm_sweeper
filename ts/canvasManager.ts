@@ -1,7 +1,7 @@
 import { fontMaps, isIcon, measureTextWidth } from "./fontMaps.js";
 import { GAMEHEIGHT, GAMEWIDTH, CLICKLEFT, CLICKRIGHT } from "./global.js";
 import Position from "./position.js";
-import type { Sprite } from "./sprite.js";
+import type { Sprite } from "./sprites.js";
 import { utils } from "./utils.js";
 
 export default class CanvasManager {

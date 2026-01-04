@@ -18,7 +18,7 @@ import {
   StartBattle,
 } from "../action.js";
 import { CURSORDEFAULT, CURSORNONE } from "../cursor.js";
-import { sprites } from "../sprite.js";
+import { sprites } from "../sprites.js";
 
 import timeTracker from "../timer/timeTracker.js";
 import { Timer } from "../timer/timer.js";
@@ -29,6 +29,7 @@ import CaveManager from "./caveManager.js";
 import BattleManager from "./battleManager.js";
 import ShopManager from "./shopManager.js";
 import { Battle } from "./battle.js";
+import type { SoundManager } from "../soundManager.js";
 
 const transitionObject = new GameObject({
   sprite: sprites.scene_transition,
@@ -60,12 +61,13 @@ transitionObject.hidden = true;
 
 export class LevelManager extends GameObject {
   gameState: GameState;
+  soundManager: SoundManager;
   shopManager: ShopManager;
   caveManager: CaveManager;
   battleManager: BattleManager;
   currentSceneManager: SceneManager;
 
-  constructor(gameState: GameState) {
+  constructor(gameState: GameState, soundManager: SoundManager) {
     super({
       pos: new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
       sprite: sprites.transparent_pixel,
@@ -73,6 +75,7 @@ export class LevelManager extends GameObject {
       height: 128,
     });
     this.gameState = gameState;
+    this.soundManager = soundManager;
     this.hoverFunction = (cursorPos: Position) => {
       return this.handleHover(cursorPos);
     };
@@ -88,9 +91,13 @@ export class LevelManager extends GameObject {
     ) => {
       return this.handleHeld(cursorPos, button);
     };
-    this.shopManager = new ShopManager(gameState, this.pos);
-    this.caveManager = new CaveManager(gameState, this.pos);
-    this.battleManager = new BattleManager(gameState, this.pos);
+    this.shopManager = new ShopManager(gameState, this.pos, this.soundManager);
+    this.caveManager = new CaveManager(gameState, this.pos, this.soundManager);
+    this.battleManager = new BattleManager(
+      gameState,
+      this.pos,
+      this.soundManager
+    );
     switch (gameState.currentScene) {
       case "battle":
         this.currentSceneManager = this.battleManager;
@@ -142,22 +149,25 @@ export class LevelManager extends GameObject {
     delay: number = 0
   ) {
     this.gameState.inTransition = true;
-    const delayTimer = new Timer(delay, () => {
-      transitionObject.hidden = false;
-      transitionObject.resetAnimation();
-      const transitionFuncTimer = new Timer(
-        8 / timeTracker.ticsPerSecond,
-        transitionFunc
-      );
-      const transitionEndTimer = new Timer(
-        16 / timeTracker.ticsPerSecond,
-        () => {
-          this.gameState.inTransition = false;
-        }
-      );
-      timerQueue.push(transitionFuncTimer, transitionEndTimer);
-      transitionFuncTimer.start();
-      transitionEndTimer.start();
+    const delayTimer = new Timer({
+      goalSecs: delay,
+      goalFunc: () => {
+        transitionObject.hidden = false;
+        transitionObject.resetAnimation();
+        const transitionFuncTimer = new Timer({
+          goalSecs: 8 / timeTracker.ticsPerSecond,
+          goalFunc: transitionFunc,
+        });
+        const transitionEndTimer = new Timer({
+          goalSecs: 16 / timeTracker.ticsPerSecond,
+          goalFunc: () => {
+            this.gameState.inTransition = false;
+          },
+        });
+        timerQueue.push(transitionFuncTimer, transitionEndTimer);
+        transitionFuncTimer.start();
+        transitionEndTimer.start();
+      },
     });
     timerQueue.push(delayTimer);
     delayTimer.start();
@@ -175,7 +185,7 @@ export class LevelManager extends GameObject {
             this.gameState.battle?.start();
             break;
           case "cave":
-            this.gameState.gameTimer.unpause();
+            this.gameState.unpauseGameTimer();
             switch (currentScene) {
               case "battle":
                 this.gameState.level.cave.wormsLeft--;
@@ -187,11 +197,8 @@ export class LevelManager extends GameObject {
             }
             break;
           case "shop":
-            this.gameState.gameTimer.pause();
-            this.currentSceneManager = new ShopManager(
-              this.gameState,
-              this.pos
-            );
+            this.gameState.pauseGameTimer();
+            this.currentSceneManager = this.shopManager;
             break;
         }
         this.gameState.currentScene = scene;
