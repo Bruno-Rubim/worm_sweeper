@@ -1,6 +1,6 @@
 import { GAMEWIDTH } from "../global.js";
 import Position from "../position.js";
-import { sprites, type Sprite } from "../sprite.js";
+import { sprites, type Sprite } from "../sprites.js";
 import { Item } from "./item.js";
 
 export class Shield extends Item {

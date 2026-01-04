@@ -18,7 +18,7 @@ import {
   StartBattle,
 } from "../action.js";
 import { CURSORDEFAULT, CURSORNONE } from "../cursor.js";
-import { sprites } from "../sprite.js";
+import { sprites } from "../sprites.js";
 
 import timeTracker from "../timer/timeTracker.js";
 import { Timer } from "../timer/timer.js";

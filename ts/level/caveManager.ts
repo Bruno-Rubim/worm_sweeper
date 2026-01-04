@@ -15,7 +15,7 @@ import {
 import type GameState from "../gameState.js";
 import { CLICKLEFT, type CLICKRIGHT } from "../global.js";
 import Position from "../position.js";
-import { sprites } from "../sprite.js";
+import { sprites } from "../sprites.js";
 import { Timer } from "../timer/timer.js";
 import { timerQueue } from "../timer/timerQueue.js";
 import {

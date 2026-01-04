@@ -3,7 +3,7 @@ import GameObject from "../gameObject.js";
 import { CLICKLEFT, type cursorClick } from "../global.js";
 import { BuyShopItem } from "../action.js";
 import Position from "../position.js";
-import { sprites } from "../sprite.js";
+import { sprites } from "../sprites.js";
 import timeTracker from "../timer/timeTracker.js";
 import { armorDic } from "./armor.js";
 import { consumableDic } from "./consumable.js";

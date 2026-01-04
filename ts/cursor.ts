@@ -3,7 +3,7 @@ import GameObject from "./gameObject.js";
 import { RIGHT, type LEFT } from "./global.js";
 import { inputState } from "./inputState.js";
 import Position from "./position.js";
-import { sprites } from "./sprite.js";
+import { sprites } from "./sprites.js";
 
 export const CURSORDEFAULT = "cursor_default";
 export const CURSORPICAXE = "cursor_picaxe";

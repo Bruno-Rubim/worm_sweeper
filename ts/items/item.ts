@@ -3,7 +3,7 @@ import type CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
 import { GAMEWIDTH, LEFT, RIGHT } from "../global.js";
 import Position from "../position.js";
-import { sprites } from "../sprite.js";
+import { sprites } from "../sprites.js";
 
 export class Item extends GameObject {
   spriteSheetPos: Position;

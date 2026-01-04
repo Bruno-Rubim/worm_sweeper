@@ -14,7 +14,7 @@ import { Consumable } from "../items/consumable.js";
 import { Shield } from "../items/shield.js";
 import { Weapon } from "../items/weapon.js";
 import Position from "../position.js";
-import { sprites } from "../sprite.js";
+import { sprites } from "../sprites.js";
 import { handleMouseClick, handleMouseHover } from "../updateGame.js";
 import SceneManager from "./sceneManager.js";
 

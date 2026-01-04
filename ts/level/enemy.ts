@@ -1,6 +1,6 @@
 import { EnemyAtack } from "../action.js";
 import Position from "../position.js";
-import { sprites, type Sprite } from "../sprite.js";
+import { sprites, type Sprite } from "../sprites.js";
 import { Timer } from "../timer/timer.js";
 
 export class Enemy {

@@ -15,7 +15,7 @@ import { ShopItem } from "../items/shopItem.js";
 import { weaponDic, type Weapon } from "../items/weapon.js";
 import { ChangeScene } from "../action.js";
 import Position from "../position.js";
-import { sprites } from "../sprite.js";
+import { sprites } from "../sprites.js";
 import { utils } from "../utils.js";
 
 const exitBtn = new GameObject({

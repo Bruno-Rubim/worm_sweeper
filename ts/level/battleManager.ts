@@ -13,7 +13,7 @@ import {
   GAMEWIDTH,
 } from "../global.js";
 import Position from "../position.js";
-import { sprites } from "../sprite.js";
+import { sprites } from "../sprites.js";
 import { timerQueue } from "../timer/timerQueue.js";
 import { utils } from "../utils.js";
 import SceneManager from "./sceneManager.js";
