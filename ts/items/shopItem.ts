@@ -45,7 +45,6 @@ export class ShopItem extends GameObject {
           const bellTimer = new Timer({
             goalSecs: 60,
             goalFunc: () => {
-              console.log("silver bell rang");
               return new RingBell();
             },
             loop: true,
@@ -53,7 +52,6 @@ export class ShopItem extends GameObject {
           });
           bellTimer.start();
           timerQueue.push(bellTimer);
-          console.log("silver bell pushed", timerQueue);
           return new BuyShopItem(this);
         }
       };

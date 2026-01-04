@@ -146,6 +146,8 @@ export default class CaveManager extends SceneManager {
         });
         timerQueue.push(block.bombTimer);
         block.bombTimer.start();
+        this.soundManager.playSound(sounds.bomb);
+
         this.gameState.holdingBomb = false;
         return;
       }
@@ -168,14 +170,18 @@ export default class CaveManager extends SceneManager {
       } else if (block.broken) {
         switch (block.content) {
           case CONTENTDOOREXIT:
+            this.soundManager.playSound(sounds.door);
             block.content = CONTENTDOOREXITOPEN;
             break;
           case CONTENTDOOREXITOPEN:
+            this.soundManager.playSound(sounds.steps);
             return new NextLevel(block.gridPos);
           case CONTENTDOORSHOP:
+            this.soundManager.playSound(sounds.door);
             block.content = CONTENTDOORSHOPOPEN;
             break;
           case CONTENTDOORSHOPOPEN:
+            this.soundManager.playSound(sounds.steps);
             return new ChangeScene("shop");
           case CONTENTEMPTY:
             if (
@@ -186,6 +192,7 @@ export default class CaveManager extends SceneManager {
               let battle = this.gameState.level.cave.breakSurrBlocks(
                 block.gridPos
               );
+              this.soundManager.playSound(sounds.detonate);
               enemyCount += battle.enemyCount;
               if (this.gameState.hasItem("drill")) {
                 this.gameState.level.cave.breakConnectedEmpty(block);
