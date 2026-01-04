@@ -79,7 +79,11 @@ export default class CaveManager extends SceneManager {
           16,
           16
         );
-        if ((block.broken && block.content != CONTENTEMPTY) || block.marked) {
+        if (
+          // block.broken &&
+          block.content != CONTENTEMPTY ||
+          block.marked
+        ) {
           canvasManager.renderSpriteFromSheet(
             sprites.block_sheet,
             blockPos,
