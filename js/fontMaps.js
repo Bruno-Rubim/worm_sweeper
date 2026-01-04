@@ -1111,6 +1111,10 @@ export const fontMaps = {
                 pos: new Position(5, 0),
                 width: 9,
             },
+            $run: {
+                pos: new Position(6, 0),
+                width: 9,
+            },
             $wgt: {
                 pos: new Position(0, 1),
                 width: 9,

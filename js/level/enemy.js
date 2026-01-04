@@ -10,25 +10,37 @@ export class Enemy {
     attackAnimTimer;
     damagedTimer;
     spriteSheet;
-    constructor(health, damage, pos, attackCooldown, spriteSheet) {
-        this.health = health;
-        this.damage = damage;
-        this.pos = pos;
-        this.spriteSheet = spriteSheet;
+    constructor(args) {
+        this.health = args.health;
+        this.damage = args.damage;
+        this.pos = args.pos;
+        this.spriteSheet = args.spriteSheet;
         this.attackAnimTimer = new Timer(0.3);
         this.damagedTimer = new Timer(0.16);
-        this.cooldownTimer = new Timer(attackCooldown, () => {
+        this.cooldownTimer = new Timer(args.attackCooldown, () => {
             return new EnemyAtack(this.damage, this);
         }, true);
     }
 }
 export class Worm extends Enemy {
     constructor(depth) {
-        super(3 + Math.floor(depth / 3), 1 + Math.floor(depth / 5), new Position(56, 36), 5 - (Math.floor(depth / 2) * 50) / 1000, sprites.enemy_worm);
+        super({
+            pos: new Position(56, 36),
+            spriteSheet: sprites.enemy_worm,
+            health: 3 + Math.floor(depth / 3),
+            damage: 1 + Math.floor(depth / 7),
+            attackCooldown: 5 - depth * 0.1,
+        });
     }
 }
 export class ScaleWorm extends Enemy {
     constructor(depth) {
-        super(6 + Math.floor(depth / 3), 2 + Math.floor(depth / 5), new Position(56, 36), 8 - (Math.floor(depth / 3) * 20) / 1000, sprites.enemy_scale_worm);
+        super({
+            pos: new Position(56, 36),
+            spriteSheet: sprites.enemy_scale_worm,
+            health: 6 + Math.floor(depth / 3),
+            damage: 2 + Math.floor(depth / 5),
+            attackCooldown: 8 - Math.floor(depth / 3) * 0.5,
+        });
     }
 }

@@ -38,12 +38,12 @@ export default class CanvasManager {
         this.ctx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
     }
     renderSprite(sprite, pos, width, height) {
-        this.ctx.drawImage(sprite.img, pos.x * this.renderScale, pos.y * this.renderScale, width * this.renderScale, height * this.renderScale);
+        this.ctx.drawImage(sprite.img, Math.floor(pos.x * this.renderScale), Math.floor(pos.y * this.renderScale), width * this.renderScale, height * this.renderScale);
     }
     renderSpriteFromSheet(spriteSheet, pos, width, height, posInSheet, widthInSheet, heightInSheet) {
         widthInSheet ??= width;
         heightInSheet ??= height;
-        this.ctx.drawImage(spriteSheet.img, posInSheet.x * widthInSheet, posInSheet.y * heightInSheet, widthInSheet, heightInSheet, pos.x * this.renderScale, pos.y * this.renderScale, width * this.renderScale, height * this.renderScale);
+        this.ctx.drawImage(spriteSheet.img, posInSheet.x * widthInSheet, posInSheet.y * heightInSheet, widthInSheet, heightInSheet, Math.floor(pos.x * this.renderScale), Math.floor(pos.y * this.renderScale), width * this.renderScale, height * this.renderScale);
     }
     renderAnimationFrame(spriteSheet, pos, width, height, sheetWidthInFrames, sheetHeightInFrames, birthTic, currentTic, animationSpeed = 1, sheetPosShift = new Position(), loop = true) {
         const totalFrames = sheetWidthInFrames * sheetHeightInFrames;
@@ -53,7 +53,7 @@ export default class CanvasManager {
             return;
         }
         const sheetPos = new Position(currentFrame % sheetWidthInFrames, Math.floor(currentFrame / sheetWidthInFrames)).addPos(sheetPosShift);
-        this.ctx.drawImage(spriteSheet.img, sheetPos.x * width, sheetPos.y * height, width, height, pos.x * this.renderScale, pos.y * this.renderScale, width * this.renderScale, height * this.renderScale);
+        this.ctx.drawImage(spriteSheet.img, sheetPos.x * width, sheetPos.y * height, width, height, Math.floor(pos.x * this.renderScale), Math.floor(pos.y * this.renderScale), width * this.renderScale, height * this.renderScale);
     }
     renderText(font, pos, text, direction = CLICKRIGHT, limitWidth = Infinity, fontSize = 1) {
         const fontMap = fontMaps[font];

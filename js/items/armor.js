@@ -36,7 +36,7 @@ export const armorDic = {
     chainmail: new Armor({
         spriteSheetPos: new Position(0, 2),
         name: "chainmail",
-        shopName: "chainmail",
+        shopName: "Chainmail",
         cost: 50,
         defense: 2,
         speed: -0.1,
@@ -44,9 +44,9 @@ export const armorDic = {
     swift_vest: new Armor({
         spriteSheetPos: new Position(2, 2),
         name: "swift_vest",
-        shopName: "swift_vest",
-        cost: 0,
-        defense: 1,
+        shopName: "Swift Vest",
+        cost: 38,
+        defense: 0,
         speed: 0.3,
     }),
     empty: new Armor({

@@ -60,7 +60,7 @@ export const weaponDic = {
         shopName: "Big Sword",
         cost: 50,
         damage: 3,
-        cooldown: 3,
+        cooldown: 3.2,
     }),
     dagger: new Weapon({
         spriteSheetPos: new Position(4, 3),
@@ -69,7 +69,7 @@ export const weaponDic = {
         shopName: "Dagger",
         cost: 37,
         damage: 1,
-        cooldown: 0.7,
+        cooldown: 1.3,
     }),
     time_blade: new TimeBlade(),
 };

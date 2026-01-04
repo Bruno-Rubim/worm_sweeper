@@ -5,7 +5,7 @@ import Position from "../position.js";
 import { sprites } from "../sprite.js";
 import { Timer } from "../timer/timer.js";
 import { timerQueue } from "../timer/timerQueue.js";
-import { blockSheetPos, CONTENTBOMB, CONTENTDOOREXIT, CONTENTDOOREXITOPEN, CONTENTDOORSHOP, CONTENTDOORSHOPOPEN, CONTENTEMPTY, } from "./block.js";
+import { blockSheetPos, CONTENTBOMB, CONTENTBOMBOVERLAY, CONTENTDOOREXIT, CONTENTDOOREXITOPEN, CONTENTDOORSHOP, CONTENTDOORSHOPOPEN, CONTENTEMPTY, } from "./block.js";
 import SceneManager from "./sceneManager.js";
 export default class CaveManager extends SceneManager {
     constructor(gameState, scenePos) {
@@ -57,6 +57,10 @@ export default class CaveManager extends SceneManager {
         }
         if (button == CLICKLEFT) {
             if (this.gameState.holdingBomb) {
+                if (!block.broken || block.content != CONTENTBOMBOVERLAY) {
+                    console.log(block.content, block.broken);
+                    return;
+                }
                 block.content = CONTENTBOMB;
                 block.bombTimer = new Timer(2, () => {
                     this.gameState.level.cave.bomb(block);

@@ -1,4 +1,4 @@
-import { ChangeCursorState, ChangeScene } from "../action.js";
+import { Action, ChangeCursorState, ChangeScene } from "../action.js";
 import { CURSORBATTLE } from "../cursor.js";
 import { BORDERTHICKBOTTOM, BORDERTHICKLEFT, BORDERTHICKRIGHT, BORDERTHICKTOP, CLICKLEFT, CLICKRIGHT, GAMEHEIGHT, GAMEWIDTH, } from "../global.js";
 import Position from "../position.js";
