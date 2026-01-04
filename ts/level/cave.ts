@@ -9,6 +9,11 @@ import Block, {
 import Position from "../position.js";
 import { StartBattle } from "../action.js";
 
+type breakResult = {
+  battle: StartBattle;
+  gold: number;
+};
+
 export default class Cave {
   difficulty: number;
   size: number;
@@ -227,17 +232,20 @@ export default class Cave {
   }
 
   breakBlock(block: Block) {
-    let action;
+    let result: breakResult = { battle: new StartBattle(0), gold: 0 };
     block.broken = true;
     this.revealAdjc(block.gridPos);
 
     if (block.content != CONTENTWORM) {
       this.blocksLeft--;
     } else {
-      action = new StartBattle(1);
+      result.battle.enemyCount++;
+    }
+    if (block.hasGold) {
+      result.gold++;
     }
     this.updateBlockStats(block);
-    return action;
+    return result;
   }
 
   breakConnectedEmpty(block: Block) {
@@ -265,22 +273,24 @@ export default class Cave {
   }
 
   breakSurrBlocks(pos: Position, ignoreMarks: boolean = false) {
-    let battle: StartBattle = new StartBattle(0);
+    let totalResult: breakResult = {
+      battle: new StartBattle(0),
+      gold: 0,
+    };
     const surrBlocks = this.getSurrBlocks(pos);
     surrBlocks.forEach((block) => {
       if (block.broken || (block.marked && !ignoreMarks)) {
         return;
       }
-      let action = this.breakBlock(block);
+      let result = this.breakBlock(block);
       if (block.marked) {
         block.marked = false;
         this.wormsLeft++;
       }
-      if (action instanceof StartBattle) {
-        battle.enemyCount += action.enemyCount;
-      }
+      totalResult.battle.enemyCount += result.battle.enemyCount;
+      totalResult.gold += result.gold;
     });
-    return battle;
+    return totalResult;
   }
 
   placeExit() {

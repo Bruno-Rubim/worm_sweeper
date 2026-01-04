@@ -157,13 +157,9 @@ export default class CaveManager extends SceneManager {
         (!block.hidden || this.gameState.hasItem("dark_crystal")) &&
         !block.marked
       ) {
-        let action = this.gameState.level.cave.breakBlock(block);
-        if (action instanceof StartBattle) {
-          enemyCount += action.enemyCount;
-        }
-        if (block.hasGold) {
-          this.gameState.gold++;
-        }
+        let breakResult = this.gameState.level.cave.breakBlock(block);
+        enemyCount += breakResult.battle.enemyCount;
+        this.gameState.gold += breakResult.gold;
         if (this.gameState.hasItem("drill") && block.threatLevel == 0) {
           this.gameState.level.cave.breakConnectedEmpty(block);
         }
@@ -189,11 +185,12 @@ export default class CaveManager extends SceneManager {
               block.threatLevel > 0 &&
               block.threatLevel == block.markerLevel
             ) {
-              let battle = this.gameState.level.cave.breakSurrBlocks(
+              let breakResult = this.gameState.level.cave.breakSurrBlocks(
                 block.gridPos
               );
               this.soundManager.playSound(sounds.detonate);
-              enemyCount += battle.enemyCount;
+              enemyCount += breakResult.battle.enemyCount;
+              this.gameState.gold += breakResult.gold;
               if (this.gameState.hasItem("drill")) {
                 this.gameState.level.cave.breakConnectedEmpty(block);
               }
