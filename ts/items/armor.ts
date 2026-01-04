@@ -57,8 +57,8 @@ export const armorDic = {
     spriteSheetPos: new Position(2, 2),
     name: "swift_vest",
     shopName: "Swift Vest",
-    cost: 48,
-    defense: 1,
+    cost: 38,
+    defense: 0,
     speed: 0.3,
   }),
   empty: new Armor({
