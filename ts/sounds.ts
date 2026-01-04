@@ -27,6 +27,7 @@ export class Sound {
 
 export const sounds = {
   bell: new Sound("bell", 0.1),
+  clear: new Sound("clear", 0.2),
 };
 
 const soundArr = Object.values(sounds);

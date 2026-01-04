@@ -13,14 +13,19 @@ import {
   GAMEWIDTH,
 } from "../global.js";
 import Position from "../position.js";
+import type { SoundManager } from "../soundManager.js";
 import { sprites } from "../sprites.js";
 import { timerQueue } from "../timer/timerQueue.js";
 import { utils } from "../utils.js";
 import SceneManager from "./sceneManager.js";
 
 export default class BattleManager extends SceneManager {
-  constructor(gameState: GameState, scenePos: Position) {
-    super(gameState, scenePos);
+  constructor(
+    gameState: GameState,
+    scenePos: Position,
+    soundManager: SoundManager
+  ) {
+    super(gameState, scenePos, soundManager);
   }
 
   render = (canvasManager: CanvasManager) => {

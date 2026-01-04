@@ -14,13 +14,18 @@ import { Consumable } from "../items/consumable.js";
 import { Shield } from "../items/shield.js";
 import { Weapon } from "../items/weapon.js";
 import Position from "../position.js";
+import type { SoundManager } from "../soundManager.js";
 import { sprites } from "../sprites.js";
 import { handleMouseClick, handleMouseHover } from "../updateGame.js";
 import SceneManager from "./sceneManager.js";
 
 export default class ShopManager extends SceneManager {
-  constructor(gameState: GameState, scenePos: Position) {
-    super(gameState, scenePos);
+  constructor(
+    gameState: GameState,
+    scenePos: Position,
+    soundManager: SoundManager
+  ) {
+    super(gameState, scenePos, soundManager);
   }
 
   render = (canvasManager: CanvasManager) => {

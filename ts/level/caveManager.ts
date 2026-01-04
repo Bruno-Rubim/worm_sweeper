@@ -3,7 +3,6 @@ import {
   ChangeScene,
   NextLevel,
   StartBattle,
-  Transition,
 } from "../action.js";
 import type CanvasManager from "../canvasManager.js";
 import {
@@ -15,6 +14,8 @@ import {
 import type GameState from "../gameState.js";
 import { CLICKLEFT, type CLICKRIGHT } from "../global.js";
 import Position from "../position.js";
+import type { SoundManager } from "../soundManager.js";
+import sounds from "../sounds.js";
 import { sprites } from "../sprites.js";
 import { Timer } from "../timer/timer.js";
 import { timerQueue } from "../timer/timerQueue.js";
@@ -31,8 +32,12 @@ import {
 import SceneManager from "./sceneManager.js";
 
 export default class CaveManager extends SceneManager {
-  constructor(gameState: GameState, scenePos: Position) {
-    super(gameState, scenePos);
+  constructor(
+    gameState: GameState,
+    scenePos: Position,
+    soundManager: SoundManager
+  ) {
+    super(gameState, scenePos, soundManager);
   }
   getBlockFromGamePos(pos: Position) {
     const blockPos = pos
@@ -48,6 +53,7 @@ export default class CaveManager extends SceneManager {
       }
       this.gameState.gold += 5;
       this.gameState.gameTimer.addSecs(5);
+      this.soundManager.playSound(sounds.clear);
     }
   }
 

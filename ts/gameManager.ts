@@ -4,15 +4,17 @@ import GameState from "./gameState.js";
 import { renderBorder } from "./renderBorder.js";
 import { timerQueue } from "./timer/timerQueue.js";
 import { EnemyAtack } from "./action.js";
+import { SoundManager } from "./soundManager.js";
 
 export class GameManager {
   gameState = new GameState();
-  levelManager = new LevelManager(this.gameState);
+  soundManager = new SoundManager();
+  levelManager = new LevelManager(this.gameState, this.soundManager);
 
   restart() {
     timerQueue.splice(0, Infinity);
     this.gameState.restart();
-    this.levelManager = new LevelManager(this.gameState);
+    this.levelManager = new LevelManager(this.gameState, this.soundManager);
   }
 
   render(canvasManager: CanvasManager) {

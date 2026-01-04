@@ -29,6 +29,7 @@ import CaveManager from "./caveManager.js";
 import BattleManager from "./battleManager.js";
 import ShopManager from "./shopManager.js";
 import { Battle } from "./battle.js";
+import type { SoundManager } from "../soundManager.js";
 
 const transitionObject = new GameObject({
   sprite: sprites.scene_transition,
@@ -60,12 +61,13 @@ transitionObject.hidden = true;
 
 export class LevelManager extends GameObject {
   gameState: GameState;
+  soundManager: SoundManager;
   shopManager: ShopManager;
   caveManager: CaveManager;
   battleManager: BattleManager;
   currentSceneManager: SceneManager;
 
-  constructor(gameState: GameState) {
+  constructor(gameState: GameState, soundManager: SoundManager) {
     super({
       pos: new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
       sprite: sprites.transparent_pixel,
@@ -73,6 +75,7 @@ export class LevelManager extends GameObject {
       height: 128,
     });
     this.gameState = gameState;
+    this.soundManager = soundManager;
     this.hoverFunction = (cursorPos: Position) => {
       return this.handleHover(cursorPos);
     };
@@ -88,9 +91,13 @@ export class LevelManager extends GameObject {
     ) => {
       return this.handleHeld(cursorPos, button);
     };
-    this.shopManager = new ShopManager(gameState, this.pos);
-    this.caveManager = new CaveManager(gameState, this.pos);
-    this.battleManager = new BattleManager(gameState, this.pos);
+    this.shopManager = new ShopManager(gameState, this.pos, this.soundManager);
+    this.caveManager = new CaveManager(gameState, this.pos, this.soundManager);
+    this.battleManager = new BattleManager(
+      gameState,
+      this.pos,
+      this.soundManager
+    );
     switch (gameState.currentScene) {
       case "battle":
         this.currentSceneManager = this.battleManager;
@@ -188,10 +195,7 @@ export class LevelManager extends GameObject {
             break;
           case "shop":
             this.gameState.gameTimer.pause();
-            this.currentSceneManager = new ShopManager(
-              this.gameState,
-              this.pos
-            );
+            this.currentSceneManager = this.shopManager;
             break;
         }
         this.gameState.currentScene = scene;
