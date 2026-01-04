@@ -51,8 +51,8 @@ export default class CanvasManager {
   renderSprite(sprite: Sprite, pos: Position, width: number, height: number) {
     this.ctx.drawImage(
       sprite.img,
-      pos.x * this.renderScale,
-      pos.y * this.renderScale,
+      Math.floor(pos.x * this.renderScale),
+      Math.floor(pos.y * this.renderScale),
       width * this.renderScale,
       height * this.renderScale
     );
@@ -75,8 +75,8 @@ export default class CanvasManager {
       posInSheet.y * heightInSheet,
       widthInSheet,
       heightInSheet,
-      pos.x * this.renderScale,
-      pos.y * this.renderScale,
+      Math.floor(pos.x * this.renderScale),
+      Math.floor(pos.y * this.renderScale),
       width * this.renderScale,
       height * this.renderScale
     );
@@ -112,8 +112,8 @@ export default class CanvasManager {
       sheetPos.y * height,
       width,
       height,
-      pos.x * this.renderScale,
-      pos.y * this.renderScale,
+      Math.floor(pos.x * this.renderScale),
+      Math.floor(pos.y * this.renderScale),
       width * this.renderScale,
       height * this.renderScale
     );
