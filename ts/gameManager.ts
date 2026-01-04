@@ -12,6 +12,16 @@ export class GameManager {
   soundManager = new SoundManager();
   levelManager = new LevelManager(this.gameState, this.soundManager);
 
+  constructor() {
+    document.querySelector("button")!.onclick = () => {
+      if (this.soundManager.mute == 0) {
+        this.soundManager.mute = 1;
+      } else {
+        this.soundManager.mute = 0;
+      }
+    };
+  }
+
   restart() {
     timerQueue.splice(0, Infinity);
     this.gameState.restart();
