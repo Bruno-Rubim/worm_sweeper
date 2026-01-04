@@ -189,11 +189,12 @@ export default class CaveManager extends SceneManager {
                 block.gridPos
               );
               this.soundManager.playSound(sounds.detonate);
+              if (this.gameState.hasItem("drill")) {
+                breakResult.gold +=
+                  this.gameState.level.cave.breakConnectedEmpty(block).gold;
+              }
               enemyCount += breakResult.battle.enemyCount;
               this.gameState.gold += breakResult.gold;
-              if (this.gameState.hasItem("drill")) {
-                this.gameState.level.cave.breakConnectedEmpty(block);
-              }
             }
             break;
         }

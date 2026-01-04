@@ -1,5 +1,4 @@
 import Block, {
-  CONTENTBOMB,
   CONTENTBOMBOVERLAY,
   CONTENTDOOREXIT,
   CONTENTDOORSHOP,
@@ -249,15 +248,20 @@ export default class Cave {
   }
 
   breakConnectedEmpty(block: Block) {
+    let totalResult: breakResult = {
+      battle: new StartBattle(0),
+      gold: 0,
+    };
     if (block.threatLevel == 0 && !block.marked) {
-      this.breakSurrBlocks(block.gridPos);
+      totalResult.gold += this.breakSurrBlocks(block.gridPos).gold;
     }
     this.getSurrBlocks(block.gridPos).forEach((b) => {
       if (b.threatLevel == 0 && !b.drilled) {
         b.drilled = true;
-        this.breakConnectedEmpty(b);
+        totalResult.gold += this.breakConnectedEmpty(b).gold;
       }
     });
+    return totalResult;
   }
 
   markBlock(block: Block) {
