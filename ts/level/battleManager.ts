@@ -1,4 +1,4 @@
-import { ChangeCursorState, ChangeScene } from "../action.js";
+import { Action, ChangeCursorState, ChangeScene } from "../action.js";
 import type CanvasManager from "../canvasManager.js";
 import { CURSORBATTLE } from "../cursor.js";
 import type GameState from "../gameState.js";

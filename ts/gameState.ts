@@ -43,6 +43,7 @@ export default class GameState {
   defending: boolean = false;
   holdingBomb: boolean = false;
   gameOver: boolean = false;
+  runCount = 1;
   inventory: inventory = {
     picaxe: getItem("picaxe", new Position(GAMEWIDTH - 20, 90)),
     flag: getItem("flag", new Position(GAMEWIDTH - 20, 109)),
@@ -77,13 +78,12 @@ export default class GameState {
     this.gameTimer.restart();
     this.tiredTimer.restart();
     this.attackAnimationTimer.restart();
-    this.level = new Level(0, this.inventory);
     this.currentScene = "cave";
     this.inTransition = false;
     this.battle = null;
     this.defending = false;
     this.holdingBomb = false;
-
+    this.runCount++;
     this.gold = 0;
     this.health = 5;
     this.inventory = {
@@ -101,6 +101,7 @@ export default class GameState {
       passive_5: getItem("empty", new Position(4, 18 * 5)),
       passive_6: getItem("empty", new Position(4, 18 * 6)),
     };
+    this.level = new Level(0, this.inventory);
     this.gameOver = false;
     timerQueue.push(this.gameTimer);
     timerQueue.push(this.tiredTimer);
