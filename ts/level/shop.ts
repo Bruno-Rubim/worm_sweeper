@@ -9,7 +9,7 @@ import {
 } from "../global.js";
 import { armorDic, type Armor } from "../items/armor.js";
 import { consumableDic, type Consumable } from "../items/consumable.js";
-import { getItem, itemDic, type Item } from "../items/item.js";
+import { itemDic, type Item } from "../items/item.js";
 import { shieldDic, type Shield } from "../items/shield.js";
 import { ShopItem } from "../items/shopItem.js";
 import { weaponDic, type Weapon } from "../items/weapon.js";

@@ -149,22 +149,25 @@ export class LevelManager extends GameObject {
     delay: number = 0
   ) {
     this.gameState.inTransition = true;
-    const delayTimer = new Timer(delay, () => {
-      transitionObject.hidden = false;
-      transitionObject.resetAnimation();
-      const transitionFuncTimer = new Timer(
-        8 / timeTracker.ticsPerSecond,
-        transitionFunc
-      );
-      const transitionEndTimer = new Timer(
-        16 / timeTracker.ticsPerSecond,
-        () => {
-          this.gameState.inTransition = false;
-        }
-      );
-      timerQueue.push(transitionFuncTimer, transitionEndTimer);
-      transitionFuncTimer.start();
-      transitionEndTimer.start();
+    const delayTimer = new Timer({
+      goalSecs: delay,
+      goalFunc: () => {
+        transitionObject.hidden = false;
+        transitionObject.resetAnimation();
+        const transitionFuncTimer = new Timer({
+          goalSecs: 8 / timeTracker.ticsPerSecond,
+          goalFunc: transitionFunc,
+        });
+        const transitionEndTimer = new Timer({
+          goalSecs: 16 / timeTracker.ticsPerSecond,
+          goalFunc: () => {
+            this.gameState.inTransition = false;
+          },
+        });
+        timerQueue.push(transitionFuncTimer, transitionEndTimer);
+        transitionFuncTimer.start();
+        transitionEndTimer.start();
+      },
     });
     timerQueue.push(delayTimer);
     delayTimer.start();
@@ -182,7 +185,7 @@ export class LevelManager extends GameObject {
             this.gameState.battle?.start();
             break;
           case "cave":
-            this.gameState.gameTimer.unpause();
+            this.gameState.unpauseGameTimer();
             switch (currentScene) {
               case "battle":
                 this.gameState.level.cave.wormsLeft--;
@@ -194,7 +197,7 @@ export class LevelManager extends GameObject {
             }
             break;
           case "shop":
-            this.gameState.gameTimer.pause();
+            this.gameState.pauseGameTimer();
             this.currentSceneManager = this.shopManager;
             break;
         }

@@ -22,6 +22,7 @@ export default class Cave {
   freeTiles: Block[] = [];
   started = false;
   cleared = false;
+  bellRang = false;
 
   constructor(depth: number) {
     this.difficulty = (depth % 3) + Math.floor(depth / 3) + 4;

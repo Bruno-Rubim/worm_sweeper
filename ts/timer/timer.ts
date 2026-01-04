@@ -13,18 +13,25 @@ export class Timer {
   started: boolean = false;
   ended: boolean = false;
   deleteAtEnd: boolean;
+  classes: string[];
 
-  constructor(
-    goalSecs: number = Infinity,
-    goalFunc?: (() => Action | void | null) | undefined,
-    loop: boolean = false,
-    deleteAtEnd: boolean = true
-  ) {
+  constructor(args: {
+    goalSecs?: number;
+    goalFunc?: (() => Action | void | null) | undefined;
+    loop?: boolean;
+    deleteAtEnd?: boolean;
+    classes?: string[];
+  }) {
+    args.goalSecs ??= Infinity;
+    args.loop ??= false;
+    args.deleteAtEnd ??= true;
+    args.classes ??= [];
     this.startTic = timeTracker.currentGameTic;
-    this.goalSecs = goalSecs;
-    this.goalFunc = goalFunc;
-    this.loop = loop;
-    this.deleteAtEnd = deleteAtEnd;
+    this.goalSecs = args.goalSecs;
+    this.goalFunc = args.goalFunc;
+    this.loop = args.loop;
+    this.deleteAtEnd = args.deleteAtEnd;
+    this.classes = args.classes;
   }
 
   get goalTics() {

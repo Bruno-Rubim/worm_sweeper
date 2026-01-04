@@ -90,8 +90,8 @@ export const itemDic = {
     spriteSheetPos: new Position(2, 4),
     name: "silver_bell",
     shopName: "Silver Bell",
-    cost: 38,
-    description: "Reveals location of doors",
+    cost: 20,
+    description: "Reveals the location of doors every 60 seconds",
   }),
   dark_crystal: new Item({
     spriteSheetPos: new Position(4, 4),

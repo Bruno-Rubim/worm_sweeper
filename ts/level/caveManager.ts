@@ -98,7 +98,7 @@ export default class CaveManager extends SceneManager {
           );
         }
         if (
-          this.gameState.hasItem("silver_bell") &&
+          this.gameState.level.cave.bellRang &&
           [CONTENTDOOREXIT, CONTENTDOORSHOP].includes(block.content) &&
           !block.broken
         ) {
@@ -137,9 +137,12 @@ export default class CaveManager extends SceneManager {
           return;
         }
         block.content = CONTENTBOMB;
-        block.bombTimer = new Timer(2, () => {
-          this.gameState.level.cave.bomb(block);
-          this.checkCaveClear();
+        block.bombTimer = new Timer({
+          goalSecs: 2,
+          goalFunc: () => {
+            this.gameState.level.cave.bomb(block);
+            this.checkCaveClear();
+          },
         });
         timerQueue.push(block.bombTimer);
         block.bombTimer.start();

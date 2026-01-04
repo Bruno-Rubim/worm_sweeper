@@ -3,8 +3,9 @@ import CanvasManager from "./canvasManager.js";
 import GameState from "./gameState.js";
 import { renderBorder } from "./renderBorder.js";
 import { timerQueue } from "./timer/timerQueue.js";
-import { EnemyAtack } from "./action.js";
+import { EnemyAtack, RingBell } from "./action.js";
 import { SoundManager } from "./soundManager.js";
+import sounds from "./sounds.js";
 
 export class GameManager {
   gameState = new GameState();
@@ -44,6 +45,9 @@ export class GameManager {
             this.gameState.lose();
           }
           this.levelManager.checkBattleEnd();
+        } else if (action instanceof RingBell) {
+          this.soundManager.playSound(sounds.bell);
+          this.gameState.level.cave.bellRang = true;
         }
       }
     });

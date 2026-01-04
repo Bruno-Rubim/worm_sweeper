@@ -33,8 +33,8 @@ export default class GameState {
   level: Level;
   battle: Battle | null = null;
   health: number = 5;
-  tiredTimer = new Timer(0, undefined, false, false);
-  attackAnimationTimer = new Timer(0, undefined, false, false);
+  tiredTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
+  attackAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
   inTransition: boolean = false;
   inBook: boolean = false;
   bookPage: number = 0;
@@ -43,7 +43,7 @@ export default class GameState {
   defending: boolean = false;
   holdingBomb: boolean = false;
   gameOver: boolean = false;
-  runCount = 1;
+  deathCount = 0;
   inventory: inventory = {
     picaxe: getItem("picaxe", new Position(GAMEWIDTH - 20, 90)),
     flag: getItem("flag", new Position(GAMEWIDTH - 20, 109)),
@@ -61,11 +61,33 @@ export default class GameState {
   };
 
   constructor() {
-    this.gameTimer = new Timer(180, () => this.lose(), false, false);
+    this.gameTimer = new Timer({
+      goalSecs: 180,
+      goalFunc: () => this.lose(),
+      deleteAtEnd: false,
+    });
     this.level = new Level(0, this.inventory);
     timerQueue.push(this.gameTimer);
     timerQueue.push(this.tiredTimer);
     timerQueue.push(this.attackAnimationTimer);
+  }
+
+  pauseGameTimer() {
+    this.gameTimer.pause();
+    timerQueue.forEach((x) => {
+      if (x.classes.includes("gameTimer_sync")) {
+        x.pause();
+      }
+    });
+  }
+
+  unpauseGameTimer() {
+    this.gameTimer.unpause();
+    timerQueue.forEach((x) => {
+      if (x.classes.includes("gameTimer_sync")) {
+        x.unpause();
+      }
+    });
   }
 
   lose() {
@@ -83,7 +105,7 @@ export default class GameState {
     this.battle = null;
     this.defending = false;
     this.holdingBomb = false;
-    this.runCount++;
+    this.deathCount++;
     this.gold = 0;
     this.health = 5;
     this.inventory = {

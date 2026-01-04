@@ -22,15 +22,15 @@ export class Enemy {
     this.damage = args.damage;
     this.pos = args.pos;
     this.spriteSheet = args.spriteSheet;
-    this.attackAnimTimer = new Timer(0.3);
-    this.damagedTimer = new Timer(0.16);
-    this.cooldownTimer = new Timer(
-      args.attackCooldown,
-      () => {
+    this.attackAnimTimer = new Timer({ goalSecs: 0.3 });
+    this.damagedTimer = new Timer({ goalSecs: 0.16 });
+    this.cooldownTimer = new Timer({
+      goalSecs: args.attackCooldown,
+      goalFunc: () => {
         return new EnemyAtack(this.damage, this);
       },
-      true
-    );
+      loop: true,
+    });
   }
 }
 
