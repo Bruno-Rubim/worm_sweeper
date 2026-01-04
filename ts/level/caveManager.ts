@@ -21,6 +21,7 @@ import { timerQueue } from "../timer/timerQueue.js";
 import {
   blockSheetPos,
   CONTENTBOMB,
+  CONTENTBOMBOVERLAY,
   CONTENTDOOREXIT,
   CONTENTDOOREXITOPEN,
   CONTENTDOORSHOP,
@@ -79,11 +80,7 @@ export default class CaveManager extends SceneManager {
           16,
           16
         );
-        if (
-          // block.broken &&
-          block.content != CONTENTEMPTY ||
-          block.marked
-        ) {
+        if ((block.broken && block.content != CONTENTEMPTY) || block.marked) {
           canvasManager.renderSpriteFromSheet(
             sprites.block_sheet,
             blockPos,
@@ -129,6 +126,10 @@ export default class CaveManager extends SceneManager {
 
     if (button == CLICKLEFT) {
       if (this.gameState.holdingBomb) {
+        if (!block.broken || block.content != CONTENTBOMBOVERLAY) {
+          console.log(block.content, block.broken);
+          return;
+        }
         block.content = CONTENTBOMB;
         block.bombTimer = new Timer(2, () => {
           this.gameState.level.cave.bomb(block);
