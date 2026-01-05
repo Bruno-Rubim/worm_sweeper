@@ -97,7 +97,7 @@ const book = new Item({
 class SilverBell extends Item {
   rang = false;
   ringTimer = new Timer({
-    goalSecs: 5,
+    goalSecs: 60,
     goalFunc: () => {
       this.rang = true;
       this.firstAnimationTic = timeTracker.currentGameTic;
