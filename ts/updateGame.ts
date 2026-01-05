@@ -17,8 +17,12 @@ import {
   ToggleBook as ToggleBook,
   ItemDescription,
   RestartGame,
+  EnemyAtack,
+  RingBell,
 } from "./action.js";
 import timeTracker from "./timer/timeTracker.js";
+import { timerQueue } from "./timer/timerQueue.js";
+import sounds from "./sounds.js";
 
 function changeCursorState(newState: cursorState) {
   cursor.state = newState;
@@ -132,6 +136,41 @@ function handleKeyInput(gameManager: GameManager) {
 
 type actionResponse = "cursorChange" | "itemDescription" | void;
 
+function updateTimers(gameManager: GameManager) {
+  timerQueue.forEach((timer, i) => {
+    let action;
+    if (timer.ticsRemaining <= 0 && !timer.ended) {
+      if (timer.goalFunc) {
+        action = timer.goalFunc();
+      }
+      if (timer.loop) {
+        timer.rewind();
+      } else {
+        timer.ended = true;
+        if (timer.deleteAtEnd) {
+          timerQueue.splice(i, 1);
+        }
+      }
+      if (action instanceof EnemyAtack) {
+        action.enemy.attackAnimTimer.start();
+        timerQueue.push(action.enemy.attackAnimTimer);
+        gameManager.gameState.health -= Math.max(
+          0,
+          action.damage - gameManager.gameState.currentDefense
+        );
+        action.enemy.health -= gameManager.gameState.currentReflection;
+        if (gameManager.gameState.health < 1) {
+          gameManager.gameState.lose();
+        }
+        gameManager.levelManager.checkBattleEnd();
+      } else if (action instanceof RingBell) {
+        gameManager.soundManager.playSound(sounds.bell);
+        gameManager.gameState.level.cave.bellRang = true;
+      }
+    }
+  });
+}
+
 function handleAction(
   gameManager: GameManager,
   action: Action | void
@@ -191,6 +230,7 @@ export default function updateGame(
   renderScale: number,
   gameManager: GameManager
 ) {
+  updateTimers(gameManager);
   cursor.pos.update(inputState.mouse.pos.divide(renderScale));
 
   const gameObjects = [
