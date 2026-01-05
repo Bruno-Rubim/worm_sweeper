@@ -58,12 +58,14 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
   );
 
   // Player health
-  canvasManager.renderText(
-    "icons",
-    new Position(GAMEWIDTH / 2, GAMEHEIGHT - 14),
-    "$hrt".repeat(gameState.health),
-    CENTER
-  );
+  if (gameState.health > 0) {
+    canvasManager.renderText(
+      "icons",
+      new Position(GAMEWIDTH / 2, GAMEHEIGHT - 14),
+      "$hrt".repeat(gameState.health),
+      CENTER
+    );
+  }
 }
 
 /**
