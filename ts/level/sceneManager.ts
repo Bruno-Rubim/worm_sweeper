@@ -15,6 +15,9 @@ export default class SceneManager {
     cursorPos: Position,
     button: typeof CLICKRIGHT | typeof CLICKLEFT
   ) => Action | void;
+  /**
+   * Renders the screen based on the gameState
+   */
   render: (canvasManager: CanvasManager) => void;
   gameState: GameState;
   pos: Position;

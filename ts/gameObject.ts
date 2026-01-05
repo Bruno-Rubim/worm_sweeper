@@ -56,6 +56,11 @@ export default class GameObject {
     this.hitbox.objPos = this.pos.addPos(this.hitboxPosShift ?? new Position());
   }
 
+  /**
+   * Render the object's sprite with its stats using a given canvasManager
+   * @param canvasManager
+   * @returns
+   */
   render(canvasManager: CanvasManager) {
     if (this.hidden) {
       return;

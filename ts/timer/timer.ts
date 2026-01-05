@@ -8,6 +8,7 @@ export class Timer {
   isPaused: boolean = true;
   goalSecs: number;
   extraTics: number = 0;
+  //Function called when timer reached its goal
   goalFunc: (() => Action | void | null) | undefined;
   loop: boolean;
   started: boolean = false;
@@ -89,10 +90,17 @@ export class Timer {
     }
   }
 
+  /**
+   * Adds a number of seconds in tics to the extra tic counter
+   * @param seconds
+   */
   addSecs(seconds: number) {
     this.extraTics += seconds * timeTracker.ticsPerSecond;
   }
 
+  /**
+   * Adds the goal seconds into extraTics TO-DO change how this works to actually rewind it
+   */
   rewind() {
     this.addSecs(this.goalSecs);
   }

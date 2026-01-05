@@ -16,6 +16,9 @@ export default class CanvasManager {
     height: 0,
   };
 
+  /**
+   * Updates the canvas element size and render scale based on current window
+   */
   updateElementSize() {
     let scale = 0;
     if (innerWidth > innerHeight) {
@@ -39,6 +42,9 @@ export default class CanvasManager {
     this.ctx.imageSmoothingEnabled = false;
   }
 
+  /**
+   * Clears the canvas
+   */
   clearCanvas() {
     this.ctx.clearRect(
       0,
@@ -48,6 +54,13 @@ export default class CanvasManager {
     );
   }
 
+  /**
+   * Renders a sprite with given position and dimensions on the screen
+   * @param sprite
+   * @param pos
+   * @param width
+   * @param height
+   */
   renderSprite(sprite: Sprite, pos: Position, width: number, height: number) {
     this.ctx.drawImage(
       sprite.img,
@@ -123,7 +136,7 @@ export default class CanvasManager {
     font: keyof typeof fontMaps,
     pos: Position,
     text: string,
-    direction: typeof LEFT | typeof RIGHT = RIGHT,
+    direction: typeof LEFT | typeof RIGHT | typeof CENTER = RIGHT,
     limitWidth: number = Infinity,
     fontSize = 1,
   ) {
@@ -156,7 +169,7 @@ export default class CanvasManager {
     let currentX = 0;
     let currentY = 0;
     for (let lineId in lines) {
-      const line = lines[lineId];
+      const line = lines[lineId]!;
 
       // Reset X coordinates to align text
       if (direction == RIGHT) {
