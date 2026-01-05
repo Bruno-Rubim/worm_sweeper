@@ -145,7 +145,6 @@ export default class CaveManager extends SceneManager {
     if (button == CLICKLEFT) {
       if (this.gameState.holdingBomb) {
         if (!block.broken || block.content != CONTENTBOMBOVERLAY) {
-          console.log(block.content, block.broken);
           return;
         }
         block.content = CONTENTBOMB;

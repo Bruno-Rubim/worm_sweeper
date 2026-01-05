@@ -1,9 +1,12 @@
-import { ItemDescription, ToggleBook } from "../action.js";
+import { ItemDescription, RingBell, ToggleBook } from "../action.js";
 import type CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
-import { GAMEWIDTH, LEFT, RIGHT } from "../global.js";
+import { GAMEWIDTH, LEFT, RIGHT, type cursorClick } from "../global.js";
 import Position from "../position.js";
 import { sprites } from "../sprites.js";
+import { GAMETIMERSYNC, Timer } from "../timer/timer.js";
+import { timerQueue } from "../timer/timerQueue.js";
+import timeTracker from "../timer/timeTracker.js";
 
 export class Item extends GameObject {
   spriteSheetPos: Position;
@@ -83,6 +86,84 @@ export class Item extends GameObject {
   };
 }
 
+const book = new Item({
+  spriteSheetPos: new Position(4, 7),
+  name: "book",
+  shopName: "",
+  cost: 0,
+  description: "Click to open the guide book.",
+});
+
+class SilverBell extends Item {
+  rang = false;
+  ringTimer = new Timer({
+    goalSecs: 5,
+    goalFunc: () => {
+      this.rang = true;
+      this.firstAnimationTic = timeTracker.currentGameTic;
+    },
+    classes: [GAMETIMERSYNC],
+    deleteAtEnd: false,
+  });
+  constructor(pos?: Position) {
+    super({
+      pos: pos ?? new Position(),
+      spriteSheetPos: new Position(2, 4),
+      name: "silver_bell",
+      shopName: "Silver Bell",
+      cost: 20,
+      description: "Reveals the location of doors every 60 seconds",
+    });
+    timerQueue.push(this.ringTimer);
+  }
+
+  render(canvasManager: CanvasManager): void {
+    if (this.ringTimer.inMotion) {
+      canvasManager.renderSpriteFromSheet(
+        this.sprite,
+        this.pos,
+        this.width,
+        this.height,
+        this.spriteSheetPos
+      );
+    } else {
+      canvasManager.renderAnimationFrame(
+        sprites.bell_shine_sheet,
+        this.pos,
+        this.width,
+        this.height,
+        4,
+        2,
+        this.firstAnimationTic,
+        timeTracker.currentTic,
+        0.5
+      );
+    }
+    if (this.mouseHovering) {
+      canvasManager.renderSpriteFromSheet(
+        this.sprite,
+        this.pos,
+        this.width,
+        this.height,
+        this.spriteSheetPos.add(1, 0)
+      );
+    }
+  }
+
+  clickFunction = (cursorPos: Position, button: cursorClick) => {
+    if (!this.ringTimer.inMotion) {
+      this.ringTimer.start();
+      return new RingBell();
+    }
+  };
+
+  clone(): SilverBell {
+    return new SilverBell(new Position().add(this.pos));
+  }
+}
+
+const silver_bell = new SilverBell();
+
 export const itemDic = {
   gold_bug: new Item({
     spriteSheetPos: new Position(0, 4),
@@ -91,13 +172,7 @@ export const itemDic = {
     cost: 20,
     description: "More gold. More worms.\nThe bug's curse is everlasting.",
   }),
-  silver_bell: new Item({
-    spriteSheetPos: new Position(2, 4),
-    name: "silver_bell",
-    shopName: "Silver Bell",
-    cost: 20,
-    description: "Reveals the location of doors every 60 seconds",
-  }),
+  silver_bell: silver_bell,
   dark_crystal: new Item({
     spriteSheetPos: new Position(4, 4),
     name: "dark_crystal",
@@ -149,13 +224,7 @@ export const itemDic = {
     cost: 0,
     description: "Right click any block to mark it as a possible threat.",
   }),
-  book: new Item({
-    spriteSheetPos: new Position(4, 7),
-    name: "book",
-    shopName: "",
-    cost: 0,
-    description: "Click to open the guide book.",
-  }),
+  book: book,
 };
 
 /**

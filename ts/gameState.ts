@@ -6,7 +6,7 @@ import { weaponDic, type Weapon } from "./items/weapon.js";
 import Position from "./position.js";
 import Level from "./level/level.js";
 import { GAMEWIDTH } from "./global.js";
-import { Timer } from "./timer/timer.js";
+import { GAMETIMERSYNC, Timer } from "./timer/timer.js";
 import { Battle } from "./level/battle.js";
 import { timerQueue } from "./timer/timerQueue.js";
 import timeTracker from "./timer/timeTracker.js";
@@ -74,24 +74,24 @@ export default class GameState {
   }
 
   /**
-   * Pauses the game timer and any timer in the timerQueue that has the class "gameTimer_sync"
+   * Pauses the game timer and any timer in the timerQueue that has the class GAMETIMERSYNC
    */
   pauseGameTimer() {
     this.gameTimer.pause();
     timerQueue.forEach((x) => {
-      if (x.classes.includes("gameTimer_sync")) {
+      if (x.classes.includes(GAMETIMERSYNC)) {
         x.pause();
       }
     });
   }
 
   /**
-   * Unpauses the game timer and any timer in the timerQueue that has the class "gameTimer_sync"
+   * Unpauses the game timer and any timer in the timerQueue that has the class GAMETIMERSYNC
    */
   unpauseGameTimer() {
     this.gameTimer.unpause();
     timerQueue.forEach((x) => {
-      if (x.classes.includes("gameTimer_sync")) {
+      if (x.classes.includes(GAMETIMERSYNC)) {
         x.unpause();
       }
     });

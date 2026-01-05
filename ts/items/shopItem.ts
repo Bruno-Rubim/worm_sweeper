@@ -39,24 +39,6 @@ export class ShopItem extends GameObject {
       hitboxPosShift: new Position(-2, 0),
     });
     this.item = items[itemName];
-    if (itemName == "silver_bell") {
-      this.clickFunction = (cursorPos: Position, button: cursorClick) => {
-        if (button == CLICKLEFT) {
-          const bellTimer = new Timer({
-            goalSecs: 60,
-            goalFunc: () => {
-              return new RingBell();
-            },
-            loop: true,
-            classes: ["gameTimer_sync"],
-          });
-          bellTimer.start();
-          timerQueue.push(bellTimer);
-          return new BuyShopItem(this);
-        }
-      };
-      return;
-    }
     this.clickFunction = (cursorPos: Position, button: cursorClick) => {
       if (button == CLICKLEFT) return new BuyShopItem(this);
     };

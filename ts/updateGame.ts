@@ -231,7 +231,8 @@ function handleAction(
       gameManager.gameState.lose();
     }
     gameManager.levelManager.checkBattleEnd();
-  } else if (action instanceof RingBell) {
+  }
+  if (action instanceof RingBell) {
     gameManager.soundManager.playSound(sounds.bell);
     gameManager.gameState.level.cave.bellRang = true;
   }

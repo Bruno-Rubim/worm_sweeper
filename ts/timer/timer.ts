@@ -1,6 +1,8 @@
 import type { Action } from "../action.js";
 import timeTracker from "./timeTracker.js";
 
+export const GAMETIMERSYNC = "gameTimerSync";
+
 export class Timer {
   startTic: number;
   lastPausedTic: number = 0;

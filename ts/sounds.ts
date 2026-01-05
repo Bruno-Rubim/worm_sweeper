@@ -62,7 +62,7 @@ export class Sound {
 
 // List of sounds from the game
 export const sounds = {
-  bell: new Sound("bell", 0.07),
+  bell: new Sound("bell", 0.3),
   clear: new Sound("clear", 0.5),
   beep: new Sound("beep", 0.5),
   bomb: new Sound("bomb", 0.8),
