@@ -1,7 +1,12 @@
 import CanvasManager from "./canvasManager.js";
 import GameObject from "./gameObject.js";
 import GameState, { type inventory } from "./gameState.js";
-import { GAMEHEIGHT, GAMEWIDTH } from "./global.js";
+import {
+  GAMEHEIGHT,
+  GAMEWIDTH,
+  LEFT,
+  CENTER,
+} from "./global.js";
 import Position from "./position.js";
 import { sprites } from "./sprites.js";
 
@@ -11,55 +16,59 @@ import { sprites } from "./sprites.js";
  * @param gameState
  */
 function renderStats(canvasManager: CanvasManager, gameState: GameState) {
+  // Time left
   canvasManager.renderText(
     "numbers_blue",
     new Position(6, 6),
-    "$tim " + Math.floor(gameState.gameTimer.secondsRemaining).toString()
+    "$tim " + Math.floor(gameState.gameTimer.secondsRemaining).toString(),
   );
 
+  // Worms number
   canvasManager.renderText(
     "numbers_red",
-    new Position(54, 6),
-    "$wrm " + gameState.level.cave.wormsLeft.toString()
+    new Position(62, 6),
+    "$wrm " + gameState.level.cave.wormsLeft.toString(),
+    CENTER,
   );
 
+  // Blocks left
   canvasManager.renderText(
     "numbers_brown",
-    new Position(GAMEWIDTH - 78, 6),
-    "$blk " + gameState.level.cave.blocksLeft.toString()
+    new Position(GAMEWIDTH - 66, 6),
+    "$blk " + gameState.level.cave.blocksLeft.toString(),
+    CENTER,
   );
 
+  // Gold number
   canvasManager.renderText(
     "numbers_gold",
-    new Position(GAMEWIDTH - 29, 6),
-    "$gld " + gameState.gold.toString()
+    new Position(GAMEWIDTH - 4, 6),
+    "$gld " + gameState.gold.toString(),
+    LEFT,
   );
 
+  // Level number
   canvasManager.renderText(
     "numbers_green",
     new Position(6, GAMEHEIGHT - 14),
-    "$dor " + (gameState.level.depth + 1).toString()
+    "$dor " + (gameState.level.depth + 1).toString(),
   );
 
+  // Death count
   canvasManager.renderText(
     "numbers_red",
-    new Position(GAMEWIDTH - 20, GAMEHEIGHT - 14),
-    "$run" + gameState.deathCount.toString()
+    new Position(GAMEWIDTH - 4, GAMEHEIGHT - 14),
+    "$run" + gameState.deathCount.toString(),
+    LEFT,
   );
 
+  // Player health
   canvasManager.renderText(
-    "numbers_gold",
-    new Position(GAMEWIDTH - 29, 6),
-    "$gld " + gameState.gold.toString()
+    "icons",
+    new Position(88, GAMEHEIGHT - 14),
+    "$hrt".repeat(gameState.health),
+    CENTER,
   );
-
-  for (let i = 0; i < gameState.health; i++) {
-    canvasManager.renderText(
-      "icons",
-      new Position(88 + i * 9 - (9 * gameState.health) / 2, GAMEHEIGHT - 14),
-      "$hrt"
-    );
-  }
 }
 
 /**
@@ -90,7 +99,7 @@ const gameBorder = new GameObject({
  */
 export function renderBorder(
   canvasManager: CanvasManager,
-  gameState: GameState
+  gameState: GameState,
 ) {
   gameBorder.render(canvasManager);
   renderItems(canvasManager, gameState);

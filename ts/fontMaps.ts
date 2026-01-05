@@ -1163,11 +1163,12 @@ export function measureTextWidth(font: string, text: string) {
   for (let i = 0; i < chars.length; i++) {
     let char = chars[i]!;
     if (char == "$") {
-      char = chars.slice(i, i + 4).join();
-      font = "icons";
+      char = chars.slice(i, i + 4).join("");
       i += 3;
+      width += fontMaps["icons"]?.charMaps[char]?.width ?? 0;
+    } else {
+      width += fontMaps[font]?.charMaps[char]?.width ?? 0;
     }
-    width += fontMaps[font]?.charMaps[char]?.width ?? 0;
   }
   return width;
 }

@@ -6,10 +6,11 @@ export const BORDERTHICKTOP = 20;
 export const BORDERTHICKBOTTOM = 20;
 
 export const RIGHT = "right";
-export const LEFT = "Left";
+export const LEFT = "left";
+export const CENTER = "center";
 
 export const CLICKRIGHT = "right";
-export const CLICKLEFT = "Left";
+export const CLICKLEFT = "left";
 
 export type cursorClick = typeof CLICKRIGHT | typeof CLICKLEFT;
 
