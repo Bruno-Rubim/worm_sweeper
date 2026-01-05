@@ -113,6 +113,15 @@ export class LevelManager extends GameObject {
   }
 
   render(canvasManager: CanvasManager): void {
+    if (this.gameState.inBook) {
+      canvasManager.renderSprite(
+        sprites.bg_rules,
+        this.pos,
+        this.width,
+        this.height
+      );
+      return;
+    }
     if (this.gameState.paused) {
       canvasManager.renderSprite(
         sprites.screen_paused,
@@ -123,15 +132,6 @@ export class LevelManager extends GameObject {
       return;
     }
 
-    if (this.gameState.inBook) {
-      canvasManager.renderSprite(
-        sprites.bg_rules,
-        this.pos,
-        this.width,
-        this.height
-      );
-      return;
-    }
     this.currentSceneManager.render(canvasManager);
     transitionObject.render(canvasManager);
     if (this.gameState.gameOver) {
