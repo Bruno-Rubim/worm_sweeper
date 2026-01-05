@@ -28,39 +28,11 @@ export class GameManager {
     this.levelManager = new LevelManager(this.gameState, this.soundManager);
   }
 
+  /**
+   * Renders the current level and game border
+   * @param canvasManager
+   */
   render(canvasManager: CanvasManager) {
-    timerQueue.forEach((timer, i) => {
-      let action;
-      if (timer.ticsRemaining <= 0 && !timer.ended) {
-        if (timer.goalFunc) {
-          action = timer.goalFunc();
-        }
-        if (timer.loop) {
-          timer.rewind();
-        } else {
-          timer.ended = true;
-          if (timer.deleteAtEnd) {
-            timerQueue.splice(i, 1);
-          }
-        }
-        if (action instanceof EnemyAtack) {
-          action.enemy.attackAnimTimer.start();
-          timerQueue.push(action.enemy.attackAnimTimer);
-          this.gameState.health -= Math.max(
-            0,
-            action.damage - this.gameState.currentDefense
-          );
-          action.enemy.health -= this.gameState.currentReflection;
-          if (this.gameState.health < 1) {
-            this.gameState.lose();
-          }
-          this.levelManager.checkBattleEnd();
-        } else if (action instanceof RingBell) {
-          this.soundManager.playSound(sounds.bell);
-          this.gameState.level.cave.bellRang = true;
-        }
-      }
-    });
     this.levelManager.render(canvasManager);
     renderBorder(canvasManager, this.gameState);
   }

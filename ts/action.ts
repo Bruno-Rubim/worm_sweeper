@@ -1,10 +1,10 @@
 import type { cursorState } from "./cursor.js";
 import type { LEFT, RIGHT } from "./global.js";
-import type { consumableDic } from "./items/consumable.js";
 import type { ShopItem } from "./items/shopItem.js";
 import type { Enemy } from "./level/enemy.js";
 import type Position from "./position.js";
 
+// Represents a consequence of something happening in game
 export class Action {}
 
 export class ChangeCursorState extends Action {

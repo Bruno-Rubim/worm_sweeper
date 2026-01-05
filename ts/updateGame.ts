@@ -17,8 +17,12 @@ import {
   ToggleBook as ToggleBook,
   ItemDescription,
   RestartGame,
+  EnemyAtack,
+  RingBell,
 } from "./action.js";
 import timeTracker from "./timer/timeTracker.js";
+import { timerQueue } from "./timer/timerQueue.js";
+import sounds from "./sounds.js";
 
 function changeCursorState(newState: cursorState) {
   cursor.state = newState;
@@ -132,9 +136,15 @@ function handleKeyInput(gameManager: GameManager) {
 
 type actionResponse = "cursorChange" | "itemDescription" | void;
 
+/**
+ * Series of consequences that are triggered with a given Action
+ * @param gameManager
+ * @param action
+ * @returns
+ */
 function handleAction(
   gameManager: GameManager,
-  action: Action | void
+  action: Action | void | null
 ): actionResponse {
   if (action instanceof ChangeCursorState) {
     changeCursorState(action.newState);
@@ -187,10 +197,41 @@ function handleAction(
   }
 }
 
+/**
+ * Loops through all timers in game, triggering their functions if ready and handling their actions
+ * @param gameManager
+ */
+function updateTimers(gameManager: GameManager) {
+  timerQueue.forEach((timer, i) => {
+    let action: Action | void | null = null;
+    if (timer.ticsRemaining <= 0 && !timer.ended) {
+      if (timer.goalFunc) {
+        action = timer.goalFunc();
+      }
+      if (timer.loop) {
+        timer.rewind();
+      } else {
+        timer.ended = true;
+        if (timer.deleteAtEnd) {
+          // Deletes timer
+          timerQueue.splice(i, 1);
+        }
+      }
+      handleAction(gameManager, action);
+    }
+  });
+}
+
+/**
+ *
+ * @param renderScale
+ * @param gameManager
+ */
 export default function updateGame(
   renderScale: number,
   gameManager: GameManager
 ) {
+  updateTimers(gameManager);
   cursor.pos.update(inputState.mouse.pos.divide(renderScale));
 
   const gameObjects = [
