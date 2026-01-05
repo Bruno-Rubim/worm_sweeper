@@ -1159,25 +1159,15 @@ export const fontMaps: Record<string, fontMap> = {
 
 export function measureTextWidth(font: string, text: string) {
   let width = 0;
-  text.split("").forEach((char) => {
+  let chars = text.split("");
+  for (let i = 0; i < chars.length; i++) {
+    let char = chars[i]!;
+    if (char == "$") {
+      char = chars.slice(i, i + 4).join();
+      font = "icons";
+      i += 3;
+    }
     width += fontMaps[font]?.charMaps[char]?.width ?? 0;
-  });
+  }
   return width;
-}
-
-export function isIcon(word: string) {
-  return [
-    "$wrm",
-    "$gld",
-    "$dor",
-    "$blk",
-    "$tim",
-    "$hrt",
-    "$wgt",
-    "$spd",
-    "$slw",
-    "$dmg",
-    "$dfs",
-    "$ref",
-  ].includes(word);
 }

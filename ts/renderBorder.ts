@@ -1,16 +1,15 @@
 import CanvasManager from "./canvasManager.js";
 import GameObject from "./gameObject.js";
 import GameState, { type inventory } from "./gameState.js";
-import {
-  BORDERTHICKBOTTOM,
-  BORDERTHICKLEFT,
-  GAMEHEIGHT,
-  GAMEWIDTH,
-} from "./global.js";
+import { GAMEHEIGHT, GAMEWIDTH } from "./global.js";
 import Position from "./position.js";
 import { sprites } from "./sprites.js";
-import { utils } from "./utils.js";
 
+/**
+ * Renders the current game stats
+ * @param canvasManager
+ * @param gameState
+ */
 function renderStats(canvasManager: CanvasManager, gameState: GameState) {
   canvasManager.renderText(
     "numbers_blue",
@@ -63,6 +62,11 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
   }
 }
 
+/**
+ * Renders the current items from the inventory
+ * @param canvasManager
+ * @param gameState
+ */
 function renderItems(canvasManager: CanvasManager, gameState: GameState) {
   for (const key of Object.keys(gameState.inventory) as (keyof inventory)[]) {
     const item = gameState.inventory[key];
@@ -79,6 +83,11 @@ const gameBorder = new GameObject({
   width: GAMEWIDTH,
 });
 
+/**
+ * Renders the game border UI stats and inventory objects
+ * @param canvasManager
+ * @param gameState
+ */
 export function renderBorder(
   canvasManager: CanvasManager,
   gameState: GameState

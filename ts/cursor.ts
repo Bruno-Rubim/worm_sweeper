@@ -29,6 +29,7 @@ class Description extends GameObject {
   side: typeof RIGHT | typeof LEFT = RIGHT;
   text: string = "";
   fontSize: number = 0.4;
+
   constructor(cursorPos: Position) {
     super({
       sprite: sprites.description_box,
@@ -37,6 +38,7 @@ class Description extends GameObject {
       height: 14,
     });
   }
+
   render(canvasManager: CanvasManager): void {
     if (this.hidden) {
       return;
@@ -61,8 +63,12 @@ class Description extends GameObject {
 class Cursor {
   pos = new Position();
   state: cursorState = CURSORDEFAULT;
-  loadStart = 0;
   description = new Description(this.pos);
+
+  /**
+   * Renders the cursor based on its current state and mouse inputState
+   * @param canvasManager
+   */
   render(canvasManager: CanvasManager) {
     canvasManager.renderSpriteFromSheet(
       sprites.cursor_sheet,
@@ -78,4 +84,5 @@ class Cursor {
   }
 }
 
+// Object that represents the cursor in game
 export const cursor = new Cursor();

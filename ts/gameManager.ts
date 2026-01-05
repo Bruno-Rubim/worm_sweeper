@@ -28,6 +28,10 @@ export class GameManager {
     this.levelManager = new LevelManager(this.gameState, this.soundManager);
   }
 
+  /**
+   * Renders the current level and game border
+   * @param canvasManager
+   */
   render(canvasManager: CanvasManager) {
     this.levelManager.render(canvasManager);
     renderBorder(canvasManager, this.gameState);

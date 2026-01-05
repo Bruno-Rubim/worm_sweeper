@@ -1,4 +1,4 @@
-import { fontMaps, isIcon, measureTextWidth } from "./fontMaps.js";
+import { fontMaps, measureTextWidth } from "./fontMaps.js";
 import { GAMEHEIGHT, GAMEWIDTH, CLICKLEFT, CLICKRIGHT } from "./global.js";
 import Position from "./position.js";
 import type { Sprite } from "./sprites.js";
@@ -16,6 +16,9 @@ export default class CanvasManager {
     height: 0,
   };
 
+  /**
+   * Updates the canvas element size and render scale based on current window
+   */
   updateElementSize() {
     let scale = 0;
     if (innerWidth > innerHeight) {
@@ -39,6 +42,9 @@ export default class CanvasManager {
     this.ctx.imageSmoothingEnabled = false;
   }
 
+  /**
+   * Clears the canvas
+   */
   clearCanvas() {
     this.ctx.clearRect(
       0,
@@ -48,6 +54,13 @@ export default class CanvasManager {
     );
   }
 
+  /**
+   * Renders a sprite with given position and dimensions on the screen
+   * @param sprite
+   * @param pos
+   * @param width
+   * @param height
+   */
   renderSprite(sprite: Sprite, pos: Position, width: number, height: number) {
     this.ctx.drawImage(
       sprite.img,
@@ -132,9 +145,6 @@ export default class CanvasManager {
     let lineWidth = 0;
     words.forEach((word, i) => {
       let currFont = font;
-      if (isIcon(word)) {
-        currFont = "icons";
-      }
       if (word.includes("\n")) {
         const breakWords = word.split("\n");
         const firstWidth =

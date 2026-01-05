@@ -112,6 +112,11 @@ export class LevelManager extends GameObject {
     transitionObject.endAnimation();
   }
 
+  /**
+   * Renders the current screen or level depending on the gameState
+   * @param canvasManager
+   * @returns
+   */
   render(canvasManager: CanvasManager): void {
     if (this.gameState.inBook) {
       canvasManager.renderSprite(

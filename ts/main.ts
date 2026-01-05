@@ -9,6 +9,9 @@ const gameManager = new GameManager();
 
 bindListeners(canvasManager.canvasElement);
 
+/**
+ * Recursive function to update the game and render it
+ */
 function frameLoop() {
   updateGame(canvasManager.renderScale, gameManager);
   renderGame(canvasManager, gameManager);
