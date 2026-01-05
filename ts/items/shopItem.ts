@@ -68,8 +68,17 @@ export class ShopItem extends GameObject {
       this.pos,
       16,
       16,
-      this.item.spriteSheetPos.add(this.mouseHovering ? 1 : 0, 0)
+      this.item.spriteSheetPos
     );
+    if (this.mouseHovering) {
+      canvasManager.renderSpriteFromSheet(
+        sprites.item_sheet,
+        this.pos,
+        16,
+        16,
+        this.item.spriteSheetPos.add(1, 0)
+      );
+    }
     canvasManager.renderText(
       "numbers_cost",
       this.pos.add(2, 18),

@@ -52,17 +52,22 @@ export class Item extends GameObject {
   }
 
   render(canvasManager: CanvasManager): void {
-    let sheetPos = this.spriteSheetPos;
-    if (this.mouseHovering) {
-      sheetPos = sheetPos.add(1, 0);
-    }
     canvasManager.renderSpriteFromSheet(
       this.sprite,
       this.pos,
       this.width,
       this.height,
-      sheetPos
+      this.spriteSheetPos
     );
+    if (this.mouseHovering) {
+      canvasManager.renderSpriteFromSheet(
+        this.sprite,
+        this.pos,
+        this.width,
+        this.height,
+        this.spriteSheetPos.add(1, 0)
+      );
+    }
   }
 
   hoverFunction = (cursorPos: Position) => {

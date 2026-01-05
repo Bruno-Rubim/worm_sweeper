@@ -21,6 +21,56 @@ export class Consumable extends Item {
   }
 }
 
+const time_potion = new Consumable({
+  spriteSheetPos: new Position(6, 0),
+  name: "time_potion",
+  shopName: "Time Potion",
+  cost: 10,
+  description: "Recover 60 seconds$tim",
+});
+
+time_potion.render = (canvasManager: CanvasManager) => {
+  let sheetPos = consumableDic.time_potion.spriteSheetPos;
+  canvasManager.renderSpriteFromSheet(
+    consumableDic.time_potion.sprite,
+    consumableDic.time_potion.pos,
+    consumableDic.time_potion.width,
+    consumableDic.time_potion.height,
+    sheetPos
+  );
+  if (time_potion.mouseHovering) {
+    canvasManager.renderSpriteFromSheet(
+      sprites.item_sheet,
+      time_potion.pos,
+      16,
+      16,
+      time_potion.spriteSheetPos.add(1, 0)
+    );
+  }
+  canvasManager.renderAnimationFrame(
+    sprites.time_potion_pointer_sheet,
+    consumableDic.time_potion.pos,
+    16,
+    16,
+    12,
+    1,
+    consumableDic.time_potion.firstAnimationTic,
+    timeTracker.currentGameTic
+  );
+  canvasManager.renderAnimationFrame(
+    sprites.time_potion_pointer_sheet,
+    consumableDic.time_potion.pos,
+    16,
+    16,
+    12,
+    1,
+    consumableDic.time_potion.firstAnimationTic,
+    timeTracker.currentGameTic,
+    1 / 12,
+    new Position(0, 1)
+  );
+};
+
 export const consumableDic = {
   bomb: new Consumable({
     spriteSheetPos: new Position(0, 0),
@@ -44,13 +94,7 @@ export const consumableDic = {
     cost: 10,
     description: "Gain 1 heart.",
   }),
-  time_potion: new Consumable({
-    spriteSheetPos: new Position(6, 0),
-    name: "time_potion",
-    shopName: "Time Potion",
-    cost: 10,
-    description: "Recover 60 seconds$tim",
-  }),
+  time_potion: time_potion,
   empty: new Consumable({
     spriteSheetPos: new Position(14, 0),
     name: "empty",
@@ -58,40 +102,4 @@ export const consumableDic = {
     cost: 0,
     description: "",
   }),
-};
-
-consumableDic.time_potion.render = (canvasManager: CanvasManager) => {
-  let sheetPos = consumableDic.time_potion.spriteSheetPos;
-  if (consumableDic.time_potion.mouseHovering) {
-    sheetPos = sheetPos.add(1, 0);
-  }
-  canvasManager.renderSpriteFromSheet(
-    consumableDic.time_potion.sprite,
-    consumableDic.time_potion.pos,
-    consumableDic.time_potion.width,
-    consumableDic.time_potion.height,
-    sheetPos
-  );
-  canvasManager.renderAnimationFrame(
-    sprites.time_potion_pointer_sheet,
-    consumableDic.time_potion.pos,
-    16,
-    16,
-    12,
-    1,
-    consumableDic.time_potion.firstAnimationTic,
-    timeTracker.currentGameTic
-  );
-  canvasManager.renderAnimationFrame(
-    sprites.time_potion_pointer_sheet,
-    consumableDic.time_potion.pos,
-    16,
-    16,
-    12,
-    1,
-    consumableDic.time_potion.firstAnimationTic,
-    timeTracker.currentGameTic,
-    1 / 12,
-    new Position(0, 1)
-  );
 };
