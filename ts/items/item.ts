@@ -97,7 +97,7 @@ const book = new Item({
 class SilverBell extends Item {
   rang = false;
   ringTimer = new Timer({
-    goalSecs: 5,
+    goalSecs: 60,
     goalFunc: () => {
       this.rang = true;
       this.firstAnimationTic = timeTracker.currentGameTic;
@@ -112,7 +112,7 @@ class SilverBell extends Item {
       name: "silver_bell",
       shopName: "Silver Bell",
       cost: 20,
-      description: "Reveals the location of doors every 60 seconds",
+      description: "Reveals the location of doors. Recharces every 60 seconds",
     });
     timerQueue.push(this.ringTimer);
   }
