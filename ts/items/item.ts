@@ -112,7 +112,8 @@ class SilverBell extends Item {
       name: "silver_bell",
       shopName: "Silver Bell",
       cost: 20,
-      description: "Reveals the location of doors. Recharces every 60 seconds",
+      description:
+        "Reveals the location of doors. Recharges every 60 seconds (outside of shop).",
     });
     timerQueue.push(this.ringTimer);
   }
