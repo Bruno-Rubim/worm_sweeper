@@ -3,9 +3,7 @@ import CanvasManager from "./canvasManager.js";
 import GameState from "./gameState.js";
 import { renderBorder } from "./renderBorder.js";
 import { timerQueue } from "./timer/timerQueue.js";
-import { EnemyAtack, RingBell } from "./action.js";
 import { SoundManager } from "./soundManager.js";
-import sounds from "./sounds.js";
 
 export class GameManager {
   gameState = new GameState();

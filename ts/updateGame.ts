@@ -195,6 +195,22 @@ function handleAction(
   if (action instanceof RestartGame) {
     gameManager.restart();
   }
+  if (action instanceof EnemyAtack) {
+    action.enemy.attackAnimTimer.start();
+    timerQueue.push(action.enemy.attackAnimTimer);
+    gameManager.gameState.health -= Math.max(
+      0,
+      action.damage - gameManager.gameState.currentDefense
+    );
+    action.enemy.health -= gameManager.gameState.currentReflection;
+    if (gameManager.gameState.health < 1) {
+      gameManager.gameState.lose();
+    }
+    gameManager.levelManager.checkBattleEnd();
+  } else if (action instanceof RingBell) {
+    gameManager.soundManager.playSound(sounds.bell);
+    gameManager.gameState.level.cave.bellRang = true;
+  }
 }
 
 /**
