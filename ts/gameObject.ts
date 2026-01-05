@@ -6,24 +6,40 @@ import type { cursorClick } from "./global.js";
 import { Sprite } from "./sprites.js";
 import timeTracker from "./timer/timeTracker.js";
 
+// Represents a given object in game, can have interaction functions that return Actions
 export default class GameObject {
   sprite: Sprite;
+  hidden: boolean = false;
+
   pos: Position;
   width: number;
   height: number;
   hitbox: Hitbox;
-  hitboxPosShift: Position | undefined;
+  hitboxPosShift: Position | undefined; // Shifts the object's hitbox, used when a hitbox is of a different size than the object
+
   mouseHovering: boolean = false;
   mouseHeldLeft: boolean = false;
   mouseHeldRight: boolean = false;
-  hidden: boolean = false;
-  birthTic: number;
+
+  firstAnimationTic: number;
+
+  /**
+   * Function for when the cursor clicks it
+   */
   clickFunction:
     | ((cursorPos: Position, button: cursorClick) => Action | void | null)
     | undefined;
+
+  /**
+   * Function for when the cursor is holding a button over it
+   */
   heldFunction:
     | ((cursorPos: Position, button: cursorClick) => Action | void | null)
     | undefined;
+
+  /**
+   * Function for when the cursor is over it
+   */
   hoverFunction: ((cursorPos: Position) => Action | void | null) | undefined;
 
   constructor(args: {
@@ -35,6 +51,8 @@ export default class GameObject {
     hitboxHeight?: number;
     hitboxPosShift?: Position;
     clickFunction?: (cursorPos: Position, button: cursorClick) => Action | void;
+    heldFunction?: (cursorPos: Position, button: cursorClick) => Action | void;
+    hoverFunction?: (cursorPos: Position) => Action | void;
   }) {
     this.sprite = args.sprite;
     this.pos = args.pos ?? new Position();
@@ -48,12 +66,18 @@ export default class GameObject {
       shiftPos: args.hitboxPosShift,
     });
     this.clickFunction = args.clickFunction;
-    this.birthTic = timeTracker.currentGameTic;
+    this.heldFunction = args.heldFunction;
+    this.hoverFunction = args.hoverFunction;
+    this.firstAnimationTic = timeTracker.currentGameTic;
   }
 
+  /**
+   * Updates its position to a new Position object and adds its current value to the hitbox objPos with the shift
+   * @param newPos
+   */
   updatePosition(newPos: Position) {
     this.pos = newPos;
-    this.hitbox.objPos = this.pos.addPos(this.hitboxPosShift ?? new Position());
+    this.hitbox.objPos = this.pos.add(this.hitboxPosShift ?? new Position());
   }
 
   /**
@@ -68,11 +92,17 @@ export default class GameObject {
     canvasManager.renderSprite(this.sprite, this.pos, this.width, this.height);
   }
 
+  /**
+   * Updates its firstAnimationTic
+   */
   resetAnimation() {
-    this.birthTic = timeTracker.currentGameTic;
+    this.firstAnimationTic = timeTracker.currentGameTic;
   }
 
+  /**
+   * Sets the firstAnimationTic to -Infinity (ultimately making it so it's impossible for the animation to not be finished)
+   */
   endAnimation() {
-    this.birthTic = -Infinity;
+    this.firstAnimationTic = -Infinity;
   }
 }

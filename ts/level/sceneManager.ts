@@ -5,7 +5,12 @@ import type { CLICKLEFT, CLICKRIGHT } from "../global.js";
 import type Position from "../position.js";
 import type { SoundManager } from "../soundManager.js";
 
+// Abstract class. Manages rendering and interactions with a scene in the level
 export default class SceneManager {
+  gameState: GameState;
+  pos: Position;
+  soundManager: SoundManager;
+
   handleHover: (cursorPos: Position) => Action | void;
   handleHeld: (
     cursorPos: Position,
@@ -19,9 +24,6 @@ export default class SceneManager {
    * Renders the screen based on the gameState
    */
   render: (canvasManager: CanvasManager) => void;
-  gameState: GameState;
-  pos: Position;
-  soundManager: SoundManager;
   constructor(
     gameState: GameState,
     scenePos: Position,

@@ -83,7 +83,7 @@ export class ShopItem extends GameObject {
         16,
         12,
         1,
-        this.birthTic,
+        this.firstAnimationTic,
         timeTracker.currentGameTic
       );
       canvasManager.renderAnimationFrame(
@@ -93,7 +93,7 @@ export class ShopItem extends GameObject {
         16,
         12,
         1,
-        this.birthTic,
+        this.firstAnimationTic,
         timeTracker.currentGameTic,
         1 / 12,
         new Position(0, 1)

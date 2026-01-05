@@ -1,11 +1,13 @@
 import Position from "./position.js";
 import { sprites, type Sprite } from "./sprites.js";
 
+// Holds the character's position within a spritesheet and its width in pixels
 type charMap = {
   pos: Position;
   width: number;
 };
 
+// Holds the sprite of the spritesheet, the width and height of each cell and a record of characters to charMaps
 type fontMap = {
   spriteSheet: Sprite;
   cellWidth: number;
@@ -13,6 +15,7 @@ type fontMap = {
   charMaps: Record<string, charMap>;
 };
 
+// fontMaps used in game
 export const fontMaps: Record<string, fontMap> = {
   shop_description: {
     spriteSheet: sprites.letters_shop_description,
@@ -1096,6 +1099,7 @@ export const fontMaps: Record<string, fontMap> = {
       },
     },
   },
+  // Used to render icons within text
   icons: {
     spriteSheet: sprites.icon_sheet,
     cellHeight: 9,
@@ -1157,11 +1161,19 @@ export const fontMaps: Record<string, fontMap> = {
   },
 };
 
+/**
+ * Measures the width of a text in pixels with a given font
+ * takes icons into account
+ * @param font
+ * @param text
+ * @returns
+ */
 export function measureTextWidth(font: string, text: string) {
   let width = 0;
   let chars = text.split("");
   for (let i = 0; i < chars.length; i++) {
     let char = chars[i]!;
+    // Checks if it's an icon
     if (char == "$") {
       char = chars.slice(i, i + 4).join("");
       i += 3;

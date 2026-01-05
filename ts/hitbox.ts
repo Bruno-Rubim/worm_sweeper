@@ -1,5 +1,6 @@
 import Position from "./position.js";
 
+// Represetns a gameObject's interaction area
 export default class Hitbox {
   objPos: Position;
   shiftPos: Position;
@@ -19,12 +20,12 @@ export default class Hitbox {
   }
 
   /**
-   *
+   * Checks if a given Position is inside its hitbox
    * @param targetPos
    * @returns boolean
    */
   positionInside(targetPos: Position) {
-    const pos = this.objPos.addPos(this.shiftPos);
+    const pos = this.objPos.add(this.shiftPos);
     const { width, height } = this;
     const { x, y } = targetPos;
     if (x < pos.x || y < pos.y) {

@@ -1,4 +1,4 @@
-import { Action, ChangeCursorState, ChangeScene } from "../action.js";
+import { ChangeCursorState, ChangeScene } from "../action.js";
 import type CanvasManager from "../canvasManager.js";
 import { CURSORBATTLE } from "../cursor.js";
 import type GameState from "../gameState.js";
@@ -19,6 +19,7 @@ import { timerQueue } from "../timer/timerQueue.js";
 import { utils } from "../utils.js";
 import SceneManager from "./sceneManager.js";
 
+// Manages rendering and interactions with the currentBattle scene of the gameState
 export default class BattleManager extends SceneManager {
   constructor(
     gameState: GameState,
@@ -28,6 +29,10 @@ export default class BattleManager extends SceneManager {
     super(gameState, scenePos, soundManager);
   }
 
+  /**
+   * Renders enemies and player weapons
+   * @param canvasManager
+   */
   render = (canvasManager: CanvasManager) => {
     canvasManager.renderSprite(
       sprites.bg_battle,
@@ -123,6 +128,10 @@ export default class BattleManager extends SceneManager {
     }
   };
 
+  /**
+   * Checks if enemies are dead, changing to cave scene if so
+   * @returns
+   */
   checkBattleEnd() {
     this.gameState.battle?.enemies.forEach((e, i) => {
       if (e.health < 1) {
@@ -135,12 +144,17 @@ export default class BattleManager extends SceneManager {
     }
   }
 
+  /**
+   * Deals damage to a random enemy and starts the tired timer according to current weapon stats
+   * @returns
+   */
   playerAttack() {
     const tiredTimer = this.gameState.tiredTimer;
     const rId = utils.randomArrayId(this.gameState.battle!.enemies);
     const enemy = this.gameState.battle!.enemies[rId]!;
     let damage = this.gameState.inventory.weapon.totalDamage;
     if (this.gameState.inventory.weapon.name == "time_blade") {
+      //Calculates time blade's damage
       damage = Math.max(
         1,
         Math.min(
@@ -162,10 +176,15 @@ export default class BattleManager extends SceneManager {
     return this.checkBattleEnd();
   }
 
+  /**
+   * Does 5 damage to a random enemy, triggers the enemies damage animation timer and the player's tired timer
+   * @returns
+   */
   bomb() {
     const tiredTimer = this.gameState.tiredTimer;
     const rId = utils.randomArrayId(this.gameState.battle!.enemies);
     const enemy = this.gameState.battle!.enemies[rId]!;
+    // TO-DO: add explosion sound (different than bomb sound)
     enemy.health -= 5;
     enemy.damagedTimer.start();
     timerQueue.push(enemy.damagedTimer);
@@ -174,6 +193,10 @@ export default class BattleManager extends SceneManager {
     return this.checkBattleEnd();
   }
 
+  /**
+   * Sets defending to true and starts the tired timer according to current shield stats
+   * @returns
+   */
   playerDefend() {
     const tiredTimer = this.gameState.tiredTimer;
     this.gameState.defending = true;
@@ -186,6 +209,12 @@ export default class BattleManager extends SceneManager {
     tiredTimer.start();
   }
 
+  /**
+   * Checks if the player isn't tired and attacks or defends accordingly
+   * @param cursorPos
+   * @param button
+   * @returns
+   */
   handleHeld = (
     cursorPos: Position,
     button: typeof CLICKRIGHT | typeof CLICKLEFT

@@ -28,6 +28,11 @@ function changeCursorState(newState: cursorState) {
   cursor.state = newState;
 }
 
+/**
+ * Runs through a series of gameObjects and calls their clickFunction if the cursor is over them while the mouse is clicking any buttons and returns its action
+ * @param objects
+ * @returns
+ */
 export function handleMouseClick(objects: GameObject[]): Action | void {
   let action: Action | null = null;
   objects.forEach((obj) => {
@@ -52,6 +57,11 @@ export function handleMouseClick(objects: GameObject[]): Action | void {
   }
 }
 
+/**
+ * Runs through a series of gameObjects and calls their hoverFunction if the cursor is over them and returns its action
+ * @param objects
+ * @returns
+ */
 export function handleMouseHover(objects: GameObject[]): Action | void {
   let action: Action | null = null;
   objects.forEach((obj) => {
@@ -74,6 +84,11 @@ export function handleMouseHover(objects: GameObject[]): Action | void {
   }
 }
 
+/**
+ * Runs through a series of gameObjects and calls their hoverFunction, clickFunction and heldFunction if the conditions meet and returns a series of actions
+ * @param objects
+ * @returns
+ */
 function handleMouseInput(objects: GameObject[]): Action[] | void {
   let actions: Action[] = [];
   objects.forEach((obj) => {
@@ -120,6 +135,11 @@ function handleMouseInput(objects: GameObject[]): Action[] | void {
   }
 }
 
+/**
+ * Checks if specific keys are held and
+ * @param gameManager
+ * @returns
+ */
 function handleKeyInput(gameManager: GameManager) {
   if (inputState.keyboard.Escape == "pressed") {
     inputState.keyboard.Escape = "read";
@@ -130,7 +150,11 @@ function handleKeyInput(gameManager: GameManager) {
     gameManager.gameState.paused = timeTracker.isPaused;
   }
   if (inputState.keyboard.q == "pressed") {
-    gameManager.restart();
+    inputState.keyboard.q = "read";
+    if (confirm("Would you like to quit the game?")) {
+      gameManager.gameState.lose();
+    }
+    inputState.keyboard.q = "unpressed";
   }
 }
 
@@ -219,6 +243,7 @@ function handleAction(
  */
 function updateTimers(gameManager: GameManager) {
   timerQueue.forEach((timer, i) => {
+    // Possible action in result of timer reaching goal
     let action: Action | void | null = null;
     if (timer.ticsRemaining <= 0 && !timer.ended) {
       if (timer.goalFunc) {
@@ -250,6 +275,7 @@ export default function updateGame(
   updateTimers(gameManager);
   cursor.pos.update(inputState.mouse.pos.divide(renderScale));
 
+  // Where I stopped commenting TO-DO: Finish comenting and remove this line
   const gameObjects = [
     gameManager.levelManager,
     ...Object.values(gameManager.gameState.inventory),

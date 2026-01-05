@@ -30,6 +30,7 @@ import BattleManager from "./battleManager.js";
 import ShopManager from "./shopManager.js";
 import { Battle } from "./battle.js";
 import type { SoundManager } from "../soundManager.js";
+import sounds from "../sounds.js";
 
 const transitionObject = new GameObject({
   sprite: sprites.scene_transition,
@@ -49,7 +50,7 @@ transitionObject.render = (canvasManager: CanvasManager) => {
     transitionObject.height,
     4,
     4,
-    transitionObject.birthTic,
+    transitionObject.firstAnimationTic,
     timeTracker.currentGameTic,
     1,
     new Position(),
@@ -59,13 +60,17 @@ transitionObject.render = (canvasManager: CanvasManager) => {
 
 transitionObject.hidden = true;
 
+// Manages rendering and interactions with the current level from gameState
 export class LevelManager extends GameObject {
   gameState: GameState;
   soundManager: SoundManager;
+
+  currentSceneManager: SceneManager;
+  // Holds the current current sceneManager which can be any of the 3 below
+  // (check strategy design pattern for a general idea of what this is)
   shopManager: ShopManager;
   caveManager: CaveManager;
   battleManager: BattleManager;
-  currentSceneManager: SceneManager;
 
   constructor(gameState: GameState, soundManager: SoundManager) {
     super({
@@ -76,21 +81,6 @@ export class LevelManager extends GameObject {
     });
     this.gameState = gameState;
     this.soundManager = soundManager;
-    this.hoverFunction = (cursorPos: Position) => {
-      return this.handleHover(cursorPos);
-    };
-    this.clickFunction = (
-      cursorPos: Position,
-      button: typeof CLICKRIGHT | typeof CLICKLEFT
-    ) => {
-      return this.handleClick(cursorPos, button);
-    };
-    this.heldFunction = (
-      cursorPos: Position,
-      button: typeof CLICKRIGHT | typeof CLICKLEFT
-    ) => {
-      return this.handleHeld(cursorPos, button);
-    };
     this.shopManager = new ShopManager(gameState, this.pos, this.soundManager);
     this.caveManager = new CaveManager(gameState, this.pos, this.soundManager);
     this.battleManager = new BattleManager(
@@ -149,6 +139,18 @@ export class LevelManager extends GameObject {
     }
   }
 
+  /**
+   * Checks if the current battle is over
+   */
+  checkBattleEnd() {
+    this.handleAction(this.battleManager.checkBattleEnd());
+  }
+
+  /**
+   * Plays the screen transition animation and runs a given function halfway through, can have a delay before the transition
+   * @param transitionFunc will run when the screen is completely black
+   * @param delay seconds to delay the transition
+   */
   screenTransition(
     transitionFunc: (() => Action | void | null) | undefined,
     delay: number = 0
@@ -178,8 +180,15 @@ export class LevelManager extends GameObject {
     delayTimer.start();
   }
 
+  /**
+   * Transitions and changes the current scene of gameState and the currentSceneManager as its function
+   * @param scene
+   */
   changeScene(scene: "battle" | "cave" | "shop") {
     const currentScene = this.gameState.currentScene;
+    if (scene == "cave" && currentScene == "shop") {
+      this.soundManager.playSound(sounds.steps);
+    }
     this.screenTransition(
       () => {
         switch (scene) {
@@ -190,28 +199,36 @@ export class LevelManager extends GameObject {
             this.gameState.battle?.start();
             break;
           case "cave":
-            this.gameState.unpauseGameTimer();
             switch (currentScene) {
               case "battle":
                 this.gameState.level.cave.wormsLeft--;
                 this.gameState.level.cave.wormQuantity--;
                 this.caveManager.checkCaveClear();
+              // Falls through the next lines
               case "shop":
                 this.currentSceneManager = this.caveManager;
+                this.gameState.unpauseGameTimer();
                 break;
             }
             break;
           case "shop":
+            // Pauses timer when entering a shop
             this.gameState.pauseGameTimer();
             this.currentSceneManager = this.shopManager;
             break;
         }
         this.gameState.currentScene = scene;
       },
-      currentScene + scene == "battlecave" || scene == "battle" ? 0.5 : 0
+      // Sets the transition delay to 0.5 if going into battle, 0 otherwise
+      scene == "battle" ? 0.5 : 0
     );
   }
 
+  /**
+   * Handles different actions
+   * @param action
+   * @returns
+   */
   handleAction(action: Action | void) {
     if (!action) {
       return;
@@ -224,7 +241,7 @@ export class LevelManager extends GameObject {
         this.gameState.gameTimer.addSecs(60);
         this.gameState.level.cave.start(
           action.starterGridPos,
-          this.gameState.passiveItemNames
+          this.gameState.itemNames
         );
       });
     } else if (action instanceof StartBattle) {
@@ -238,7 +255,12 @@ export class LevelManager extends GameObject {
     }
   }
 
-  handleHover(cursorPos: Position) {
+  /**
+   * Overwrites the sceneManager's hover action if it meets certain conditions to change cursor
+   * @param cursorPos
+   * @returns
+   */
+  hoverFunction = (cursorPos: Position) => {
     let action = this.currentSceneManager.handleHover(cursorPos);
     if (this.gameState.inTransition) {
       action = new ChangeCursorState(CURSORNONE);
@@ -247,12 +269,18 @@ export class LevelManager extends GameObject {
       action = new ChangeCursorState(CURSORDEFAULT);
     }
     return action;
-  }
+  };
 
-  handleClick(
+  /**
+   * handles the currentSceneManager's click Action
+   * @param cursorPos
+   * @param button
+   * @returns
+   */
+  clickFunction = (
     cursorPos: Position,
     button: typeof CLICKRIGHT | typeof CLICKLEFT
-  ) {
+  ) => {
     if (this.gameState.gameOver) {
       return new RestartGame();
     }
@@ -263,9 +291,15 @@ export class LevelManager extends GameObject {
       return;
     }
     this.handleAction(this.currentSceneManager.handleClick(cursorPos, button));
-  }
+  };
 
-  handleHeld(cursorPos: Position, button: cursorClick) {
+  /**
+   * handles the currentSceneManager's held Action
+   * @param cursorPos
+   * @param button
+   * @returns
+   */
+  heldFunction = (cursorPos: Position, button: cursorClick) => {
     if (
       this.gameState.inTransition ||
       this.gameState.inBook ||
@@ -274,9 +308,5 @@ export class LevelManager extends GameObject {
       return;
     }
     this.handleAction(this.currentSceneManager.handleHeld(cursorPos, button));
-  }
-
-  checkBattleEnd() {
-    this.handleAction(this.battleManager.checkBattleEnd());
-  }
+  };
 }

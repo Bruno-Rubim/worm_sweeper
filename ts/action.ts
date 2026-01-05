@@ -15,6 +15,7 @@ export class ChangeCursorState extends Action {
   }
 }
 
+// Calls for the transition object in levelManager. Can carry a function and delay.
 export class Transition extends Action {
   transFunc?: Function;
   transDelay?: number;
@@ -29,6 +30,7 @@ export class Transition extends Action {
   }
 }
 
+// Calls for the next level, holds the position which that level's cave will start.
 export class NextLevel extends Action {
   starterGridPos: Position;
   constructor(starterGridPos: Position) {
@@ -37,6 +39,7 @@ export class NextLevel extends Action {
   }
 }
 
+// Calls to change the current scene
 export class ChangeScene extends Action {
   newScene: "cave" | "shop" | "battle";
   constructor(newScene: "cave" | "shop" | "battle") {
@@ -45,6 +48,7 @@ export class ChangeScene extends Action {
   }
 }
 
+// Calls to buy a shop item
 export class BuyShopItem extends Action {
   shopItem: ShopItem;
   constructor(shopItem: ShopItem) {
@@ -53,6 +57,7 @@ export class BuyShopItem extends Action {
   }
 }
 
+// Calls for consumption of a consumable item
 export class ConsumeItem extends Action {
   itemName: string;
   constructor(itemName: string) {
@@ -61,6 +66,7 @@ export class ConsumeItem extends Action {
   }
 }
 
+// Calls for an enemy attack, holding which enemy is attacking and their damage
 export class EnemyAtack extends Action {
   damage: number;
   enemy: Enemy;
@@ -71,8 +77,10 @@ export class EnemyAtack extends Action {
   }
 }
 
+// Calls to open/close the rule book
 export class ToggleBook extends Action {}
 
+// Calls to render an item description next to the cursor
 export class ItemDescription extends Action {
   description: string;
   side: typeof LEFT | typeof RIGHT;
@@ -89,7 +97,10 @@ export class ItemDescription extends Action {
   }
 }
 
+// Calls to restart the game
 export class RestartGame extends Action {}
+
+// Calls to start a battle
 export class StartBattle extends Action {
   enemyCount: number;
   constructor(enemyCount: number) {
@@ -98,4 +109,5 @@ export class StartBattle extends Action {
   }
 }
 
+// Calls to ring the bell item
 export class RingBell extends Action {}

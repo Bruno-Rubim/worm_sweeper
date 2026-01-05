@@ -1,15 +1,16 @@
 import { utils } from "./utils.js";
 
+// Represents sounds in game
 export class Sound {
   srcList: string[] = [];
   audioList: HTMLAudioElement[] = [];
   volumeMult: number;
 
-  constructor(soundName: string, volumeMult?: number, altCount?: number) {
-    altCount ??= 1;
+  constructor(soundName: string, volumeMult?: number, altCount: number = 1) {
     if (altCount == 1) {
       this.srcList.push("./sounds/" + soundName + ".mp3");
     } else {
+      // If there are alternate versions, saves all alternate versions to the source list
       for (let i = 0; i < altCount; i++) {
         this.srcList.push("./sounds/" + soundName + "-" + i + ".mp3");
       }
@@ -17,10 +18,17 @@ export class Sound {
     this.volumeMult = volumeMult ?? 1;
   }
 
+  /**
+   * A random audio element from the audio list
+   */
   get audio() {
     return this.audioList[utils.randomArrayId(this.audioList)]!;
   }
 
+  /**
+   * Loads all audio elments from the audio list
+   * @returns
+   */
   load() {
     const { srcList, audioList } = this;
     let promises: Promise<HTMLAudioElement>[] = [];
@@ -52,6 +60,7 @@ export class Sound {
   }
 }
 
+// List of sounds from the game
 export const sounds = {
   bell: new Sound("bell", 0.07),
   clear: new Sound("clear", 0.5),
@@ -62,6 +71,7 @@ export const sounds = {
   detonate: new Sound("detonate", 0.2),
 };
 
+// Makes a list of all sounds and awaits their loading
 const soundArr = Object.values(sounds);
 const promiseArrays = soundArr.map((sound) => sound.load());
 promiseArrays.forEach(async (arr) => {

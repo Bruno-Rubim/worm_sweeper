@@ -5,6 +5,7 @@ import { renderBorder } from "./renderBorder.js";
 import { timerQueue } from "./timer/timerQueue.js";
 import { SoundManager } from "./soundManager.js";
 
+// Object that holds all information of the game and its pieces
 export class GameManager {
   gameState = new GameState();
   soundManager = new SoundManager();
@@ -20,6 +21,9 @@ export class GameManager {
     };
   }
 
+  /**
+   * Clears the timer queue, restarts the gameState and replaces the levelManager
+   */
   restart() {
     timerQueue.splice(0, Infinity);
     this.gameState.restart();

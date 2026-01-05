@@ -42,7 +42,7 @@ export class Item extends GameObject {
 
   clone(): Item {
     return new Item({
-      pos: new Position().addPos(this.pos),
+      pos: new Position().add(this.pos),
       spriteSheetPos: this.spriteSheetPos,
       name: this.name,
       shopName: this.shopName,

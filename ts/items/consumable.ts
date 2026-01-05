@@ -79,7 +79,7 @@ consumableDic.time_potion.render = (canvasManager: CanvasManager) => {
     16,
     12,
     1,
-    consumableDic.time_potion.birthTic,
+    consumableDic.time_potion.firstAnimationTic,
     timeTracker.currentGameTic
   );
   canvasManager.renderAnimationFrame(
@@ -89,7 +89,7 @@ consumableDic.time_potion.render = (canvasManager: CanvasManager) => {
     16,
     12,
     1,
-    consumableDic.time_potion.birthTic,
+    consumableDic.time_potion.firstAnimationTic,
     timeTracker.currentGameTic,
     1 / 12,
     new Position(0, 1)

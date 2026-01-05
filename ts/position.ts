@@ -1,3 +1,4 @@
+// Class of a 2d position in game. Used to track where the cursor and gameObjects are at in the game
 export default class Position {
   x: number = 0;
   y: number = 0;
@@ -7,6 +8,12 @@ export default class Position {
     this.y = y ?? 0;
   }
 
+  /**
+   * Updates x and y values with another Position's values or 2 new values
+   * @param x number | Position
+   * @param y? number
+   * @returns
+   */
   update(x: number | Position, y?: number) {
     if (x instanceof Position) {
       this.x = x.x;
@@ -21,63 +28,55 @@ export default class Position {
   }
 
   /**
-   *
-   * @param pos
+   * Adds both x and y by two given numbers or by the x and y of a given Position
+   * @param x number | Position
+   * @param y? number
    * @returns
    */
-  addPos(pos: Position) {
-    return new Position(this.x + pos.x, this.y + pos.y);
-  }
-
-  /**
-   *
-   * @param pos
-   * @returns
-   */
-  subtractPos(pos: Position) {
-    return new Position(this.x - pos.x, this.y - pos.y);
-  }
-
-  /**
-   *
-   * @param x
-   * @param y
-   * @returns
-   */
-  add(x: number, y: number) {
+  add(x: number | Position, y?: number) {
+    y ??= 0;
+    if (x instanceof Position) {
+      return new Position(this.x + x.x, this.y + x.y);
+    }
     return new Position(this.x + x, this.y + y);
   }
 
   /**
-   *
-   * @param x
-   * @param y
+   * Subtracts both x and y by two given numbers or by the x and y of a given Position
+   * @param x number | Position
+   * @param y? number
    * @returns
    */
-  subtract(x: number, y: number) {
+  subtract(x: number | Position, y?: number) {
+    y ??= 0;
+    if (x instanceof Position) {
+      return new Position(this.x - x.x, this.y - x.y);
+    }
     return new Position(this.x - x, this.y - y);
   }
 
   /**
-   *
-   * @param x
-   * @param y
+   * Multiplies both x and y by a given multiplier
+   * @param multiplier
    * @returns
    */
-  multiply(x: number, y?: number) {
-    return new Position(this.x * x, this.y * (y ?? x));
+  multiply(multiplier: number) {
+    return new Position(this.x * multiplier, this.y * multiplier);
   }
 
   /**
-   *
-   * @param x
-   * @param y
+   * Divides both x and y by a given divisor, can be rounded
+   * @param divisor number
+   * @param round boolean = true
    * @returns
    */
-  divide(x: number, round: boolean = true) {
+  divide(divisor: number, round: boolean = true) {
     if (round) {
-      return new Position(Math.floor(this.x / x), Math.floor(this.y / x));
+      return new Position(
+        Math.floor(this.x / divisor),
+        Math.floor(this.y / divisor)
+      );
     }
-    return new Position(this.x / x, this.y / x);
+    return new Position(this.x / divisor, this.y / divisor);
   }
 }

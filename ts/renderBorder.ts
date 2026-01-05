@@ -1,12 +1,7 @@
 import CanvasManager from "./canvasManager.js";
 import GameObject from "./gameObject.js";
 import GameState, { type inventory } from "./gameState.js";
-import {
-  GAMEHEIGHT,
-  GAMEWIDTH,
-  LEFT,
-  CENTER,
-} from "./global.js";
+import { GAMEHEIGHT, GAMEWIDTH, LEFT, CENTER } from "./global.js";
 import Position from "./position.js";
 import { sprites } from "./sprites.js";
 
@@ -20,7 +15,7 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
   canvasManager.renderText(
     "numbers_blue",
     new Position(6, 6),
-    "$tim " + Math.floor(gameState.gameTimer.secondsRemaining).toString(),
+    "$tim " + Math.floor(gameState.gameTimer.secondsRemaining).toString()
   );
 
   // Worms number
@@ -28,7 +23,7 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
     "numbers_red",
     new Position(62, 6),
     "$wrm " + gameState.level.cave.wormsLeft.toString(),
-    CENTER,
+    CENTER
   );
 
   // Blocks left
@@ -36,7 +31,7 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
     "numbers_brown",
     new Position(GAMEWIDTH - 66, 6),
     "$blk " + gameState.level.cave.blocksLeft.toString(),
-    CENTER,
+    CENTER
   );
 
   // Gold number
@@ -44,14 +39,14 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
     "numbers_gold",
     new Position(GAMEWIDTH - 4, 6),
     "$gld " + gameState.gold.toString(),
-    LEFT,
+    LEFT
   );
 
   // Level number
   canvasManager.renderText(
     "numbers_green",
     new Position(6, GAMEHEIGHT - 14),
-    "$dor " + (gameState.level.depth + 1).toString(),
+    "$dor " + (gameState.level.depth + 1).toString()
   );
 
   // Death count
@@ -59,15 +54,15 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
     "numbers_red",
     new Position(GAMEWIDTH - 4, GAMEHEIGHT - 14),
     "$run" + gameState.deathCount.toString(),
-    LEFT,
+    LEFT
   );
 
   // Player health
   canvasManager.renderText(
     "icons",
-    new Position(88, GAMEHEIGHT - 14),
+    new Position(GAMEWIDTH / 2, GAMEHEIGHT - 14),
     "$hrt".repeat(gameState.health),
-    CENTER,
+    CENTER
   );
 }
 
@@ -86,6 +81,7 @@ function renderItems(canvasManager: CanvasManager, gameState: GameState) {
   }
 }
 
+// Object for the border of the game
 const gameBorder = new GameObject({
   sprite: sprites.game_border,
   height: GAMEHEIGHT,
@@ -99,7 +95,7 @@ const gameBorder = new GameObject({
  */
 export function renderBorder(
   canvasManager: CanvasManager,
-  gameState: GameState,
+  gameState: GameState
 ) {
   gameBorder.render(canvasManager);
   renderItems(canvasManager, gameState);

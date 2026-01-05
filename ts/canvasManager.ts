@@ -50,7 +50,7 @@ export default class CanvasManager {
       0,
       0,
       this.canvasElement.width,
-      this.canvasElement.height,
+      this.canvasElement.height
     );
   }
 
@@ -67,10 +67,20 @@ export default class CanvasManager {
       Math.floor(pos.x * this.renderScale),
       Math.floor(pos.y * this.renderScale),
       width * this.renderScale,
-      height * this.renderScale,
+      height * this.renderScale
     );
   }
 
+  /**
+   * Renders an image from a given spriteSheet with given position and dimensions on screen
+   * @param spriteSheet
+   * @param pos
+   * @param width
+   * @param height
+   * @param posInSheet its position in the sheet
+   * @param widthInSheet?width of sprites in sheet (if sprites's size is different than what will be on screen)
+   * @param heightInSheet?height of sprites in sheet (if sprites's size is different than what will be on screen)
+   */
   renderSpriteFromSheet(
     spriteSheet: Sprite,
     pos: Position,
@@ -78,7 +88,7 @@ export default class CanvasManager {
     height: number,
     posInSheet: Position,
     widthInSheet?: number,
-    heightInSheet?: number,
+    heightInSheet?: number
   ) {
     widthInSheet ??= width;
     heightInSheet ??= height;
@@ -91,10 +101,26 @@ export default class CanvasManager {
       Math.floor(pos.x * this.renderScale),
       Math.floor(pos.y * this.renderScale),
       width * this.renderScale,
-      height * this.renderScale,
+      height * this.renderScale
     );
   }
 
+  /**
+   * Renders an animation frame given its spriteSheet details, which tic the animation started and the current tic.
+   * Can loop animaiton and have a position shift within the spritesheet
+   * @param spriteSheet
+   * @param pos
+   * @param width
+   * @param height
+   * @param sheetWidthInFrames
+   * @param sheetHeightInFrames
+   * @param animationStartTic
+   * @param currentTic
+   * @param animationSpeed
+   * @param sheetPosShift
+   * @param loop
+   * @returns
+   */
   renderAnimationFrame(
     spriteSheet: Sprite,
     pos: Position,
@@ -102,23 +128,23 @@ export default class CanvasManager {
     height: number,
     sheetWidthInFrames: number,
     sheetHeightInFrames: number,
-    birthTic: number,
+    animationStartTic: number,
     currentTic: number,
     animationSpeed: number = 1,
     sheetPosShift: Position = new Position(),
-    loop: boolean = true,
+    loop: boolean = true
   ) {
     const totalFrames = sheetWidthInFrames * sheetHeightInFrames;
     const currentFrame =
-      Math.floor((currentTic - birthTic) * animationSpeed) %
+      Math.floor((currentTic - animationStartTic) * animationSpeed) %
       (loop ? sheetWidthInFrames * sheetHeightInFrames : Infinity);
     if (!loop && currentFrame > totalFrames) {
       return;
     }
     const sheetPos = new Position(
       currentFrame % sheetWidthInFrames,
-      Math.floor(currentFrame / sheetWidthInFrames),
-    ).addPos(sheetPosShift);
+      Math.floor(currentFrame / sheetWidthInFrames)
+    ).add(sheetPosShift);
     this.ctx.drawImage(
       spriteSheet.img,
       sheetPos.x * width,
@@ -128,17 +154,31 @@ export default class CanvasManager {
       Math.floor(pos.x * this.renderScale),
       Math.floor(pos.y * this.renderScale),
       width * this.renderScale,
-      height * this.renderScale,
+      height * this.renderScale
     );
   }
 
+  // TO-DO: Analyze if this function can be broken down, it's huge
+  /**
+   * Renders a given text with a given font starting from a given position.
+   * Can go from position to left, right or centered at position.
+   * Breaks line at a given limit width.
+   * Can have a varying font size
+   * @param font
+   * @param pos
+   * @param text
+   * @param direction
+   * @param limitWidth
+   * @param fontSize
+   * @returns
+   */
   renderText(
     font: keyof typeof fontMaps,
     pos: Position,
     text: string,
     direction: typeof LEFT | typeof RIGHT | typeof CENTER = RIGHT,
     limitWidth: number = Infinity,
-    fontSize = 1,
+    fontSize = 1
   ) {
     const fontMap = fontMaps[font]!;
     const words = text.split(" ");
@@ -201,7 +241,7 @@ export default class CanvasManager {
               fontMaps.icons.cellHeight * fontSize,
               fontMaps.icons.charMaps[iconWord]!.pos,
               fontMaps.icons.cellWidth,
-              fontMaps.icons.cellHeight,
+              fontMaps.icons.cellHeight
             );
             currentX += iconChar.width * fontSize;
           } else {
@@ -218,7 +258,7 @@ export default class CanvasManager {
           fontMap.cellHeight * fontSize,
           charMap.pos,
           fontMap.cellWidth,
-          fontMap.cellHeight,
+          fontMap.cellHeight
         );
         currentX += charMap.width * fontSize;
       }

@@ -1,3 +1,4 @@
+// Represents an image in game
 export class Sprite {
   src: string;
   img: HTMLImageElement;
@@ -9,6 +10,7 @@ export class Sprite {
     this.img = new Image();
   }
 
+  // Waits for image to load
   load() {
     const { src, img } = this;
     return new Promise((done, fail) => {
@@ -64,4 +66,5 @@ export const sprites = {
 
 const spriteArr = Object.values(sprites);
 const promises = spriteArr.map((sprite) => sprite.load());
+// awaits all images on spriteArr to load
 await Promise.all(promises);

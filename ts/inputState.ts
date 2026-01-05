@@ -13,6 +13,7 @@ type inputStateType = {
   keyboard: Record<string, keyStates>;
 };
 
+// Holds the current state of mouse and keyboard inputs
 export const inputState: inputStateType = {
   mouse: {
     pos: new Position(),
@@ -24,6 +25,10 @@ export const inputState: inputStateType = {
   keyboard: {},
 };
 
+/**
+ * Binds enventListeners to an HTML element to take player inputs and update the inputState
+ * @param element
+ */
 export function bindListeners(element: HTMLElement) {
   element.addEventListener("mousemove", (e) => {
     inputState.mouse.pos = new Position(e.offsetX, e.offsetY);

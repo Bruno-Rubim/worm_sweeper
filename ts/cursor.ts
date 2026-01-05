@@ -13,6 +13,7 @@ export const CURSORBATTLE = "cursor_battle";
 export const CURSORBOMB = "cursor_bomb";
 export const CURSORNONE = "cursor_none";
 
+// Different cursor states and their position on the cursor spriteSheet
 const cursorSheetPos = {
   [CURSORDEFAULT]: new Position(0, 0),
   [CURSORPICAXE]: new Position(1, 0),
@@ -25,6 +26,7 @@ const cursorSheetPos = {
 
 export type cursorState = keyof typeof cursorSheetPos;
 
+// Object of item descriptions when hovering on border
 class Description extends GameObject {
   side: typeof RIGHT | typeof LEFT = RIGHT;
   text: string = "";

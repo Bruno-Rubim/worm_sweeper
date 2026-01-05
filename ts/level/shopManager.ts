@@ -19,6 +19,7 @@ import { sprites } from "../sprites.js";
 import { handleMouseClick, handleMouseHover } from "../updateGame.js";
 import SceneManager from "./sceneManager.js";
 
+// Handles rendering and interactions with the shop scene of the current level
 export default class ShopManager extends SceneManager {
   constructor(
     gameState: GameState,
@@ -28,6 +29,10 @@ export default class ShopManager extends SceneManager {
     super(gameState, scenePos, soundManager);
   }
 
+  /**
+   * Renders the shop's background and all its objects (shopItems and the exit sign)
+   * @param canvasManager
+   */
   render = (canvasManager: CanvasManager) => {
     canvasManager.renderSprite(
       sprites.bg_shop,
@@ -92,6 +97,7 @@ export default class ShopManager extends SceneManager {
           inventory.passive_6 = item;
           action.shopItem.hidden = true;
         }
+        // Currently if you have 6 passive items, buying another one will just discart it, idk if that's how it should go. TO-DO: Idk think about how else it can be
       }
       return;
     }

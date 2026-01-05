@@ -31,6 +31,7 @@ import {
 } from "./block.js";
 import SceneManager from "./sceneManager.js";
 
+// Handles rendering and interactions with the cave scene of the current Level
 export default class CaveManager extends SceneManager {
   constructor(
     gameState: GameState,
@@ -39,13 +40,22 @@ export default class CaveManager extends SceneManager {
   ) {
     super(gameState, scenePos, soundManager);
   }
+
+  /**
+   * Returns a block from a position in the cave grid
+   * @param pos
+   * @returns
+   */
   getBlockFromGamePos(pos: Position) {
     const blockPos = pos
-      .subtractPos(this.pos)
+      .subtract(this.pos)
       .divide(this.gameState.level.cave.levelScale * 16);
     return this.gameState.level.cave.blockMatrix[blockPos.x]![blockPos.y]!;
   }
 
+  /**
+   * Checks if the cave has been cleared (all worms marked and all blocks broken)
+   */
   checkCaveClear() {
     if (this.gameState.level.cave.checkClear()) {
       if (this.gameState.hasItem("health_insurance")) {
@@ -57,11 +67,15 @@ export default class CaveManager extends SceneManager {
     }
   }
 
+  /**
+   * Renders all blocks in the cave
+   * @param canvasManager
+   */
   render = (canvasManager: CanvasManager) => {
     const blockSize = 16 * this.gameState.level.cave.levelScale;
     for (let i = 0; i < this.gameState.level.cave.size; i++) {
       for (let j = 0; j < this.gameState.level.cave.size; j++) {
-        const blockPos = new Position(i * blockSize, j * blockSize).addPos(
+        const blockPos = new Position(i * blockSize, j * blockSize).add(
           this.pos
         );
         const block = this.gameState.level.cave.blockMatrix[i]![j]!;
@@ -116,16 +130,14 @@ export default class CaveManager extends SceneManager {
     }
   };
 
+  // TO-DO: make a handleAction function for this element instead of leaving it all for the handleClick
   handleClick = (
     cursorPos: Position,
     button: typeof CLICKRIGHT | typeof CLICKLEFT
   ) => {
     const block = this.getBlockFromGamePos(cursorPos);
     if (!this.gameState.level.cave.started) {
-      this.gameState.level.cave.start(
-        block.gridPos,
-        this.gameState.passiveItemNames
-      );
+      this.gameState.level.cave.start(block.gridPos, this.gameState.itemNames);
       this.gameState.gameTimer.start();
       return;
     }

@@ -27,6 +27,7 @@ export type inventory = {
   passive_6: Item;
 };
 
+// Holds the current state of the game at any given time
 export default class GameState {
   gold: number = 0;
   gameTimer: Timer;
@@ -72,6 +73,9 @@ export default class GameState {
     timerQueue.push(this.attackAnimationTimer);
   }
 
+  /**
+   * Pauses the game timer and any timer in the timerQueue that has the class "gameTimer_sync"
+   */
   pauseGameTimer() {
     this.gameTimer.pause();
     timerQueue.forEach((x) => {
@@ -81,6 +85,9 @@ export default class GameState {
     });
   }
 
+  /**
+   * Unpauses the game timer and any timer in the timerQueue that has the class "gameTimer_sync"
+   */
   unpauseGameTimer() {
     this.gameTimer.unpause();
     timerQueue.forEach((x) => {
@@ -90,12 +97,18 @@ export default class GameState {
     });
   }
 
+  /**
+   * Turns game over on, pauses the gameTimer and reveals all blocks in the cave
+   */
   lose() {
     this.gameOver = true;
     this.level.cave.revealAllBlocks();
     timeTracker.pause();
   }
 
+  /**
+   * Resets all timers and sets game state values to "default" (there is currently no set default)
+   */
   restart() {
     this.gameTimer.restart();
     this.tiredTimer.restart();
@@ -131,7 +144,10 @@ export default class GameState {
     timeTracker.unpause();
   }
 
-  get passiveItemNames() {
+  /**
+   * lists all item names from inventory
+   */
+  get itemNames() {
     return [
       this.inventory.passive_1.name,
       this.inventory.passive_2.name,
@@ -139,9 +155,16 @@ export default class GameState {
       this.inventory.passive_4.name,
       this.inventory.passive_5.name,
       this.inventory.passive_6.name,
+      this.inventory.consumable.name,
+      this.inventory.weapon.name,
+      this.inventory.shield.name,
+      this.inventory.armor.name,
     ];
   }
 
+  /**
+   * returns the value of current defense and reflection from armor, and if is defending with shield its defense and reflection as well
+   */
   get currentDefense() {
     return (
       this.inventory.armor.defense +
@@ -152,6 +175,9 @@ export default class GameState {
     );
   }
 
+  /**
+   * returns the value of current reflection from armor, and if is defending with shield its reflection as well
+   */
   get currentReflection() {
     return (
       this.inventory.armor.reflection +
@@ -159,7 +185,12 @@ export default class GameState {
     );
   }
 
+  /**
+   * Checks if the list of item names from inventory includes a given item name
+   * @param itemName string
+   * @returns
+   */
   hasItem(itemName: string) {
-    return this.passiveItemNames.includes(itemName);
+    return this.itemNames.includes(itemName);
   }
 }
