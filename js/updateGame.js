@@ -141,7 +141,8 @@ function handleAction(gameManager, action) {
         if (gameManager.gameState.inBook) {
             timeTracker.pause();
         }
-        else if (!gameManager.gameState.paused && !gameManager.gameState.gameOver) {
+        else if (!gameManager.gameState.paused &&
+            !gameManager.gameState.gameOver) {
             timeTracker.unpause();
         }
         return;
@@ -162,6 +163,9 @@ function handleAction(gameManager, action) {
         gameManager.gameState.health -= Math.max(0, action.damage - gameManager.gameState.currentDefense);
         action.enemy.health -= gameManager.gameState.currentReflection;
         if (gameManager.gameState.health < 1) {
+            if (inputState.mouse.heldLeft || inputState.mouse.heldRight) {
+                gameManager.gameState.heldWhileDeath = true;
+            }
             gameManager.gameState.lose();
         }
         gameManager.levelManager.checkBattleEnd();

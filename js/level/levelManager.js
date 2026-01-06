@@ -161,7 +161,9 @@ export class LevelManager extends GameObject {
         if (this.gameState.inTransition) {
             action = new ChangeCursorState(CURSORNONE);
         }
-        if (this.gameState.inBook || this.gameState.gameOver || this.gameState.paused) {
+        if (this.gameState.inBook ||
+            this.gameState.gameOver ||
+            this.gameState.paused) {
             action = new ChangeCursorState(CURSORDEFAULT);
         }
         return action;
@@ -171,6 +173,10 @@ export class LevelManager extends GameObject {
             return;
         }
         if (this.gameState.gameOver) {
+            if (this.gameState.heldWhileDeath) {
+                this.gameState.heldWhileDeath = false;
+                return;
+            }
             return new RestartGame();
         }
         if (this.gameState.inTransition) {
