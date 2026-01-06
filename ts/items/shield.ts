@@ -55,9 +55,9 @@ export const shieldDic = {
     bigSprite: sprites.big_shield_jade,
     name: "jade_shield",
     shopName: "Jade Shield",
-    cost: 41,
+    cost: 20,
     cooldown: 1,
-    reflection: 1,
+    reflection: 1.3,
   }),
   steel_shield: new Shield({
     spriteSheetPos: new Position(4, 1),
