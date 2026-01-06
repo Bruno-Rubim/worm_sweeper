@@ -6,7 +6,7 @@ export class Sound {
   audioList: HTMLAudioElement[] = [];
   volumeMult: number;
 
-  constructor(soundName: string, volumeMult?: number, altCount: number = 1) {
+  constructor(soundName: string, volumeMult?: number, altCount: number = 1, minPitch: number = 1, maxPitch?: number) {
     if (altCount == 1) {
       this.srcList.push("./sounds/" + soundName + ".mp3");
     } else {
@@ -16,6 +16,8 @@ export class Sound {
       }
     }
     this.volumeMult = volumeMult ?? 1;
+    this.minPitch = minPitch;
+    this.maxPitch = maxPitch ?? minPitch;
   }
 
   /**
@@ -62,13 +64,13 @@ export class Sound {
 
 // List of sounds from the game
 export const sounds = {
-  bell: new Sound("bell", 0.3),
-  clear: new Sound("clear", 0.5),
-  beep: new Sound("beep", 0.5),
-  bomb: new Sound("bomb", 0.8),
-  door: new Sound("door", 0.7, 3),
-  steps: new Sound("steps", 0.7),
-  detonate: new Sound("detonate", 0.2),
+  bell: new Sound("bell", 0.3, 1, 0.9, 1.1),
+  clear: new Sound("clear", 0.5, 1, 0.9, 1.1),
+  beep: new Sound("beep", 0.5, 1, 0.9, 1.1),
+  bomb: new Sound("bomb", 0.8, 1, 0.9, 1.1),
+  door: new Sound("door", 0.7, 3, 0.9, 1.1),
+  steps: new Sound("steps", 0.7, 1),
+  detonate: new Sound("detonate", 0.2, 1, 0.9, 1.1),
 };
 
 // Makes a list of all sounds and awaits their loading
