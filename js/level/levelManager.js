@@ -161,12 +161,15 @@ export class LevelManager extends GameObject {
         if (this.gameState.inTransition) {
             action = new ChangeCursorState(CURSORNONE);
         }
-        if (this.gameState.inBook || this.gameState.gameOver) {
+        if (this.gameState.inBook || this.gameState.gameOver || this.gameState.paused) {
             action = new ChangeCursorState(CURSORDEFAULT);
         }
         return action;
     };
     clickFunction = (cursorPos, button) => {
+        if (this.gameState.paused) {
+            return;
+        }
         if (this.gameState.gameOver) {
             return new RestartGame();
         }

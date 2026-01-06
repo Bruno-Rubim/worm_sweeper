@@ -8,6 +8,7 @@ export const CONTENTDOORSHOPOPEN = "door_shop_open";
 export const CONTENTBOMB = "bomb";
 export const CONTENTBOMBOVERLAY = "bomb_overlay";
 export const CONTENTWORM = "worm";
+export const CONTENTWATER = "water";
 export const blockSheetPos = {
     [CONTENTDOOREXIT]: new Position(0, 0),
     [CONTENTDOOREXITOPEN]: new Position(1, 0),
@@ -22,19 +23,21 @@ export const blockSheetPos = {
     marked: new Position(9, 1),
     [CONTENTBOMBOVERLAY]: new Position(0, 2),
     [CONTENTBOMB]: new Position(1, 2),
+    [CONTENTWATER]: new Position(4, 2),
 };
 export default class Block {
     gamePos;
     gridPos;
+    content = CONTENTEMPTY;
     hasGold = false;
     hidden = true;
     broken = false;
-    content = CONTENTEMPTY;
-    starter = false;
     marked = false;
-    drilled = false;
-    threatLevel = 0;
     markerLevel = 0;
+    threatLevel = 0;
+    drilled = false;
+    starter = false;
+    cursorHovering = false;
     bombTimer = null;
     constructor(args) {
         this.gridPos = args.gridPos;
@@ -62,6 +65,7 @@ export default class Block {
         if (this.bombTimer instanceof Timer) {
             return blockSheetPos.bomb.add(Math.min(2, Math.floor(this.bombTimer.percentage / ((1 / 3) * 100))), 0);
         }
+        const pos = blockSheetPos[this.content];
         return blockSheetPos[this.content];
     }
 }

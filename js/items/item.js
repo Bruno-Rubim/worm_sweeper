@@ -68,7 +68,7 @@ const book = new Item({
     cost: 0,
     description: "Click to open the guide book.",
 });
-class SilverBell extends Item {
+export class SilverBell extends Item {
     rang = false;
     ringTimer = new Timer({
         goalSecs: 60,
@@ -85,10 +85,12 @@ class SilverBell extends Item {
             spriteSheetPos: new Position(2, 4),
             name: "silver_bell",
             shopName: "Silver Bell",
-            cost: 20,
+            cost: 15,
             description: "Reveals the location of doors. Recharges outside of shop every 60 seconds.",
         });
-        timerQueue.push(this.ringTimer);
+        if (!timerQueue.includes(this.ringTimer)) {
+            timerQueue.push(this.ringTimer);
+        }
     }
     render(canvasManager) {
         if (this.ringTimer.inMotion) {

@@ -1,16 +1,15 @@
 import GameObject from "../gameObject.js";
 import { CLICKLEFT } from "../global.js";
-import { BuyShopItem, RingBell } from "../action.js";
+import { BuyShopItem } from "../action.js";
 import Position from "../position.js";
 import { sprites } from "../sprites.js";
 import timeTracker from "../timer/timeTracker.js";
 import { armorDic } from "./armor.js";
 import { consumableDic } from "./consumable.js";
-import { itemDic } from "./item.js";
+import { itemDic, SilverBell } from "./item.js";
 import { shieldDic } from "./shield.js";
 import { weaponDic } from "./weapon.js";
 import { timerQueue } from "../timer/timerQueue.js";
-import { Timer } from "../timer/timer.js";
 const items = {
     ...weaponDic,
     ...armorDic,
@@ -29,6 +28,9 @@ export class ShopItem extends GameObject {
         });
         this.item = items[itemName];
         this.clickFunction = (cursorPos, button) => {
+            if (this.item instanceof SilverBell) {
+                timerQueue.push(this.item.ringTimer);
+            }
             if (button == CLICKLEFT)
                 return new BuyShopItem(this);
         };

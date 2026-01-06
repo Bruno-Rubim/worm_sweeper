@@ -1,12 +1,12 @@
 import { ChangeCursorState, ChangeScene, NextLevel, StartBattle, } from "../action.js";
-import { CURSORARROW, CURSORDEFAULT, CURSORDETONATOR, CURSORPICAXE, } from "../cursor.js";
+import { CURSORARROW, CURSORDEFAULT, CURSORDETONATOR, CURSORGOLDWATER, CURSORPICAXE, } from "../cursor.js";
 import { CLICKLEFT } from "../global.js";
 import Position from "../position.js";
 import sounds from "../sounds.js";
 import { sprites } from "../sprites.js";
 import { Timer } from "../timer/timer.js";
 import { timerQueue } from "../timer/timerQueue.js";
-import { blockSheetPos, CONTENTBOMB, CONTENTBOMBOVERLAY, CONTENTDOOREXIT, CONTENTDOOREXITOPEN, CONTENTDOORSHOP, CONTENTDOORSHOPOPEN, CONTENTEMPTY, } from "./block.js";
+import { blockSheetPos, CONTENTBOMB, CONTENTBOMBOVERLAY, CONTENTDOOREXIT, CONTENTDOOREXITOPEN, CONTENTDOORSHOP, CONTENTDOORSHOPOPEN, CONTENTEMPTY, CONTENTWATER, } from "./block.js";
 import SceneManager from "./sceneManager.js";
 export default class CaveManager extends SceneManager {
     constructor(gameState, scenePos, soundManager) {
@@ -103,6 +103,10 @@ export default class CaveManager extends SceneManager {
                     case CONTENTDOORSHOPOPEN:
                         this.soundManager.playSound(sounds.steps);
                         return new ChangeScene("shop");
+                    case CONTENTWATER:
+                        this.gameState.gold += 1;
+                        this.gameState.gameTimer.addSecs(-10);
+                        break;
                     case CONTENTEMPTY:
                         if (this.gameState.hasItem("detonator") &&
                             block.threatLevel > 0 &&
@@ -134,18 +138,26 @@ export default class CaveManager extends SceneManager {
         }
     };
     handleHover = (cursorPos) => {
+        this.gameState.level.cave.allBLocks.forEach((block) => {
+            block.cursorHovering = false;
+        });
         const block = this.getBlockFromGamePos(cursorPos);
+        block.cursorHovering = true;
         if (this.gameState.holdingBomb) {
             this.gameState.level.cave.setBombOverlay(block);
         }
         else {
             this.gameState.level.cave.setBombOverlay();
         }
-        if (block.broken &&
-            this.gameState.hasItem("detonator") &&
-            block.threatLevel > 0 &&
-            block.threatLevel == block.markerLevel) {
-            return new ChangeCursorState(CURSORDETONATOR);
+        if (block.broken) {
+            if (block.content == CONTENTWATER) {
+                return new ChangeCursorState(CURSORGOLDWATER);
+            }
+            if (this.gameState.hasItem("detonator") &&
+                block.threatLevel > 0 &&
+                block.threatLevel == block.markerLevel) {
+                return new ChangeCursorState(CURSORDETONATOR);
+            }
         }
         if (block.broken &&
             [CONTENTDOOREXIT, CONTENTDOORSHOP].includes(block.content)) {

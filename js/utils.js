@@ -1,5 +1,9 @@
 const logDict = {};
 class Utils {
+    randomInt(max, min = 0) {
+        const r = Math.floor(Math.random() * max + min) + min;
+        return r;
+    }
     logOnce(thing) {
         const text = JSON.stringify(thing);
         if (logDict[text]) {

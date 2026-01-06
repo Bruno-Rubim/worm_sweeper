@@ -141,7 +141,7 @@ function handleAction(gameManager, action) {
         if (gameManager.gameState.inBook) {
             timeTracker.pause();
         }
-        else if (!gameManager.gameState.paused) {
+        else if (!gameManager.gameState.paused && !gameManager.gameState.gameOver) {
             timeTracker.unpause();
         }
         return;
