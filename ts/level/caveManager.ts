@@ -64,7 +64,10 @@ export default class CaveManager extends SceneManager {
         this.gameState.health++;
       }
       this.gameState.gold += 5;
-      this.gameState.gameTimer.addSecs(5);
+      if (this.gameState.hasItem("gold_bug")) {
+        this.gameState.gold += 5;
+      }
+
       this.soundManager.playSound(sounds.clear);
     }
   }

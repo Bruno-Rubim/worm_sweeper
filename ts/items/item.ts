@@ -173,21 +173,21 @@ export const itemDic = {
     name: "gold_bug",
     shopName: "Gold Bug",
     cost: 20,
-    description: "More gold. More worms.\nThe bug's curse is everlasting.",
+    description: "More gold during caves and when clearing levels. More worms.",
   }),
   silver_bell: silver_bell,
   dark_crystal: new Item({
     spriteSheetPos: new Position(4, 4),
     name: "dark_crystal",
     shopName: "Dark Crystal",
-    cost: 25,
+    cost: 15,
     description: "Allows you to break blocks you can't see.",
   }),
   detonator: new Item({
     spriteSheetPos: new Position(6, 4),
     name: "detonator",
     shopName: "Detonator",
-    cost: 23,
+    cost: 20,
     description:
       "Use this to break all unmarked blocks around a block instantly.",
   }),
@@ -195,9 +195,9 @@ export const itemDic = {
     spriteSheetPos: new Position(8, 4),
     name: "drill",
     shopName: "Drill",
-    cost: 36,
+    cost: 12,
     description:
-      "When breaking a safe block all connected safe blocks are also broken.",
+      "When breaking a safe block all connected safe blocks are also broken. Doesn't collect gold.",
   }),
   health_insurance: new Item({
     spriteSheetPos: new Position(10, 4),
