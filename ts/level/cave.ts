@@ -3,10 +3,12 @@ import Block, {
   CONTENTDOOREXIT,
   CONTENTDOORSHOP,
   CONTENTEMPTY,
+  CONTENTWATER,
   CONTENTWORM,
 } from "./block.js";
 import Position from "../position.js";
 import { StartBattle } from "../action.js";
+import { utils } from "../utils.js";
 
 type breakResult = {
   battle: StartBattle;
@@ -17,6 +19,7 @@ export default class Cave {
   difficulty: number;
   size: number;
   hasShop: boolean;
+  hasWater: boolean;
   goldChance = 1.7;
   wormQuantity: number;
   wormsLeft: number;
@@ -32,6 +35,7 @@ export default class Cave {
     this.difficulty = (depth % 3) + Math.floor(depth / 3) + 4;
     this.size = Math.floor(depth / 3) + 6;
     this.hasShop = depth > 0;
+    this.hasWater = depth > 1 && utils.randomInt(3) == 0;
     this.wormQuantity = Math.floor(
       this.difficulty * 0.033 * this.size * this.size
     );
@@ -201,6 +205,16 @@ export default class Cave {
     });
   }
 
+  get allBLocks() {
+    let blockArr: Block[] = [];
+    this.blockMatrix.forEach((line) => {
+      line.forEach((block) => {
+        blockArr.push(block);
+      });
+    });
+    return blockArr;
+  }
+
   revealAllBlocks() {
     this.blockMatrix.forEach((line) => {
       line.forEach((block) => {
@@ -345,6 +359,25 @@ export default class Cave {
     });
   }
 
+  placeWater() {
+    if (this.freeTiles.length == 0) {
+      return;
+    }
+    const r = Math.floor(Math.random() * this.freeTiles.length);
+    const block = this.freeTiles[r]!;
+    this.freeTiles.splice(r, 1);
+    block.content = CONTENTWATER;
+
+    this.getSurrBlocks(block.gridPos).forEach((b) => {
+      for (let i = 0; i < this.freeTiles.length; i++) {
+        if (this.freeTiles[i] == b) {
+          this.freeTiles.splice(i, 1);
+          i--;
+        }
+      }
+    });
+  }
+
   placeShop() {
     if (this.freeTiles.length == 0) {
       console.warn("drake...");
@@ -376,6 +409,9 @@ export default class Cave {
     this.placeExit();
     if (this.hasShop) {
       this.placeShop();
+    }
+    if (this.hasWater) {
+      this.placeWater();
     }
     this.placeWorms();
     this.breakSurrBlocks(firstBlock.gridPos);

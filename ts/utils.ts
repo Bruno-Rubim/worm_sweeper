@@ -2,6 +2,17 @@ const logDict: Record<string, boolean> = {};
 
 class Utils {
   /**
+   * Returns a random integer between a given minimum and maximum, exclusive
+   * @param max
+   * @param min
+   * @returns
+   */
+  randomInt(max: number, min: number = 0) {
+    const r = Math.floor(Math.random() * max + min) + min;
+    return r;
+  }
+
+  /**
    * Check if the string version of a given object has been saved to its log dictionary,
    * if not logs it on console and saves to dictionary
    * @param thing

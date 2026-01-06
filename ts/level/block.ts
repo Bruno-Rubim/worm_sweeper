@@ -9,6 +9,7 @@ export const CONTENTDOORSHOPOPEN = "door_shop_open";
 export const CONTENTBOMB = "bomb";
 export const CONTENTBOMBOVERLAY = "bomb_overlay";
 export const CONTENTWORM = "worm";
+export const CONTENTWATER = "water";
 
 type blockContent =
   | typeof CONTENTEMPTY
@@ -17,6 +18,7 @@ type blockContent =
   | typeof CONTENTDOORSHOP
   | typeof CONTENTDOORSHOPOPEN
   | typeof CONTENTWORM
+  | typeof CONTENTWATER
   | typeof CONTENTBOMBOVERLAY
   | typeof CONTENTBOMB;
 
@@ -34,21 +36,28 @@ export const blockSheetPos = {
   marked: new Position(9, 1),
   [CONTENTBOMBOVERLAY]: new Position(0, 2),
   [CONTENTBOMB]: new Position(1, 2),
+  [CONTENTWATER]: new Position(4, 2),
 };
 
 export default class Block {
   gamePos: Position;
   gridPos: Position;
+
+  content: blockContent = CONTENTEMPTY;
   hasGold: boolean = false;
   hidden = true;
   broken = false;
-  content: blockContent = CONTENTEMPTY;
-  starter = false;
   marked = false;
-  drilled = false;
-  threatLevel = 0;
+
   markerLevel = 0;
+  threatLevel = 0;
+  drilled = false;
+  starter = false;
+
+  cursorHovering = false;
+
   bombTimer: Timer | null = null;
+
   constructor(args: { gridPos: Position; gamePos: Position }) {
     this.gridPos = args.gridPos;
     this.gamePos = args.gamePos;
@@ -80,6 +89,7 @@ export default class Block {
         0
       );
     }
+    const pos = blockSheetPos[this.content];
     return blockSheetPos[this.content];
   }
 }
