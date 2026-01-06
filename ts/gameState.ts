@@ -44,6 +44,7 @@ export default class GameState {
   defending: boolean = false;
   holdingBomb: boolean = false;
   gameOver: boolean = false;
+  heldWhileDeath: boolean = false;
   deathCount = 0;
   inventory: inventory = {
     picaxe: getItem("picaxe", new Position(GAMEWIDTH - 20, 90)),
