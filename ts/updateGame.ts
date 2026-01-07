@@ -146,8 +146,7 @@ function handleKeyInput(gameManager: GameManager) {
     if (gameManager.gameState.inBook) {
       return new ToggleBook();
     }
-    timeTracker.togglePause();
-    gameManager.gameState.paused = timeTracker.isPaused;
+    pauseGame(gameManager);
   }
   if (inputState.keyboard.q == "pressed") {
     inputState.keyboard.q = "read";
@@ -155,6 +154,18 @@ function handleKeyInput(gameManager: GameManager) {
       gameManager.gameState.lose();
     }
     inputState.keyboard.q = "unpressed";
+  }
+}
+
+// MOVE THIS SOMEWHERE IF YOU WANT
+function pauseGame(gameManager: GameManager) {
+  timeTracker.togglePause();
+  gameManager.gameState.paused = timeTracker.isPaused;
+  // Pause sounds
+  if (gameManager.gameState.paused) {
+    gameManager.soundManager.pause();
+  } else {
+    gameManager.soundManager.play();
   }
 }
 

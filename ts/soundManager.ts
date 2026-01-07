@@ -23,17 +23,26 @@ export class SoundManager {
     // Play
     cloneAudio.play();
     // Add to actively playing sounds
+    this.clean();
     this.activeSounds.push(cloneAudio);
   }
 
+  // Delete finished sounds from the active sounds
+  clean() {
+    this.activeSounds = this.activeSounds.filter(
+      sound => !(sound.paused && sound.currentTime > 0)
+    );
+  }
+
   pause() {
-    for (i in this.activeSounds) {
+    this.clean();
+    for (const i in this.activeSounds) {
       this.activeSounds[i].pause();
     }
   }
 
   play() {
-    for (i in this.activeSounds) {
+    for (const i in this.activeSounds) {
       this.activeSounds[i].play();
     }
   }
