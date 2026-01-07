@@ -1,20 +1,26 @@
 import { utils } from "./utils.js";
 
+export type fixedPitches = number[];
+export type pitchRange = {
+  min: number;
+  max: number;
+};
+
 // Represents sounds in game
 export class Sound {
   srcList: string[] = [];
   audioList: HTMLAudioElement[] = [];
   volumeMult: number;
-  minPitch: number;
-  maxPitch: number;
+  pitch: fixedPitches | pitchRange;
 
   constructor(args: {
     soundName: string;
     volumeMult?: number;
     altCount?: number;
-    minPitch?: number;
-    maxPitch?: number;
+    pitchRange?: pitchRange;
+    fixedPitches?: fixedPitches;
   }) {
+    args.fixedPitches ??= [1];
     if (args.altCount == undefined) {
       this.srcList.push("./sounds/" + args.soundName + ".mp3");
     } else {
@@ -24,8 +30,15 @@ export class Sound {
       }
     }
     this.volumeMult = args.volumeMult ?? 1;
-    this.minPitch = args.minPitch ?? 1;
-    this.maxPitch = args.maxPitch ?? args.minPitch ?? 1;
+
+    if (args.pitchRange) {
+      this.pitch = {
+        min: args.pitchRange.min,
+        max: args.pitchRange.max,
+      };
+    } else {
+      this.pitch = [...args.fixedPitches];
+    }
   }
 
   /**
@@ -75,45 +88,55 @@ export const sounds = {
   bell: new Sound({
     soundName: "bell",
     volumeMult: 0.3,
-    minPitch: 0.9,
-    maxPitch: 1.1,
+    pitchRange: {
+      min: 0.9,
+      max: 1.1,
+    },
   }),
   clear: new Sound({
     soundName: "clear",
     volumeMult: 0.4,
-    minPitch: 1,
   }),
   beep: new Sound({
     soundName: "beep",
     volumeMult: 0.5,
-    minPitch: 0.9,
-    maxPitch: 1.1,
+    pitchRange: {
+      min: 0.9,
+      max: 1.1,
+    },
   }),
   bomb: new Sound({
     soundName: "bomb",
     volumeMult: 0.8,
-    minPitch: 0.9,
-    maxPitch: 1.1,
+    pitchRange: {
+      min: 0.9,
+      max: 1.1,
+    },
   }),
   door: new Sound({
     soundName: "door",
     volumeMult: 0.7,
-    minPitch: 0.9,
-    maxPitch: 1.3,
-    altCount: 1,
+    pitchRange: {
+      min: 0.9,
+      max: 1.3,
+    },
   }),
   steps: new Sound({ soundName: "steps", volumeMult: 0.7 }),
   detonate: new Sound({
     soundName: "detonate",
     volumeMult: 0.2,
-    minPitch: 0.9,
-    maxPitch: 1.1,
+    pitchRange: {
+      min: 0.9,
+      max: 1.1,
+    },
   }),
   drill: new Sound({
     soundName: "drill",
     volumeMult: 0.15,
-    minPitch: 0.9,
-    maxPitch: 1.1,
+    pitchRange: {
+      min: 0.9,
+      max: 1.5,
+    },
   }),
 };
 

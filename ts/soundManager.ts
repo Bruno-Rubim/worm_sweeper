@@ -1,4 +1,5 @@
 import type { Sound } from "./sounds.js";
+import { utils } from "./utils.js";
 
 // Plays sounds
 export class SoundManager {
@@ -17,8 +18,12 @@ export class SoundManager {
       this.generalVolume * this.sfxVolume * sound.volumeMult * this.mute;
     // Pitch
     cloneAudio.preservesPitch = false;
-    cloneAudio.playbackRate =
-      sound.minPitch + Math.random() * (sound.maxPitch - sound.minPitch);
+    if (Array.isArray(sound.pitch)) {
+      cloneAudio.playbackRate = sound.pitch[utils.randomArrayId(sound.pitch)]!;
+    } else {
+      cloneAudio.playbackRate =
+        sound.pitch.min + Math.random() * (sound.pitch.max - sound.pitch.min);
+    }
     // Play
     cloneAudio.play();
     // Add to actively playing sounds
