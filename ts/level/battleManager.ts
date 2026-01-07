@@ -158,8 +158,8 @@ export default class BattleManager extends SceneManager {
       damage = Math.max(
         1,
         Math.min(
-          10,
-          Math.floor(6 / (this.gameState.gameTimer.secondsRemaining / 60) - 1)
+          5,
+          Math.floor(5.5 - 2.25 * this.gameState.gameTimer.secondsRemaining)
         )
       );
     }

@@ -345,6 +345,14 @@ export default class Cave {
       block.content = "worm";
       wormsPlaced++;
       this.freeTiles.splice(r, 1);
+      this.getSurrBlocks(block.gridPos).forEach((b) => {
+        for (let i = 0; i < this.freeTiles.length; i++) {
+          if (this.freeTiles[i] == b) {
+            this.freeTiles.splice(i, 1);
+            i--;
+          }
+        }
+      });
     }
   }
 
@@ -410,14 +418,11 @@ export default class Cave {
     if (this.hasShop) {
       this.placeShop();
     }
+    this.placeWorms();
     if (this.hasWater) {
       this.placeWater();
     }
-    this.placeWorms();
     this.breakSurrBlocks(firstBlock.gridPos);
     this.started = true;
-    if (passiveItemNames.includes("drill")) {
-      this.breakConnectedEmpty(firstBlock);
-    }
   }
 }
