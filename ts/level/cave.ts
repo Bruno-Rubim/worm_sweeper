@@ -34,8 +34,7 @@ export default class Cave {
     this.difficulty = (depth % 3) + Math.floor(depth / 3) + 4;
     this.size = Math.floor(depth / 3) + 6;
     this.hasShop = depth > 0;
-    this.hasWater = true;
-    // depth > 1 && utils.randomInt(3) == 0;
+    this.hasWater = depth > 1 && utils.randomInt(3) == 0;
     this.wormQuantity = Math.floor(
       this.difficulty * 0.033 * this.size * this.size
     );
