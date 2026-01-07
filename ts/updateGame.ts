@@ -23,6 +23,7 @@ import {
 import timeTracker from "./timer/timeTracker.js";
 import { timerQueue } from "./timer/timerQueue.js";
 import sounds from "./sounds.js";
+import type GameState from "./gameState.js";
 
 function changeCursorState(newState: cursorState) {
   cursor.state = newState;
@@ -136,6 +137,15 @@ function handleMouseInput(objects: GameObject[]): Action[] | void {
 }
 
 /**
+ * Pauses the game
+ * @param gameState
+ */
+function pauseGame(gameState: GameState) {
+  timeTracker.togglePause();
+  gameState.paused = timeTracker.isPaused;
+}
+
+/**
  * Checks if specific keys are held and
  * @param gameManager
  * @returns
@@ -146,8 +156,7 @@ function handleKeyInput(gameManager: GameManager) {
     if (gameManager.gameState.inBook) {
       return new ToggleBook();
     }
-    timeTracker.togglePause();
-    gameManager.gameState.paused = timeTracker.isPaused;
+    pauseGame(gameManager.gameState);
   }
   if (inputState.keyboard.q == "pressed") {
     inputState.keyboard.q = "read";

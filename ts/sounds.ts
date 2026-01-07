@@ -62,17 +62,22 @@ export class Sound {
 
 // List of sounds from the game
 export const sounds = {
-  bell: new Sound("bell", 0.3),
-  clear: new Sound("clear", 0.5),
   beep: new Sound("beep", 0.5),
+  bell: new Sound("bell", 0.3),
   bomb: new Sound("bomb", 0.8),
-  door: new Sound("door", 0.7, 3),
-  steps: new Sound("steps", 0.7),
+  clear: new Sound("clear", 0.5),
   detonate: new Sound("detonate", 0.2),
+  door: new Sound("door", 0.7, 3),
+  drill: new Sound("drill", 0.15),
+  steps: new Sound("steps", 0.7),
+};
+
+export const music = {
+  drums: new Sound("drums", 0.3),
 };
 
 // Makes a list of all sounds and awaits their loading
-const soundArr = Object.values(sounds);
+const soundArr = [...Object.values(sounds), ...Object.values(music)];
 const promiseArrays = soundArr.map((sound) => sound.load());
 promiseArrays.forEach(async (arr) => {
   await Promise.all(arr);

@@ -146,6 +146,10 @@ export default class CaveManager extends SceneManager {
     if (!this.gameState.level.cave.started) {
       this.gameState.level.cave.start(block.gridPos, this.gameState.itemNames);
       this.gameState.gameTimer.start();
+      if (!this.gameState.started) {
+        // this.soundManager.playMusic(music.drums);
+        this.gameState.started = true;
+      }
       return;
     }
 
@@ -165,7 +169,6 @@ export default class CaveManager extends SceneManager {
         timerQueue.push(block.bombTimer);
         block.bombTimer.start();
         this.soundManager.playSound(sounds.bomb);
-
         this.gameState.holdingBomb = false;
         return;
       }
@@ -179,6 +182,7 @@ export default class CaveManager extends SceneManager {
         enemyCount += breakResult.battle.enemyCount;
         this.gameState.gold += breakResult.gold;
         if (this.gameState.hasItem("drill") && block.threatLevel == 0) {
+          this.soundManager.playSound(sounds.drill);
           this.gameState.level.cave.breakConnectedEmpty(block);
         }
       } else if (block.broken) {
@@ -213,8 +217,7 @@ export default class CaveManager extends SceneManager {
               );
               this.soundManager.playSound(sounds.detonate);
               if (this.gameState.hasItem("drill")) {
-                breakResult.gold +=
-                  this.gameState.level.cave.breakConnectedEmpty(block).gold;
+                this.gameState.level.cave.breakConnectedEmpty(block);
               }
               enemyCount += breakResult.battle.enemyCount;
               this.gameState.gold += breakResult.gold;

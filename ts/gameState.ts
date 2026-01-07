@@ -29,23 +29,30 @@ export type inventory = {
 
 // Holds the current state of the game at any given time
 export default class GameState {
-  gold: number = 0;
   gameTimer: Timer;
-  level: Level;
-  battle: Battle | null = null;
+  gold: number = 0;
   health: number = 5;
+  deathCount = 0;
+
+  level: Level;
+  inTransition: boolean = false;
+  currentScene: "cave" | "shop" | "battle" = "cave";
+
+  battle: Battle | null = null;
   tiredTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
   attackAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
-  inTransition: boolean = false;
-  inBook: boolean = false;
-  bookPage: number = 0;
-  currentScene: "cave" | "shop" | "battle" = "cave";
-  paused: boolean = false;
   defending: boolean = false;
-  holdingBomb: boolean = false;
+
+  paused: boolean = false;
+  started: boolean = false;
   gameOver: boolean = false;
   heldWhileDeath: boolean = false;
-  deathCount = 0;
+
+  inBook: boolean = false;
+  bookPage: number = 0;
+
+  holdingBomb: boolean = false;
+
   inventory: inventory = {
     picaxe: getItem("picaxe", new Position(GAMEWIDTH - 20, 90)),
     flag: getItem("flag", new Position(GAMEWIDTH - 20, 109)),
