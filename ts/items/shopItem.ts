@@ -1,6 +1,6 @@
 import type CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
-import { CLICKLEFT, type cursorClick } from "../global.js";
+import { CENTER, CLICKLEFT, type cursorClick } from "../global.js";
 import { BuyShopItem } from "../action.js";
 import Position from "../position.js";
 import { sprites } from "../sprites.js";
@@ -65,8 +65,9 @@ export class ShopItem extends GameObject {
     }
     canvasManager.renderText(
       "numbers_cost",
-      this.pos.add(2, 18),
-      this.item.cost.toString()
+      this.pos.add(9, 18),
+      this.item.cost.toString(),
+      CENTER
     );
     if (this.item.name == "time_potion") {
       canvasManager.renderAnimationFrame(

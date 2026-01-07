@@ -137,6 +137,9 @@ export default class BattleManager extends SceneManager {
       if (e.health < 1) {
         timerQueue.splice(timerQueue.indexOf(e.cooldownTimer), 1);
         this.gameState.battle!.enemies.splice(i, 1);
+        if (this.gameState.hasItem("carving_knife")) {
+          this.gameState.gold += 2;
+        }
       }
     });
     if (this.gameState.battle!.enemies.length <= 0) {

@@ -206,6 +206,13 @@ export const itemDic = {
     cost: 40,
     description: "Gain 1 heart when clearing a level.",
   }),
+  carving_knife: new Item({
+    spriteSheetPos: new Position(12, 4),
+    name: "carving_knife",
+    shopName: "Carving Knife",
+    cost: 8,
+    description: "Gain 2 gold for every enemy killed.",
+  }),
   empty: new Item({
     spriteSheetPos: new Position(14, 4),
     name: "empty",
