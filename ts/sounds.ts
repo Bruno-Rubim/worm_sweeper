@@ -138,6 +138,14 @@ export const sounds = {
       max: 1.5,
     },
   }),
+  gold: new Sound({
+    soundName: "gold",
+    volumeMult: 0.2,
+    pitchRange: {
+      min: 1.1,
+      max: 1.5,
+    },
+  }),
 };
 
 export const music = {

@@ -1157,6 +1157,10 @@ export const fontMaps: Record<string, fontMap> = {
         pos: new Position(5, 1),
         width: 9,
       },
+      $hhr: {
+        pos: new Position(5, 2),
+        width: 9,
+      },
     },
   },
 };

@@ -181,6 +181,9 @@ export default class CaveManager extends SceneManager {
         let breakResult = this.gameState.level.cave.breakBlock(block);
         enemyCount += breakResult.battle.enemyCount;
         this.gameState.gold += breakResult.gold;
+        if (breakResult.gold > 0) {
+          this.soundManager.playSound(sounds.gold);
+        }
         if (this.gameState.hasItem("drill") && block.threatLevel == 0) {
           this.soundManager.playSound(sounds.drill);
           this.gameState.level.cave.breakConnectedEmpty(block);
@@ -204,6 +207,7 @@ export default class CaveManager extends SceneManager {
           case CONTENTWATER:
             // this.soundManager.playSound(); TO-DO: water sfx
             this.gameState.gold += 1;
+            this.soundManager.playSound(sounds.gold);
             this.gameState.gameTimer.addSecs(-10);
             break;
           case CONTENTEMPTY:
@@ -220,6 +224,9 @@ export default class CaveManager extends SceneManager {
                 this.gameState.level.cave.breakConnectedEmpty(block);
               }
               enemyCount += breakResult.battle.enemyCount;
+              if (breakResult.gold > 0) {
+                this.soundManager.playSound(sounds.gold);
+              }
               this.gameState.gold += breakResult.gold;
             }
             break;

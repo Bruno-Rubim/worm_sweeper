@@ -59,10 +59,12 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
 
   // Player health
   if (gameState.health > 0) {
+    const roundedHealth = Math.floor(gameState.health);
     canvasManager.renderText(
       "icons",
       new Position(GAMEWIDTH / 2, GAMEHEIGHT - 14),
-      "$hrt".repeat(gameState.health),
+      "$hrt".repeat(roundedHealth) +
+        (gameState.health > roundedHealth ? "$hhr" : ""),
       CENTER
     );
   }

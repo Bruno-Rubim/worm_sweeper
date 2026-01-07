@@ -7,6 +7,7 @@ import {
   BORDERTHICKLEFT,
   BORDERTHICKRIGHT,
   BORDERTHICKTOP,
+  CENTER,
   CLICKLEFT,
   CLICKRIGHT,
   GAMEHEIGHT,
@@ -51,13 +52,17 @@ export default class BattleManager extends SceneManager {
           enemy.damagedTimer.inMotion ? 1 : 0
         )
       );
-      for (let i = 0; i < enemy.health; i++) {
+      if (enemy.health > 0) {
+        const roundedHealth = Math.floor(enemy.health);
         canvasManager.renderText(
           "icons",
-          enemy.pos.add(33 + i * 9 - (9 * enemy.health) / 2, 64),
-          "$hrt"
+          enemy.pos.add(33, 64),
+          "$hrt".repeat(roundedHealth) +
+            (enemy.health > roundedHealth ? "$hhr" : ""),
+          CENTER
         );
       }
+
       canvasManager.renderText("icons", enemy.pos.add(25, 8), "$dmg");
       canvasManager.renderText(
         "numbers_gray",
