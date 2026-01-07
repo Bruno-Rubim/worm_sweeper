@@ -8,24 +8,24 @@ export class Sound {
   minPitch: number;
   maxPitch: number;
 
-  constructor(
-    soundName: string,
-    volumeMult?: number,
-    altCount: number = 1,
-    minPitch: number = 1,
-    maxPitch?: number
-  ) {
-    if (altCount == 1) {
-      this.srcList.push("./sounds/" + soundName + ".mp3");
+  constructor(args: {
+    soundName: string;
+    volumeMult?: number;
+    altCount?: number;
+    minPitch?: number;
+    maxPitch?: number;
+  }) {
+    if (args.altCount == undefined) {
+      this.srcList.push("./sounds/" + args.soundName + ".mp3");
     } else {
       // If there are alternate versions, saves all alternate versions to the source list
-      for (let i = 0; i < altCount; i++) {
-        this.srcList.push("./sounds/" + soundName + "-" + i + ".mp3");
+      for (let i = 0; i < (args.altCount ?? 1); i++) {
+        this.srcList.push("./sounds/" + args.soundName + "-" + i + ".mp3");
       }
     }
-    this.volumeMult = volumeMult ?? 1;
-    this.minPitch = minPitch;
-    this.maxPitch = maxPitch ?? minPitch;
+    this.volumeMult = args.volumeMult ?? 1;
+    this.minPitch = args.minPitch ?? 1;
+    this.maxPitch = args.maxPitch ?? args.minPitch ?? 1;
   }
 
   /**
@@ -72,18 +72,53 @@ export class Sound {
 
 // List of sounds from the game
 export const sounds = {
-  bell: new Sound("bell", 0.3, 1, 0.9, 1.1),
-  clear: new Sound("clear", 0.5, 1, 0.9, 1.1),
-  beep: new Sound("beep", 0.5, 1, 0.9, 1.1),
-  bomb: new Sound("bomb", 0.8, 1, 0.9, 1.1),
-  door: new Sound("door", 0.7, 3, 0.9, 1.1),
-  steps: new Sound("steps", 0.7, 1),
-  detonate: new Sound("detonate", 0.2, 1, 0.9, 1.1),
-  drill: new Sound("drill", 0.15, 1, 0.9, 1.1),
+  bell: new Sound({
+    soundName: "bell",
+    volumeMult: 0.3,
+    minPitch: 0.9,
+    maxPitch: 1.1,
+  }),
+  clear: new Sound({
+    soundName: "clear",
+    volumeMult: 0.4,
+    minPitch: 1,
+  }),
+  beep: new Sound({
+    soundName: "beep",
+    volumeMult: 0.5,
+    minPitch: 0.9,
+    maxPitch: 1.1,
+  }),
+  bomb: new Sound({
+    soundName: "bomb",
+    volumeMult: 0.8,
+    minPitch: 0.9,
+    maxPitch: 1.1,
+  }),
+  door: new Sound({
+    soundName: "door",
+    volumeMult: 0.7,
+    minPitch: 0.9,
+    maxPitch: 1.3,
+    altCount: 1,
+  }),
+  steps: new Sound({ soundName: "steps", volumeMult: 0.7 }),
+  detonate: new Sound({
+    soundName: "detonate",
+    volumeMult: 0.2,
+    minPitch: 0.9,
+    maxPitch: 1.1,
+  }),
+  drill: new Sound({
+    soundName: "drill",
+    volumeMult: 0.15,
+    minPitch: 0.9,
+    maxPitch: 1.1,
+  }),
 };
 
 export const music = {
-  drums: new Sound("drums", 0.3),
+  drums: new Sound({ soundName: "drums", volumeMult: 0.3 }),
 };
 
 // Makes a list of all sounds and awaits their loading

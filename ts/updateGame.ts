@@ -7,7 +7,7 @@ import {
 } from "./cursor.js";
 import { GameManager } from "./gameManager.js";
 import type GameObject from "./gameObject.js";
-import { CLICKLEFT, CLICKRIGHT } from "./global.js";
+import { CLICKLEFT, CLICKRIGHT, DEV } from "./global.js";
 import { inputState } from "./inputState.js";
 import { consumableDic } from "./items/consumable.js";
 import {
@@ -158,12 +158,19 @@ function handleKeyInput(gameManager: GameManager) {
     }
     pauseGame(gameManager.gameState);
   }
-  if (inputState.keyboard.q == "pressed") {
-    inputState.keyboard.q = "read";
-    if (confirm("Would you like to quit the game?")) {
-      gameManager.gameState.lose();
+  // Functions avaliable for devs. Check the global.ts
+  if (DEV) {
+    if (inputState.keyboard.q == "pressed") {
+      inputState.keyboard.q = "read";
+      if (confirm("Would you like to quit the game?")) {
+        gameManager.gameState.lose();
+      }
+      inputState.keyboard.q = "unpressed";
     }
-    inputState.keyboard.q = "unpressed";
+    if (inputState.keyboard.w == "pressed") {
+      inputState.keyboard.w = "read";
+      gameManager.soundManager.playSound(sounds.clear);
+    }
   }
 }
 

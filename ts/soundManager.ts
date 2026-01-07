@@ -6,7 +6,7 @@ export class SoundManager {
   musicVolume = 1;
   sfxVolume = 1;
   mute = 1;
-  activeSounds = [];
+  activeSounds: HTMLAudioElement[] = [];
 
   // Play a given sound's audio element
   playSound(sound: Sound) {
@@ -17,9 +17,8 @@ export class SoundManager {
       this.generalVolume * this.sfxVolume * sound.volumeMult * this.mute;
     // Pitch
     cloneAudio.preservesPitch = false;
-    cloneAudio.mozPreservesPitch = false;
-    cloneAudio.webkitPreservesPitch = false;
-    cloneAudio.playbackRate = sound.minPitch + (Math.random() * (sound.maxPitch - sound.minPitch));
+    cloneAudio.playbackRate =
+      sound.minPitch + Math.random() * (sound.maxPitch - sound.minPitch);
     // Play
     cloneAudio.play();
     // Add to actively playing sounds
@@ -30,20 +29,20 @@ export class SoundManager {
   // Delete finished sounds from the active sounds
   clean() {
     this.activeSounds = this.activeSounds.filter(
-      sound => !(sound.paused && sound.currentTime > 0)
+      (sound) => !(sound.paused && sound.currentTime > 0)
     );
   }
 
   pause() {
     this.clean();
     for (const i in this.activeSounds) {
-      this.activeSounds[i].pause();
+      this.activeSounds[i]!.pause();
     }
   }
 
   play() {
     for (const i in this.activeSounds) {
-      this.activeSounds[i].play();
+      this.activeSounds[i]!.play();
     }
   }
 
