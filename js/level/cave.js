@@ -149,7 +149,10 @@ export default class Cave {
         });
     }
     bomb(block) {
-        block.content = CONTENTEMPTY;
+        if (block.content == CONTENTWORM) {
+            block.content = CONTENTEMPTY;
+        }
+        block.broken = true;
         this.getSurrBlocks(block.gridPos).forEach((b) => {
             if (b.content == CONTENTWORM) {
                 b.content = CONTENTEMPTY;

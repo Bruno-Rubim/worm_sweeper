@@ -16,7 +16,7 @@ export class Chisel extends Item {
             name: "chisel",
             shopName: "Chisel",
             cost: 13,
-            descriptionText: "Use this to carve out 3 gold from a block.",
+            descriptionText: "Use this to carve out gold from a block wihtout breaking it.",
         });
     }
     clickFunction = (cursorPos, button) => {

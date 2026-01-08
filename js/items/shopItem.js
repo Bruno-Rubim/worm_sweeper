@@ -5,12 +5,12 @@ import Position from "../position.js";
 import { sprites } from "../sprites.js";
 import timeTracker from "../timer/timeTracker.js";
 import { armorDic } from "./armor/armor.js";
-import { consumableDic } from "./consumable/consumable.js";
 import { timerQueue } from "../timer/timerQueue.js";
 import { SilverBell } from "./passives/silverBell.js";
 import { itemDic } from "./passives/dict.js";
 import { weaponDic } from "./weapon/dict.js";
 import { shieldDic } from "./shield/shield.js";
+import consumableDic from "./consumable/dict.js";
 const items = {
     ...weaponDic,
     ...armorDic,

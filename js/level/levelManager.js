@@ -13,7 +13,6 @@ import BattleManager from "./battleManager.js";
 import ShopManager from "./shopManager.js";
 import { Battle } from "./battle.js";
 import sounds from "../sounds.js";
-import { Chisel } from "../items/passives/chisel.js";
 const transitionObject = new GameObject({
     sprite: sprites.scene_transition,
     height: 128,

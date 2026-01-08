@@ -88,3 +88,10 @@ export class PickupChisel extends Action {
         this.chiselItem = item;
     }
 }
+export class PickupBomb extends Action {
+    bombItem;
+    constructor(item) {
+        super();
+        this.bombItem = item;
+    }
+}

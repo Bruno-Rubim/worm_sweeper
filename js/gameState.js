@@ -1,5 +1,5 @@
 import { armorDic } from "./items/armor/armor.js";
-import { consumableDic, } from "./items/consumable/consumable.js";
+import {} from "./items/consumable/consumable.js";
 import { Item } from "./items/item.js";
 import Position from "./position.js";
 import Level from "./level/level.js";
@@ -12,6 +12,7 @@ import { getItem } from "./items/passives/dict.js";
 import { Weapon } from "./items/weapon/weapon.js";
 import { Shield, shieldDic } from "./items/shield/shield.js";
 import { weaponDic } from "./items/weapon/dict.js";
+import consumableDic from "./items/consumable/dict.js";
 export default class GameState {
     gameTimer;
     gold = 0;

@@ -270,6 +270,10 @@ export const fontMaps = {
                 pos: new Position(12, 4),
                 width: 2,
             },
+            ",": {
+                pos: new Position(13, 4),
+                width: 3,
+            },
             " ": {
                 pos: new Position(13, 8),
                 width: 3,
@@ -544,6 +548,10 @@ export const fontMaps = {
             "'": {
                 pos: new Position(12, 4),
                 width: 2,
+            },
+            ",": {
+                pos: new Position(13, 4),
+                width: 3,
             },
             " ": {
                 pos: new Position(13, 8),

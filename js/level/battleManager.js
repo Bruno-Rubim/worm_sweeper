@@ -1,7 +1,9 @@
 import { ChangeCursorState, ChangeScene } from "../action.js";
 import { CURSORBATTLE } from "../cursor.js";
 import { BORDERTHICKBOTTOM, BORDERTHICKLEFT, BORDERTHICKRIGHT, BORDERTHICKTOP, CENTER, CLICKLEFT, CLICKRIGHT, GAMEHEIGHT, GAMEWIDTH, LEFT, } from "../global.js";
+import Bomb from "../items/consumable/bomb.js";
 import Position from "../position.js";
+import sounds from "../sounds.js";
 import { sprites } from "../sprites.js";
 import { timerQueue } from "../timer/timerQueue.js";
 import { utils } from "../utils.js";
@@ -84,6 +86,7 @@ export default class BattleManager extends SceneManager {
         const tiredTimer = this.gameState.tiredTimer;
         const rId = utils.randomArrayId(this.gameState.battle.enemies);
         const enemy = this.gameState.battle.enemies[rId];
+        this.soundManager.playSound(sounds.explosion);
         enemy.health -= 5;
         enemy.damagedTimer.start();
         timerQueue.push(enemy.damagedTimer);
@@ -109,7 +112,7 @@ export default class BattleManager extends SceneManager {
         const tiredTimer = this.gameState.tiredTimer;
         if (tiredTimer.ended || !tiredTimer.started) {
             if (button == CLICKLEFT) {
-                if (this.gameState.holding == "bomb") {
+                if (this.gameState.holding instanceof Bomb) {
                     this.gameState.holding = null;
                     return this.bomb();
                 }

@@ -2,7 +2,7 @@ import CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
 import { BORDERTHICKLEFT, BORDERTHICKRIGHT, BORDERTHICKTOP, GAMEWIDTH, } from "../global.js";
 import { armorDic } from "../items/armor/armor.js";
-import { consumableDic, } from "../items/consumable/consumable.js";
+import {} from "../items/consumable/consumable.js";
 import { ShopItem } from "../items/shopItem.js";
 import { ChangeScene } from "../action.js";
 import Position from "../position.js";
@@ -13,6 +13,7 @@ import { Weapon } from "../items/weapon/weapon.js";
 import { Shield, shieldDic } from "../items/shield/shield.js";
 import { weaponDic } from "../items/weapon/dict.js";
 import TimeBlade from "../items/weapon/timeBlade.js";
+import consumableDic from "../items/consumable/dict.js";
 const exitBtn = new GameObject({
     sprite: sprites.button_exit,
     pos: new Position(GAMEWIDTH - BORDERTHICKRIGHT - 32, BORDERTHICKTOP),

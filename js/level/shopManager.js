@@ -5,6 +5,7 @@ import { Consumable } from "../items/consumable/consumable.js";
 import { Shield } from "../items/shield/shield.js";
 import { Weapon } from "../items/weapon/weapon.js";
 import Position from "../position.js";
+import sounds from "../sounds.js";
 import { sprites } from "../sprites.js";
 import { handleMouseClick, handleMouseHover } from "../updateGame.js";
 import SceneManager from "./sceneManager.js";
@@ -49,6 +50,7 @@ export default class ShopManager extends SceneManager {
             }
             else {
                 if (this.gameState.passiveSpace < 1) {
+                    this.soundManager.playSound(sounds.wrong);
                     return;
                 }
                 if (inventory.passive_1.name == "empty") {
@@ -83,6 +85,7 @@ export default class ShopManager extends SceneManager {
                 }
             }
             this.gameState.gold -= action.shopItem.item.cost;
+            this.soundManager.playSound(sounds.purchase);
             return;
         }
         return action;
