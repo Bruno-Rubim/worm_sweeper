@@ -162,6 +162,20 @@ export const sounds = {
       max: 1.5,
     },
   }),
+  wrong: new Sound({
+    soundName: "wrong",
+    volumeMult: 0.5,
+  }),
+  purchase: new Sound({
+    soundName: "purchase",
+    volumeMult: 0.4,
+    fixedPitches: [1],
+  }),
+  drink: new Sound({
+    soundName: "drink",
+    volumeMult: 0.4,
+    fixedPitches: [1],
+  }),
 };
 
 export const music = {

@@ -177,7 +177,7 @@ function handleKeyInput(gameManager: GameManager) {
     }
     if (inputState.keyboard.w == "pressed") {
       inputState.keyboard.w = "read";
-      gameManager.soundManager.playSound(sounds.break);
+      gameManager.soundManager.playSound(sounds.purchase);
     }
   }
 }
@@ -202,15 +202,19 @@ function handleAction(
     switch (action.itemName) {
       case "time_potion":
         gameManager.gameState.gameTimer.addSecs(60);
+        gameManager.soundManager.playSound(sounds.drink);
         break;
       case "health_vial":
         gameManager.gameState.health += 0.5;
+        gameManager.soundManager.playSound(sounds.drink);
         break;
       case "health_potion":
         gameManager.gameState.health += 1;
+        gameManager.soundManager.playSound(sounds.drink);
         break;
       case "health_potion_big":
         gameManager.gameState.health += 2;
+        gameManager.soundManager.playSound(sounds.drink);
         break;
       case "empty":
         if (gameManager.gameState.holding instanceof Bomb) {
