@@ -14,6 +14,7 @@ import {
   GAMEWIDTH,
   LEFT,
 } from "../global.js";
+import Bomb from "../items/consumable/bomb.js";
 import Position from "../position.js";
 import type { SoundManager } from "../soundManager.js";
 import { sprites } from "../sprites.js";
@@ -230,7 +231,7 @@ export default class BattleManager extends SceneManager {
     const tiredTimer = this.gameState.tiredTimer;
     if (tiredTimer.ended || !tiredTimer.started) {
       if (button == CLICKLEFT) {
-        if (this.gameState.holding == "bomb") {
+        if (this.gameState.holding instanceof Bomb) {
           this.gameState.holding = null;
           return this.bomb();
         }

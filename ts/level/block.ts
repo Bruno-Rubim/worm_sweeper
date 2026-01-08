@@ -33,7 +33,6 @@ export const blockSheetPos = {
   gold: new Position(7, 0),
   [CONTENTEMPTY]: new Position(0, 1),
   bell: new Position(9, 0),
-  chisel: new Position(6, 2),
   marked: new Position(9, 1),
   [CONTENTBOMBOVERLAY]: new Position(0, 2),
   [CONTENTBOMB]: new Position(1, 2),
@@ -56,8 +55,6 @@ export default class Block {
   starter = false;
 
   cursorHovering = false;
-
-  bombTimer: Timer | null = null;
 
   constructor(args: { gridPos: Position; gamePos: Position }) {
     this.gridPos = args.gridPos;
@@ -83,12 +80,6 @@ export default class Block {
   get sheetContentPos(): Position {
     if (this.marked) {
       return blockSheetPos.marked;
-    }
-    if (this.bombTimer instanceof Timer) {
-      return blockSheetPos.bomb.add(
-        Math.min(2, Math.floor(this.bombTimer.percentage / ((1 / 3) * 100))),
-        0
-      );
     }
     return blockSheetPos[this.content];
   }

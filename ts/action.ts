@@ -1,5 +1,6 @@
 import type { cursorState } from "./cursor.js";
 import type { LEFT, RIGHT } from "./global.js";
+import type Bomb from "./items/consumable/bomb.js";
 import type { Chisel } from "./items/passives/chisel.js";
 import type { ShopItem } from "./items/shopItem.js";
 import type { Enemy } from "./level/enemy.js";
@@ -118,5 +119,13 @@ export class PickupChisel extends Action {
   constructor(item: Chisel) {
     super();
     this.chiselItem = item;
+  }
+}
+
+export class PickupBomb extends Action {
+  bombItem: Bomb;
+  constructor(item: Bomb) {
+    super();
+    this.bombItem = item;
   }
 }

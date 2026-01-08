@@ -14,6 +14,7 @@ import {
 } from "../cursor.js";
 import type GameState from "../gameState.js";
 import { CLICKLEFT, type CLICKRIGHT } from "../global.js";
+import Bomb from "../items/consumable/bomb.js";
 import { Chisel } from "../items/passives/chisel.js";
 import Position from "../position.js";
 import type { SoundManager } from "../soundManager.js";
@@ -36,7 +37,12 @@ import SceneManager from "./sceneManager.js";
 
 // Handles rendering and interactions with the cave scene of the current Level
 export default class CaveManager extends SceneManager {
-  chiselActive: null | { screenPos: Position; timer: Timer } = null;
+  activeChisel: null | { screenPos: Position; timer: Timer } = null;
+  bomb: null | {
+    screenPos: Position;
+    timer: Timer;
+    hoverScreenPos: Position | null;
+  } = null;
 
   constructor(
     gameState: GameState,
@@ -51,21 +57,7 @@ export default class CaveManager extends SceneManager {
    * @param pos
    * @returns
    */
-  getBlockFromScrenPos(pos: Position, log = false) {
-    if (log) {
-      console.log(
-        "level position",
-        this.pos,
-        "\nscreen position",
-        pos,
-        "\nlevel scale * 16",
-        this.gameState.level.cave.levelScale * 16,
-        "\nscreen position - level position",
-        pos.subtract(this.pos),
-        "\n(screen position - level position) / (level scale * 16)",
-        pos.subtract(this.pos).divide(this.gameState.level.cave.levelScale * 16)
-      );
-    }
+  getBlockFromScrenPos(pos: Position) {
     const blockPos = pos
       .subtract(this.pos)
       .divide(this.gameState.level.cave.levelScale * 16);
@@ -152,11 +144,40 @@ export default class CaveManager extends SceneManager {
         }
       }
     }
+    // Renders Bomb
+    if (this.bomb) {
+      const block = this.getBlockFromScrenPos(this.bomb.screenPos);
+      const blockPos = new Position(
+        block.gridPos.x * blockSize,
+        block.gridPos.y * blockSize
+      ).add(this.pos);
+      let framePos = new Position();
+      if (!this.bomb.hoverScreenPos) {
+        framePos = new Position(
+          Math.min(
+            2,
+            Math.floor(this.bomb.timer.percentage / ((1 / 3) * 100))
+          ) + 1,
+          0
+        );
+        console.log(framePos.x);
+      }
+      canvasManager.renderSpriteFromSheet(
+        sprites.bomb_sheet,
+        blockPos,
+        blockSize,
+        blockSize,
+        framePos,
+        16,
+        16
+      );
+    }
+
     // Renders chisel
-    if (this.chiselActive) {
+    if (this.activeChisel) {
       let posShift = new Position(-blockSize / 2, blockSize / 2);
       let framePos = new Position();
-      const block = this.getBlockFromScrenPos(this.chiselActive.screenPos);
+      const block = this.getBlockFromScrenPos(this.activeChisel.screenPos);
       const blockPos = new Position(
         block.gridPos.x * blockSize,
         block.gridPos.y * blockSize
@@ -178,7 +199,7 @@ export default class CaveManager extends SceneManager {
         blockSize,
         blockSize,
         framePos.add(
-          Math.floor(this.chiselActive.timer.percentage / (100 / 6)) % 2,
+          Math.floor(this.activeChisel.timer.percentage / (100 / 6)) % 2,
           0
         ),
         16,
@@ -205,33 +226,38 @@ export default class CaveManager extends SceneManager {
     }
 
     if (button == CLICKLEFT) {
-      if (this.gameState.holding == "bomb") {
-        if (!block.broken || block.content != CONTENTBOMBOVERLAY) {
+      if (this.gameState.holding instanceof Bomb) {
+        // Bomb functionality
+        if (block.broken && block.content != CONTENTEMPTY) {
           return;
         }
-        block.content = CONTENTBOMB;
-        block.bombTimer = new Timer({
-          goalSecs: 2,
-          goalFunc: () => {
-            this.gameState.level.cave.bomb(block);
-            this.soundManager.playSound(sounds.break);
-            this.soundManager.playSound(sounds.break);
-            this.soundManager.playSound(sounds.break);
-            this.soundManager.playSound(sounds.break);
-            this.checkCaveClear();
-          },
-        });
-        timerQueue.push(block.bombTimer);
-        block.bombTimer.start();
+        this.bomb = {
+          screenPos: new Position(cursorPos),
+          timer: new Timer({
+            goalSecs: 1.9,
+            goalFunc: () => {
+              this.gameState.level.cave.bomb(block);
+              this.soundManager.playSound(sounds.break);
+              this.soundManager.playSound(sounds.break);
+              this.soundManager.playSound(sounds.break);
+              this.soundManager.playSound(sounds.break);
+              this.checkCaveClear();
+              this.bomb = null;
+            },
+          }),
+          hoverScreenPos: null,
+        };
+        timerQueue.push(this.bomb?.timer);
+        this.bomb.timer.start();
         this.soundManager.playSound(sounds.bomb);
-        this.gameState.holding == "bomb";
+        this.gameState.holding = null;
         return;
       } else if (
         this.gameState.holding instanceof Chisel &&
         !this.gameState.holding.chiselTimer.inMotion
       ) {
         // Chisel functionality
-        if (block.hasGold && !block.hidden) {
+        if (block.hasGold && !block.hidden && !block.broken) {
           const chisel = this.gameState.holding;
           chisel.chiselTimer.goalFunc = () => {
             this.gameState.gold += 3;
@@ -239,9 +265,9 @@ export default class CaveManager extends SceneManager {
             this.soundManager.playSound(sounds.gold);
             this.gameState.holding = null;
             block.hasGold = false;
-            this.chiselActive = null;
+            this.activeChisel = null;
           };
-          this.chiselActive = {
+          this.activeChisel = {
             screenPos: new Position(cursorPos),
             timer: chisel.chiselTimer,
           };
@@ -330,10 +356,12 @@ export default class CaveManager extends SceneManager {
     });
     const block = this.getBlockFromScrenPos(cursorPos);
     block.cursorHovering = true;
-    if (this.gameState.holding == "bomb") {
-      this.gameState.level.cave.setBombOverlay(block);
-    } else {
-      this.gameState.level.cave.setBombOverlay();
+    if (this.gameState.holding instanceof Bomb) {
+      this.bomb = {
+        hoverScreenPos: cursorPos,
+        screenPos: new Position(cursorPos),
+        timer: new Timer({}),
+      };
     }
     if (block.broken) {
       if (block.content == CONTENTWATER) {

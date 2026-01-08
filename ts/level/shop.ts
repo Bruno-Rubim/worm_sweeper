@@ -8,10 +8,7 @@ import {
   GAMEWIDTH,
 } from "../global.js";
 import { armorDic, type Armor } from "../items/armor/armor.js";
-import {
-  consumableDic,
-  type Consumable,
-} from "../items/consumable/consumable.js";
+import { type Consumable } from "../items/consumable/consumable.js";
 import { ShopItem } from "../items/shopItem.js";
 import { ChangeScene } from "../action.js";
 import Position from "../position.js";
@@ -24,6 +21,7 @@ import { Shield, shieldDic } from "../items/shield/shield.js";
 import { weaponDic } from "../items/weapon/dict.js";
 import type GameState from "../gameState.js";
 import TimeBlade from "../items/weapon/timeBlade.js";
+import consumableDic from "../items/consumable/dict.js";
 
 const exitBtn = new GameObject({
   sprite: sprites.button_exit,

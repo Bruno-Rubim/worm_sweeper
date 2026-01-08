@@ -1,8 +1,5 @@
 import { armorDic, type Armor } from "./items/armor/armor.js";
-import {
-  consumableDic,
-  type Consumable,
-} from "./items/consumable/consumable.js";
+import { type Consumable } from "./items/consumable/consumable.js";
 import { Item } from "./items/item.js";
 import Position from "./position.js";
 import Level from "./level/level.js";
@@ -16,6 +13,8 @@ import { Weapon } from "./items/weapon/weapon.js";
 import { Shield, shieldDic } from "./items/shield/shield.js";
 import type { Chisel } from "./items/passives/chisel.js";
 import { weaponDic } from "./items/weapon/dict.js";
+import consumableDic from "./items/consumable/dict.js";
+import type Bomb from "./items/consumable/bomb.js";
 
 export type inventory = {
   armor: Armor;
@@ -57,7 +56,7 @@ export default class GameState {
   inBook: boolean = false;
   bookPage: number = 0;
 
-  holding: "bomb" | Chisel | null = null;
+  holding: Bomb | Chisel | null = null;
 
   inventory: inventory = {
     picaxe: getItem("picaxe", new Position(GAMEWIDTH - 20, 90)),
@@ -66,7 +65,7 @@ export default class GameState {
     weapon: weaponDic.wood_sword,
     shield: shieldDic.wood_shield,
     armor: armorDic.empty,
-    consumable: consumableDic.empty,
+    consumable: consumableDic.bomb,
     passive_1: getItem("empty", new Position(4, 18 * 1)),
     passive_2: getItem("empty", new Position(4, 18 * 2)),
     passive_3: getItem("empty", new Position(4, 18 * 3)),
