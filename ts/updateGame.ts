@@ -249,7 +249,7 @@ function handleAction(
       action.damage - gameManager.gameState.currentDefense
     );
     action.enemy.health -= gameManager.gameState.currentReflection;
-    if (gameManager.gameState.health < 1) {
+    if (gameManager.gameState.health <= 0) {
       if (inputState.mouse.heldLeft || inputState.mouse.heldRight) {
         gameManager.gameState.heldWhileDeath = true;
       }

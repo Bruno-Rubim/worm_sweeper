@@ -93,6 +93,14 @@ export const sounds = {
       max: 1.1,
     },
   }),
+  break: new Sound({
+    soundName: "break",
+    volumeMult: 0.4,
+    pitchRange: {
+      min: 0.9,
+      max: 1.1,
+    },
+  }),
   clear: new Sound({
     soundName: "clear",
     volumeMult: 0.4,
