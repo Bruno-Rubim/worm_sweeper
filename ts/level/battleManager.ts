@@ -146,7 +146,7 @@ export default class BattleManager extends SceneManager {
    */
   checkBattleEnd() {
     this.gameState.battle?.enemies.forEach((e, i) => {
-      if (e.health < 1) {
+      if (e.health <= 0) {
         timerQueue.splice(timerQueue.indexOf(e.cooldownTimer), 1);
         this.gameState.battle!.enemies.splice(i, 1);
         if (this.gameState.hasItem("carving_knife")) {
@@ -168,16 +168,7 @@ export default class BattleManager extends SceneManager {
     const rId = utils.randomArrayId(this.gameState.battle!.enemies);
     const enemy = this.gameState.battle!.enemies[rId]!;
     let damage = this.gameState.inventory.weapon.totalDamage;
-    if (this.gameState.inventory.weapon.name == "time_blade") {
-      //Calculates time blade's damage
-      damage = Math.max(
-        1,
-        Math.min(
-          5,
-          Math.floor(5.5 - 2.25 * this.gameState.gameTimer.secondsRemaining)
-        )
-      );
-    }
+    console.log(damage);
     enemy.health -= damage;
     enemy.damagedTimer.start();
     timerQueue.push(enemy.damagedTimer);

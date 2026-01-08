@@ -9,7 +9,7 @@ export class Item extends GameObject {
   spriteSheetPos: Position;
   name: string;
   shopName: string;
-  description: string;
+  descriptionText: string;
   descFontSize = 0.4;
   cost: number;
 
@@ -19,7 +19,7 @@ export class Item extends GameObject {
     name: string;
     shopName: string;
     cost: number;
-    description: string;
+    descriptionText: string;
   }) {
     super({
       pos: args.pos ?? new Position(),
@@ -37,7 +37,11 @@ export class Item extends GameObject {
         return new ToggleBook();
       };
     }
-    this.description = args.description;
+    this.descriptionText = args.descriptionText;
+  }
+
+  get description() {
+    return this.descriptionText;
   }
 
   clone(): Item {
@@ -47,7 +51,7 @@ export class Item extends GameObject {
       name: this.name,
       shopName: this.shopName,
       cost: this.cost,
-      description: this.description,
+      descriptionText: this.descriptionText,
     });
   }
 

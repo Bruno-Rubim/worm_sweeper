@@ -12,9 +12,10 @@ import { Battle } from "./level/battle.js";
 import { timerQueue } from "./timer/timerQueue.js";
 import timeTracker from "./timer/timeTracker.js";
 import { getItem } from "./items/passives/dict.js";
-import { Weapon, weaponDic } from "./items/weapon/weapon.js";
+import { Weapon } from "./items/weapon/weapon.js";
 import { Shield, shieldDic } from "./items/shield/shield.js";
 import type { Chisel } from "./items/passives/chisel.js";
+import { weaponDic } from "./items/weapon/dict.js";
 
 export type inventory = {
   armor: Armor;
@@ -66,12 +67,12 @@ export default class GameState {
     shield: shieldDic.wood_shield,
     armor: armorDic.empty,
     consumable: consumableDic.empty,
-    passive_1: getItem("chisel", new Position(4, 18 * 1)),
-    passive_2: getItem("chisel", new Position(4, 18 * 2)),
-    passive_3: getItem("chisel", new Position(4, 18 * 3)),
-    passive_4: getItem("chisel", new Position(4, 18 * 4)),
-    passive_5: getItem("chisel", new Position(4, 18 * 5)),
-    passive_6: getItem("chisel", new Position(4, 18 * 6)),
+    passive_1: getItem("empty", new Position(4, 18 * 1)),
+    passive_2: getItem("empty", new Position(4, 18 * 2)),
+    passive_3: getItem("empty", new Position(4, 18 * 3)),
+    passive_4: getItem("empty", new Position(4, 18 * 4)),
+    passive_5: getItem("empty", new Position(4, 18 * 5)),
+    passive_6: getItem("empty", new Position(4, 18 * 6)),
   };
 
   constructor() {
@@ -80,7 +81,7 @@ export default class GameState {
       goalFunc: () => this.lose(),
       deleteAtEnd: false,
     });
-    this.level = new Level(0, this.inventory);
+    this.level = new Level(0, this);
     timerQueue.push(this.gameTimer);
     timerQueue.push(this.tiredTimer);
     timerQueue.push(this.attackAnimationTimer);
@@ -149,7 +150,7 @@ export default class GameState {
       passive_5: getItem("empty", new Position(4, 18 * 5)),
       passive_6: getItem("empty", new Position(4, 18 * 6)),
     };
-    this.level = new Level(0, this.inventory);
+    this.level = new Level(0, this);
     this.gameOver = false;
     timerQueue.push(this.gameTimer);
     timerQueue.push(this.tiredTimer);

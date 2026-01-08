@@ -1,6 +1,6 @@
 import { GAMEWIDTH } from "../../global.js";
 import Position from "../../position.js";
-import { sprites, type Sprite } from "../../sprites.js";
+import { type Sprite } from "../../sprites.js";
 import { Item } from ".././item.js";
 
 export class Weapon extends Item {
@@ -20,7 +20,7 @@ export class Weapon extends Item {
     super({
       ...args,
       pos: new Position(GAMEWIDTH - 20, 18),
-      description:
+      descriptionText:
         "$dmgDamage: " + args.damage + "\n$spdCooldown: " + args.cooldown + "s",
     });
     this.bigSprite = args.bigSprite;
@@ -33,67 +33,3 @@ export class Weapon extends Item {
     return this.damage;
   }
 }
-
-class TimeBlade extends Weapon {
-  constructor() {
-    super({
-      spriteSheetPos: new Position(6, 3),
-      bigSprite: sprites.big_time_blade,
-      name: "time_blade",
-      shopName: "Time Blade",
-      cost: 56,
-      damage: 1,
-      cooldown: 2.8,
-    });
-    this.description =
-      "The less time you have the deadlier." +
-      "\n$spdCooldown: " +
-      this.cooldown +
-      "s";
-    this.descFontSize = 0.4;
-  }
-
-  get totalDamage() {
-    return this.damage;
-  }
-}
-
-export const weaponDic = {
-  wood_sword: new Weapon({
-    spriteSheetPos: new Position(0, 3),
-    bigSprite: sprites.big_sword_wood,
-    name: "wood_sword",
-    shopName: "",
-    cost: 0,
-    damage: 1,
-    cooldown: 2,
-  }),
-  big_sword: new Weapon({
-    spriteSheetPos: new Position(2, 3),
-    bigSprite: sprites.big_sword_big,
-    name: "big_sword",
-    shopName: "Big Sword",
-    cost: 50,
-    damage: 3,
-    cooldown: 3.2,
-  }),
-  dagger: new Weapon({
-    spriteSheetPos: new Position(4, 3),
-    bigSprite: sprites.big_sword_dagger,
-    name: "dagger",
-    shopName: "Dagger",
-    cost: 37,
-    damage: 1,
-    cooldown: 1.3,
-  }),
-  // mace: new Weapon({
-  //   spriteSheetPos: new Position(8, 3),
-  //   bigSprite: sprites.big_sword_dagger,
-  //   name: "mace",
-  //   shopName: "Mace",
-  //   cost: 50,
-  //   damage: 4,
-  //   cooldown: 5,
-  // }),
-  time_blade: new TimeBlade(),
-};

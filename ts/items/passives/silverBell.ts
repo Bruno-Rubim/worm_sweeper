@@ -26,7 +26,7 @@ export class SilverBell extends Item {
       name: "silver_bell",
       shopName: "Silver Bell",
       cost: 15,
-      description:
+      descriptionText:
         "Reveals the location of doors. Recharges outside of shop every 60 seconds.",
     });
     if (!timerQueue.includes(this.ringTimer)) {
