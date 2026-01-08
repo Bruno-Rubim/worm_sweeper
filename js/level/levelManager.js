@@ -13,6 +13,7 @@ import BattleManager from "./battleManager.js";
 import ShopManager from "./shopManager.js";
 import { Battle } from "./battle.js";
 import sounds from "../sounds.js";
+import { Chisel } from "../items/passives/chisel.js";
 const transitionObject = new GameObject({
     sprite: sprites.scene_transition,
     height: 128,
@@ -158,7 +159,9 @@ export class LevelManager extends GameObject {
     }
     hoverFunction = (cursorPos) => {
         let action = this.currentSceneManager.handleHover(cursorPos);
-        if (this.gameState.inTransition) {
+        if (this.gameState.inTransition ||
+            (this.gameState.holding instanceof Chisel &&
+                this.gameState.holding.chiselTimer.inMotion)) {
             action = new ChangeCursorState(CURSORNONE);
         }
         if (this.gameState.inBook ||
@@ -170,6 +173,10 @@ export class LevelManager extends GameObject {
     };
     clickFunction = (cursorPos, button) => {
         if (this.gameState.paused) {
+            return;
+        }
+        if (this.gameState.holding instanceof Chisel &&
+            this.gameState.holding.chiselTimer.inMotion) {
             return;
         }
         if (this.gameState.gameOver) {
@@ -190,7 +197,8 @@ export class LevelManager extends GameObject {
     heldFunction = (cursorPos, button) => {
         if (this.gameState.inTransition ||
             this.gameState.inBook ||
-            this.gameState.gameOver) {
+            this.gameState.gameOver ||
+            this.gameState.paused) {
             return;
         }
         this.handleAction(this.currentSceneManager.handleHeld(cursorPos, button));

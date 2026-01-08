@@ -1,15 +1,16 @@
 import GameObject from "../gameObject.js";
-import { CLICKLEFT } from "../global.js";
+import { CENTER, CLICKLEFT } from "../global.js";
 import { BuyShopItem } from "../action.js";
 import Position from "../position.js";
 import { sprites } from "../sprites.js";
 import timeTracker from "../timer/timeTracker.js";
-import { armorDic } from "./armor.js";
-import { consumableDic } from "./consumable.js";
-import { itemDic, SilverBell } from "./item.js";
-import { shieldDic } from "./shield.js";
-import { weaponDic } from "./weapon.js";
+import { armorDic } from "./armor/armor.js";
+import { consumableDic } from "./consumable/consumable.js";
 import { timerQueue } from "../timer/timerQueue.js";
+import { SilverBell } from "./passives/silverBell.js";
+import { itemDic } from "./passives/dict.js";
+import { weaponDic } from "./weapon/weapon.js";
+import { shieldDic } from "./shield/shield.js";
 const items = {
     ...weaponDic,
     ...armorDic,
@@ -40,7 +41,7 @@ export class ShopItem extends GameObject {
         if (this.mouseHovering) {
             canvasManager.renderSpriteFromSheet(sprites.item_sheet, this.pos, 16, 16, this.item.spriteSheetPos.add(1, 0));
         }
-        canvasManager.renderText("numbers_cost", this.pos.add(2, 18), this.item.cost.toString());
+        canvasManager.renderText("numbers_cost", this.pos.add(9, 18), this.item.cost.toString(), CENTER);
         if (this.item.name == "time_potion") {
             canvasManager.renderAnimationFrame(sprites.time_potion_pointer_sheet, this.pos, 16, 16, 12, 1, this.firstAnimationTic, timeTracker.currentGameTic);
             canvasManager.renderAnimationFrame(sprites.time_potion_pointer_sheet, this.pos, 16, 16, 12, 1, this.firstAnimationTic, timeTracker.currentGameTic, 1 / 12, new Position(0, 1));

@@ -1,8 +1,6 @@
-import { armorDic } from "./items/armor.js";
-import { consumableDic } from "./items/consumable.js";
-import { Item, getItem } from "./items/item.js";
-import { shieldDic } from "./items/shield.js";
-import { weaponDic } from "./items/weapon.js";
+import { armorDic } from "./items/armor/armor.js";
+import { consumableDic, } from "./items/consumable/consumable.js";
+import { Item } from "./items/item.js";
 import Position from "./position.js";
 import Level from "./level/level.js";
 import { GAMEWIDTH } from "./global.js";
@@ -10,24 +8,28 @@ import { GAMETIMERSYNC, Timer } from "./timer/timer.js";
 import { Battle } from "./level/battle.js";
 import { timerQueue } from "./timer/timerQueue.js";
 import timeTracker from "./timer/timeTracker.js";
+import { getItem } from "./items/passives/dict.js";
+import { Weapon, weaponDic } from "./items/weapon/weapon.js";
+import { Shield, shieldDic } from "./items/shield/shield.js";
 export default class GameState {
-    gold = 0;
     gameTimer;
-    level;
-    battle = null;
+    gold = 0;
     health = 5;
+    deathCount = 0;
+    level;
+    inTransition = false;
+    currentScene = "cave";
+    battle = null;
     tiredTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
     attackAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
-    inTransition = false;
-    inBook = false;
-    bookPage = 0;
-    currentScene = "cave";
-    paused = false;
     defending = false;
-    holdingBomb = false;
+    paused = false;
+    started = false;
     gameOver = false;
     heldWhileDeath = false;
-    deathCount = 0;
+    inBook = false;
+    bookPage = 0;
+    holding = null;
     inventory = {
         picaxe: getItem("picaxe", new Position(GAMEWIDTH - 20, 90)),
         flag: getItem("flag", new Position(GAMEWIDTH - 20, 109)),
@@ -83,7 +85,7 @@ export default class GameState {
         this.inTransition = false;
         this.battle = null;
         this.defending = false;
-        this.holdingBomb = false;
+        this.holding = null;
         this.deathCount++;
         this.gold = 0;
         this.health = 5;

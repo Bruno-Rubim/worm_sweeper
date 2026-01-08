@@ -10,9 +10,11 @@ function renderStats(canvasManager, gameState) {
     canvasManager.renderText("numbers_brown", new Position(GAMEWIDTH - 66, 6), "$blk " + gameState.level.cave.blocksLeft.toString(), CENTER);
     canvasManager.renderText("numbers_gold", new Position(GAMEWIDTH - 4, 6), "$gld " + gameState.gold.toString(), LEFT);
     canvasManager.renderText("numbers_green", new Position(6, GAMEHEIGHT - 14), "$dor " + (gameState.level.depth + 1).toString());
-    canvasManager.renderText("numbers_red", new Position(GAMEWIDTH - 4, GAMEHEIGHT - 14), "$run" + gameState.deathCount.toString(), LEFT);
+    canvasManager.renderText("numbers_red", new Position(GAMEWIDTH - 4, GAMEHEIGHT - 14), "$skl" + gameState.deathCount.toString(), LEFT);
     if (gameState.health > 0) {
-        canvasManager.renderText("icons", new Position(GAMEWIDTH / 2, GAMEHEIGHT - 14), "$hrt".repeat(gameState.health), CENTER);
+        const roundedHealth = Math.floor(gameState.health);
+        canvasManager.renderText("icons", new Position(GAMEWIDTH / 2, GAMEHEIGHT - 14), "$hrt".repeat(roundedHealth) +
+            (gameState.health > roundedHealth ? "$hhr" : ""), CENTER);
     }
 }
 function renderItems(canvasManager, gameState) {

@@ -1,6 +1,7 @@
-import { ChangeCursorState, ChangeScene, NextLevel, StartBattle, } from "../action.js";
+import { ChangeCursorState, ChangeScene, NextLevel, RingBell, StartBattle, } from "../action.js";
 import { CURSORARROW, CURSORDEFAULT, CURSORDETONATOR, CURSORGOLDWATER, CURSORPICAXE, } from "../cursor.js";
 import { CLICKLEFT } from "../global.js";
+import { Chisel } from "../items/passives/chisel.js";
 import Position from "../position.js";
 import sounds from "../sounds.js";
 import { sprites } from "../sprites.js";
@@ -9,6 +10,7 @@ import { timerQueue } from "../timer/timerQueue.js";
 import { blockSheetPos, CONTENTBOMB, CONTENTBOMBOVERLAY, CONTENTDOOREXIT, CONTENTDOOREXITOPEN, CONTENTDOORSHOP, CONTENTDOORSHOPOPEN, CONTENTEMPTY, CONTENTWATER, } from "./block.js";
 import SceneManager from "./sceneManager.js";
 export default class CaveManager extends SceneManager {
+    chiselActive = null;
     constructor(gameState, scenePos, soundManager) {
         super(gameState, scenePos, soundManager);
     }
@@ -51,16 +53,25 @@ export default class CaveManager extends SceneManager {
                 }
             }
         }
+        if (this.chiselActive) {
+            canvasManager.renderSpriteFromSheet(sprites.block_sheet, this.chiselActive.gamePos
+                .add(-blockSize / 2, blockSize / 2)
+                .add(this.pos), blockSize, blockSize, blockSheetPos.chisel.add(Math.floor(this.chiselActive.timer.percentage / (100 / 6)) % 2, 0), 16, 16);
+        }
     };
     handleClick = (cursorPos, button) => {
         const block = this.getBlockFromGamePos(cursorPos);
         if (!this.gameState.level.cave.started) {
             this.gameState.level.cave.start(block.gridPos, this.gameState.itemNames);
             this.gameState.gameTimer.start();
+            this.soundManager.playSound(sounds.break);
+            if (!this.gameState.started) {
+                this.gameState.started = true;
+            }
             return;
         }
         if (button == CLICKLEFT) {
-            if (this.gameState.holdingBomb) {
+            if (this.gameState.holding == "bomb") {
                 if (!block.broken || block.content != CONTENTBOMBOVERLAY) {
                     return;
                 }
@@ -69,13 +80,37 @@ export default class CaveManager extends SceneManager {
                     goalSecs: 2,
                     goalFunc: () => {
                         this.gameState.level.cave.bomb(block);
+                        this.soundManager.playSound(sounds.break);
+                        this.soundManager.playSound(sounds.break);
+                        this.soundManager.playSound(sounds.break);
+                        this.soundManager.playSound(sounds.break);
                         this.checkCaveClear();
                     },
                 });
                 timerQueue.push(block.bombTimer);
                 block.bombTimer.start();
                 this.soundManager.playSound(sounds.bomb);
-                this.gameState.holdingBomb = false;
+                this.gameState.holding == "bomb";
+                return;
+            }
+            else if (this.gameState.holding instanceof Chisel) {
+                const chisel = this.gameState.holding;
+                if (block.hasGold) {
+                    chisel.chiselTimer.goalFunc = () => {
+                        this.gameState.gold += 1;
+                        chisel.using = false;
+                        this.soundManager.playSound(sounds.gold);
+                        this.gameState.holding = null;
+                        block.hasGold = false;
+                        this.chiselActive = null;
+                    };
+                    this.chiselActive = {
+                        gamePos: block.gamePos,
+                        timer: chisel.chiselTimer,
+                    };
+                    timerQueue.push(chisel.chiselTimer);
+                    chisel.chiselTimer.start();
+                }
                 return;
             }
             let enemyCount = 0;
@@ -83,9 +118,14 @@ export default class CaveManager extends SceneManager {
                 (!block.hidden || this.gameState.hasItem("dark_crystal")) &&
                 !block.marked) {
                 let breakResult = this.gameState.level.cave.breakBlock(block);
+                this.soundManager.playSound(sounds.break);
                 enemyCount += breakResult.battle.enemyCount;
                 this.gameState.gold += breakResult.gold;
+                if (breakResult.gold > 0) {
+                    this.soundManager.playSound(sounds.gold);
+                }
                 if (this.gameState.hasItem("drill") && block.threatLevel == 0) {
+                    this.soundManager.playSound(sounds.drill);
                     this.gameState.level.cave.breakConnectedEmpty(block);
                 }
             }
@@ -107,6 +147,7 @@ export default class CaveManager extends SceneManager {
                         return new ChangeScene("shop");
                     case CONTENTWATER:
                         this.gameState.gold += 1;
+                        this.soundManager.playSound(sounds.gold);
                         this.gameState.gameTimer.addSecs(-10);
                         break;
                     case CONTENTEMPTY:
@@ -116,10 +157,12 @@ export default class CaveManager extends SceneManager {
                             let breakResult = this.gameState.level.cave.breakSurrBlocks(block.gridPos);
                             this.soundManager.playSound(sounds.detonate);
                             if (this.gameState.hasItem("drill")) {
-                                breakResult.gold +=
-                                    this.gameState.level.cave.breakConnectedEmpty(block).gold;
+                                this.gameState.level.cave.breakConnectedEmpty(block);
                             }
                             enemyCount += breakResult.battle.enemyCount;
+                            if (breakResult.gold > 0) {
+                                this.soundManager.playSound(sounds.gold);
+                            }
                             this.gameState.gold += breakResult.gold;
                         }
                         break;
@@ -145,7 +188,7 @@ export default class CaveManager extends SceneManager {
         });
         const block = this.getBlockFromGamePos(cursorPos);
         block.cursorHovering = true;
-        if (this.gameState.holdingBomb) {
+        if (this.gameState.holding == "bomb") {
             this.gameState.level.cave.setBombOverlay(block);
         }
         else {

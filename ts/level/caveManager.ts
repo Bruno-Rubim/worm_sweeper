@@ -142,7 +142,6 @@ export default class CaveManager extends SceneManager {
     // Renders chisel
     // TO-DO: fix it rendering under the border
     if (this.chiselActive) {
-      console.log(this.chiselActive.timer.inMotion);
       canvasManager.renderSpriteFromSheet(
         sprites.block_sheet,
         this.chiselActive.gamePos

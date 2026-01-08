@@ -1,11 +1,8 @@
-import { ItemDescription, RingBell, ToggleBook } from "../action.js";
+import { ItemDescription, ToggleBook } from "../action.js";
 import GameObject from "../gameObject.js";
 import { GAMEWIDTH, LEFT, RIGHT } from "../global.js";
 import Position from "../position.js";
 import { sprites } from "../sprites.js";
-import { GAMETIMERSYNC, Timer } from "../timer/timer.js";
-import { timerQueue } from "../timer/timerQueue.js";
-import timeTracker from "../timer/timeTracker.js";
 export class Item extends GameObject {
     spriteSheetPos;
     name;
@@ -60,122 +57,4 @@ export class Item extends GameObject {
             return new ItemDescription(this.description, side, this.descFontSize);
         }
     };
-}
-const book = new Item({
-    spriteSheetPos: new Position(4, 7),
-    name: "book",
-    shopName: "",
-    cost: 0,
-    description: "Click to open the guide book.",
-});
-export class SilverBell extends Item {
-    rang = false;
-    ringTimer = new Timer({
-        goalSecs: 60,
-        goalFunc: () => {
-            this.rang = true;
-            this.firstAnimationTic = timeTracker.currentGameTic;
-        },
-        classes: [GAMETIMERSYNC],
-        deleteAtEnd: false,
-    });
-    constructor(pos) {
-        super({
-            pos: pos ?? new Position(),
-            spriteSheetPos: new Position(2, 4),
-            name: "silver_bell",
-            shopName: "Silver Bell",
-            cost: 15,
-            description: "Reveals the location of doors. Recharges outside of shop every 60 seconds.",
-        });
-        if (!timerQueue.includes(this.ringTimer)) {
-            timerQueue.push(this.ringTimer);
-        }
-    }
-    render(canvasManager) {
-        if (this.ringTimer.inMotion) {
-            canvasManager.renderSpriteFromSheet(this.sprite, this.pos, this.width, this.height, this.spriteSheetPos);
-        }
-        else {
-            canvasManager.renderAnimationFrame(sprites.bell_shine_sheet, this.pos, this.width, this.height, 4, 2, this.firstAnimationTic, timeTracker.currentTic, 0.5);
-        }
-        if (this.mouseHovering) {
-            canvasManager.renderSpriteFromSheet(this.sprite, this.pos, this.width, this.height, this.spriteSheetPos.add(1, 0));
-        }
-    }
-    clickFunction = (cursorPos, button) => {
-        if (!this.ringTimer.inMotion) {
-            this.ringTimer.start();
-            return new RingBell();
-        }
-    };
-    clone() {
-        return new SilverBell(new Position().add(this.pos));
-    }
-}
-const silver_bell = new SilverBell();
-export const itemDic = {
-    gold_bug: new Item({
-        spriteSheetPos: new Position(0, 4),
-        name: "gold_bug",
-        shopName: "Gold Bug",
-        cost: 20,
-        description: "More gold during caves and when clearing levels. More worms.",
-    }),
-    silver_bell: silver_bell,
-    dark_crystal: new Item({
-        spriteSheetPos: new Position(4, 4),
-        name: "dark_crystal",
-        shopName: "Dark Crystal",
-        cost: 15,
-        description: "Allows you to break blocks you can't see.",
-    }),
-    detonator: new Item({
-        spriteSheetPos: new Position(6, 4),
-        name: "detonator",
-        shopName: "Detonator",
-        cost: 20,
-        description: "Use this to break all unmarked blocks around a block instantly.",
-    }),
-    drill: new Item({
-        spriteSheetPos: new Position(8, 4),
-        name: "drill",
-        shopName: "Drill",
-        cost: 12,
-        description: "When breaking a safe block all connected safe blocks are also broken. Doesn't collect gold.",
-    }),
-    health_insurance: new Item({
-        spriteSheetPos: new Position(10, 4),
-        name: "health_insurance",
-        shopName: "Health Insurance",
-        cost: 40,
-        description: "Gain 1 heart when clearing a level.",
-    }),
-    empty: new Item({
-        spriteSheetPos: new Position(14, 4),
-        name: "empty",
-        shopName: "",
-        cost: 0,
-        description: "",
-    }),
-    picaxe: new Item({
-        spriteSheetPos: new Position(0, 7),
-        name: "picaxe",
-        shopName: "",
-        cost: 0,
-        description: "Left click any block that's not hidden to break it.",
-    }),
-    flag: new Item({
-        spriteSheetPos: new Position(2, 7),
-        name: "flag",
-        shopName: "",
-        cost: 0,
-        description: "Right click any block to mark it as a possible threat.",
-    }),
-    book: book,
-};
-export function getItem(itemName, screenPos = new Position()) {
-    let item = itemDic[itemName].clone();
-    item.pos.update(screenPos);
-    return item;
 }

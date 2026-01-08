@@ -1,12 +1,13 @@
-import { cursor, CURSORBATTLE, CURSORBOMB, CURSORDEFAULT, } from "./cursor.js";
+import { cursor, CURSORBATTLE, CURSORBOMB, CURSORCHISEL, CURSORDEFAULT, } from "./cursor.js";
 import { GameManager } from "./gameManager.js";
-import { CLICKLEFT, CLICKRIGHT } from "./global.js";
+import { CLICKLEFT, CLICKRIGHT, DEV } from "./global.js";
 import { inputState } from "./inputState.js";
-import { consumableDic } from "./items/consumable.js";
-import { ChangeCursorState, ConsumeItem, Action, ToggleBook as ToggleBook, ItemDescription, RestartGame, EnemyAtack, RingBell, } from "./action.js";
+import { consumableDic } from "./items/consumable/consumable.js";
+import { ChangeCursorState, ConsumeItem, Action, ToggleBook as ToggleBook, ItemDescription, RestartGame, EnemyAtack, RingBell, PickupChisel, } from "./action.js";
 import timeTracker from "./timer/timeTracker.js";
 import { timerQueue } from "./timer/timerQueue.js";
 import sounds from "./sounds.js";
+import { Chisel } from "./items/passives/chisel.js";
 function changeCursorState(newState) {
     cursor.state = newState;
 }
@@ -88,21 +89,30 @@ function handleMouseInput(objects) {
         return actions;
     }
 }
+function pauseGame(gameState) {
+    timeTracker.togglePause();
+    gameState.paused = timeTracker.isPaused;
+}
 function handleKeyInput(gameManager) {
     if (inputState.keyboard.Escape == "pressed") {
         inputState.keyboard.Escape = "read";
         if (gameManager.gameState.inBook) {
             return new ToggleBook();
         }
-        timeTracker.togglePause();
-        gameManager.gameState.paused = timeTracker.isPaused;
+        pauseGame(gameManager.gameState);
     }
-    if (inputState.keyboard.q == "pressed") {
-        inputState.keyboard.q = "read";
-        if (confirm("Would you like to quit the game?")) {
-            gameManager.gameState.lose();
+    if (DEV) {
+        if (inputState.keyboard.q == "pressed") {
+            inputState.keyboard.q = "read";
+            if (confirm("Would you like to quit the game?")) {
+                gameManager.gameState.lose();
+            }
+            inputState.keyboard.q = "unpressed";
         }
-        inputState.keyboard.q = "unpressed";
+        if (inputState.keyboard.w == "pressed") {
+            inputState.keyboard.w = "read";
+            gameManager.soundManager.playSound(sounds.break);
+        }
     }
 }
 function handleAction(gameManager, action) {
@@ -115,6 +125,9 @@ function handleAction(gameManager, action) {
             case "time_potion":
                 gameManager.gameState.gameTimer.addSecs(60);
                 break;
+            case "health_vial":
+                gameManager.gameState.health += 0.5;
+                break;
             case "health_potion":
                 gameManager.gameState.health += 1;
                 break;
@@ -122,11 +135,11 @@ function handleAction(gameManager, action) {
                 gameManager.gameState.health += 2;
                 break;
             case "bomb":
-                gameManager.gameState.holdingBomb = true;
+                gameManager.gameState.holding == "bomb";
                 break;
             case "empty":
-                if (gameManager.gameState.holdingBomb) {
-                    gameManager.gameState.holdingBomb = false;
+                if (gameManager.gameState.holding == "bomb") {
+                    gameManager.gameState.holding = null;
                     gameManager.gameState.inventory.consumable = consumableDic.bomb;
                 }
                 break;
@@ -162,7 +175,7 @@ function handleAction(gameManager, action) {
         timerQueue.push(action.enemy.attackAnimTimer);
         gameManager.gameState.health -= Math.max(0, action.damage - gameManager.gameState.currentDefense);
         action.enemy.health -= gameManager.gameState.currentReflection;
-        if (gameManager.gameState.health < 1) {
+        if (gameManager.gameState.health <= 0) {
             if (inputState.mouse.heldLeft || inputState.mouse.heldRight) {
                 gameManager.gameState.heldWhileDeath = true;
             }
@@ -173,6 +186,11 @@ function handleAction(gameManager, action) {
     if (action instanceof RingBell) {
         gameManager.soundManager.playSound(sounds.bell);
         gameManager.gameState.level.cave.bellRang = true;
+    }
+    if (action instanceof PickupChisel) {
+        if (gameManager.gameState.holding == null) {
+            gameManager.gameState.holding = action.chiselItem;
+        }
     }
 }
 function updateTimers(gameManager) {
@@ -216,8 +234,14 @@ export default function updateGame(renderScale, gameManager) {
                 break;
         }
     });
-    if (gameManager.gameState.holdingBomb) {
-        changeCursorState(CURSORBOMB);
+    if (gameManager.gameState.holding != null) {
+        if (gameManager.gameState.holding == "bomb") {
+            changeCursorState(CURSORBOMB);
+        }
+        else if (gameManager.gameState.holding instanceof Chisel &&
+            !gameManager.gameState.holding.chiselTimer.inMotion) {
+            changeCursorState(CURSORCHISEL);
+        }
         cursorChanged = true;
     }
     if (!cursorChanged) {

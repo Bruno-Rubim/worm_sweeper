@@ -81,3 +81,10 @@ export class StartBattle extends Action {
 }
 export class RingBell extends Action {
 }
+export class PickupChisel extends Action {
+    chiselItem;
+    constructor(item) {
+        super();
+        this.chiselItem = item;
+    }
+}

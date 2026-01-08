@@ -1,6 +1,6 @@
 import { ChangeCursorState, ChangeScene } from "../action.js";
 import { CURSORBATTLE } from "../cursor.js";
-import { BORDERTHICKBOTTOM, BORDERTHICKLEFT, BORDERTHICKRIGHT, BORDERTHICKTOP, CLICKLEFT, CLICKRIGHT, GAMEHEIGHT, GAMEWIDTH, } from "../global.js";
+import { BORDERTHICKBOTTOM, BORDERTHICKLEFT, BORDERTHICKRIGHT, BORDERTHICKTOP, CENTER, CLICKLEFT, CLICKRIGHT, GAMEHEIGHT, GAMEWIDTH, LEFT, } from "../global.js";
 import Position from "../position.js";
 import { sprites } from "../sprites.js";
 import { timerQueue } from "../timer/timerQueue.js";
@@ -14,11 +14,12 @@ export default class BattleManager extends SceneManager {
         canvasManager.renderSprite(sprites.bg_battle, new Position(BORDERTHICKLEFT, BORDERTHICKTOP), GAMEWIDTH - BORDERTHICKLEFT - BORDERTHICKRIGHT, GAMEHEIGHT - BORDERTHICKTOP - BORDERTHICKBOTTOM);
         this.gameState.battle?.enemies.forEach((enemy) => {
             canvasManager.renderSpriteFromSheet(enemy.spriteSheet, enemy.pos, 64, 64, new Position(enemy.attackAnimTimer.inMotion ? 1 : 0, enemy.damagedTimer.inMotion ? 1 : 0));
-            for (let i = 0; i < enemy.health; i++) {
-                canvasManager.renderText("icons", enemy.pos.add(33 + i * 9 - (9 * enemy.health) / 2, 64), "$hrt");
+            if (enemy.health > 0) {
+                const roundedHealth = Math.floor(enemy.health);
+                canvasManager.renderText("icons", enemy.pos.add(33, 64), "$hrt".repeat(roundedHealth) +
+                    (enemy.health > roundedHealth ? "$hhr" : ""), CENTER);
             }
-            canvasManager.renderText("icons", enemy.pos.add(25, 8), "$dmg");
-            canvasManager.renderText("numbers_gray", enemy.pos.add(18, 8), enemy.damage.toString());
+            canvasManager.renderText("numbers_gray", enemy.pos.add(34, 8), enemy.damage.toString() + "$dmg", LEFT);
             let counterFrame = Math.floor(Math.min(15, (enemy.cooldownTimer.percentage / 100) * 16));
             canvasManager.renderSpriteFromSheet(sprites.counter_sheet, enemy.pos.add(34, 8), 8, 8, new Position(counterFrame % 8, Math.floor(counterFrame / 8)));
         });
@@ -37,8 +38,15 @@ export default class BattleManager extends SceneManager {
             let counterFrame = Math.floor(Math.min(15, (this.gameState.tiredTimer.percentage / 100) * 16));
             canvasManager.renderSpriteFromSheet(sprites.counter_sheet, new Position(GAMEWIDTH / 2 - 4, GAMEHEIGHT - BORDERTHICKBOTTOM - 22), 8, 8, new Position(counterFrame % 8, Math.floor(counterFrame / 8)));
         }
-        for (let i = 0; i < this.gameState.currentDefense; i++) {
-            canvasManager.renderText("icons", new Position(88 + i * 9 - (9 * this.gameState.currentDefense) / 2, GAMEHEIGHT - BORDERTHICKBOTTOM - 11), i < this.gameState.currentReflection ? "$ref" : "$dfs");
+        if (this.gameState.currentDefense > 0) {
+            const reflect = this.gameState.currentReflection;
+            const defense = this.gameState.currentDefense - this.gameState.currentReflection;
+            const roundedReflect = Math.floor(reflect);
+            const roundedDefense = Math.floor(defense);
+            canvasManager.renderText("icons", new Position(GAMEWIDTH / 2, GAMEHEIGHT - BORDERTHICKBOTTOM - 11), "$ref".repeat(roundedReflect) +
+                (reflect > roundedReflect ? "$hrf" : "") +
+                "$dfs".repeat(roundedDefense) +
+                (defense > roundedDefense ? "$hdf" : ""), CENTER);
         }
     };
     checkBattleEnd() {
@@ -46,6 +54,9 @@ export default class BattleManager extends SceneManager {
             if (e.health < 1) {
                 timerQueue.splice(timerQueue.indexOf(e.cooldownTimer), 1);
                 this.gameState.battle.enemies.splice(i, 1);
+                if (this.gameState.hasItem("carving_knife")) {
+                    this.gameState.gold += 2;
+                }
             }
         });
         if (this.gameState.battle.enemies.length <= 0) {
@@ -58,7 +69,7 @@ export default class BattleManager extends SceneManager {
         const enemy = this.gameState.battle.enemies[rId];
         let damage = this.gameState.inventory.weapon.totalDamage;
         if (this.gameState.inventory.weapon.name == "time_blade") {
-            damage = Math.max(1, Math.min(10, Math.floor(6 / (this.gameState.gameTimer.secondsRemaining / 60) - 1)));
+            damage = Math.max(1, Math.min(5, Math.floor(5.5 - 2.25 * this.gameState.gameTimer.secondsRemaining)));
         }
         enemy.health -= damage;
         enemy.damagedTimer.start();
@@ -101,8 +112,8 @@ export default class BattleManager extends SceneManager {
         const tiredTimer = this.gameState.tiredTimer;
         if (tiredTimer.ended || !tiredTimer.started) {
             if (button == CLICKLEFT) {
-                if (this.gameState.holdingBomb) {
-                    this.gameState.holdingBomb = false;
+                if (this.gameState.holding == "bomb") {
+                    this.gameState.holding = null;
                     return this.bomb();
                 }
                 return this.playerAttack();

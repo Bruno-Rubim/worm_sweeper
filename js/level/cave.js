@@ -13,7 +13,6 @@ export default class Cave {
     blocksLeft;
     levelScale;
     blockMatrix = [];
-    freeTiles = [];
     started = false;
     cleared = false;
     bellRang = false;
@@ -28,21 +27,23 @@ export default class Cave {
         this.levelScale = 128 / (this.size * 16);
         this.fillEmptyBlocks();
     }
+    get blocksCanPlaceWorm() {
+        return this.allBLocks.filter((block) => block.content == CONTENTEMPTY &&
+            !block.starter &&
+            this.getSurrBlocks(block.gridPos).every((b) => b.content == CONTENTEMPTY || b.content == CONTENTWORM));
+    }
+    get blocksCanPlaceStuff() {
+        this.updateAllStats();
+        return this.allBLocks.filter((block) => block.threatLevel == 0 &&
+            !block.starter &&
+            block.content == CONTENTEMPTY &&
+            this.getAdjcBlocks(block.gridPos).every((b) => b.content == CONTENTEMPTY));
+    }
     fillEmptyBlocks() {
         this.blockMatrix = Array.from({ length: this.size }, (_, i) => Array.from({ length: this.size }, (_, j) => new Block({
             gridPos: new Position(i, j),
             gamePos: new Position(i * 16 * this.levelScale, j * 16 * this.levelScale),
         })));
-    }
-    setFreeTiles() {
-        for (let i = 0; i < this.size; i++) {
-            for (let j = 0; j < this.size; j++) {
-                const block = this.blockMatrix[i][j];
-                if (!block.starter) {
-                    this.freeTiles.push(block);
-                }
-            }
-        }
     }
     placeGold() {
         let c = 0;
@@ -268,25 +269,16 @@ export default class Cave {
         return totalResult;
     }
     placeExit() {
-        if (this.freeTiles.length == 0) {
+        if (this.blocksCanPlaceStuff.length == 0) {
             console.warn("drake...");
             return;
         }
-        const r = Math.floor(Math.random() * this.freeTiles.length);
-        const block = this.freeTiles[r];
-        this.freeTiles.splice(r, 1);
+        const r = utils.randomArrayId(this.blocksCanPlaceStuff);
+        const block = this.blocksCanPlaceStuff[r];
         block.content = CONTENTDOOREXIT;
-        this.getSurrBlocks(block.gridPos).forEach((b) => {
-            for (let i = 0; i < this.freeTiles.length; i++) {
-                if (this.freeTiles[i] == b) {
-                    this.freeTiles.splice(i, 1);
-                    i--;
-                }
-            }
-        });
     }
     placeWorms() {
-        if (this.freeTiles.length < this.wormQuantity) {
+        if (this.blocksCanPlaceWorm.length < this.wormQuantity) {
             window.alert("not enough worms");
         }
         let wormsPlaced = 0;
@@ -294,50 +286,30 @@ export default class Cave {
             this.wormQuantity = Math.floor((this.size * this.size) / 3);
         }
         for (let i = 0; wormsPlaced < this.wormQuantity && i < 300; i++) {
-            const r = Math.floor(Math.random() * this.freeTiles.length);
-            const block = this.freeTiles[r];
-            block.content = "worm";
+            const r = utils.randomArrayId(this.blocksCanPlaceWorm);
+            const block = this.blocksCanPlaceWorm[r];
+            block.content = CONTENTWORM;
             wormsPlaced++;
-            this.freeTiles.splice(r, 1);
         }
-    }
-    emptySurrBlocks(pos) {
-        this.getSurrBlocks(pos).forEach((block) => {
-            for (let i = 0; i < this.freeTiles.length; i++) {
-                if (this.freeTiles[i] == block) {
-                    this.freeTiles.splice(i, 1);
-                    i--;
-                }
-            }
-        });
-    }
-    placeWater() {
-        if (this.freeTiles.length == 0) {
-            return;
-        }
-        const r = Math.floor(Math.random() * this.freeTiles.length);
-        const block = this.freeTiles[r];
-        this.freeTiles.splice(r, 1);
-        block.content = CONTENTWATER;
-        this.getSurrBlocks(block.gridPos).forEach((b) => {
-            for (let i = 0; i < this.freeTiles.length; i++) {
-                if (this.freeTiles[i] == b) {
-                    this.freeTiles.splice(i, 1);
-                    i--;
-                }
-            }
-        });
+        this.updateAllStats();
     }
     placeShop() {
-        if (this.freeTiles.length == 0) {
-            console.warn("drake...");
+        if (this.blocksCanPlaceStuff.length == 0) {
+            console.warn("no shop :c");
             return;
         }
-        const r = Math.floor(Math.random() * this.freeTiles.length);
-        const block = this.freeTiles[r];
+        const r = utils.randomArrayId(this.blocksCanPlaceStuff);
+        const block = this.blocksCanPlaceStuff[r];
         block.content = CONTENTDOORSHOP;
-        this.freeTiles.splice(r, 1);
-        this.emptySurrBlocks(block.gridPos);
+    }
+    placeWater() {
+        if (this.blocksCanPlaceStuff.length == 0) {
+            console.warn("there should be water here but there isn't");
+            return;
+        }
+        const r = utils.randomArrayId(this.blocksCanPlaceStuff);
+        const block = this.blocksCanPlaceStuff[r];
+        block.content = CONTENTWATER;
     }
     start(startPos, passiveItemNames) {
         if (passiveItemNames.includes("gold_bug")) {
@@ -353,20 +325,16 @@ export default class Cave {
         this.getSurrBlocks(firstBlock.gridPos).forEach((block) => {
             block.starter = true;
         });
-        this.setFreeTiles();
         this.placeGold();
         this.placeExit();
         if (this.hasShop) {
             this.placeShop();
         }
+        this.placeWorms();
         if (this.hasWater) {
             this.placeWater();
         }
-        this.placeWorms();
         this.breakSurrBlocks(firstBlock.gridPos);
         this.started = true;
-        if (passiveItemNames.includes("drill")) {
-            this.breakConnectedEmpty(firstBlock);
-        }
     }
 }
