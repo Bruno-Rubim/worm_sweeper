@@ -121,14 +121,20 @@ export default class BattleManager extends SceneManager {
       );
     }
 
-    for (let i = 0; i < this.gameState.currentDefense; i++) {
+    if (this.gameState.currentDefense > 0) {
+      const reflect = this.gameState.currentReflection;
+      const defense =
+        this.gameState.currentDefense - this.gameState.currentReflection;
+      const roundedReflect = Math.floor(reflect);
+      const roundedDefense = Math.floor(defense);
       canvasManager.renderText(
         "icons",
-        new Position(
-          88 + i * 9 - (9 * this.gameState.currentDefense) / 2,
-          GAMEHEIGHT - BORDERTHICKBOTTOM - 11
-        ),
-        i < this.gameState.currentReflection ? "$ref" : "$dfs"
+        new Position(GAMEWIDTH / 2, GAMEHEIGHT - BORDERTHICKBOTTOM - 11),
+        "$ref".repeat(roundedReflect) +
+          (reflect > roundedReflect ? "$hrf" : "") +
+          "$dfs".repeat(roundedDefense) +
+          (defense > roundedDefense ? "$hdf" : ""),
+        CENTER
       );
     }
   };

@@ -53,7 +53,7 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
   canvasManager.renderText(
     "numbers_red",
     new Position(GAMEWIDTH - 4, GAMEHEIGHT - 14),
-    "$run" + gameState.deathCount.toString(),
+    "$skl" + gameState.deathCount.toString(),
     LEFT
   );
 

@@ -195,6 +195,9 @@ function handleAction(
       case "time_potion":
         gameManager.gameState.gameTimer.addSecs(60);
         break;
+      case "health_vial":
+        gameManager.gameState.health += 0.5;
+        break;
       case "health_potion":
         gameManager.gameState.health += 1;
         break;

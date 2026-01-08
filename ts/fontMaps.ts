@@ -1125,15 +1125,11 @@ export const fontMaps: Record<string, fontMap> = {
         pos: new Position(4, 0),
         width: 9,
       },
-      $hrt: {
+      $skl: {
         pos: new Position(5, 0),
         width: 9,
       },
-      $run: {
-        pos: new Position(6, 0),
-        width: 9,
-      },
-      $wgt: {
+      $hrt: {
         pos: new Position(0, 1),
         width: 9,
       },
@@ -1158,8 +1154,20 @@ export const fontMaps: Record<string, fontMap> = {
         width: 9,
       },
       $hhr: {
+        pos: new Position(0, 2),
+        width: 9,
+      },
+      $hdf: {
+        pos: new Position(4, 2),
+        width: 9,
+      },
+      $hrf: {
         pos: new Position(5, 2),
         width: 9,
+      },
+      " ": {
+        pos: new Position(-1, -1),
+        width: 3,
       },
     },
   },

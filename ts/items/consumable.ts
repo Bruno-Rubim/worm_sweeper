@@ -95,7 +95,7 @@ export const consumableDic = {
     description: "Gain 1 heart.",
   }),
   health_vial: new Consumable({
-    spriteSheetPos: new Position(4, 0),
+    spriteSheetPos: new Position(8, 0),
     name: "health_vial",
     shopName: "Health Vial",
     cost: 4,
