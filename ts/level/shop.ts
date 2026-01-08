@@ -7,16 +7,20 @@ import {
   BORDERTHICKTOP,
   GAMEWIDTH,
 } from "../global.js";
-import { armorDic, type Armor } from "../items/armor.js";
-import { consumableDic, type Consumable } from "../items/consumable.js";
-import { itemDic, type Item } from "../items/item.js";
-import { shieldDic, type Shield } from "../items/shield.js";
+import { armorDic, type Armor } from "../items/armor/armor.js";
+import {
+  consumableDic,
+  type Consumable,
+} from "../items/consumable/consumable.js";
 import { ShopItem } from "../items/shopItem.js";
-import { weaponDic, type Weapon } from "../items/weapon.js";
 import { ChangeScene } from "../action.js";
 import Position from "../position.js";
 import { sprites } from "../sprites.js";
 import { utils } from "../utils.js";
+import type { Item } from "../items/item.js";
+import { itemDic } from "../items/passives/dict.js";
+import { Weapon, weaponDic } from "../items/weapon/weapon.js";
+import { Shield, shieldDic } from "../items/shield/shield.js";
 
 const exitBtn = new GameObject({
   sprite: sprites.button_exit,

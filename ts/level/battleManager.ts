@@ -7,10 +7,12 @@ import {
   BORDERTHICKLEFT,
   BORDERTHICKRIGHT,
   BORDERTHICKTOP,
+  CENTER,
   CLICKLEFT,
   CLICKRIGHT,
   GAMEHEIGHT,
   GAMEWIDTH,
+  LEFT,
 } from "../global.js";
 import Position from "../position.js";
 import type { SoundManager } from "../soundManager.js";
@@ -51,18 +53,22 @@ export default class BattleManager extends SceneManager {
           enemy.damagedTimer.inMotion ? 1 : 0
         )
       );
-      for (let i = 0; i < enemy.health; i++) {
+      if (enemy.health > 0) {
+        const roundedHealth = Math.floor(enemy.health);
         canvasManager.renderText(
           "icons",
-          enemy.pos.add(33 + i * 9 - (9 * enemy.health) / 2, 64),
-          "$hrt"
+          enemy.pos.add(33, 64),
+          "$hrt".repeat(roundedHealth) +
+            (enemy.health > roundedHealth ? "$hhr" : ""),
+          CENTER
         );
       }
-      canvasManager.renderText("icons", enemy.pos.add(25, 8), "$dmg");
+
       canvasManager.renderText(
         "numbers_gray",
-        enemy.pos.add(18, 8),
-        enemy.damage.toString()
+        enemy.pos.add(34, 8),
+        enemy.damage.toString() + "$dmg",
+        LEFT
       );
       let counterFrame = Math.floor(
         Math.min(15, (enemy.cooldownTimer.percentage / 100) * 16)
@@ -116,14 +122,20 @@ export default class BattleManager extends SceneManager {
       );
     }
 
-    for (let i = 0; i < this.gameState.currentDefense; i++) {
+    if (this.gameState.currentDefense > 0) {
+      const reflect = this.gameState.currentReflection;
+      const defense =
+        this.gameState.currentDefense - this.gameState.currentReflection;
+      const roundedReflect = Math.floor(reflect);
+      const roundedDefense = Math.floor(defense);
       canvasManager.renderText(
         "icons",
-        new Position(
-          88 + i * 9 - (9 * this.gameState.currentDefense) / 2,
-          GAMEHEIGHT - BORDERTHICKBOTTOM - 11
-        ),
-        i < this.gameState.currentReflection ? "$ref" : "$dfs"
+        new Position(GAMEWIDTH / 2, GAMEHEIGHT - BORDERTHICKBOTTOM - 11),
+        "$ref".repeat(roundedReflect) +
+          (reflect > roundedReflect ? "$hrf" : "") +
+          "$dfs".repeat(roundedDefense) +
+          (defense > roundedDefense ? "$hdf" : ""),
+        CENTER
       );
     }
   };
@@ -137,6 +149,9 @@ export default class BattleManager extends SceneManager {
       if (e.health < 1) {
         timerQueue.splice(timerQueue.indexOf(e.cooldownTimer), 1);
         this.gameState.battle!.enemies.splice(i, 1);
+        if (this.gameState.hasItem("carving_knife")) {
+          this.gameState.gold += 2;
+        }
       }
     });
     if (this.gameState.battle!.enemies.length <= 0) {
@@ -158,8 +173,8 @@ export default class BattleManager extends SceneManager {
       damage = Math.max(
         1,
         Math.min(
-          10,
-          Math.floor(6 / (this.gameState.gameTimer.secondsRemaining / 60) - 1)
+          5,
+          Math.floor(5.5 - 2.25 * this.gameState.gameTimer.secondsRemaining)
         )
       );
     }
@@ -225,8 +240,8 @@ export default class BattleManager extends SceneManager {
     const tiredTimer = this.gameState.tiredTimer;
     if (tiredTimer.ended || !tiredTimer.started) {
       if (button == CLICKLEFT) {
-        if (this.gameState.holdingBomb) {
-          this.gameState.holdingBomb = false;
+        if (this.gameState.holding == "bomb") {
+          this.gameState.holding = null;
           return this.bomb();
         }
         return this.playerAttack();

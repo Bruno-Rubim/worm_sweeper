@@ -1,6 +1,6 @@
-import { GAMEWIDTH } from "../global.js";
-import Position from "../position.js";
-import { Item } from "./item.js";
+import { GAMEWIDTH } from "../../global.js";
+import Position from "../../position.js";
+import { Item } from "../item.js";
 
 export class Armor extends Item {
   defense: number;
@@ -49,9 +49,9 @@ export const armorDic = {
     spriteSheetPos: new Position(0, 2),
     name: "chainmail",
     shopName: "Chainmail",
-    cost: 50,
+    cost: 40,
     defense: 2,
-    speed: -0.1,
+    speed: -1,
   }),
   swift_vest: new Armor({
     spriteSheetPos: new Position(2, 2),

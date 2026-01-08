@@ -9,10 +9,10 @@ import {
   GAMEHEIGHT,
   GAMEWIDTH,
 } from "../global.js";
-import { Armor } from "../items/armor.js";
-import { Consumable } from "../items/consumable.js";
-import { Shield } from "../items/shield.js";
-import { Weapon } from "../items/weapon.js";
+import { Armor } from "../items/armor/armor.js";
+import { Consumable } from "../items/consumable/consumable.js";
+import { Shield } from "../items/shield/shield.js";
+import { Weapon } from "../items/weapon/weapon.js";
 import Position from "../position.js";
 import type { SoundManager } from "../soundManager.js";
 import { sprites } from "../sprites.js";

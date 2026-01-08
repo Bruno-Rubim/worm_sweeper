@@ -33,6 +33,7 @@ export const blockSheetPos = {
   gold: new Position(7, 0),
   [CONTENTEMPTY]: new Position(0, 1),
   bell: new Position(9, 0),
+  chisel: new Position(6, 2),
   marked: new Position(9, 1),
   [CONTENTBOMBOVERLAY]: new Position(0, 2),
   [CONTENTBOMB]: new Position(1, 2),
@@ -89,7 +90,6 @@ export default class Block {
         0
       );
     }
-    const pos = blockSheetPos[this.content];
     return blockSheetPos[this.content];
   }
 }

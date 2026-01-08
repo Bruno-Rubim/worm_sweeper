@@ -53,16 +53,18 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
   canvasManager.renderText(
     "numbers_red",
     new Position(GAMEWIDTH - 4, GAMEHEIGHT - 14),
-    "$run" + gameState.deathCount.toString(),
+    "$skl" + gameState.deathCount.toString(),
     LEFT
   );
 
   // Player health
   if (gameState.health > 0) {
+    const roundedHealth = Math.floor(gameState.health);
     canvasManager.renderText(
       "icons",
       new Position(GAMEWIDTH / 2, GAMEHEIGHT - 14),
-      "$hrt".repeat(gameState.health),
+      "$hrt".repeat(roundedHealth) +
+        (gameState.health > roundedHealth ? "$hhr" : ""),
       CENTER
     );
   }

@@ -1,8 +1,9 @@
-import { armorDic, type Armor } from "./items/armor.js";
-import { consumableDic, type Consumable } from "./items/consumable.js";
-import { Item, getItem } from "./items/item.js";
-import { shieldDic, type Shield } from "./items/shield.js";
-import { weaponDic, type Weapon } from "./items/weapon.js";
+import { armorDic, type Armor } from "./items/armor/armor.js";
+import {
+  consumableDic,
+  type Consumable,
+} from "./items/consumable/consumable.js";
+import { Item } from "./items/item.js";
 import Position from "./position.js";
 import Level from "./level/level.js";
 import { GAMEWIDTH } from "./global.js";
@@ -10,6 +11,10 @@ import { GAMETIMERSYNC, Timer } from "./timer/timer.js";
 import { Battle } from "./level/battle.js";
 import { timerQueue } from "./timer/timerQueue.js";
 import timeTracker from "./timer/timeTracker.js";
+import { getItem } from "./items/passives/dict.js";
+import { Weapon, weaponDic } from "./items/weapon/weapon.js";
+import { Shield, shieldDic } from "./items/shield/shield.js";
+import type { Chisel } from "./items/passives/chisel.js";
 
 export type inventory = {
   armor: Armor;
@@ -29,23 +34,30 @@ export type inventory = {
 
 // Holds the current state of the game at any given time
 export default class GameState {
-  gold: number = 0;
   gameTimer: Timer;
-  level: Level;
-  battle: Battle | null = null;
+  gold: number = 0;
   health: number = 5;
+  deathCount = 0;
+
+  level: Level;
+  inTransition: boolean = false;
+  currentScene: "cave" | "shop" | "battle" = "cave";
+
+  battle: Battle | null = null;
   tiredTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
   attackAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
-  inTransition: boolean = false;
-  inBook: boolean = false;
-  bookPage: number = 0;
-  currentScene: "cave" | "shop" | "battle" = "cave";
-  paused: boolean = false;
   defending: boolean = false;
-  holdingBomb: boolean = false;
+
+  paused: boolean = false;
+  started: boolean = false;
   gameOver: boolean = false;
   heldWhileDeath: boolean = false;
-  deathCount = 0;
+
+  inBook: boolean = false;
+  bookPage: number = 0;
+
+  holding: "bomb" | Chisel | null = null;
+
   inventory: inventory = {
     picaxe: getItem("picaxe", new Position(GAMEWIDTH - 20, 90)),
     flag: getItem("flag", new Position(GAMEWIDTH - 20, 109)),
@@ -118,7 +130,7 @@ export default class GameState {
     this.inTransition = false;
     this.battle = null;
     this.defending = false;
-    this.holdingBomb = false;
+    this.holding = null;
     this.deathCount++;
     this.gold = 0;
     this.health = 5;

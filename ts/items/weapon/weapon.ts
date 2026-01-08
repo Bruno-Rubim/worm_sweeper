@@ -1,7 +1,7 @@
-import { GAMEWIDTH } from "../global.js";
-import Position from "../position.js";
-import { sprites, type Sprite } from "../sprites.js";
-import { Item } from "./item.js";
+import { GAMEWIDTH } from "../../global.js";
+import Position from "../../position.js";
+import { sprites, type Sprite } from "../../sprites.js";
+import { Item } from ".././item.js";
 
 export class Weapon extends Item {
   bigSprite: Sprite;

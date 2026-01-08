@@ -1,10 +1,10 @@
-import CanvasManager from "../canvasManager.js";
-import { GAMEWIDTH } from "../global.js";
-import { ConsumeItem } from "../action.js";
-import Position from "../position.js";
-import { sprites } from "../sprites.js";
-import timeTracker from "../timer/timeTracker.js";
-import { Item } from "./item.js";
+import CanvasManager from "../../canvasManager.js";
+import { GAMEWIDTH } from "../../global.js";
+import { ConsumeItem } from "../../action.js";
+import Position from "../../position.js";
+import { sprites } from "../../sprites.js";
+import timeTracker from "../../timer/timeTracker.js";
+import { Item } from "../item.js";
 
 export class Consumable extends Item {
   constructor(args: {
@@ -84,15 +84,22 @@ export const consumableDic = {
     spriteSheetPos: new Position(2, 0),
     name: "health_potion_big",
     shopName: "Big Health Potion",
-    cost: 15,
+    cost: 12,
     description: "Gain 2 hearts.",
   }),
   health_potion: new Consumable({
     spriteSheetPos: new Position(4, 0),
     name: "health_potion",
     shopName: "Health Potion",
-    cost: 10,
+    cost: 7,
     description: "Gain 1 heart.",
+  }),
+  health_vial: new Consumable({
+    spriteSheetPos: new Position(8, 0),
+    name: "health_vial",
+    shopName: "Health Vial",
+    cost: 4,
+    description: "Gain 0.5 hearts.",
   }),
   time_potion: time_potion,
   empty: new Consumable({
