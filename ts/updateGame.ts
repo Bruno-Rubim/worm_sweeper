@@ -169,7 +169,7 @@ function handleKeyInput(gameManager: GameManager) {
     }
     if (inputState.keyboard.w == "pressed") {
       inputState.keyboard.w = "read";
-      gameManager.soundManager.playSound(sounds.door);
+      gameManager.soundManager.playSound(sounds.break);
     }
   }
 }

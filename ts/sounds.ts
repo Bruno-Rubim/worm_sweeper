@@ -98,7 +98,7 @@ export const sounds = {
     volumeMult: 0.4,
     pitchRange: {
       min: 0.9,
-      max: 1.1,
+      max: 1.3,
     },
   }),
   clear: new Sound({
