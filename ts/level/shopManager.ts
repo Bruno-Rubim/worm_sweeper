@@ -1,4 +1,4 @@
-import { BuyShopItem, type Action } from "../action.js";
+import { BuyShopItem } from "../action.js";
 import type CanvasManager from "../canvasManager.js";
 import type GameState from "../gameState.js";
 import {
@@ -56,7 +56,6 @@ export default class ShopManager extends SceneManager {
       if (action.shopItem.item.cost > this.gameState.gold) {
         return;
       }
-      this.gameState.gold -= action.shopItem.item.cost;
       const item = action.shopItem.item;
       const inventory = this.gameState.inventory;
       if (item instanceof Armor) {
@@ -72,6 +71,10 @@ export default class ShopManager extends SceneManager {
         inventory.consumable = item;
         action.shopItem.hidden = true;
       } else {
+        if (this.gameState.passiveSpace < 1) {
+          // TO-DO: error sfx
+          return;
+        }
         if (inventory.passive_1.name == "empty") {
           item.pos.update(4, 18 * 1);
           inventory.passive_1 = item;
@@ -97,8 +100,8 @@ export default class ShopManager extends SceneManager {
           inventory.passive_6 = item;
           action.shopItem.hidden = true;
         }
-        // Currently if you have 6 passive items, buying another one will just discart it, idk if that's how it should go. TO-DO: Idk think about how else it can be
       }
+      this.gameState.gold -= action.shopItem.item.cost;
       return;
     }
     return action;

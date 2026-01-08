@@ -66,12 +66,12 @@ export default class GameState {
     shield: shieldDic.wood_shield,
     armor: armorDic.empty,
     consumable: consumableDic.empty,
-    passive_1: getItem("empty", new Position(4, 18 * 1)),
-    passive_2: getItem("empty", new Position(4, 18 * 2)),
-    passive_3: getItem("empty", new Position(4, 18 * 3)),
-    passive_4: getItem("empty", new Position(4, 18 * 4)),
-    passive_5: getItem("empty", new Position(4, 18 * 5)),
-    passive_6: getItem("empty", new Position(4, 18 * 6)),
+    passive_1: getItem("chisel", new Position(4, 18 * 1)),
+    passive_2: getItem("chisel", new Position(4, 18 * 2)),
+    passive_3: getItem("chisel", new Position(4, 18 * 3)),
+    passive_4: getItem("chisel", new Position(4, 18 * 4)),
+    passive_5: getItem("chisel", new Position(4, 18 * 5)),
+    passive_6: getItem("chisel", new Position(4, 18 * 6)),
   };
 
   constructor() {
@@ -205,5 +205,28 @@ export default class GameState {
    */
   hasItem(itemName: string) {
     return this.itemNames.includes(itemName);
+  }
+
+  get passiveSpace() {
+    let space = 0;
+    if (this.inventory.passive_1.name == "empty") {
+      space++;
+    }
+    if (this.inventory.passive_2.name == "empty") {
+      space++;
+    }
+    if (this.inventory.passive_3.name == "empty") {
+      space++;
+    }
+    if (this.inventory.passive_4.name == "empty") {
+      space++;
+    }
+    if (this.inventory.passive_5.name == "empty") {
+      space++;
+    }
+    if (this.inventory.passive_6.name == "empty") {
+      space++;
+    }
+    return space;
   }
 }
