@@ -113,8 +113,16 @@ export const sounds = {
       max: 1.1,
     },
   }),
-  bomb: new Sound({
-    soundName: "bomb",
+  bomb_fuse: new Sound({
+    soundName: "bomb_fuse",
+    volumeMult: 0.8,
+    pitchRange: {
+      min: 0.9,
+      max: 1.1,
+    },
+  }),
+  explosion: new Sound({
+    soundName: "explosion",
     volumeMult: 0.8,
     pitchRange: {
       min: 0.9,

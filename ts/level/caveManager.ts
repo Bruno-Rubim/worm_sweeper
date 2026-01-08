@@ -243,13 +243,14 @@ export default class CaveManager extends SceneManager {
               this.soundManager.playSound(sounds.break);
               this.checkCaveClear();
               this.bomb = null;
+              this.soundManager.playSound(sounds.explosion);
             },
           }),
           hoverScreenPos: null,
         };
         timerQueue.push(this.bomb?.timer);
         this.bomb.timer.start();
-        this.soundManager.playSound(sounds.bomb);
+        this.soundManager.playSound(sounds.bomb_fuse);
         this.gameState.holding = null;
         return;
       } else if (

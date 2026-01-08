@@ -17,7 +17,7 @@ export default class Bomb extends Consumable {
       shopName: "Bomb",
       cost: 13,
       descriptionText:
-        "Use on an empty block to break blocks and kill worms or in battle to deal 5 damage.",
+        "Use on any block to destroy all blocks around it, along with worms and gold.",
     });
   }
 
