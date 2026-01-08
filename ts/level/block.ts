@@ -41,7 +41,7 @@ export const blockSheetPos = {
 };
 
 export default class Block {
-  gamePos: Position;
+  gamePos: Position; // The block's position in relation to the level
   gridPos: Position;
 
   content: blockContent = CONTENTEMPTY;

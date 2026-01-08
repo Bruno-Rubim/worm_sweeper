@@ -3,7 +3,12 @@ export default class Position {
   x: number = 0;
   y: number = 0;
 
-  constructor(x?: number, y?: number) {
+  constructor(x?: number | Position, y?: number) {
+    if (x instanceof Position) {
+      this.x = x.x;
+      this.y = x.y;
+      return;
+    }
     this.x = x ?? 0;
     this.y = y ?? 0;
   }
