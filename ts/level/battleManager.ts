@@ -12,6 +12,7 @@ import {
   CLICKRIGHT,
   GAMEHEIGHT,
   GAMEWIDTH,
+  LEFT,
 } from "../global.js";
 import Position from "../position.js";
 import type { SoundManager } from "../soundManager.js";
@@ -63,11 +64,11 @@ export default class BattleManager extends SceneManager {
         );
       }
 
-      canvasManager.renderText("icons", enemy.pos.add(25, 8), "$dmg");
       canvasManager.renderText(
         "numbers_gray",
-        enemy.pos.add(18, 8),
-        enemy.damage.toString()
+        enemy.pos.add(34, 8),
+        enemy.damage.toString() + "$dmg",
+        LEFT
       );
       let counterFrame = Math.floor(
         Math.min(15, (enemy.cooldownTimer.percentage / 100) * 16)

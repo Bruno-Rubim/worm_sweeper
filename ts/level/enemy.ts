@@ -40,7 +40,7 @@ export class Worm extends Enemy {
       pos: new Position(56, 36),
       spriteSheet: sprites.enemy_worm,
       health: 3 + Math.floor(depth / 5),
-      damage: 1 + Math.floor(depth / 7),
+      damage: 1 + Math.floor((depth / 7) * 2) / 2,
       attackCooldown: 5 - depth * 0.15,
     });
   }
@@ -51,7 +51,7 @@ export class ScaleWorm extends Enemy {
     super({
       pos: new Position(56, 36),
       spriteSheet: sprites.enemy_scale_worm,
-      health: 6 + Math.floor(depth / 3),
+      health: 6 + Math.floor((depth / 3) * 2) / 2,
       damage: 2 + Math.floor(depth / 5),
       attackCooldown: 8 - Math.floor(depth / 3) * 0.5,
     });

@@ -6,7 +6,7 @@ export class Battle {
   enemies: Enemy[];
   constructor(depth: number, enemyCount: number) {
     this.enemies = [];
-    let arr: Enemy[] = [new Worm(depth), new ScaleWorm(depth)];
+    let arr: Enemy[] = [new Worm(depth)];
     let x = depth > 2 ? 1 : 0;
     this.enemies.push(arr[Math.min(x, utils.randomArrayId(arr))]!);
   }
