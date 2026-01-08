@@ -240,8 +240,8 @@ export default class BattleManager extends SceneManager {
     const tiredTimer = this.gameState.tiredTimer;
     if (tiredTimer.ended || !tiredTimer.started) {
       if (button == CLICKLEFT) {
-        if (this.gameState.holdingBomb) {
-          this.gameState.holdingBomb = false;
+        if (this.gameState.holding == "bomb") {
+          this.gameState.holding = null;
           return this.bomb();
         }
         return this.playerAttack();

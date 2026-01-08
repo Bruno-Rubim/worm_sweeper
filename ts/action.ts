@@ -1,5 +1,6 @@
 import type { cursorState } from "./cursor.js";
 import type { LEFT, RIGHT } from "./global.js";
+import type { Chisel } from "./items/passives/chisel.js";
 import type { ShopItem } from "./items/shopItem.js";
 import type { Enemy } from "./level/enemy.js";
 import type Position from "./position.js";
@@ -111,3 +112,11 @@ export class StartBattle extends Action {
 
 // Calls to ring the bell item
 export class RingBell extends Action {}
+
+export class PickupChisel extends Action {
+  chiselItem: Chisel;
+  constructor(item: Chisel) {
+    super();
+    this.chiselItem = item;
+  }
+}

@@ -12,6 +12,7 @@ export const CURSORARROW = "cursor_arrow";
 export const CURSORBATTLE = "cursor_battle";
 export const CURSORBOMB = "cursor_bomb";
 export const CURSORGOLDWATER = "cursor_gold_water";
+export const CURSORCHISEL = "cursor_chisel";
 export const CURSORNONE = "cursor_none";
 
 // Different cursor states and their position on the cursor spriteSheet
@@ -23,6 +24,7 @@ const cursorSheetPos = {
   [CURSORBATTLE]: new Position(4, 0),
   [CURSORBOMB]: new Position(5, 0),
   [CURSORGOLDWATER]: new Position(6, 0),
+  [CURSORCHISEL]: new Position(7, 0),
   [CURSORNONE]: new Position(6, 3),
 };
 

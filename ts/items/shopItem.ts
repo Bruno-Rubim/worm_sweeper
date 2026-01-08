@@ -5,12 +5,14 @@ import { BuyShopItem } from "../action.js";
 import Position from "../position.js";
 import { sprites } from "../sprites.js";
 import timeTracker from "../timer/timeTracker.js";
-import { armorDic } from "./armor.js";
-import { consumableDic } from "./consumable.js";
-import { itemDic, SilverBell, type Item } from "./item.js";
-import { shieldDic } from "./shield.js";
-import { weaponDic } from "./weapon.js";
+import { armorDic } from "./armor/armor.js";
+import { consumableDic } from "./consumable/consumable.js";
 import { timerQueue } from "../timer/timerQueue.js";
+import { SilverBell } from "./passives/silverBell.js";
+import { itemDic } from "./passives/dict.js";
+import type { Item } from "./item.js";
+import { weaponDic } from "./weapon/weapon.js";
+import { shieldDic } from "./shield/shield.js";
 
 type itemName =
   | keyof typeof armorDic

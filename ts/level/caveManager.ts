@@ -2,6 +2,7 @@ import {
   ChangeCursorState,
   ChangeScene,
   NextLevel,
+  RingBell,
   StartBattle,
 } from "../action.js";
 import type CanvasManager from "../canvasManager.js";
@@ -14,6 +15,7 @@ import {
 } from "../cursor.js";
 import type GameState from "../gameState.js";
 import { CLICKLEFT, type CLICKRIGHT } from "../global.js";
+import { Chisel } from "../items/passives/chisel.js";
 import Position from "../position.js";
 import type { SoundManager } from "../soundManager.js";
 import sounds from "../sounds.js";
@@ -35,6 +37,8 @@ import SceneManager from "./sceneManager.js";
 
 // Handles rendering and interactions with the cave scene of the current Level
 export default class CaveManager extends SceneManager {
+  chiselActive: null | { gamePos: Position; timer: Timer } = null;
+
   constructor(
     gameState: GameState,
     scenePos: Position,
@@ -135,6 +139,25 @@ export default class CaveManager extends SceneManager {
         }
       }
     }
+    // Renders chisel
+    // TO-DO: fix it rendering under the border
+    if (this.chiselActive) {
+      console.log(this.chiselActive.timer.inMotion);
+      canvasManager.renderSpriteFromSheet(
+        sprites.block_sheet,
+        this.chiselActive.gamePos
+          .add(-blockSize / 2, blockSize / 2)
+          .add(this.pos),
+        blockSize,
+        blockSize,
+        blockSheetPos.chisel.add(
+          Math.floor(this.chiselActive.timer.percentage / (100 / 6)) % 2,
+          0
+        ),
+        16,
+        16
+      );
+    }
   };
 
   // TO-DO: make a handleAction function for this element instead of leaving it all for the handleClick
@@ -155,7 +178,7 @@ export default class CaveManager extends SceneManager {
     }
 
     if (button == CLICKLEFT) {
-      if (this.gameState.holdingBomb) {
+      if (this.gameState.holding == "bomb") {
         if (!block.broken || block.content != CONTENTBOMBOVERLAY) {
           return;
         }
@@ -174,7 +197,26 @@ export default class CaveManager extends SceneManager {
         timerQueue.push(block.bombTimer);
         block.bombTimer.start();
         this.soundManager.playSound(sounds.bomb);
-        this.gameState.holdingBomb = false;
+        this.gameState.holding == "bomb";
+        return;
+      } else if (this.gameState.holding instanceof Chisel) {
+        const chisel = this.gameState.holding;
+        if (block.hasGold) {
+          chisel.chiselTimer.goalFunc = () => {
+            this.gameState.gold += 1;
+            chisel.using = false;
+            this.soundManager.playSound(sounds.gold);
+            this.gameState.holding = null;
+            block.hasGold = false;
+            this.chiselActive = null;
+          };
+          this.chiselActive = {
+            gamePos: block.gamePos,
+            timer: chisel.chiselTimer,
+          };
+          timerQueue.push(chisel.chiselTimer);
+          chisel.chiselTimer.start();
+        }
         return;
       }
       let enemyCount = 0;
@@ -257,7 +299,7 @@ export default class CaveManager extends SceneManager {
     });
     const block = this.getBlockFromGamePos(cursorPos);
     block.cursorHovering = true;
-    if (this.gameState.holdingBomb) {
+    if (this.gameState.holding == "bomb") {
       this.gameState.level.cave.setBombOverlay(block);
     } else {
       this.gameState.level.cave.setBombOverlay();

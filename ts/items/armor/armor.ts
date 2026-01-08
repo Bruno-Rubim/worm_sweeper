@@ -1,6 +1,6 @@
-import { GAMEWIDTH } from "../global.js";
-import Position from "../position.js";
-import { Item } from "./item.js";
+import { GAMEWIDTH } from "../../global.js";
+import Position from "../../position.js";
+import { Item } from "../item.js";
 
 export class Armor extends Item {
   defense: number;
