@@ -34,6 +34,7 @@ export const sprites = {
     big_time_blade: new Sprite("big_time_blade"),
     block_sheet: new Sprite("block_sheet"),
     button_exit: new Sprite("button_exit"),
+    chisel_sheet: new Sprite("chisel_sheet"),
     counter_sheet: new Sprite("counter_sheet"),
     cursor_sheet: new Sprite("cursor_sheet"),
     description_box: new Sprite("description_box"),

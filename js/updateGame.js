@@ -191,6 +191,9 @@ function handleAction(gameManager, action) {
         if (gameManager.gameState.holding == null) {
             gameManager.gameState.holding = action.chiselItem;
         }
+        else if (gameManager.gameState.holding instanceof Chisel) {
+            gameManager.gameState.holding = null;
+        }
     }
 }
 function updateTimers(gameManager) {

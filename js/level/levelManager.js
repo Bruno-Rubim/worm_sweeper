@@ -159,9 +159,7 @@ export class LevelManager extends GameObject {
     }
     hoverFunction = (cursorPos) => {
         let action = this.currentSceneManager.handleHover(cursorPos);
-        if (this.gameState.inTransition ||
-            (this.gameState.holding instanceof Chisel &&
-                this.gameState.holding.chiselTimer.inMotion)) {
+        if (this.gameState.inTransition) {
             action = new ChangeCursorState(CURSORNONE);
         }
         if (this.gameState.inBook ||
@@ -173,10 +171,6 @@ export class LevelManager extends GameObject {
     };
     clickFunction = (cursorPos, button) => {
         if (this.gameState.paused) {
-            return;
-        }
-        if (this.gameState.holding instanceof Chisel &&
-            this.gameState.holding.chiselTimer.inMotion) {
             return;
         }
         if (this.gameState.gameOver) {

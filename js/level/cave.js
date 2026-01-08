@@ -46,7 +46,6 @@ export default class Cave {
         })));
     }
     placeGold() {
-        let c = 0;
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < this.size; j++) {
                 const block = this.blockMatrix[i][j];
@@ -54,9 +53,8 @@ export default class Cave {
                     continue;
                 }
                 const rngGold = Math.floor(Math.random() * this.goldChance);
-                block.hasGold = rngGold >= 1;
                 if (rngGold >= 1) {
-                    c++;
+                    block.hasGold = true;
                 }
             }
         }

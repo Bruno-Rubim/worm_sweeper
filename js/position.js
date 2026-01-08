@@ -2,6 +2,11 @@ export default class Position {
     x = 0;
     y = 0;
     constructor(x, y) {
+        if (x instanceof Position) {
+            this.x = x.x;
+            this.y = x.y;
+            return;
+        }
         this.x = x ?? 0;
         this.y = y ?? 0;
     }
