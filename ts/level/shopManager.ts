@@ -72,7 +72,6 @@ export default class ShopManager extends SceneManager {
         inventory.consumable = item;
         action.shopItem.hidden = true;
       } else {
-        console.log(this.gameState.passiveSpace);
         if (this.gameState.passiveSpace < 1) {
           this.soundManager.playSound(sounds.wrong);
           return;

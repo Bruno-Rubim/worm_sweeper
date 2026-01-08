@@ -37,7 +37,8 @@ import SceneManager from "./sceneManager.js";
 
 // Handles rendering and interactions with the cave scene of the current Level
 export default class CaveManager extends SceneManager {
-  activeChisel: null | { screenPos: Position; timer: Timer } = null;
+  activeChisel: null | { screenPos: Position; timer: Timer; chisel: Chisel } =
+    null;
   bomb: null | {
     screenPos: Position;
     timer: Timer;
@@ -160,7 +161,6 @@ export default class CaveManager extends SceneManager {
           ) + 1,
           0
         );
-        console.log(framePos.x);
       }
       canvasManager.renderSpriteFromSheet(
         sprites.bomb_sheet,
@@ -215,6 +215,7 @@ export default class CaveManager extends SceneManager {
   ) => {
     const block = this.getBlockFromScrenPos(cursorPos);
     if (!this.gameState.level.cave.started) {
+      // Start game
       this.gameState.level.cave.start(block.gridPos, this.gameState.itemNames);
       this.gameState.gameTimer.start();
       this.soundManager.playSound(sounds.break);
@@ -261,19 +262,20 @@ export default class CaveManager extends SceneManager {
         if (block.hasGold && !block.hidden && !block.broken) {
           const chisel = this.gameState.holding;
           chisel.chiselTimer.goalFunc = () => {
-            this.gameState.gold += 3;
+            this.gameState.gold += 1;
             chisel.using = false;
             this.soundManager.playSound(sounds.gold);
-            this.gameState.holding = null;
             block.hasGold = false;
             this.activeChisel = null;
           };
           this.activeChisel = {
             screenPos: new Position(cursorPos),
             timer: chisel.chiselTimer,
+            chisel: chisel,
           };
           timerQueue.push(chisel.chiselTimer);
           chisel.chiselTimer.start();
+          this.gameState.holding = null;
         }
         return;
       }
@@ -283,10 +285,22 @@ export default class CaveManager extends SceneManager {
         (!block.hidden || this.gameState.hasItem("dark_crystal")) &&
         !block.marked
       ) {
-        let breakResult = this.gameState.level.cave.breakBlock(block);
+        // Regular block break
         this.soundManager.playSound(sounds.break);
+        if (
+          this.activeChisel &&
+          block == this.getBlockFromScrenPos(this.activeChisel.screenPos)
+        ) {
+          this.activeChisel.timer.goalFunc = () => {};
+          timerQueue.splice(timerQueue.indexOf(this.activeChisel.timer), 1);
+          this.activeChisel.chisel.using = false;
+          this.activeChisel.chisel.chiselTimer.restart();
+          this.activeChisel = null;
+        }
+        let breakResult = this.gameState.level.cave.breakBlock(block);
         enemyCount += breakResult.battle.enemyCount;
         this.gameState.gold += breakResult.gold;
+
         if (breakResult.gold > 0) {
           this.soundManager.playSound(sounds.gold);
         }
