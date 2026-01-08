@@ -168,7 +168,6 @@ export default class BattleManager extends SceneManager {
     const rId = utils.randomArrayId(this.gameState.battle!.enemies);
     const enemy = this.gameState.battle!.enemies[rId]!;
     let damage = this.gameState.inventory.weapon.totalDamage;
-    console.log(damage);
     enemy.health -= damage;
     enemy.damagedTimer.start();
     timerQueue.push(enemy.damagedTimer);
