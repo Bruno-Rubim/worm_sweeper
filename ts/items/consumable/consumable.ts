@@ -12,7 +12,7 @@ export class Consumable extends Item {
     name: string;
     shopName: string;
     cost: number;
-    description: string;
+    descriptionText: string;
   }) {
     super({ ...args, pos: new Position(GAMEWIDTH - 20, 72) });
     this.clickFunction = () => {
@@ -26,7 +26,7 @@ const time_potion = new Consumable({
   name: "time_potion",
   shopName: "Time Potion",
   cost: 10,
-  description: "Recover 60 seconds$tim",
+  descriptionText: "Recover 60 seconds$tim",
 });
 
 time_potion.render = (canvasManager: CanvasManager) => {
@@ -77,7 +77,7 @@ export const consumableDic = {
     name: "bomb",
     shopName: "Bomb",
     cost: 13,
-    description:
+    descriptionText:
       "Use on an empty block to break blocks and kill worms or in battle to deal 5 damage.",
   }),
   health_potion_big: new Consumable({
@@ -85,21 +85,21 @@ export const consumableDic = {
     name: "health_potion_big",
     shopName: "Big Health Potion",
     cost: 12,
-    description: "Gain 2 hearts.",
+    descriptionText: "Gain 2 hearts.",
   }),
   health_potion: new Consumable({
     spriteSheetPos: new Position(4, 0),
     name: "health_potion",
     shopName: "Health Potion",
     cost: 7,
-    description: "Gain 1 heart.",
+    descriptionText: "Gain 1 heart.",
   }),
   health_vial: new Consumable({
     spriteSheetPos: new Position(8, 0),
     name: "health_vial",
     shopName: "Health Vial",
     cost: 4,
-    description: "Gain 0.5 hearts.",
+    descriptionText: "Gain 0.5 hearts.",
   }),
   time_potion: time_potion,
   empty: new Consumable({
@@ -107,6 +107,6 @@ export const consumableDic = {
     name: "empty",
     shopName: "",
     cost: 0,
-    description: "",
+    descriptionText: "",
   }),
 };

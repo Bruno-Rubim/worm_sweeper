@@ -22,7 +22,7 @@ export class Armor extends Item {
     super({
       ...args,
       pos: new Position(GAMEWIDTH - 20, 54),
-      description:
+      descriptionText:
         (args.defense > 0 ? "$dfsDefense: " + args.defense + "\n" : "") +
         (args.reflection ?? 0 > 0
           ? "$refDefense: " + args.reflection + "\n"
@@ -35,7 +35,7 @@ export class Armor extends Item {
     this.defense = args.defense;
     this.speed = args.speed ?? 0;
     this.reflection = args.reflection ?? 0;
-    this.description =
+    this.descriptionText =
       (this.defense > 0 ? "$dfsDefense: " + this.defense + "\n" : "") +
       (this.reflection > 0 ? "$refDefense: " + this.reflection + "\n" : "") +
       (this.speed < 0 ? "$slwSlowness: " + Math.abs(this.speed) + "s\n" : "") +

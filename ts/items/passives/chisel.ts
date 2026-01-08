@@ -19,7 +19,7 @@ export class Chisel extends Item {
       name: "chisel",
       shopName: "Chisel",
       cost: 13,
-      description: "Use this to carve out the gold from a block.",
+      descriptionText: "Use this to carve out 3 gold from a block.",
     });
   }
 

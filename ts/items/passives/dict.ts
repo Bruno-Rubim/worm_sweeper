@@ -8,7 +8,7 @@ const book = new Item({
   name: "book",
   shopName: "",
   cost: 0,
-  description: "Click to open the guide book.",
+  descriptionText: "Click to open the guide book.",
 });
 
 export const itemDic = {
@@ -17,7 +17,8 @@ export const itemDic = {
     name: "gold_bug",
     shopName: "Gold Bug",
     cost: 20,
-    description: "More gold during caves and when clearing levels. More worms.",
+    descriptionText:
+      "More gold during caves and when clearing levels. More worms.",
   }),
   silver_bell: new SilverBell(),
   dark_crystal: new Item({
@@ -25,14 +26,14 @@ export const itemDic = {
     name: "dark_crystal",
     shopName: "Dark Crystal",
     cost: 15,
-    description: "Allows you to break blocks you can't see.",
+    descriptionText: "Allows you to break blocks you can't see.",
   }),
   detonator: new Item({
     spriteSheetPos: new Position(6, 4),
     name: "detonator",
     shopName: "Detonator",
     cost: 20,
-    description:
+    descriptionText:
       "Use this to break all unmarked blocks around a block instantly.",
   }),
   drill: new Item({
@@ -40,7 +41,7 @@ export const itemDic = {
     name: "drill",
     shopName: "Drill",
     cost: 12,
-    description:
+    descriptionText:
       "When breaking a safe block all connected safe blocks are also broken. Doesn't collect gold.",
   }),
   health_insurance: new Item({
@@ -48,14 +49,14 @@ export const itemDic = {
     name: "health_insurance",
     shopName: "Health Insurance",
     cost: 40,
-    description: "Gain 1 heart when clearing a level.",
+    descriptionText: "Gain 1 heart when clearing a level.",
   }),
   carving_knife: new Item({
     spriteSheetPos: new Position(12, 4),
     name: "carving_knife",
     shopName: "Carving Knife",
     cost: 8,
-    description: "Gain 2 gold for every enemy killed.",
+    descriptionText: "Gain 2 gold for every enemy killed.",
   }),
   chisel: new Chisel(),
   empty: new Item({
@@ -63,21 +64,21 @@ export const itemDic = {
     name: "empty",
     shopName: "",
     cost: 0,
-    description: "",
+    descriptionText: "",
   }),
   picaxe: new Item({
     spriteSheetPos: new Position(0, 7),
     name: "picaxe",
     shopName: "",
     cost: 0,
-    description: "Left click any block that's not hidden to break it.",
+    descriptionText: "Left click any block that's not hidden to break it.",
   }),
   flag: new Item({
     spriteSheetPos: new Position(2, 7),
     name: "flag",
     shopName: "",
     cost: 0,
-    description: "Right click any block to mark it as a possible threat.",
+    descriptionText: "Right click any block to mark it as a possible threat.",
   }),
   book: book,
 };
