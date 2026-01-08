@@ -226,12 +226,15 @@ export default class CaveManager extends SceneManager {
         this.soundManager.playSound(sounds.bomb);
         this.gameState.holding == "bomb";
         return;
-      } else if (this.gameState.holding instanceof Chisel) {
+      } else if (
+        this.gameState.holding instanceof Chisel &&
+        !this.gameState.holding.chiselTimer.inMotion
+      ) {
         // Chisel functionality
-        const chisel = this.gameState.holding;
-        if (block.hasGold) {
+        if (block.hasGold && !block.hidden) {
+          const chisel = this.gameState.holding;
           chisel.chiselTimer.goalFunc = () => {
-            this.gameState.gold += 1;
+            this.gameState.gold += 3;
             chisel.using = false;
             this.soundManager.playSound(sounds.gold);
             this.gameState.holding = null;
