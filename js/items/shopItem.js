@@ -9,7 +9,7 @@ import { consumableDic } from "./consumable/consumable.js";
 import { timerQueue } from "../timer/timerQueue.js";
 import { SilverBell } from "./passives/silverBell.js";
 import { itemDic } from "./passives/dict.js";
-import { weaponDic } from "./weapon/weapon.js";
+import { weaponDic } from "./weapon/dict.js";
 import { shieldDic } from "./shield/shield.js";
 const items = {
     ...weaponDic,

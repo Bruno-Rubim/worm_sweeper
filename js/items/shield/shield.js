@@ -13,7 +13,7 @@ export class Shield extends Item {
         super({
             ...args,
             pos: new Position(GAMEWIDTH - 20, 36),
-            description: (args.defense > 0 ? "$dfsDefense: " + args.defense + "\n" : "") +
+            descriptionText: (args.defense > 0 ? "$dfsDefense: " + args.defense + "\n" : "") +
                 (args.reflection > 0
                     ? "$refReflection: " + args.reflection + "\n"
                     : "") +

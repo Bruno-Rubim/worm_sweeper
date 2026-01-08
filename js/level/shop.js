@@ -9,8 +9,10 @@ import Position from "../position.js";
 import { sprites } from "../sprites.js";
 import { utils } from "../utils.js";
 import { itemDic } from "../items/passives/dict.js";
-import { Weapon, weaponDic } from "../items/weapon/weapon.js";
+import { Weapon } from "../items/weapon/weapon.js";
 import { Shield, shieldDic } from "../items/shield/shield.js";
+import { weaponDic } from "../items/weapon/dict.js";
+import TimeBlade from "../items/weapon/timeBlade.js";
 const exitBtn = new GameObject({
     sprite: sprites.button_exit,
     pos: new Position(GAMEWIDTH - BORDERTHICKRIGHT - 32, BORDERTHICKTOP),
@@ -36,18 +38,20 @@ export default class Shop {
     weapon;
     shield;
     consumable;
-    constructor(inventory) {
+    gameState;
+    constructor(gameState) {
         const inventoryItemNames = [
-            inventory.weapon.name,
-            inventory.shield.name,
-            inventory.armor.name,
-            inventory.passive_1?.name,
-            inventory.passive_2?.name,
-            inventory.passive_3?.name,
-            inventory.passive_4?.name,
-            inventory.passive_5?.name,
-            inventory.passive_6?.name,
+            gameState.inventory.weapon.name,
+            gameState.inventory.shield.name,
+            gameState.inventory.armor.name,
+            gameState.inventory.passive_1?.name,
+            gameState.inventory.passive_2?.name,
+            gameState.inventory.passive_3?.name,
+            gameState.inventory.passive_4?.name,
+            gameState.inventory.passive_5?.name,
+            gameState.inventory.passive_6?.name,
         ];
+        this.gameState = gameState;
         this.items = utils
             .shuffleArray(shopItemList.filter((x) => !inventoryItemNames.includes(x.name)))
             .slice(0, 3)
@@ -59,6 +63,9 @@ export default class Shop {
         this.armor = new ShopItem(chosenarmor.name);
         const chosenWeapon = utils.shuffleArray(shopWeaponList.filter((x) => !inventoryItemNames.includes(x.name)))[0];
         this.weapon = new ShopItem(chosenWeapon.name);
+        if (this.weapon.item instanceof TimeBlade) {
+            this.weapon.item.gameTimer = this.gameState.gameTimer;
+        }
         const chosenShield = utils.shuffleArray(shopShieldList.filter((x) => !inventoryItemNames.includes(x.name)))[0];
         this.shield = new ShopItem(chosenShield.name);
         const chosenConsumable = utils.shuffleArray(shopConsList)[0];

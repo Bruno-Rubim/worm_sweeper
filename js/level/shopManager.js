@@ -29,7 +29,6 @@ export default class ShopManager extends SceneManager {
             if (action.shopItem.item.cost > this.gameState.gold) {
                 return;
             }
-            this.gameState.gold -= action.shopItem.item.cost;
             const item = action.shopItem.item;
             const inventory = this.gameState.inventory;
             if (item instanceof Armor) {
@@ -49,6 +48,9 @@ export default class ShopManager extends SceneManager {
                 action.shopItem.hidden = true;
             }
             else {
+                if (this.gameState.passiveSpace < 1) {
+                    return;
+                }
                 if (inventory.passive_1.name == "empty") {
                     item.pos.update(4, 18 * 1);
                     inventory.passive_1 = item;
@@ -80,6 +82,7 @@ export default class ShopManager extends SceneManager {
                     action.shopItem.hidden = true;
                 }
             }
+            this.gameState.gold -= action.shopItem.item.cost;
             return;
         }
         return action;

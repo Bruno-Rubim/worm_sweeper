@@ -9,8 +9,9 @@ import { Battle } from "./level/battle.js";
 import { timerQueue } from "./timer/timerQueue.js";
 import timeTracker from "./timer/timeTracker.js";
 import { getItem } from "./items/passives/dict.js";
-import { Weapon, weaponDic } from "./items/weapon/weapon.js";
+import { Weapon } from "./items/weapon/weapon.js";
 import { Shield, shieldDic } from "./items/shield/shield.js";
+import { weaponDic } from "./items/weapon/dict.js";
 export default class GameState {
     gameTimer;
     gold = 0;
@@ -51,7 +52,7 @@ export default class GameState {
             goalFunc: () => this.lose(),
             deleteAtEnd: false,
         });
-        this.level = new Level(0, this.inventory);
+        this.level = new Level(0, this);
         timerQueue.push(this.gameTimer);
         timerQueue.push(this.tiredTimer);
         timerQueue.push(this.attackAnimationTimer);
@@ -104,7 +105,7 @@ export default class GameState {
             passive_5: getItem("empty", new Position(4, 18 * 5)),
             passive_6: getItem("empty", new Position(4, 18 * 6)),
         };
-        this.level = new Level(0, this.inventory);
+        this.level = new Level(0, this);
         this.gameOver = false;
         timerQueue.push(this.gameTimer);
         timerQueue.push(this.tiredTimer);
@@ -138,5 +139,27 @@ export default class GameState {
     }
     hasItem(itemName) {
         return this.itemNames.includes(itemName);
+    }
+    get passiveSpace() {
+        let space = 0;
+        if (this.inventory.passive_1.name == "empty") {
+            space++;
+        }
+        if (this.inventory.passive_2.name == "empty") {
+            space++;
+        }
+        if (this.inventory.passive_3.name == "empty") {
+            space++;
+        }
+        if (this.inventory.passive_4.name == "empty") {
+            space++;
+        }
+        if (this.inventory.passive_5.name == "empty") {
+            space++;
+        }
+        if (this.inventory.passive_6.name == "empty") {
+            space++;
+        }
+        return space;
     }
 }

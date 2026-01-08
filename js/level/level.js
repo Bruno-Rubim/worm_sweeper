@@ -4,14 +4,14 @@ export default class Level {
     depth;
     shop;
     cave;
-    inventory;
+    gameState;
     constructor(depth, inventory) {
         this.depth = depth;
         this.cave = new Cave(depth);
         this.shop = new Shop(inventory);
-        this.inventory = inventory;
+        this.gameState = inventory;
     }
     nextLevel() {
-        return new Level(this.depth + 1, this.inventory);
+        return new Level(this.depth + 1, this.gameState);
     }
 }

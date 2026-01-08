@@ -7,7 +7,7 @@ export class Item extends GameObject {
     spriteSheetPos;
     name;
     shopName;
-    description;
+    descriptionText;
     descFontSize = 0.4;
     cost;
     constructor(args) {
@@ -27,7 +27,10 @@ export class Item extends GameObject {
                 return new ToggleBook();
             };
         }
-        this.description = args.description;
+        this.descriptionText = args.descriptionText;
+    }
+    get description() {
+        return this.descriptionText;
     }
     clone() {
         return new Item({
@@ -36,7 +39,7 @@ export class Item extends GameObject {
             name: this.name,
             shopName: this.shopName,
             cost: this.cost,
-            description: this.description,
+            descriptionText: this.descriptionText,
         });
     }
     render(canvasManager) {
