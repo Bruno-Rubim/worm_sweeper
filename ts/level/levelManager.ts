@@ -31,7 +31,6 @@ import ShopManager from "./shopManager.js";
 import { Battle } from "./battle.js";
 import type { SoundManager } from "../soundManager.js";
 import sounds from "../sounds.js";
-import { Chisel } from "../items/passives/chisel.js";
 
 const transitionObject = new GameObject({
   sprite: sprites.scene_transition,

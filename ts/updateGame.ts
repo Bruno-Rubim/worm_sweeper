@@ -1,6 +1,5 @@
 import {
   cursor,
-  CURSORBATTLE,
   CURSORBOMB,
   CURSORCHISEL,
   CURSORDEFAULT,
@@ -10,7 +9,6 @@ import { GameManager } from "./gameManager.js";
 import type GameObject from "./gameObject.js";
 import { CLICKLEFT, CLICKRIGHT, DEV } from "./global.js";
 import { inputState } from "./inputState.js";
-import { consumableDic } from "./items/consumable/consumable.js";
 import {
   ChangeCursorState,
   ConsumeItem,
@@ -21,12 +19,15 @@ import {
   EnemyAtack,
   RingBell,
   PickupChisel,
+  PickupBomb,
 } from "./action.js";
 import timeTracker from "./timer/timeTracker.js";
 import { timerQueue } from "./timer/timerQueue.js";
 import sounds from "./sounds.js";
 import type GameState from "./gameState.js";
 import { Chisel } from "./items/passives/chisel.js";
+import consumableDic from "./items/consumable/dict.js";
+import Bomb from "./items/consumable/bomb.js";
 
 /**
  * Updates the state of the cursor, changing its visual
@@ -176,7 +177,7 @@ function handleKeyInput(gameManager: GameManager) {
     }
     if (inputState.keyboard.w == "pressed") {
       inputState.keyboard.w = "read";
-      gameManager.soundManager.playSound(sounds.break);
+      gameManager.soundManager.playSound(sounds.purchase);
     }
   }
 }
@@ -201,23 +202,25 @@ function handleAction(
     switch (action.itemName) {
       case "time_potion":
         gameManager.gameState.gameTimer.addSecs(60);
+        gameManager.soundManager.playSound(sounds.drink);
         break;
       case "health_vial":
         gameManager.gameState.health += 0.5;
+        gameManager.soundManager.playSound(sounds.drink);
         break;
       case "health_potion":
         gameManager.gameState.health += 1;
+        gameManager.soundManager.playSound(sounds.drink);
         break;
       case "health_potion_big":
         gameManager.gameState.health += 2;
-        break;
-      case "bomb":
-        gameManager.gameState.holding == "bomb";
+        gameManager.soundManager.playSound(sounds.drink);
         break;
       case "empty":
-        if (gameManager.gameState.holding == "bomb") {
+        if (gameManager.gameState.holding instanceof Bomb) {
+          gameManager.gameState.inventory.consumable =
+            gameManager.gameState.holding;
           gameManager.gameState.holding = null;
-          gameManager.gameState.inventory.consumable = consumableDic.bomb;
         }
         break;
     }
@@ -273,6 +276,12 @@ function handleAction(
       gameManager.gameState.holding = action.chiselItem;
     } else if (gameManager.gameState.holding instanceof Chisel) {
       gameManager.gameState.holding = null;
+    }
+  }
+  if (action instanceof PickupBomb) {
+    if (gameManager.gameState.holding == null) {
+      gameManager.gameState.holding = action.bombItem;
+      gameManager.gameState.inventory.consumable = consumableDic.empty;
     }
   }
 }
@@ -338,15 +347,16 @@ export default function updateGame(
     }
   });
   if (gameManager.gameState.holding != null) {
-    if (gameManager.gameState.holding == "bomb") {
+    if (gameManager.gameState.holding instanceof Bomb) {
       changeCursorState(CURSORBOMB);
+      cursorChanged = true;
     } else if (
       gameManager.gameState.holding instanceof Chisel &&
       !gameManager.gameState.holding.chiselTimer.inMotion
     ) {
       changeCursorState(CURSORCHISEL);
+      cursorChanged = true;
     }
-    cursorChanged = true;
   }
 
   if (!cursorChanged) {

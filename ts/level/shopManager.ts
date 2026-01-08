@@ -15,6 +15,7 @@ import { Shield } from "../items/shield/shield.js";
 import { Weapon } from "../items/weapon/weapon.js";
 import Position from "../position.js";
 import type { SoundManager } from "../soundManager.js";
+import sounds from "../sounds.js";
 import { sprites } from "../sprites.js";
 import { handleMouseClick, handleMouseHover } from "../updateGame.js";
 import SceneManager from "./sceneManager.js";
@@ -72,7 +73,7 @@ export default class ShopManager extends SceneManager {
         action.shopItem.hidden = true;
       } else {
         if (this.gameState.passiveSpace < 1) {
-          // TO-DO: error sfx
+          this.soundManager.playSound(sounds.wrong);
           return;
         }
         if (inventory.passive_1.name == "empty") {
@@ -102,6 +103,7 @@ export default class ShopManager extends SceneManager {
         }
       }
       this.gameState.gold -= action.shopItem.item.cost;
+      this.soundManager.playSound(sounds.purchase);
       return;
     }
     return action;
