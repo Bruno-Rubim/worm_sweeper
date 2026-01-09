@@ -19,6 +19,7 @@ import Position from "../position.js";
 import type { SoundManager } from "../soundManager.js";
 import sounds from "../sounds.js";
 import { sprites } from "../sprites.js";
+import { Timer } from "../timer/timer.js";
 import { timerQueue } from "../timer/timerQueue.js";
 import { utils } from "../utils.js";
 import SceneManager from "./sceneManager.js";
@@ -249,6 +250,31 @@ export default class BattleManager extends SceneManager {
     tiredTimer.start();
     return this.checkBattleEnd();
   }
+
+  /**
+   * Pauses the current battle's enemies' cooldown timers for a given ammount of seconds
+   * @param seconds
+   */
+  stunEnemy(seconds: number) {
+    if (!this.gameState.battle) {
+      alert("not in battle");
+      return;
+    }
+    this.gameState.battle.enemies.forEach((e) => {
+      e.cooldownTimer.pause();
+    });
+    const stunTimer = new Timer({
+      goalSecs: seconds,
+      goalFunc: () => {
+        this.gameState.battle!.enemies.forEach((e) => {
+          e.cooldownTimer.unpause();
+        });
+      },
+    });
+    timerQueue.push(stunTimer);
+    stunTimer.start();
+  }
+
   /**
    * Checks if the player isn't tired and attacks or defends accordingly
    * @param cursorPos
