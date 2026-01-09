@@ -24,7 +24,7 @@ export default class GameState {
     battle = null;
     tiredTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
     attackAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
-    defending = false;
+    defenseAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
     paused = false;
     started = false;
     gameOver = false;
@@ -57,6 +57,7 @@ export default class GameState {
         timerQueue.push(this.gameTimer);
         timerQueue.push(this.tiredTimer);
         timerQueue.push(this.attackAnimationTimer);
+        timerQueue.push(this.defenseAnimationTimer);
     }
     pauseGameTimer() {
         this.gameTimer.pause();
@@ -86,7 +87,6 @@ export default class GameState {
         this.currentScene = "cave";
         this.inTransition = false;
         this.battle = null;
-        this.defending = false;
         this.holding = null;
         this.deathCount++;
         this.gold = 0;
@@ -111,6 +111,7 @@ export default class GameState {
         timerQueue.push(this.gameTimer);
         timerQueue.push(this.tiredTimer);
         timerQueue.push(this.attackAnimationTimer);
+        timerQueue.push(this.defenseAnimationTimer);
         timeTracker.unpause();
     }
     get itemNames() {
@@ -126,17 +127,6 @@ export default class GameState {
             this.inventory.shield.name,
             this.inventory.armor.name,
         ];
-    }
-    get currentDefense() {
-        return (this.inventory.armor.defense +
-            +this.inventory.armor.reflection +
-            (this.defending
-                ? this.inventory.shield.defense + this.inventory.shield.reflection
-                : 0));
-    }
-    get currentReflection() {
-        return (this.inventory.armor.reflection +
-            (this.defending ? this.inventory.shield.reflection : 0));
     }
     hasItem(itemName) {
         return this.itemNames.includes(itemName);

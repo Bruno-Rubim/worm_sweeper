@@ -1,4 +1,4 @@
-import Block, { CONTENTBOMBOVERLAY, CONTENTDOOREXIT, CONTENTDOORSHOP, CONTENTEMPTY, CONTENTWATER, CONTENTWORM, } from "./block.js";
+import Block, { CONTENTDOOREXIT, CONTENTDOORSHOP, CONTENTEMPTY, CONTENTWATER, CONTENTWORM, } from "./block.js";
 import Position from "../position.js";
 import { StartBattle } from "../action.js";
 import { utils } from "../utils.js";
@@ -132,18 +132,6 @@ export default class Cave {
             line.forEach((block) => {
                 if (block.content == CONTENTWORM && block.broken) {
                     block.content = CONTENTEMPTY;
-                }
-            });
-        });
-    }
-    setBombOverlay(block) {
-        if (block?.broken && block.content == CONTENTEMPTY) {
-            block.content = CONTENTBOMBOVERLAY;
-        }
-        this.blockMatrix.forEach((line) => {
-            line.forEach((b) => {
-                if (b.content == CONTENTBOMBOVERLAY && b != block) {
-                    b.content = CONTENTEMPTY;
                 }
             });
         });

@@ -112,7 +112,7 @@ export class LevelManager extends GameObject {
                     this.gameState.level.cave.clearExposedWorms();
                     this.gameState.level.cave.updateAllStats();
                     this.currentSceneManager = this.battleManager;
-                    this.gameState.battle?.start();
+                    this.gameState.battle?.start(this.gameState.inventory.armor.defense, this.gameState.inventory.armor.reflection);
                     break;
                 case "cave":
                     switch (currentScene) {
