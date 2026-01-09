@@ -46,7 +46,7 @@ export default class GameState {
   battle: Battle | null = null;
   tiredTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
   attackAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
-  defending: boolean = false;
+  defenseAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
 
   paused: boolean = false;
   started: boolean = false;
@@ -84,6 +84,7 @@ export default class GameState {
     timerQueue.push(this.gameTimer);
     timerQueue.push(this.tiredTimer);
     timerQueue.push(this.attackAnimationTimer);
+    timerQueue.push(this.defenseAnimationTimer);
   }
 
   /**
@@ -129,7 +130,6 @@ export default class GameState {
     this.currentScene = "cave";
     this.inTransition = false;
     this.battle = null;
-    this.defending = false;
     this.holding = null;
     this.deathCount++;
     this.gold = 0;
@@ -154,6 +154,7 @@ export default class GameState {
     timerQueue.push(this.gameTimer);
     timerQueue.push(this.tiredTimer);
     timerQueue.push(this.attackAnimationTimer);
+    timerQueue.push(this.defenseAnimationTimer);
     timeTracker.unpause();
   }
 
@@ -173,29 +174,6 @@ export default class GameState {
       this.inventory.shield.name,
       this.inventory.armor.name,
     ];
-  }
-
-  /**
-   * returns the value of current defense and reflection from armor, and if is defending with shield its defense and reflection as well
-   */
-  get currentDefense() {
-    return (
-      this.inventory.armor.defense +
-      +this.inventory.armor.reflection +
-      (this.defending
-        ? this.inventory.shield.defense + this.inventory.shield.reflection
-        : 0)
-    );
-  }
-
-  /**
-   * returns the value of current reflection from armor, and if is defending with shield its reflection as well
-   */
-  get currentReflection() {
-    return (
-      this.inventory.armor.reflection +
-      (this.defending ? this.inventory.shield.reflection : 0)
-    );
   }
 
   /**

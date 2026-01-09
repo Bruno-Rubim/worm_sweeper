@@ -38,13 +38,17 @@ export default class BattleManager extends SceneManager {
    * @param canvasManager
    */
   render = (canvasManager: CanvasManager) => {
+    if (!this.gameState.battle) {
+      alert("this shouldn't happen outside of battle");
+      return;
+    }
     canvasManager.renderSprite(
       sprites.bg_battle,
       new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
       GAMEWIDTH - BORDERTHICKLEFT - BORDERTHICKRIGHT,
       GAMEHEIGHT - BORDERTHICKTOP - BORDERTHICKBOTTOM
     );
-    this.gameState.battle?.enemies.forEach((enemy) => {
+    this.gameState.battle.enemies.forEach((enemy) => {
       canvasManager.renderSpriteFromSheet(
         enemy.spriteSheet,
         enemy.pos,
@@ -84,29 +88,32 @@ export default class BattleManager extends SceneManager {
       );
     });
 
+    // Weapon rendering
     const inventory = this.gameState.inventory;
     canvasManager.renderSprite(
       inventory.weapon.bigSprite,
       new Position(
         BORDERTHICKLEFT -
-          (this.gameState.attackAnimationTimer.ended ||
-          !this.gameState.attackAnimationTimer.started
-            ? 24
-            : 0),
+          (this.gameState.attackAnimationTimer.inMotion ? 0 : 24),
         BORDERTHICKTOP +
-          (this.gameState.attackAnimationTimer.ended ||
-          !this.gameState.attackAnimationTimer.started
-            ? 45
-            : 26)
+          (this.gameState.attackAnimationTimer.inMotion ? 26 : 45)
       ),
       128,
       128
     );
+
+    // Shield rendering
+    console.log(
+      this.gameState.defenseAnimationTimer.inMotion,
+      this.gameState.attackAnimationTimer.inMotion
+    );
     canvasManager.renderSprite(
       inventory.shield.bigSprite,
       new Position(
-        BORDERTHICKLEFT + (this.gameState.defending ? 0 : 24),
-        BORDERTHICKTOP + (this.gameState.defending ? 26 : 45)
+        BORDERTHICKLEFT +
+          (this.gameState.defenseAnimationTimer.inMotion ? 0 : 24),
+        BORDERTHICKTOP +
+          (this.gameState.defenseAnimationTimer.inMotion ? 26 : 45)
       ),
       128,
       128
@@ -124,10 +131,13 @@ export default class BattleManager extends SceneManager {
       );
     }
 
-    if (this.gameState.currentDefense > 0) {
-      const reflect = this.gameState.currentReflection;
-      const defense =
-        this.gameState.currentDefense - this.gameState.currentReflection;
+    // Rendering defense stats
+    if (
+      this.gameState.battle.defense > 0 ||
+      this.gameState.battle.reflection > 0
+    ) {
+      const reflect = this.gameState.battle.reflection;
+      const defense = this.gameState.battle.defense;
       const roundedReflect = Math.floor(reflect);
       const roundedDefense = Math.floor(defense);
       canvasManager.renderText(
@@ -147,7 +157,11 @@ export default class BattleManager extends SceneManager {
    * @returns
    */
   checkBattleEnd() {
-    this.gameState.battle?.enemies.forEach((e, i) => {
+    if (!this.gameState.battle) {
+      alert("this shouldn't happen outside of battle");
+      return;
+    }
+    this.gameState.battle.enemies.forEach((e, i) => {
       if (e.health <= 0) {
         timerQueue.splice(timerQueue.indexOf(e.cooldownTimer), 1);
         this.gameState.battle!.enemies.splice(i, 1);
@@ -156,7 +170,7 @@ export default class BattleManager extends SceneManager {
         }
       }
     });
-    if (this.gameState.battle!.enemies.length <= 0) {
+    if (this.gameState.battle.enemies.length <= 0) {
       return new ChangeScene("cave");
     }
   }
@@ -166,16 +180,25 @@ export default class BattleManager extends SceneManager {
    * @returns
    */
   playerAttack() {
-    const tiredTimer = this.gameState.tiredTimer;
-    const rId = utils.randomArrayId(this.gameState.battle!.enemies);
-    const enemy = this.gameState.battle!.enemies[rId]!;
+    if (!this.gameState.battle) {
+      alert("this shouldn't happen outside of battle");
+      return;
+    }
+    // Enemy damage
+    const rId = utils.randomArrayId(this.gameState.battle.enemies);
+    const enemy = this.gameState.battle.enemies[rId]!;
     let damage = this.gameState.inventory.weapon.totalDamage;
     enemy.health -= damage;
     enemy.damagedTimer.start();
     timerQueue.push(enemy.damagedTimer);
+
+    // Weapon animation
     this.gameState.attackAnimationTimer.goalSecs =
       this.gameState.inventory.weapon.cooldown / 3;
     this.gameState.attackAnimationTimer.start();
+
+    // Cooldown
+    const tiredTimer = this.gameState.tiredTimer;
     tiredTimer.goalSecs =
       this.gameState.inventory.weapon.cooldown -
       this.gameState.inventory.armor.speed;
@@ -184,13 +207,44 @@ export default class BattleManager extends SceneManager {
   }
 
   /**
+   * Adds defense to player and starts the tired timer according to current shield stats
+   * @returns
+   */
+  playerDefend() {
+    if (!this.gameState.battle) {
+      alert("this shouldn't happen outside of battle");
+      return;
+    }
+    // Setting defense stats
+    this.gameState.battle.defense += this.gameState.inventory.shield.defense;
+    this.gameState.battle.reflection +=
+      this.gameState.inventory.shield.reflection;
+
+    // Defense animation
+    this.gameState.defenseAnimationTimer.goalSecs =
+      this.gameState.inventory.shield.cooldown / 3;
+    this.gameState.defenseAnimationTimer.start();
+
+    // Cooldown
+    const tiredTimer = this.gameState.tiredTimer;
+    tiredTimer.goalSecs =
+      this.gameState.inventory.shield.cooldown -
+      this.gameState.inventory.armor.speed;
+    tiredTimer.start();
+  }
+
+  /**
    * Does 5 damage to a random enemy, triggers the enemies damage animation timer and the player's tired timer
    * @returns
    */
   bomb() {
+    if (!this.gameState.battle) {
+      alert("this shouldn't happen outside of battle");
+      return;
+    }
     const tiredTimer = this.gameState.tiredTimer;
-    const rId = utils.randomArrayId(this.gameState.battle!.enemies);
-    const enemy = this.gameState.battle!.enemies[rId]!;
+    const rId = utils.randomArrayId(this.gameState.battle.enemies);
+    const enemy = this.gameState.battle.enemies[rId]!;
     this.soundManager.playSound(sounds.explosion);
     enemy.health -= 5;
     enemy.damagedTimer.start();
@@ -199,23 +253,6 @@ export default class BattleManager extends SceneManager {
     tiredTimer.start();
     return this.checkBattleEnd();
   }
-
-  /**
-   * Sets defending to true and starts the tired timer according to current shield stats
-   * @returns
-   */
-  playerDefend() {
-    const tiredTimer = this.gameState.tiredTimer;
-    this.gameState.defending = true;
-    tiredTimer.goalSecs =
-      this.gameState.inventory.shield.cooldown -
-      this.gameState.inventory.armor.speed;
-    tiredTimer.goalFunc = () => {
-      this.gameState.defending = false;
-    };
-    tiredTimer.start();
-  }
-
   /**
    * Checks if the player isn't tired and attacks or defends accordingly
    * @param cursorPos
@@ -227,6 +264,7 @@ export default class BattleManager extends SceneManager {
     button: typeof CLICKRIGHT | typeof CLICKLEFT
   ) => {
     if (!this.gameState.battle) {
+      alert("this shouldn't happen outside of battle");
       return;
     }
     const tiredTimer = this.gameState.tiredTimer;

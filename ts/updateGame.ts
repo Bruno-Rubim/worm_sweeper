@@ -252,13 +252,28 @@ function handleAction(
     gameManager.restart();
   }
   if (action instanceof EnemyAtack) {
+    if (!gameManager.gameState.battle) {
+      alert("this shouldn't happen outside of battle");
+      return;
+    }
     action.enemy.attackAnimTimer.start();
     timerQueue.push(action.enemy.attackAnimTimer);
-    gameManager.gameState.health -= Math.max(
-      0,
-      action.damage - gameManager.gameState.currentDefense
-    );
-    action.enemy.health -= gameManager.gameState.currentReflection;
+    let damage = action.damage;
+
+    const reflection = gameManager.gameState.battle!.reflection;
+    const leftoverReflection = Math.max(0, reflection - damage);
+    damage = Math.max(0, damage - reflection);
+
+    const defense = gameManager.gameState.battle.defense;
+    const leftoverDefense = Math.max(0, defense - damage);
+    damage = Math.max(0, damage - defense);
+
+    gameManager.gameState.health -= Math.max(0, damage);
+    action.enemy.health -= gameManager.gameState.battle!.reflection;
+
+    gameManager.gameState.battle!.reflection = leftoverReflection;
+    gameManager.gameState.battle.defense = leftoverDefense;
+
     if (gameManager.gameState.health <= 0) {
       if (inputState.mouse.heldLeft || inputState.mouse.heldRight) {
         gameManager.gameState.heldWhileDeath = true;

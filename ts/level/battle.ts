@@ -4,6 +4,9 @@ import { Enemy, ScaleWorm, Worm } from "./enemy.js";
 
 export class Battle {
   enemies: Enemy[];
+  defense: number = 0;
+  reflection: number = 0;
+
   constructor(depth: number, enemyCount: number) {
     this.enemies = [];
     let arr: Enemy[] = [new Worm(depth), new ScaleWorm(depth)];

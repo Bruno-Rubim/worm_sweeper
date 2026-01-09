@@ -24,8 +24,6 @@ import { Timer } from "../timer/timer.js";
 import { timerQueue } from "../timer/timerQueue.js";
 import {
   blockSheetPos,
-  CONTENTBOMB,
-  CONTENTBOMBOVERLAY,
   CONTENTDOOREXIT,
   CONTENTDOOREXITOPEN,
   CONTENTDOORSHOP,

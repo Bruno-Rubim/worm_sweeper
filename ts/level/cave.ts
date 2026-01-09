@@ -1,5 +1,4 @@
 import Block, {
-  CONTENTBOMBOVERLAY,
   CONTENTDOOREXIT,
   CONTENTDOORSHOP,
   CONTENTEMPTY,
@@ -176,19 +175,6 @@ export default class Cave {
       line.forEach((block) => {
         if (block.content == CONTENTWORM && block.broken) {
           block.content = CONTENTEMPTY;
-        }
-      });
-    });
-  }
-
-  setBombOverlay(block?: Block) {
-    if (block?.broken && block.content == CONTENTEMPTY) {
-      block.content = CONTENTBOMBOVERLAY;
-    }
-    this.blockMatrix.forEach((line) => {
-      line.forEach((b) => {
-        if (b.content == CONTENTBOMBOVERLAY && b != block) {
-          b.content = CONTENTEMPTY;
         }
       });
     });
