@@ -349,7 +349,6 @@ export default class Cave {
 
   placeWater() {
     if (this.blocksCanPlaceStuff.length == 0) {
-      console.warn("there should be water here but there isn't");
       return;
     }
     const r = utils.randomArrayId(this.blocksCanPlaceStuff);

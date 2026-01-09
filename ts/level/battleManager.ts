@@ -19,12 +19,16 @@ import Position from "../position.js";
 import type { SoundManager } from "../soundManager.js";
 import sounds from "../sounds.js";
 import { sprites } from "../sprites.js";
+import { Timer } from "../timer/timer.js";
 import { timerQueue } from "../timer/timerQueue.js";
+import timeTracker from "../timer/timeTracker.js";
 import { utils } from "../utils.js";
 import SceneManager from "./sceneManager.js";
 
 // Manages rendering and interactions with the currentBattle scene of the gameState
 export default class BattleManager extends SceneManager {
+  stunTicStart: number | null = null;
+
   constructor(
     gameState: GameState,
     scenePos: Position,
@@ -42,6 +46,7 @@ export default class BattleManager extends SceneManager {
       alert("this shouldn't happen outside of battle");
       return;
     }
+    // Render enemies
     canvasManager.renderSprite(
       sprites.bg_battle,
       new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
@@ -67,6 +72,19 @@ export default class BattleManager extends SceneManager {
           "$hrt".repeat(roundedHealth) +
             (enemy.health > roundedHealth ? "$hhr" : ""),
           CENTER
+        );
+      }
+      if (this.stunTicStart != null) {
+        canvasManager.renderAnimationFrame(
+          sprites.stun_sprite_sheet,
+          enemy.pos.add(enemy.stunSpriteShift),
+          64,
+          64,
+          4,
+          1,
+          this.stunTicStart,
+          timeTracker.currentGameTic,
+          0.5
         );
       }
 
@@ -103,10 +121,6 @@ export default class BattleManager extends SceneManager {
     );
 
     // Shield rendering
-    console.log(
-      this.gameState.defenseAnimationTimer.inMotion,
-      this.gameState.attackAnimationTimer.inMotion
-    );
     canvasManager.renderSprite(
       inventory.shield.bigSprite,
       new Position(
@@ -253,6 +267,33 @@ export default class BattleManager extends SceneManager {
     tiredTimer.start();
     return this.checkBattleEnd();
   }
+
+  /**
+   * Pauses the current battle's enemies' cooldown timers for a given ammount of seconds
+   * @param seconds
+   */
+  stunEnemy(seconds: number) {
+    if (!this.gameState.battle) {
+      alert("not in battle");
+      return;
+    }
+    this.gameState.battle.enemies.forEach((e) => {
+      e.cooldownTimer.pause();
+    });
+    const stunTimer = new Timer({
+      goalSecs: seconds,
+      goalFunc: () => {
+        this.gameState.battle!.enemies.forEach((e) => {
+          e.cooldownTimer.unpause();
+        });
+        this.stunTicStart = null;
+      },
+    });
+    timerQueue.push(stunTimer);
+    stunTimer.start();
+    this.stunTicStart = timeTracker.currentGameTic;
+  }
+
   /**
    * Checks if the player isn't tired and attacks or defends accordingly
    * @param cursorPos
