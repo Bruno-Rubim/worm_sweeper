@@ -62,6 +62,7 @@ export const sprites = {
   time_potion_pointer_sheet: new Sprite("time_potion_pointer_sheet"),
   screen_defeat: new Sprite("screen_defeat"),
   screen_paused: new Sprite("screen_paused"),
+  stun_sprite_sheet: new Sprite("stun_sprite_sheet"),
   transparent_pixel: new Sprite("transparent_pixel"),
   worm_remains: new Sprite("worm_remains"),
   worm: new Sprite("worm"),
