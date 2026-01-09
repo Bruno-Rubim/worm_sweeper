@@ -13,7 +13,9 @@ export class Battle {
     let x = depth > 2 ? 1 : 0;
     this.enemies.push(arr[Math.min(x, utils.randomArrayId(arr))]!);
   }
-  start() {
+  start(armorDefense: number, armorReflection: number) {
+    this.defense = armorDefense;
+    this.reflection = armorReflection;
     this.enemies.forEach((e) => {
       e.cooldownTimer.start();
       timerQueue.push(e.cooldownTimer, e.attackAnimTimer, e.damagedTimer);
