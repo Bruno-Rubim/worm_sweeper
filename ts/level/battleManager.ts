@@ -103,10 +103,6 @@ export default class BattleManager extends SceneManager {
     );
 
     // Shield rendering
-    console.log(
-      this.gameState.defenseAnimationTimer.inMotion,
-      this.gameState.attackAnimationTimer.inMotion
-    );
     canvasManager.renderSprite(
       inventory.shield.bigSprite,
       new Position(
