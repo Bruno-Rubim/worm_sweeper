@@ -5,10 +5,13 @@ import Bomb from "../items/consumable/bomb.js";
 import Position from "../position.js";
 import sounds from "../sounds.js";
 import { sprites } from "../sprites.js";
+import { Timer } from "../timer/timer.js";
 import { timerQueue } from "../timer/timerQueue.js";
+import timeTracker from "../timer/timeTracker.js";
 import { utils } from "../utils.js";
 import SceneManager from "./sceneManager.js";
 export default class BattleManager extends SceneManager {
+    stunTicStart = null;
     constructor(gameState, scenePos, soundManager) {
         super(gameState, scenePos, soundManager);
     }
@@ -25,6 +28,9 @@ export default class BattleManager extends SceneManager {
                 canvasManager.renderText("icons", enemy.pos.add(33, 64), "$hrt".repeat(roundedHealth) +
                     (enemy.health > roundedHealth ? "$hhr" : ""), CENTER);
             }
+            if (this.stunTicStart != null) {
+                canvasManager.renderAnimationFrame(sprites.stun_sprite_sheet, enemy.pos.add(enemy.stunSpriteShift), 64, 64, 4, 1, this.stunTicStart, timeTracker.currentGameTic, 0.5);
+            }
             canvasManager.renderText("numbers_gray", enemy.pos.add(34, 8), enemy.damage.toString() + "$dmg", LEFT);
             let counterFrame = Math.floor(Math.min(15, (enemy.cooldownTimer.percentage / 100) * 16));
             canvasManager.renderSpriteFromSheet(sprites.counter_sheet, enemy.pos.add(34, 8), 8, 8, new Position(counterFrame % 8, Math.floor(counterFrame / 8)));
@@ -33,7 +39,6 @@ export default class BattleManager extends SceneManager {
         canvasManager.renderSprite(inventory.weapon.bigSprite, new Position(BORDERTHICKLEFT -
             (this.gameState.attackAnimationTimer.inMotion ? 0 : 24), BORDERTHICKTOP +
             (this.gameState.attackAnimationTimer.inMotion ? 26 : 45)), 128, 128);
-        console.log(this.gameState.defenseAnimationTimer.inMotion, this.gameState.attackAnimationTimer.inMotion);
         canvasManager.renderSprite(inventory.shield.bigSprite, new Position(BORDERTHICKLEFT +
             (this.gameState.defenseAnimationTimer.inMotion ? 0 : 24), BORDERTHICKTOP +
             (this.gameState.defenseAnimationTimer.inMotion ? 26 : 45)), 128, 128);
@@ -124,6 +129,27 @@ export default class BattleManager extends SceneManager {
         tiredTimer.goalSecs = 2 - this.gameState.inventory.armor.speed;
         tiredTimer.start();
         return this.checkBattleEnd();
+    }
+    stunEnemy(seconds) {
+        if (!this.gameState.battle) {
+            alert("not in battle");
+            return;
+        }
+        this.gameState.battle.enemies.forEach((e) => {
+            e.cooldownTimer.pause();
+        });
+        const stunTimer = new Timer({
+            goalSecs: seconds,
+            goalFunc: () => {
+                this.gameState.battle.enemies.forEach((e) => {
+                    e.cooldownTimer.unpause();
+                });
+                this.stunTicStart = null;
+            },
+        });
+        timerQueue.push(stunTimer);
+        stunTimer.start();
+        this.stunTicStart = timeTracker.currentGameTic;
     }
     handleHeld = (cursorPos, button) => {
         if (!this.gameState.battle) {

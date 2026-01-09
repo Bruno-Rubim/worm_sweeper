@@ -10,11 +10,13 @@ export class Enemy {
     attackAnimTimer;
     damagedTimer;
     spriteSheet;
+    stunSpriteShift;
     constructor(args) {
         this.health = args.health;
         this.damage = args.damage;
         this.pos = args.pos;
         this.spriteSheet = args.spriteSheet;
+        this.stunSpriteShift = args.stunSpriteShift ?? new Position();
         this.attackAnimTimer = new Timer({ goalSecs: 0.3 });
         this.damagedTimer = new Timer({ goalSecs: 0.16 });
         this.cooldownTimer = new Timer({
@@ -45,6 +47,7 @@ export class ScaleWorm extends Enemy {
             health: 6 + Math.floor((depth / 3) * 2) / 2,
             damage: 2 + Math.floor(depth / 5),
             attackCooldown: 8 - Math.floor(depth / 3) * 0.5,
+            stunSpriteShift: new Position(8, 21),
         });
     }
 }

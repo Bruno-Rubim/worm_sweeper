@@ -14,7 +14,7 @@ export default class Bomb extends Consumable {
             name: "bomb",
             shopName: "Bomb",
             cost: 13,
-            descriptionText: "Use on any block to destroy all blocks around it, along with worms and gold.",
+            descriptionText: "Deal 5 damage or use on any block to destroy blocks around it, along with worms and gold.",
         });
     }
     clickFunction = (cursorPos, button) => {

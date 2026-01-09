@@ -15,7 +15,7 @@ export class Chisel extends Item {
             spriteSheetPos: new Position(0, 5),
             name: "chisel",
             shopName: "Chisel",
-            cost: 13,
+            cost: 6,
             descriptionText: "Use this to carve out gold from a block wihtout breaking it.",
         });
     }

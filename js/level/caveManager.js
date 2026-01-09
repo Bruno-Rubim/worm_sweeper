@@ -46,7 +46,7 @@ export default class CaveManager extends SceneManager {
                 }
                 canvasManager.renderSpriteFromSheet(sprites.block_sheet, blockPos, blockSize, blockSize, block.sheetBlockPos, 16, 16);
                 if ((block.broken && block.content != CONTENTEMPTY) || block.marked) {
-                    canvasManager.renderSpriteFromSheet(sprites.block_sheet, blockPos, blockSize, blockSize, block.sheetContentPos, 16, 16);
+                    canvasManager.renderSpriteFromSheet(sprites.block_sheet, blockPos, blockSize, blockSize, block.sheetContentPos.add(0, block.marked && this.gameState.holding instanceof Chisel ? 1 : 0), 16, 16);
                 }
                 if (this.gameState.level.cave.bellRang &&
                     [CONTENTDOOREXIT, CONTENTDOORSHOP].includes(block.content) &&

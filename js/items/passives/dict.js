@@ -54,6 +54,13 @@ export const itemDic = {
         descriptionText: "Gain 2 gold for every enemy killed.",
     }),
     chisel: new Chisel(),
+    safety_helmet: new Item({
+        spriteSheetPos: new Position(2, 5),
+        name: "safety_helmet",
+        shopName: "Safety Helmet",
+        cost: 22,
+        descriptionText: "+1 defense each fight.",
+    }),
     empty: new Item({
         spriteSheetPos: new Position(14, 4),
         name: "empty",

@@ -200,8 +200,11 @@ function handleAction(gameManager, action) {
         gameManager.levelManager.checkBattleEnd();
     }
     if (action instanceof RingBell) {
-        gameManager.soundManager.playSound(sounds.bell);
+        if (gameManager.gameState.currentScene == "battle") {
+            gameManager.levelManager.battleManager.stunEnemy(3);
+        }
         gameManager.gameState.level.cave.bellRang = true;
+        gameManager.soundManager.playSound(sounds.bell);
     }
     if (action instanceof PickupChisel) {
         if (gameManager.gameState.holding == null) {

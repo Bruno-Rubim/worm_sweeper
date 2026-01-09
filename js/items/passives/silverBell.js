@@ -23,7 +23,7 @@ export class SilverBell extends Item {
             name: "silver_bell",
             shopName: "Silver Bell",
             cost: 15,
-            descriptionText: "Reveals the location of doors. Recharges outside of shop every 60 seconds.",
+            descriptionText: "Reveals the location of doors, also stuns enemies if used during battle. Recharges outside of shop every 60 seconds.",
         });
         if (!timerQueue.includes(this.ringTimer)) {
             timerQueue.push(this.ringTimer);
