@@ -113,6 +113,7 @@ export default class CaveManager extends SceneManager {
           16,
           16
         );
+
         //Renders content
         if ((block.broken && block.content != CONTENTEMPTY) || block.marked) {
           canvasManager.renderSpriteFromSheet(
@@ -120,11 +121,15 @@ export default class CaveManager extends SceneManager {
             blockPos,
             blockSize,
             blockSize,
-            block.sheetContentPos,
+            block.sheetContentPos.add(
+              0,
+              block.marked && this.gameState.holding instanceof Chisel ? 1 : 0
+            ),
             16,
             16
           );
         }
+
         //Renders bell
         if (
           this.gameState.level.cave.bellRang &&
