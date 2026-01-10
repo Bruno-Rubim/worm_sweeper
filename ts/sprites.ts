@@ -44,6 +44,7 @@ export const sprites = {
   counter_sheet: new Sprite("counter_sheet"),
   cursor_sheet: new Sprite("cursor_sheet"),
   description_box: new Sprite("description_box"),
+  description_box_sheet: new Sprite("description_box_sheet"),
   enemy_scale_worm: new Sprite("enemy_scale_worm"),
   enemy_shadow: new Sprite("enemy_shadow"),
   enemy_worm: new Sprite("enemy_worm"),

@@ -267,4 +267,119 @@ export default class CanvasManager {
       currentY += fontMap.cellHeight * fontSize;
     }
   }
+
+  renderBox(
+    spriteSheet: Sprite,
+    pos: Position,
+    boxSpriteWidth: number,
+    boxSpriteHeight: number,
+    renderWidth: number,
+    renderHeight: number,
+    scale: number = 1
+  ) {
+    const bodyWidth = renderWidth - boxSpriteWidth * 2 * scale;
+    const bodyHeight = renderHeight - boxSpriteHeight * 2 * scale;
+
+    // Top left corner
+    this.renderSpriteFromSheet(
+      spriteSheet,
+      pos,
+      boxSpriteWidth * scale,
+      boxSpriteHeight * scale,
+      new Position(),
+      boxSpriteWidth,
+      boxSpriteHeight
+    );
+
+    // Ceiling
+    this.renderSpriteFromSheet(
+      spriteSheet,
+      pos.add(boxSpriteWidth * scale, 0),
+      bodyWidth,
+      boxSpriteHeight * scale,
+      new Position(1, 0),
+      boxSpriteWidth,
+      boxSpriteHeight
+    );
+
+    // Top right corner
+    this.renderSpriteFromSheet(
+      spriteSheet,
+      pos.add(boxSpriteWidth * scale + bodyWidth, 0),
+      boxSpriteWidth * scale,
+      boxSpriteHeight * scale,
+      new Position(2, 0),
+      boxSpriteWidth,
+      boxSpriteHeight
+    );
+
+    // Left wall
+    this.renderSpriteFromSheet(
+      spriteSheet,
+      pos.add(0, boxSpriteHeight * scale),
+      boxSpriteWidth * scale,
+      bodyHeight,
+      new Position(0, 1),
+      boxSpriteWidth,
+      boxSpriteHeight
+    );
+
+    // Body
+    this.renderSpriteFromSheet(
+      spriteSheet,
+      pos.add(boxSpriteWidth * scale, boxSpriteHeight * scale),
+      bodyWidth,
+      bodyHeight,
+      new Position(1, 1),
+      boxSpriteWidth,
+      boxSpriteHeight
+    );
+
+    // Right wall
+    this.renderSpriteFromSheet(
+      spriteSheet,
+      pos.add(boxSpriteWidth * scale + bodyWidth, boxSpriteHeight * scale),
+      boxSpriteWidth * scale,
+      bodyHeight,
+      new Position(2, 1),
+      boxSpriteWidth,
+      boxSpriteHeight
+    );
+
+    // Bottom left corner
+    this.renderSpriteFromSheet(
+      spriteSheet,
+      pos.add(0, boxSpriteHeight * scale + bodyHeight),
+      boxSpriteWidth * scale,
+      boxSpriteHeight * scale,
+      new Position(0, 2),
+      boxSpriteWidth,
+      boxSpriteHeight
+    );
+
+    // Floor
+    this.renderSpriteFromSheet(
+      spriteSheet,
+      pos.add(boxSpriteWidth * scale, boxSpriteHeight * scale + bodyHeight),
+      bodyWidth,
+      boxSpriteHeight * scale,
+      new Position(1, 2),
+      boxSpriteWidth,
+      boxSpriteHeight
+    );
+
+    // Top right corner
+    this.renderSpriteFromSheet(
+      spriteSheet,
+      pos.add(
+        boxSpriteWidth * scale + bodyWidth,
+        boxSpriteHeight * scale + bodyHeight
+      ),
+      boxSpriteWidth * scale,
+      boxSpriteHeight * scale,
+      new Position(2, 2),
+      boxSpriteWidth,
+      boxSpriteHeight
+    );
+  }
 }

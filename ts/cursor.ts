@@ -49,11 +49,14 @@ class Description extends GameObject {
     if (this.hidden) {
       return;
     }
-    canvasManager.renderSprite(
-      this.sprite,
+    canvasManager.renderBox(
+      sprites.description_box_sheet,
       this.pos.add(this.side == RIGHT ? -59 : 15, 6),
+      3,
+      3,
       this.width,
-      this.height
+      this.height,
+      0.4
     );
     canvasManager.renderText(
       "description",
