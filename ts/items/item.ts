@@ -1,7 +1,7 @@
-import { ItemDescription, ToggleBook } from "../action.js";
+import { SellItem, ItemDescription, ToggleBook } from "../action.js";
 import type CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
-import { GAMEWIDTH, LEFT, RIGHT } from "../global.js";
+import { GAMEWIDTH, LEFT, RIGHT, type cursorClick } from "../global.js";
 import Position from "../position.js";
 import { sprites } from "../sprites.js";
 
@@ -32,10 +32,19 @@ export class Item extends GameObject {
     this.name = args.name;
     this.shopName = args.shopName;
     this.cost = args.cost;
-    if (args.name == "book") {
-      this.clickFunction = () => {
-        return new ToggleBook();
-      };
+    switch (args.name) {
+      case "book":
+        this.clickFunction = () => {
+          return new ToggleBook();
+        };
+        break;
+      default:
+        this.clickFunction = (cursorPos: Position, button: cursorClick) => {
+          if (button == RIGHT) {
+            return new SellItem(this);
+          }
+        };
+        break;
     }
     this.descriptionText = args.descriptionText;
   }

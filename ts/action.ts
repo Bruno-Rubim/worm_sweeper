@@ -1,6 +1,7 @@
 import type { cursorState } from "./cursor.js";
 import type { LEFT, RIGHT } from "./global.js";
 import type Bomb from "./items/consumable/bomb.js";
+import type { Item } from "./items/item.js";
 import type { Chisel } from "./items/passives/chisel.js";
 import type { ShopItem } from "./items/shopItem.js";
 import type { Enemy } from "./level/enemy.js";
@@ -50,12 +51,30 @@ export class ChangeScene extends Action {
   }
 }
 
+// Calls to show a description on the shop
+export class ShopItemDescription extends Action {
+  description: string;
+  constructor(description: string) {
+    super();
+    this.description = description;
+  }
+}
+
 // Calls to buy a shop item
 export class BuyShopItem extends Action {
   shopItem: ShopItem;
   constructor(shopItem: ShopItem) {
     super();
     this.shopItem = shopItem;
+  }
+}
+
+// Calls to sell an item from inventory
+export class SellItem extends Action {
+  item: Item;
+  constructor(item: Item) {
+    super();
+    this.item = item;
   }
 }
 

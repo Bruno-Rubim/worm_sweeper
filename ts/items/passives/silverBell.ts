@@ -1,6 +1,6 @@
-import { RingBell } from "../../action.js";
+import { SellItem as SellItem, RingBell } from "../../action.js";
 import type CanvasManager from "../../canvasManager.js";
-import type { cursorClick } from "../../global.js";
+import { LEFT, type cursorClick } from "../../global.js";
 import Position from "../../position.js";
 import { sprites } from "../../sprites.js";
 import { GAMETIMERSYNC, Timer } from "../../timer/timer.js";
@@ -68,9 +68,13 @@ export class SilverBell extends Item {
   }
 
   clickFunction = (cursorPos: Position, button: cursorClick) => {
-    if (!this.ringTimer.inMotion) {
-      this.ringTimer.start();
-      return new RingBell();
+    if (button == LEFT) {
+      if (!this.ringTimer.inMotion) {
+        this.ringTimer.start();
+        return new RingBell();
+      }
+    } else {
+      return new SellItem(this);
     }
   };
 

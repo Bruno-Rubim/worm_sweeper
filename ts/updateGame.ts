@@ -20,6 +20,7 @@ import {
   RingBell,
   PickupChisel,
   PickupBomb,
+  SellItem,
 } from "./action.js";
 import timeTracker from "./timer/timeTracker.js";
 import { timerQueue } from "./timer/timerQueue.js";
@@ -28,6 +29,13 @@ import type GameState from "./gameState.js";
 import { Chisel } from "./items/passives/chisel.js";
 import consumableDic from "./items/consumable/dict.js";
 import Bomb from "./items/consumable/bomb.js";
+import { Weapon } from "./items/weapon/weapon.js";
+import { Shield } from "./items/shield/shield.js";
+import { Armor, armorDic } from "./items/armor/armor.js";
+import { getItem } from "./items/passives/dict.js";
+import { utils } from "./utils.js";
+import { Consumable } from "./items/consumable/consumable.js";
+import Position from "./position.js";
 
 /**
  * Updates the state of the cursor, changing its visual
@@ -182,10 +190,186 @@ function handleKeyInput(gameManager: GameManager) {
   }
 }
 
+/**
+ * Deals with different consumable functions depending on itemName
+ * @param gameManager
+ * @param action
+ */
+function consumeItem(gameManager: GameManager, action: ConsumeItem) {
+  switch (action.itemName) {
+    case "time_potion":
+      gameManager.gameState.gameTimer.addSecs(60);
+      gameManager.soundManager.playSound(sounds.drink);
+      break;
+    case "health_vial":
+      gameManager.gameState.health += 0.5;
+      gameManager.soundManager.playSound(sounds.drink);
+      break;
+    case "health_potion":
+      gameManager.gameState.health += 1;
+      gameManager.soundManager.playSound(sounds.drink);
+      break;
+    case "health_potion_big":
+      gameManager.gameState.health += 2;
+      gameManager.soundManager.playSound(sounds.drink);
+      break;
+    case "empty":
+      if (gameManager.gameState.holding instanceof Bomb) {
+        gameManager.gameState.inventory.consumable =
+          gameManager.gameState.holding;
+        gameManager.gameState.holding = null;
+      }
+      break;
+  }
+  if (action.itemName != "empty") {
+    gameManager.gameState.inventory.consumable = consumableDic.empty;
+  }
+}
+
+/**
+ * Opens/closes the rule book, pausing the time tracker in condition
+ * @param gameManager
+ */
+function toggleBook(gameManager: GameManager) {
+  gameManager.gameState.inBook = !gameManager.gameState.inBook;
+  if (gameManager.gameState.inBook) {
+    timeTracker.pause();
+  } else if (!gameManager.gameState.paused && !gameManager.gameState.gameOver) {
+    timeTracker.unpause();
+  }
+}
+
+/**
+ * Sets the text description of the cursor's description object according to the action
+ * @param action
+ */
+function setItemDescription(action: ItemDescription) {
+  cursor.description.hidden = false;
+  cursor.description.side = action.side;
+  cursor.description.text = action.description;
+  cursor.description.fontSize = action.descFontSize;
+}
+
+/**
+ * Performs an enemy attack on the player
+ * @param gameManager
+ * @param action
+ * @returns
+ */
+function performEnemyAttack(gameManager: GameManager, action: EnemyAtack) {
+  if (!gameManager.gameState.battle) {
+    alert("this shouldn't happen outside of battle");
+    return;
+  }
+  action.enemy.attackAnimTimer.start();
+  timerQueue.push(action.enemy.attackAnimTimer);
+  let damage = action.damage;
+
+  const reflection = gameManager.gameState.battle!.reflection;
+  const leftoverReflection = Math.max(0, reflection - damage);
+  damage = Math.max(0, damage - reflection);
+
+  const defense = gameManager.gameState.battle.defense;
+  const leftoverDefense = Math.max(0, defense - damage);
+  damage = Math.max(0, damage - defense);
+
+  gameManager.gameState.health -= Math.max(0, damage);
+  action.enemy.health -= gameManager.gameState.battle!.reflection;
+
+  gameManager.gameState.battle!.reflection = leftoverReflection;
+  gameManager.gameState.battle.defense = leftoverDefense;
+
+  if (gameManager.gameState.health <= 0) {
+    if (inputState.mouse.heldLeft || inputState.mouse.heldRight) {
+      gameManager.gameState.heldWhileDeath = true;
+    }
+    gameManager.gameState.lose();
+  }
+  gameManager.levelManager.checkBattleEnd();
+}
+
+/**
+ * Ring bell functionality
+ * @param gameManager
+ */
+function ringBell(gameManager: GameManager) {
+  if (gameManager.gameState.currentScene == "battle") {
+    gameManager.levelManager.battleManager.stunEnemy(3);
+  }
+  gameManager.gameState.level.cave.bellRang = true;
+  gameManager.soundManager.playSound(sounds.bell);
+}
+
+/**
+ * Picks up or lets go of the Chisel item
+ */
+function pickupChisel(gameManager: GameManager, action: PickupChisel) {
+  if (gameManager.gameState.holding == null) {
+    gameManager.gameState.holding = action.chiselItem;
+  } else if (gameManager.gameState.holding instanceof Chisel) {
+    gameManager.gameState.holding = null;
+  }
+}
+
+/**
+ * Sets the current holding object as the bomb and empties the consumable slot
+ */
+function pickupBomb(gameManager: GameManager, action: PickupBomb) {
+  if (gameManager.gameState.holding == null) {
+    gameManager.gameState.holding = action.bombItem;
+    gameManager.gameState.inventory.consumable = consumableDic.empty;
+  }
+}
+
+/**
+ * Sells an item if on a shop
+ * @param gameState
+ * @param action
+ */
+function sellItem(gameManager: GameManager, action: SellItem) {
+  if (
+    gameManager.gameState.currentScene == "shop" &&
+    !["empty", "book", "picaxe", "flag"].includes(action.item.name)
+  ) {
+    if (action.item instanceof Weapon || action.item instanceof Shield) {
+      gameManager.soundManager.playSound(sounds.wrong);
+      return;
+    }
+    const inventory = gameManager.gameState.inventory;
+    if (action.item instanceof Armor) {
+      inventory.armor = armorDic.empty;
+    } else if (action.item instanceof Consumable) {
+      inventory.consumable = consumableDic.empty;
+    } else {
+      if (inventory.passive_1 == action.item) {
+        inventory.passive_1 = getItem("empty", new Position(4, 18 * 1));
+      }
+      if (inventory.passive_2 == action.item) {
+        inventory.passive_2 = getItem("empty", new Position(4, 18 * 2));
+      }
+      if (inventory.passive_3 == action.item) {
+        inventory.passive_3 = getItem("empty", new Position(4, 18 * 3));
+      }
+      if (inventory.passive_4 == action.item) {
+        inventory.passive_4 = getItem("empty", new Position(4, 18 * 4));
+      }
+      if (inventory.passive_5 == action.item) {
+        inventory.passive_5 = getItem("empty", new Position(4, 18 * 5));
+      }
+      if (inventory.passive_6 == action.item) {
+        inventory.passive_6 = getItem("empty", new Position(4, 18 * 6));
+      }
+    }
+    gameManager.gameState.gold += utils.randomInt(4, 1);
+    gameManager.soundManager.playSound(sounds.gold);
+  }
+}
+
+// Says if the cursor has changed or if there's an item description to show
 type actionResponse = "cursorChange" | "itemDescription" | void;
 
 /**
- * Series of consequences that are triggered with a given Action
+ * Routes an action to its handeling function
  * @param gameManager
  * @param action
  * @returns
@@ -194,114 +378,50 @@ function handleAction(
   gameManager: GameManager,
   action: Action | void | null
 ): actionResponse {
+  if (!action) {
+    return;
+  }
   if (action instanceof ChangeCursorState) {
     changeCursorState(action.newState);
     return "cursorChange";
   }
   if (action instanceof ConsumeItem) {
-    switch (action.itemName) {
-      case "time_potion":
-        gameManager.gameState.gameTimer.addSecs(60);
-        gameManager.soundManager.playSound(sounds.drink);
-        break;
-      case "health_vial":
-        gameManager.gameState.health += 0.5;
-        gameManager.soundManager.playSound(sounds.drink);
-        break;
-      case "health_potion":
-        gameManager.gameState.health += 1;
-        gameManager.soundManager.playSound(sounds.drink);
-        break;
-      case "health_potion_big":
-        gameManager.gameState.health += 2;
-        gameManager.soundManager.playSound(sounds.drink);
-        break;
-      case "empty":
-        if (gameManager.gameState.holding instanceof Bomb) {
-          gameManager.gameState.inventory.consumable =
-            gameManager.gameState.holding;
-          gameManager.gameState.holding = null;
-        }
-        break;
-    }
-    if (action.itemName != "empty") {
-      gameManager.gameState.inventory.consumable = consumableDic.empty;
-    }
+    consumeItem(gameManager, action);
     return;
   }
   if (action instanceof ToggleBook) {
-    gameManager.gameState.inBook = !gameManager.gameState.inBook;
-    if (gameManager.gameState.inBook) {
-      timeTracker.pause();
-    } else if (
-      !gameManager.gameState.paused &&
-      !gameManager.gameState.gameOver
-    ) {
-      timeTracker.unpause();
-    }
+    toggleBook(gameManager);
     return;
   }
   if (action instanceof ItemDescription) {
-    cursor.description.hidden = false;
-    cursor.description.side = action.side;
-    cursor.description.text = action.description;
-    cursor.description.fontSize = action.descFontSize;
+    setItemDescription(action);
     return "itemDescription";
   }
   if (action instanceof RestartGame) {
     gameManager.restart();
+    return;
   }
   if (action instanceof EnemyAtack) {
-    if (!gameManager.gameState.battle) {
-      alert("this shouldn't happen outside of battle");
-      return;
-    }
-    action.enemy.attackAnimTimer.start();
-    timerQueue.push(action.enemy.attackAnimTimer);
-    let damage = action.damage;
-
-    const reflection = gameManager.gameState.battle!.reflection;
-    const leftoverReflection = Math.max(0, reflection - damage);
-    damage = Math.max(0, damage - reflection);
-
-    const defense = gameManager.gameState.battle.defense;
-    const leftoverDefense = Math.max(0, defense - damage);
-    damage = Math.max(0, damage - defense);
-
-    gameManager.gameState.health -= Math.max(0, damage);
-    action.enemy.health -= gameManager.gameState.battle!.reflection;
-
-    gameManager.gameState.battle!.reflection = leftoverReflection;
-    gameManager.gameState.battle.defense = leftoverDefense;
-
-    if (gameManager.gameState.health <= 0) {
-      if (inputState.mouse.heldLeft || inputState.mouse.heldRight) {
-        gameManager.gameState.heldWhileDeath = true;
-      }
-      gameManager.gameState.lose();
-    }
-    gameManager.levelManager.checkBattleEnd();
+    performEnemyAttack(gameManager, action);
+    return;
   }
   if (action instanceof RingBell) {
-    if (gameManager.gameState.currentScene == "battle") {
-      gameManager.levelManager.battleManager.stunEnemy(3);
-    }
-    gameManager.gameState.level.cave.bellRang = true;
-    gameManager.soundManager.playSound(sounds.bell);
+    ringBell(gameManager);
+    return;
   }
   if (action instanceof PickupChisel) {
-    if (gameManager.gameState.holding == null) {
-      gameManager.gameState.holding = action.chiselItem;
-    } else if (gameManager.gameState.holding instanceof Chisel) {
-      gameManager.gameState.holding = null;
-    }
+    pickupChisel(gameManager, action);
+    return;
   }
   if (action instanceof PickupBomb) {
-    if (gameManager.gameState.holding == null) {
-      gameManager.gameState.holding = action.bombItem;
-      gameManager.gameState.inventory.consumable = consumableDic.empty;
-    }
+    pickupBomb(gameManager, action);
+    return;
   }
+  if (action instanceof SellItem) {
+    sellItem(gameManager, action);
+    return;
+  }
+  console.warn("unhandled action", action);
 }
 
 /**
@@ -331,7 +451,7 @@ function updateTimers(gameManager: GameManager) {
 }
 
 /**
- *
+ * Checks for actions with current input state and game state and handles them
  * @param renderScale
  * @param gameManager
  */
@@ -342,7 +462,6 @@ export default function updateGame(
   updateTimers(gameManager);
   cursor.pos.update(inputState.mouse.pos.divide(renderScale));
 
-  // Where I stopped commenting TO-DO: Finish comenting and remove this line
   const gameObjects = [
     gameManager.levelManager,
     ...Object.values(gameManager.gameState.inventory),
@@ -364,6 +483,7 @@ export default function updateGame(
         break;
     }
   });
+
   if (gameManager.gameState.holding != null) {
     if (gameManager.gameState.holding instanceof Bomb) {
       changeCursorState(CURSORBOMB);

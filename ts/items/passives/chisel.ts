@@ -1,5 +1,5 @@
-import { PickupChisel } from "../../action.js";
-import type { cursorClick } from "../../global.js";
+import { PickupChisel, SellItem } from "../../action.js";
+import { LEFT, type cursorClick } from "../../global.js";
 import Position from "../../position.js";
 import { GAMETIMERSYNC, Timer } from "../../timer/timer.js";
 import { Item } from "../item.js";
@@ -25,8 +25,12 @@ export class Chisel extends Item {
   }
 
   clickFunction = (cursorPos: Position, button: cursorClick) => {
-    if (!this.chiselTimer.inMotion) {
-      return new PickupChisel(this);
+    if (button == LEFT) {
+      if (!this.chiselTimer.inMotion) {
+        return new PickupChisel(this);
+      }
+    } else {
+      return new SellItem(this);
     }
   };
 
