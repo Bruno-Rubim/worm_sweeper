@@ -12,6 +12,7 @@ export default class SceneManager {
   soundManager: SoundManager;
 
   handleHover: (cursorPos: Position) => Action | void;
+  handleNotHover: () => Action | void;
   handleHeld: (
     cursorPos: Position,
     button: typeof CLICKRIGHT | typeof CLICKLEFT
@@ -33,6 +34,7 @@ export default class SceneManager {
     this.pos = scenePos;
     this.soundManager = soundManager;
     this.handleHover = () => {};
+    this.handleNotHover = () => {};
     this.handleHeld = () => {};
     this.handleClick = () => {};
     this.render = () => {};

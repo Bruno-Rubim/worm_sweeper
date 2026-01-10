@@ -1,4 +1,5 @@
 import {
+  Action,
   ChangeCursorState,
   ChangeScene,
   NextLevel,
@@ -118,11 +119,7 @@ export default class CaveManager extends SceneManager {
         );
 
         //Renders content
-        if (
-          // block.broken &&
-          block.content != CONTENTEMPTY ||
-          block.marked
-        ) {
+        if ((block.broken && block.content != CONTENTEMPTY) || block.marked) {
           canvasManager.renderSpriteFromSheet(
             sprites.block_sheet,
             blockPos,
@@ -413,5 +410,11 @@ export default class CaveManager extends SceneManager {
       return new ChangeCursorState(CURSORARROW);
     }
     return new ChangeCursorState(CURSORPICAXE);
+  };
+
+  handleNotHover = () => {
+    if (this.bomb?.hoverScreenPos) {
+      this.bomb = null;
+    }
   };
 }

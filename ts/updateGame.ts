@@ -84,6 +84,9 @@ export function handleMouseHover(objects: GameObject[]): Action | void {
   objects.forEach((obj) => {
     if (!obj.hitbox.positionInside(cursor.pos) || obj.hidden) {
       obj.mouseHovering = false;
+      if (obj.notHoverFunction) {
+        obj.notHoverFunction();
+      }
       return null;
     }
     obj.mouseHovering = true;
@@ -102,6 +105,24 @@ export function handleMouseHover(objects: GameObject[]): Action | void {
 }
 
 /**
+ * Runs through a series of gameObjects and calls their notHoverFunction
+ * @param objects
+ * @returns
+ */
+export function handleMouseNotHover(objects: GameObject[]) {
+  objects.forEach((obj) => {
+    if (!obj.hitbox.positionInside(cursor.pos) || obj.hidden) {
+      obj.mouseHovering = false;
+      if (obj.notHoverFunction) {
+        obj.notHoverFunction();
+      }
+      return null;
+    }
+  });
+  return;
+}
+
+/**
  * Runs through a series of gameObjects and calls their hoverFunction, clickFunction and heldFunction if the conditions meet and returns a series of actions
  * @param objects
  * @returns
@@ -113,6 +134,9 @@ function handleMouseInput(objects: GameObject[]): Action[] | void {
       obj.mouseHovering = false;
       obj.mouseHeldLeft = false;
       obj.mouseHeldRight = false;
+      if (obj.notHoverFunction) {
+        obj.notHoverFunction();
+      }
       return null;
     }
     obj.mouseHovering = true;

@@ -17,7 +17,11 @@ import Position from "../position.js";
 import type { SoundManager } from "../soundManager.js";
 import sounds from "../sounds.js";
 import { sprites } from "../sprites.js";
-import { handleMouseClick, handleMouseHover } from "../updateGame.js";
+import {
+  handleMouseClick,
+  handleMouseHover,
+  handleMouseNotHover,
+} from "../updateGame.js";
 import SceneManager from "./sceneManager.js";
 
 // Handles rendering and interactions with the shop scene of the current level
@@ -130,6 +134,13 @@ export default class ShopManager extends SceneManager {
       this.currentText =
         "Right click one of your items to sell for some change.";
     }
+    return action;
+  };
+
+  handleNotHover = () => {
+    let action: Action | void = handleMouseNotHover(
+      this.gameState.level.shop!.objects
+    );
     return action;
   };
 }

@@ -42,6 +42,11 @@ export default class GameObject {
    */
   hoverFunction: ((cursorPos: Position) => Action | void | null) | undefined;
 
+  /**
+   * Function for when the cursor is over it
+   */
+  notHoverFunction: (() => Action | void | null) | undefined;
+
   constructor(args: {
     sprite: Sprite;
     pos?: Position;
@@ -53,6 +58,7 @@ export default class GameObject {
     clickFunction?: (cursorPos: Position, button: cursorClick) => Action | void;
     heldFunction?: (cursorPos: Position, button: cursorClick) => Action | void;
     hoverFunction?: (cursorPos: Position) => Action | void;
+    notHoverFunction?: () => Action | void;
   }) {
     this.sprite = args.sprite;
     this.pos = args.pos ?? new Position();
@@ -68,6 +74,7 @@ export default class GameObject {
     this.clickFunction = args.clickFunction;
     this.heldFunction = args.heldFunction;
     this.hoverFunction = args.hoverFunction;
+    this.notHoverFunction = args.notHoverFunction;
     this.firstAnimationTic = timeTracker.currentGameTic;
   }
 
