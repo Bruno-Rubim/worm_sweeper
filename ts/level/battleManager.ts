@@ -181,6 +181,7 @@ export default class BattleManager extends SceneManager {
         this.gameState.battle!.enemies.splice(i, 1);
         if (this.gameState.hasItem("carving_knife")) {
           this.gameState.gold += 2;
+          this.soundManager.playSound(sounds.gold);
         }
       }
     });

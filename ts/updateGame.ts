@@ -274,7 +274,7 @@ function performEnemyAttack(gameManager: GameManager, action: EnemyAtack) {
   damage = Math.max(0, damage - defense);
 
   gameManager.gameState.health -= Math.max(0, damage);
-  action.enemy.health -= gameManager.gameState.battle!.reflection;
+  action.enemy.health -= reflection - leftoverReflection;
 
   gameManager.gameState.battle!.reflection = leftoverReflection;
   gameManager.gameState.battle.defense = leftoverDefense;
@@ -295,8 +295,9 @@ function performEnemyAttack(gameManager: GameManager, action: EnemyAtack) {
 function ringBell(gameManager: GameManager) {
   if (gameManager.gameState.currentScene == "battle") {
     gameManager.levelManager.battleManager.stunEnemy(3);
+  } else {
+    gameManager.gameState.level.cave.bellRang = true;
   }
-  gameManager.gameState.level.cave.bellRang = true;
   gameManager.soundManager.playSound(sounds.bell);
 }
 

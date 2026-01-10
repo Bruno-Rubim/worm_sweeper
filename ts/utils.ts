@@ -8,7 +8,7 @@ class Utils {
    * @returns
    */
   randomInt(max: number, min: number = 0) {
-    const r = Math.floor(Math.random() * max - min) + min;
+    const r = Math.floor(Math.random() * (max - min)) + min;
     return r;
   }
 

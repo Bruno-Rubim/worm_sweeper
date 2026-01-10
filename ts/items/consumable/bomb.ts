@@ -1,5 +1,5 @@
-import { PickupBomb } from "../../action.js";
-import type { cursorClick } from "../../global.js";
+import { PickupBomb, SellItem } from "../../action.js";
+import { LEFT, type cursorClick } from "../../global.js";
 import Position from "../../position.js";
 import { GAMETIMERSYNC, Timer } from "../../timer/timer.js";
 import { Consumable } from "./consumable.js";
@@ -22,6 +22,10 @@ export default class Bomb extends Consumable {
   }
 
   clickFunction = (cursorPos: Position, button: cursorClick) => {
-    return new PickupBomb(this);
+    if (button == LEFT) {
+      return new PickupBomb(this);
+    } else {
+      return new SellItem(this);
+    }
   };
 }
