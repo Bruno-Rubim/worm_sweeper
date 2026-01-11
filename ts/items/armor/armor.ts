@@ -6,6 +6,7 @@ export class Armor extends Item {
   defense: number;
   speed: number;
   reflection: number;
+  spikes: number;
 
   constructor(args: {
     spriteSheetPos: Position;
@@ -14,7 +15,8 @@ export class Armor extends Item {
     cost: number;
     defense?: number;
     speed?: number;
-    reflection?: 0;
+    reflection?: number;
+    spikes?: number;
   }) {
     args.defense = args.defense ?? 0;
     args.reflection = args.reflection ?? 0;
@@ -35,6 +37,7 @@ export class Armor extends Item {
     this.defense = args.defense;
     this.speed = args.speed ?? 0;
     this.reflection = args.reflection ?? 0;
+    this.spikes = args.spikes ?? 0;
     this.descriptionText =
       (this.defense > 0 ? "$dfsDefense: " + this.defense + "\n" : "") +
       (this.reflection > 0 ? "$refDefense: " + this.reflection + "\n" : "") +
@@ -49,9 +52,9 @@ export const armorDic = {
     spriteSheetPos: new Position(0, 2),
     name: "chainmail",
     shopName: "Chainmail",
-    cost: 40,
-    defense: 2,
-    speed: -1,
+    cost: 22,
+    defense: 1,
+    speed: -0.5,
   }),
   swift_vest: new Armor({
     spriteSheetPos: new Position(2, 2),
@@ -60,6 +63,14 @@ export const armorDic = {
     cost: 38,
     defense: 0,
     speed: 0.3,
+  }),
+  silver_chestplate: new Armor({
+    spriteSheetPos: new Position(4, 2),
+    name: "silver_chestplate",
+    shopName: "Silver Chestplate",
+    cost: 72,
+    defense: 5,
+    speed: -1,
   }),
   empty: new Armor({
     spriteSheetPos: new Position(14, 2),

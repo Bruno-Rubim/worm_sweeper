@@ -199,7 +199,8 @@ export class LevelManager extends GameObject {
             this.gameState.battle?.start(
               this.gameState.inventory.armor.defense +
                 (this.gameState.hasItem("safety_helmet") ? 1 : 0),
-              this.gameState.inventory.armor.reflection
+              this.gameState.inventory.armor.reflection,
+              this.gameState.inventory.armor.spikes
             );
             break;
           case "cave":

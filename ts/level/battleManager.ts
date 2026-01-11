@@ -76,14 +76,14 @@ export default class BattleManager extends SceneManager {
           CENTER
         );
       }
-      if (enemy.reflection > 0) {
-        // Render enemy reflection
-        const roundedReflection = Math.floor(enemy.reflection);
+      if (enemy.spikes > 0) {
+        // Render enemy spikes
+        const roundedReflection = Math.floor(enemy.spikes);
         canvasManager.renderText(
           "icons",
           enemy.pos.add(33, 73),
-          "$ref".repeat(roundedReflection) +
-            (enemy.reflection > roundedReflection ? "$hrf" : ""),
+          "$spk".repeat(roundedReflection) +
+            (enemy.spikes > roundedReflection ? "$hsp" : ""),
           CENTER
         );
       }
@@ -178,6 +178,26 @@ export default class BattleManager extends SceneManager {
         CENTER
       );
     }
+
+    // Rendering spikes
+    if (this.gameState.battle.spikes) {
+      const spikes = this.gameState.battle.spikes;
+      const roundedSpikes = Math.floor(spikes);
+      canvasManager.renderText(
+        "icons",
+        new Position(
+          GAMEWIDTH / 2,
+          GAMEHEIGHT -
+            BORDERTHICKBOTTOM -
+            (this.gameState.battle.defense + this.gameState.battle.reflection >
+            0
+              ? 20
+              : 11)
+        ),
+        "$spk".repeat(roundedSpikes) + (spikes > roundedSpikes ? "$hsp" : ""),
+        CENTER
+      );
+    }
   };
 
   /**
@@ -216,45 +236,44 @@ export default class BattleManager extends SceneManager {
     }
     const rId = utils.randomArrayId(this.gameState.battle.enemies);
     const enemy = this.gameState.battle.enemies[rId]!;
-    let damage = this.gameState.inventory.weapon.totalDamage;
+    const weapon = this.gameState.inventory.weapon;
+    let damage = weapon.totalDamage;
 
-    // Reflection
-    const enemyReflect = enemy.reflection;
-    const playerReflect = this.gameState.battle.reflection;
+    let enemySpikeDamage = enemy.spikes;
+    let reflectDamage = Math.min(
+      this.gameState.battle.reflection,
+      enemySpikeDamage
+    );
+    enemy.health -= reflectDamage;
+
+    this.gameState.battle.reflection -= reflectDamage;
+
     const playerDefense = this.gameState.battle.defense;
-    enemy.reflection = Math.max(0, enemyReflect - (playerReflect + damage));
+    enemySpikeDamage -= reflectDamage;
+    this.gameState.battle.defense = Math.max(
+      0,
+      playerDefense - enemySpikeDamage
+    );
+    enemySpikeDamage = Math.max(0, enemySpikeDamage - playerDefense);
 
-    let enemyRefDamage = Math.max(
-      0,
-      Math.min(damage, enemyReflect - playerReflect)
-    );
-    this.gameState.battle.reflection = Math.max(
-      0,
-      playerReflect - enemyReflect
-    );
-    damage = Math.max(0, damage - Math.max(0, enemyReflect - playerReflect));
+    this.gameState.health -= enemySpikeDamage;
+    enemy.spikes = 0;
 
     enemy.health -= damage;
-
-    const leftoverDefense = Math.max(0, playerDefense - enemyRefDamage);
-    enemyRefDamage = Math.max(0, enemyRefDamage - playerDefense);
-
-    this.gameState.health -= enemyRefDamage;
-    this.gameState.battle.defense = leftoverDefense;
-
     enemy.damagedTimer.start();
     timerQueue.push(enemy.damagedTimer);
 
+    // Spikes
+    this.gameState.battle.spikes += weapon.spikes;
+
     // Weapon animation
-    this.gameState.attackAnimationTimer.goalSecs =
-      this.gameState.inventory.weapon.cooldown / 3;
+    this.gameState.attackAnimationTimer.goalSecs = weapon.cooldown / 3;
     this.gameState.attackAnimationTimer.start();
 
     // Cooldown
     const tiredTimer = this.gameState.tiredTimer;
     tiredTimer.goalSecs =
-      this.gameState.inventory.weapon.cooldown -
-      this.gameState.inventory.armor.speed;
+      weapon.cooldown - this.gameState.inventory.armor.speed;
     tiredTimer.start();
     return this.checkBattleEnd();
   }
@@ -272,6 +291,7 @@ export default class BattleManager extends SceneManager {
     this.gameState.battle.defense += this.gameState.inventory.shield.defense;
     this.gameState.battle.reflection +=
       this.gameState.inventory.shield.reflection;
+    this.gameState.battle.spikes += this.gameState.inventory.shield.spikes;
 
     // Defense animation
     this.gameState.defenseAnimationTimer.goalSecs =
