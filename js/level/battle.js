@@ -5,6 +5,7 @@ export class Battle {
     enemies;
     defense = 0;
     reflection = 0;
+    spikes = 0;
     constructor(depth, enemyCount) {
         this.enemies = [];
         let arr = [
@@ -16,9 +17,10 @@ export class Battle {
         depth > 2 ? (depth > 4 ? (x = 2) : (x = 1)) : (x = 0);
         this.enemies.push(arr[Math.min(x, utils.randomArrayId(arr))]);
     }
-    start(armorDefense, armorReflection) {
-        this.defense = armorDefense;
-        this.reflection = armorReflection;
+    start(initialDefense, initialReflection, initialSpikes) {
+        this.defense = initialDefense;
+        this.reflection = initialReflection;
+        this.spikes = initialSpikes;
         this.enemies.forEach((e) => {
             e.cooldownTimer.start();
             timerQueue.push(e.cooldownTimer, e.attackAnimTimer, e.damagedTimer);

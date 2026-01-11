@@ -5,6 +5,7 @@ import { Item } from ".././item.js";
 export class Weapon extends Item {
     bigSprite;
     damage;
+    spikes;
     cooldown;
     constructor(args) {
         super({
@@ -14,6 +15,7 @@ export class Weapon extends Item {
         });
         this.bigSprite = args.bigSprite;
         this.damage = args.damage;
+        this.spikes = args.spikes ?? 0;
         this.cooldown = args.cooldown;
         this.descFontSize = 0.6;
     }

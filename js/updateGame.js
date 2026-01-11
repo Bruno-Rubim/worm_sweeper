@@ -202,18 +202,20 @@ function performEnemyAttack(gameManager, action) {
     action.enemy.attackAnimTimer.start();
     timerQueue.push(action.enemy.attackAnimTimer);
     let damage = action.damage;
-    const enemyReflect = action.enemy.reflection;
+    if (damage > 0) {
+        action.enemy.health -= gameManager.gameState.battle.spikes;
+        gameManager.gameState.battle.spikes = 0;
+    }
     const playerReflect = gameManager.gameState.battle.reflection;
+    const reflectDamage = Math.min(playerReflect, damage);
+    action.enemy.health -= reflectDamage;
+    damage -= reflectDamage;
+    gameManager.gameState.battle.reflection -= reflectDamage;
     const playerDefense = gameManager.gameState.battle.defense;
-    action.enemy.reflection = Math.max(0, enemyReflect - playerReflect);
-    const playerRefDamage = Math.max(0, Math.min(damage, playerReflect - enemyReflect));
-    gameManager.gameState.battle.reflection = Math.max(0, playerReflect - (enemyReflect + damage));
-    damage = Math.max(0, damage - Math.max(0, playerReflect - enemyReflect));
     const leftoverDefense = Math.max(0, playerDefense - damage);
-    action.enemy.health -= playerRefDamage;
     damage = Math.max(0, damage - playerDefense);
-    gameManager.gameState.health -= Math.max(0, damage);
     gameManager.gameState.battle.defense = leftoverDefense;
+    gameManager.gameState.health -= Math.max(0, damage);
     gameManager.levelManager.checkBattleEnd();
 }
 function ringBell(gameManager) {

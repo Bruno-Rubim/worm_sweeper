@@ -1152,6 +1152,10 @@ export const fontMaps = {
                 pos: new Position(5, 1),
                 width: 9,
             },
+            $spk: {
+                pos: new Position(6, 1),
+                width: 9,
+            },
             $hhr: {
                 pos: new Position(0, 2),
                 width: 9,
@@ -1162,6 +1166,10 @@ export const fontMaps = {
             },
             $hrf: {
                 pos: new Position(5, 2),
+                width: 9,
+            },
+            $hsp: {
+                pos: new Position(6, 2),
                 width: 9,
             },
             " ": {
