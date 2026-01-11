@@ -65,7 +65,7 @@ export default class GameState {
     weapon: weaponDic.wood_sword,
     shield: shieldDic.wood_shield,
     armor: armorDic.empty,
-    consumable: consumableDic.bomb,
+    consumable: consumableDic.empty,
     passive_1: getItem("empty", new Position(4, 18 * 1)),
     passive_2: getItem("empty", new Position(4, 18 * 2)),
     passive_3: getItem("empty", new Position(4, 18 * 3)),
