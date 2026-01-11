@@ -182,25 +182,27 @@ export default class CanvasManager {
   ) {
     const fontMap = fontMaps[font]!;
     const words = text.split(" ");
-    let lineWidth = 0;
+    let currentLineWidth = 0;
     words.forEach((word, i) => {
       if (word.includes("\n")) {
         const breakWords = word.split("\n");
         const firstWidth = measureTextWidth(font, breakWords[0]!) * fontSize;
         const lastWidth =
           measureTextWidth(font, utils.lastOfArray(breakWords)) * fontSize;
-        if (lineWidth + firstWidth > limitWidth) {
+        if (currentLineWidth + firstWidth > limitWidth) {
           words[i] = "\n" + words[i];
         }
-        lineWidth = lastWidth;
+        currentLineWidth = lastWidth;
         return;
       }
       const wordWidth = measureTextWidth(font, word) * fontSize;
-      if (lineWidth + wordWidth > limitWidth) {
+      if (currentLineWidth + wordWidth > limitWidth) {
         words[i] = "\n" + words[i];
-        lineWidth = wordWidth;
+        currentLineWidth =
+          wordWidth + (fontMap.charMaps[" "]?.width ?? 0) * fontSize;
       } else {
-        lineWidth += wordWidth + (fontMap.charMaps[" "]?.width ?? 0) * fontSize;
+        currentLineWidth +=
+          wordWidth + (fontMap.charMaps[" "]?.width ?? 0) * fontSize;
       }
     });
 
@@ -273,13 +275,10 @@ export default class CanvasManager {
     pos: Position,
     boxSpriteWidth: number,
     boxSpriteHeight: number,
-    renderWidth: number,
-    renderHeight: number,
+    bodyWidth: number,
+    bodyHeight: number,
     scale: number = 1
   ) {
-    const bodyWidth = renderWidth - boxSpriteWidth * 2 * scale;
-    const bodyHeight = renderHeight - boxSpriteHeight * 2 * scale;
-
     // Top left corner
     this.renderSpriteFromSheet(
       spriteSheet,

@@ -28,6 +28,17 @@ class Utils {
   }
 
   /**
+   * Logs something if a given condition is met
+   * @param con
+   * @param thing
+   */
+  conLog(con: boolean, thing: any) {
+    if (con) {
+      console.log(thing);
+    }
+  }
+
+  /**
    * Gets a random id from any array
    * @param arr
    * @returns

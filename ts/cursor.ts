@@ -1,4 +1,5 @@
 import type CanvasManager from "./canvasManager.js";
+import { measureTextBoxHeight } from "./fontMaps.js";
 import GameObject from "./gameObject.js";
 import { RIGHT, type LEFT } from "./global.js";
 import { inputState } from "./inputState.js";
@@ -34,13 +35,14 @@ export type cursorState = keyof typeof cursorSheetPos;
 class Description extends GameObject {
   side: typeof RIGHT | typeof LEFT = RIGHT;
   text: string = "";
+  renderScale: number = 0.4;
   fontSize: number = 0.4;
 
   constructor(cursorPos: Position) {
     super({
       sprite: sprites.description_box,
       pos: cursorPos,
-      width: 66,
+      width: 56,
       height: 14,
     });
   }
@@ -49,21 +51,28 @@ class Description extends GameObject {
     if (this.hidden) {
       return;
     }
+    const padding = 4 * this.renderScale;
     canvasManager.renderBox(
       sprites.description_box_sheet,
-      this.pos.add(this.side == RIGHT ? -59 : 15, 6),
+      this.pos.add(this.side == RIGHT ? -59 : 15, 0),
       3,
       3,
       this.width,
-      this.height,
-      0.4
+      measureTextBoxHeight(
+        "description",
+        this.text,
+        this.width,
+        this.fontSize
+      ) +
+        3 * this.renderScale,
+      this.renderScale
     );
     canvasManager.renderText(
       "description",
-      this.pos.add(this.side == RIGHT ? -57 : 17, 8),
+      this.pos.add((this.side == RIGHT ? -59 : 15) + padding, padding),
       this.text,
       RIGHT,
-      this.width - 3,
+      this.width,
       this.fontSize
     );
   }
