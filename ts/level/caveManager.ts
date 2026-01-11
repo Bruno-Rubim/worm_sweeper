@@ -1,4 +1,5 @@
 import {
+  Action,
   ChangeCursorState,
   ChangeScene,
   NextLevel,
@@ -92,6 +93,7 @@ export default class CaveManager extends SceneManager {
           this.pos
         );
         const block = this.gameState.level.cave.blockMatrix[i]![j]!;
+        // Renders all block as hidden when game hasn't started
         if (!this.gameState.level.cave.started) {
           canvasManager.renderSpriteFromSheet(
             sprites.block_sheet,
@@ -104,6 +106,8 @@ export default class CaveManager extends SceneManager {
           );
           continue;
         }
+
+        //Renders block
         canvasManager.renderSpriteFromSheet(
           sprites.block_sheet,
           blockPos,
@@ -406,5 +410,11 @@ export default class CaveManager extends SceneManager {
       return new ChangeCursorState(CURSORARROW);
     }
     return new ChangeCursorState(CURSORPICAXE);
+  };
+
+  handleNotHover = () => {
+    if (this.bomb?.hoverScreenPos) {
+      this.bomb = null;
+    }
   };
 }

@@ -22,6 +22,7 @@ import { sprites } from "../sprites.js";
 import { Timer } from "../timer/timer.js";
 import { timerQueue } from "../timer/timerQueue.js";
 import timeTracker from "../timer/timeTracker.js";
+import { checkPlayerDead } from "../updateGame.js";
 import { utils } from "../utils.js";
 import SceneManager from "./sceneManager.js";
 
@@ -65,6 +66,7 @@ export default class BattleManager extends SceneManager {
         )
       );
       if (enemy.health > 0) {
+        // Render enemy health
         const roundedHealth = Math.floor(enemy.health);
         canvasManager.renderText(
           "icons",
@@ -74,7 +76,19 @@ export default class BattleManager extends SceneManager {
           CENTER
         );
       }
+      if (enemy.reflection > 0) {
+        // Render enemy reflection
+        const roundedReflection = Math.floor(enemy.reflection);
+        canvasManager.renderText(
+          "icons",
+          enemy.pos.add(33, 73),
+          "$ref".repeat(roundedReflection) +
+            (enemy.reflection > roundedReflection ? "$hrf" : ""),
+          CENTER
+        );
+      }
       if (this.stunTicStart != null) {
+        // Render stun animation
         canvasManager.renderAnimationFrame(
           sprites.stun_sprite_sheet,
           enemy.pos.add(enemy.stunSpriteShift),
@@ -167,7 +181,7 @@ export default class BattleManager extends SceneManager {
   };
 
   /**
-   * Checks if enemies are dead, changing to cave scene if so
+   * Checks if enemies or player are dead, changing to cave scene if so
    * @returns
    */
   checkBattleEnd() {
@@ -181,9 +195,11 @@ export default class BattleManager extends SceneManager {
         this.gameState.battle!.enemies.splice(i, 1);
         if (this.gameState.hasItem("carving_knife")) {
           this.gameState.gold += 2;
+          this.soundManager.playSound(sounds.gold);
         }
       }
     });
+    checkPlayerDead(this.gameState);
     if (this.gameState.battle.enemies.length <= 0) {
       return new ChangeScene("cave");
     }
@@ -198,11 +214,34 @@ export default class BattleManager extends SceneManager {
       alert("this shouldn't happen outside of battle");
       return;
     }
-    // Enemy damage
     const rId = utils.randomArrayId(this.gameState.battle.enemies);
     const enemy = this.gameState.battle.enemies[rId]!;
     let damage = this.gameState.inventory.weapon.totalDamage;
+
+    // Reflection
+    const enemyReflect = enemy.reflection;
+    const playerReflect = this.gameState.battle.reflection;
+    const playerDefense = this.gameState.battle.defense;
+    enemy.reflection = Math.max(0, enemyReflect - (playerReflect + damage));
+
+    let enemyRefDamage = Math.max(
+      0,
+      Math.min(damage, enemyReflect - playerReflect)
+    );
+    this.gameState.battle.reflection = Math.max(
+      0,
+      playerReflect - enemyReflect
+    );
+    damage = Math.max(0, damage - Math.max(0, enemyReflect - playerReflect));
+
     enemy.health -= damage;
+
+    const leftoverDefense = Math.max(0, playerDefense - enemyRefDamage);
+    enemyRefDamage = Math.max(0, enemyRefDamage - playerDefense);
+
+    this.gameState.health -= enemyRefDamage;
+    this.gameState.battle.defense = leftoverDefense;
+
     enemy.damagedTimer.start();
     timerQueue.push(enemy.damagedTimer);
 

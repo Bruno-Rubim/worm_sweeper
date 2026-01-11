@@ -8,7 +8,7 @@ class Utils {
    * @returns
    */
   randomInt(max: number, min: number = 0) {
-    const r = Math.floor(Math.random() * max + min) + min;
+    const r = Math.floor(Math.random() * (max - min)) + min;
     return r;
   }
 
@@ -25,6 +25,17 @@ class Utils {
     }
     console.log(text);
     logDict[text] = true;
+  }
+
+  /**
+   * Logs something if a given condition is met
+   * @param con
+   * @param thing
+   */
+  conLog(con: boolean, thing: any) {
+    if (con) {
+      console.log(thing);
+    }
   }
 
   /**

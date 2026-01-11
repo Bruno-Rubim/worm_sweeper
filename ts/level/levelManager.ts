@@ -280,6 +280,16 @@ export class LevelManager extends GameObject {
   };
 
   /**
+   * Overwrites the sceneManager's hover action if it meets certain conditions to change cursor
+   * @param cursorPos
+   * @returns
+   */
+  notHoverFunction = () => {
+    let action = this.currentSceneManager.handleNotHover();
+    return action;
+  };
+
+  /**
    * handles the currentSceneManager's click Action
    * @param cursorPos
    * @param button

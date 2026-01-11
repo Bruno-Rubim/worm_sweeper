@@ -1,6 +1,6 @@
 import { timerQueue } from "../timer/timerQueue.js";
 import { utils } from "../utils.js";
-import { Enemy, ScaleWorm, Worm } from "./enemy.js";
+import { Enemy, PosionWorm, ScaleWorm, Worm } from "./enemy.js";
 
 export class Battle {
   enemies: Enemy[];
@@ -9,8 +9,14 @@ export class Battle {
 
   constructor(depth: number, enemyCount: number) {
     this.enemies = [];
-    let arr: Enemy[] = [new Worm(depth), new ScaleWorm(depth)];
-    let x = depth > 2 ? 1 : 0;
+    let arr: Enemy[] = [
+      new Worm(depth),
+      new ScaleWorm(depth),
+      new PosionWorm(depth),
+    ];
+    let x;
+    depth > 2 ? (depth > 4 ? (x = 2) : (x = 1)) : (x = 0);
+
     this.enemies.push(arr[Math.min(x, utils.randomArrayId(arr))]!);
   }
   start(armorDefense: number, armorReflection: number) {

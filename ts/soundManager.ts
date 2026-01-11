@@ -45,12 +45,6 @@ export class SoundManager {
     }
   }
 
-  play() {
-    for (const i in this.activeSounds) {
-      this.activeSounds[i]!.play();
-    }
-  }
-
   playMusic(sound: Sound) {
     const cloneAudio = sound.audio.cloneNode(true) as HTMLAudioElement;
     cloneAudio.currentTime = 0;

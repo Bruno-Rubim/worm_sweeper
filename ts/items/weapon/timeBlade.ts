@@ -12,7 +12,7 @@ export default class TimeBlade extends Weapon {
       bigSprite: sprites.big_time_blade,
       name: "time_blade",
       shopName: "Time Blade",
-      cost: 56,
+      cost: 52,
       damage: 1,
       cooldown: 2.8,
     });
@@ -28,11 +28,11 @@ export default class TimeBlade extends Weapon {
       "\n$spdCooldown: " +
       this.cooldown +
       "s" +
-      "\n1 Damage per minute left."
+      "\n1 Damage for every 100 seconds left."
     );
   }
 
   get totalDamage() {
-    return Math.floor((this.gameTimer.secondsRemaining / 60) * 2) / 2;
+    return Math.floor((this.gameTimer.secondsRemaining / 100) * 2) / 2;
   }
 }

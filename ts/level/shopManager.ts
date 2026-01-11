@@ -1,4 +1,4 @@
-import { BuyShopItem } from "../action.js";
+import { Action, BuyShopItem, ShopItemDescription } from "../action.js";
 import type CanvasManager from "../canvasManager.js";
 import type GameState from "../gameState.js";
 import {
@@ -17,11 +17,17 @@ import Position from "../position.js";
 import type { SoundManager } from "../soundManager.js";
 import sounds from "../sounds.js";
 import { sprites } from "../sprites.js";
-import { handleMouseClick, handleMouseHover } from "../updateGame.js";
+import {
+  handleMouseClick,
+  handleMouseHover,
+  handleMouseNotHover,
+} from "../updateGame.js";
 import SceneManager from "./sceneManager.js";
 
 // Handles rendering and interactions with the shop scene of the current level
 export default class ShopManager extends SceneManager {
+  currentText: string = "";
+
   constructor(
     gameState: GameState,
     scenePos: Position,
@@ -46,6 +52,14 @@ export default class ShopManager extends SceneManager {
         obj.render(canvasManager);
       }
     });
+    canvasManager.renderText(
+      "shop_description",
+      new Position(27, 95),
+      this.currentText,
+      "right",
+      120,
+      0.8
+    );
   };
 
   handleClick = () => {
@@ -110,6 +124,23 @@ export default class ShopManager extends SceneManager {
   };
 
   handleHover = (cursorPos: Position) => {
-    return handleMouseHover(this.gameState.level.shop!.objects);
+    let action: Action | void = handleMouseHover(
+      this.gameState.level.shop!.objects
+    );
+    if (action instanceof ShopItemDescription) {
+      this.currentText = action.description;
+      return;
+    } else {
+      this.currentText =
+        "Right click one of your items to sell for some change.";
+    }
+    return action;
+  };
+
+  handleNotHover = () => {
+    let action: Action | void = handleMouseNotHover(
+      this.gameState.level.shop!.objects
+    );
+    return action;
   };
 }
