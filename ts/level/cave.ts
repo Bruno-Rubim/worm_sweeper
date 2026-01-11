@@ -188,8 +188,13 @@ export default class Cave {
       } else {
         this.wormsLeft--;
       }
+    } else {
+      if (block.marked) {
+        block.marked = false;
+        this.wormsLeft++;
+      }
     }
-    block.broken = true;
+    this.breakBlock(block);
     this.getSurrBlocks(block.gridPos).forEach((b) => {
       if (b.content == CONTENTWORM) {
         b.content = CONTENTEMPTY;
