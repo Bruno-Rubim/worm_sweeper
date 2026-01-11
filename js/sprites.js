@@ -51,6 +51,7 @@ export const sprites = {
     item_sheet: new Sprite("item_sheet"),
     item_potion_time_pointer_hour: new Sprite("item_potion_time_pointer_hour"),
     item_potion_time_pointer_minute: new Sprite("item_potion_time_pointer_minute"),
+    letters_book: new Sprite("letters_book"),
     letters_shop_description: new Sprite("letters_shop_description"),
     letters_description: new Sprite("letters_description"),
     number_sheet: new Sprite("number_sheet"),

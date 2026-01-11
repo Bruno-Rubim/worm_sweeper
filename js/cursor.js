@@ -12,6 +12,7 @@ export const CURSORBATTLE = "cursor_battle";
 export const CURSORBOMB = "cursor_bomb";
 export const CURSORGOLDWATER = "cursor_gold_water";
 export const CURSORCHISEL = "cursor_chisel";
+export const CURSORBOOK = "cursor_book";
 export const CURSORNONE = "cursor_none";
 const cursorSheetPos = {
     [CURSORDEFAULT]: new Position(0, 0),
@@ -22,6 +23,7 @@ const cursorSheetPos = {
     [CURSORBOMB]: new Position(5, 0),
     [CURSORGOLDWATER]: new Position(6, 0),
     [CURSORCHISEL]: new Position(7, 0),
+    [CURSORBOOK]: new Position(0, 3),
     [CURSORNONE]: new Position(6, 3),
 };
 class Description extends GameObject {

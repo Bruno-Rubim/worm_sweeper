@@ -121,7 +121,7 @@ export default class BattleManager extends SceneManager {
         this.gameState.attackAnimationTimer.start();
         const tiredTimer = this.gameState.tiredTimer;
         tiredTimer.goalSecs =
-            weapon.cooldown - this.gameState.inventory.armor.speed;
+            weapon.cooldown * this.gameState.inventory.armor.speedMult;
         tiredTimer.start();
         return this.checkBattleEnd();
     }
@@ -130,17 +130,15 @@ export default class BattleManager extends SceneManager {
             alert("this shouldn't happen outside of battle");
             return;
         }
-        this.gameState.battle.defense += this.gameState.inventory.shield.defense;
-        this.gameState.battle.reflection +=
-            this.gameState.inventory.shield.reflection;
-        this.gameState.battle.spikes += this.gameState.inventory.shield.spikes;
-        this.gameState.defenseAnimationTimer.goalSecs =
-            this.gameState.inventory.shield.cooldown / 3;
+        const shield = this.gameState.inventory.shield;
+        this.gameState.battle.defense += shield.defense;
+        this.gameState.battle.reflection += shield.reflection;
+        this.gameState.battle.spikes += shield.spikes;
+        this.gameState.defenseAnimationTimer.goalSecs = shield.cooldown / 3;
         this.gameState.defenseAnimationTimer.start();
         const tiredTimer = this.gameState.tiredTimer;
         tiredTimer.goalSecs =
-            this.gameState.inventory.shield.cooldown -
-                this.gameState.inventory.armor.speed;
+            shield.cooldown * this.gameState.inventory.armor.speedMult;
         tiredTimer.start();
     }
     bomb() {
@@ -155,7 +153,8 @@ export default class BattleManager extends SceneManager {
         enemy.health -= 5;
         enemy.damagedTimer.start();
         timerQueue.push(enemy.damagedTimer);
-        tiredTimer.goalSecs = 2 - this.gameState.inventory.armor.speed;
+        tiredTimer.goalSecs = 2 - 2 * this.gameState.inventory.armor.speedMult;
+        tiredTimer.goalSecs = 2 - this.gameState.inventory.armor.speedMult;
         tiredTimer.start();
         return this.checkBattleEnd();
     }

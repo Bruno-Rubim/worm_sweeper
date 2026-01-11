@@ -1,9 +1,9 @@
 import CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
 import Position from "../position.js";
-import { BORDERTHICKLEFT, BORDERTHICKTOP, CLICKLEFT, CLICKRIGHT, } from "../global.js";
+import { BORDERTHICKLEFT, BORDERTHICKTOP, CLICKLEFT, CLICKRIGHT, RIGHT, } from "../global.js";
 import { Action, ChangeCursorState, ChangeScene, NextLevel, RestartGame, StartBattle, } from "../action.js";
-import { CURSORDEFAULT, CURSORNONE } from "../cursor.js";
+import { CURSORBOOK, CURSORDEFAULT, CURSORNONE } from "../cursor.js";
 import { sprites } from "../sprites.js";
 import timeTracker from "../timer/timeTracker.js";
 import { Timer } from "../timer/timer.js";
@@ -13,6 +13,7 @@ import BattleManager from "./battleManager.js";
 import ShopManager from "./shopManager.js";
 import { Battle } from "./battle.js";
 import sounds from "../sounds.js";
+import { bookPages } from "../bookPages.js";
 const transitionObject = new GameObject({
     sprite: sprites.scene_transition,
     height: 128,
@@ -61,6 +62,9 @@ export class LevelManager extends GameObject {
     render(canvasManager) {
         if (this.gameState.inBook) {
             canvasManager.renderSprite(sprites.bg_rules, this.pos, this.width, this.height);
+            const fontSize = 0.6;
+            const padding = 10 * fontSize;
+            canvasManager.renderText("book", this.pos.add(padding, padding), bookPages[this.gameState.bookPage], RIGHT, this.width - padding * 2, fontSize);
             return;
         }
         if (this.gameState.paused) {
@@ -158,16 +162,16 @@ export class LevelManager extends GameObject {
         }
     }
     hoverFunction = (cursorPos) => {
-        let action = this.currentSceneManager.handleHover(cursorPos);
+        if (this.gameState.inBook) {
+            return new ChangeCursorState(CURSORBOOK);
+        }
         if (this.gameState.inTransition) {
-            action = new ChangeCursorState(CURSORNONE);
+            return new ChangeCursorState(CURSORNONE);
         }
-        if (this.gameState.inBook ||
-            this.gameState.gameOver ||
-            this.gameState.paused) {
-            action = new ChangeCursorState(CURSORDEFAULT);
+        if (this.gameState.gameOver || this.gameState.paused) {
+            return new ChangeCursorState(CURSORDEFAULT);
         }
-        return action;
+        return this.currentSceneManager.handleHover(cursorPos);
     };
     notHoverFunction = () => {
         let action = this.currentSceneManager.handleNotHover();
@@ -175,6 +179,15 @@ export class LevelManager extends GameObject {
     };
     clickFunction = (cursorPos, button) => {
         if (this.gameState.paused) {
+            return;
+        }
+        if (this.gameState.inBook) {
+            if (button == CLICKLEFT) {
+                this.gameState.bookPage = Math.min(bookPages.length - 1, this.gameState.bookPage + 1);
+            }
+            else {
+                this.gameState.bookPage = Math.max(0, this.gameState.bookPage - 1);
+            }
             return;
         }
         if (this.gameState.gameOver) {
