@@ -273,7 +273,7 @@ export default class BattleManager extends SceneManager {
     // Cooldown
     const tiredTimer = this.gameState.tiredTimer;
     tiredTimer.goalSecs =
-      weapon.cooldown - this.gameState.inventory.armor.speed;
+      weapon.cooldown * this.gameState.inventory.armor.speedMult;
     tiredTimer.start();
     return this.checkBattleEnd();
   }
@@ -287,22 +287,21 @@ export default class BattleManager extends SceneManager {
       alert("this shouldn't happen outside of battle");
       return;
     }
+    const shield = this.gameState.inventory.shield;
+
     // Setting defense stats
-    this.gameState.battle.defense += this.gameState.inventory.shield.defense;
-    this.gameState.battle.reflection +=
-      this.gameState.inventory.shield.reflection;
-    this.gameState.battle.spikes += this.gameState.inventory.shield.spikes;
+    this.gameState.battle.defense += shield.defense;
+    this.gameState.battle.reflection += shield.reflection;
+    this.gameState.battle.spikes += shield.spikes;
 
     // Defense animation
-    this.gameState.defenseAnimationTimer.goalSecs =
-      this.gameState.inventory.shield.cooldown / 3;
+    this.gameState.defenseAnimationTimer.goalSecs = shield.cooldown / 3;
     this.gameState.defenseAnimationTimer.start();
 
     // Cooldown
     const tiredTimer = this.gameState.tiredTimer;
     tiredTimer.goalSecs =
-      this.gameState.inventory.shield.cooldown -
-      this.gameState.inventory.armor.speed;
+      shield.cooldown * this.gameState.inventory.armor.speedMult;
     tiredTimer.start();
   }
 
@@ -322,7 +321,8 @@ export default class BattleManager extends SceneManager {
     enemy.health -= 5;
     enemy.damagedTimer.start();
     timerQueue.push(enemy.damagedTimer);
-    tiredTimer.goalSecs = 2 - this.gameState.inventory.armor.speed;
+    tiredTimer.goalSecs = 2 - 2 * this.gameState.inventory.armor.speedMult;
+    tiredTimer.goalSecs = 2 - this.gameState.inventory.armor.speedMult;
     tiredTimer.start();
     return this.checkBattleEnd();
   }

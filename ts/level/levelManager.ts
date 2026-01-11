@@ -119,7 +119,6 @@ export class LevelManager extends GameObject {
       );
       const fontSize = 0.6;
       const padding = 10 * fontSize;
-      console.log();
       canvasManager.renderText(
         "book",
         this.pos.add(padding, padding),

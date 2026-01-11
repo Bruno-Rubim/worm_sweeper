@@ -239,6 +239,10 @@ export const fontMaps: Record<string, fontMap> = {
         pos: new Position(11, 3),
         width: 6,
       },
+      "%": {
+        pos: new Position(12, 3),
+        width: 7,
+      },
       0: {
         pos: new Position(0, 4),
         width: 6,
@@ -526,6 +530,10 @@ export const fontMaps: Record<string, fontMap> = {
         pos: new Position(11, 3),
         width: 6,
       },
+      "%": {
+        pos: new Position(12, 3),
+        width: 7,
+      },
       0: {
         pos: new Position(0, 4),
         width: 6,
@@ -812,6 +820,10 @@ export const fontMaps: Record<string, fontMap> = {
       z: {
         pos: new Position(11, 3),
         width: 6,
+      },
+      "%": {
+        pos: new Position(12, 3),
+        width: 7,
       },
       0: {
         pos: new Position(0, 4),
