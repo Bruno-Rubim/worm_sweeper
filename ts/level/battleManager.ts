@@ -76,14 +76,14 @@ export default class BattleManager extends SceneManager {
           CENTER
         );
       }
-      if (enemy.reflection > 0) {
-        // Render enemy reflection
-        const roundedReflection = Math.floor(enemy.reflection);
+      if (enemy.spikes > 0) {
+        // Render enemy spikes
+        const roundedReflection = Math.floor(enemy.spikes);
         canvasManager.renderText(
           "icons",
           enemy.pos.add(33, 73),
-          "$ref".repeat(roundedReflection) +
-            (enemy.reflection > roundedReflection ? "$hrf" : ""),
+          "$spk".repeat(roundedReflection) +
+            (enemy.spikes > roundedReflection ? "$hsp" : ""),
           CENTER
         );
       }
@@ -218,30 +218,27 @@ export default class BattleManager extends SceneManager {
     const enemy = this.gameState.battle.enemies[rId]!;
     let damage = this.gameState.inventory.weapon.totalDamage;
 
-    // Reflection
-    const enemyReflect = enemy.reflection;
-    const playerReflect = this.gameState.battle.reflection;
-    const playerDefense = this.gameState.battle.defense;
-    enemy.reflection = Math.max(0, enemyReflect - (playerReflect + damage));
+    let enemySpikeDamage = enemy.spikes;
+    let reflectDamage = Math.min(
+      this.gameState.battle.reflection,
+      enemySpikeDamage
+    );
+    enemy.health -= reflectDamage;
 
-    let enemyRefDamage = Math.max(
+    this.gameState.battle.reflection -= reflectDamage;
+
+    const playerDefense = this.gameState.battle.defense;
+    enemySpikeDamage -= reflectDamage;
+    this.gameState.battle.defense = Math.max(
       0,
-      Math.min(damage, enemyReflect - playerReflect)
+      playerDefense - enemySpikeDamage
     );
-    this.gameState.battle.reflection = Math.max(
-      0,
-      playerReflect - enemyReflect
-    );
-    damage = Math.max(0, damage - Math.max(0, enemyReflect - playerReflect));
+    enemySpikeDamage = Math.max(0, enemySpikeDamage - playerDefense);
+
+    this.gameState.health -= enemySpikeDamage;
+    enemy.spikes = 0;
 
     enemy.health -= damage;
-
-    const leftoverDefense = Math.max(0, playerDefense - enemyRefDamage);
-    enemyRefDamage = Math.max(0, enemyRefDamage - playerDefense);
-
-    this.gameState.health -= enemyRefDamage;
-    this.gameState.battle.defense = leftoverDefense;
-
     enemy.damagedTimer.start();
     timerQueue.push(enemy.damagedTimer);
 

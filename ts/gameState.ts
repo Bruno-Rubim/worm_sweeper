@@ -63,7 +63,7 @@ export default class GameState {
     flag: getItem("flag", new Position(GAMEWIDTH - 20, 109)),
     book: getItem("book", new Position(GAMEWIDTH - 20, 127)),
     weapon: weaponDic.wood_sword,
-    shield: shieldDic.wood_shield,
+    shield: shieldDic.jade_shield,
     armor: armorDic.empty,
     consumable: consumableDic.empty,
     passive_1: getItem("empty", new Position(4, 18 * 1)),
