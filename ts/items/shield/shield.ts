@@ -56,7 +56,7 @@ export const shieldDic = {
     name: "jade_shield",
     shopName: "Jade Shield",
     cost: 26,
-    cooldown: 2.5,
+    cooldown: 0.5,
     reflection: 1,
   }),
   steel_shield: new Shield({

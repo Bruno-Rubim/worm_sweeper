@@ -5,6 +5,7 @@ import { Timer } from "../timer/timer.js";
 
 export class Enemy {
   health: number;
+  reflection: number = 0;
   damage: number;
   pos: Position;
   cooldownTimer: Timer;
@@ -60,5 +61,21 @@ export class ScaleWorm extends Enemy {
       attackCooldown: 8 - Math.floor(depth / 3) * 0.5,
       stunSpriteShift: new Position(8, 21),
     });
+  }
+}
+
+export class PosionWorm extends Enemy {
+  constructor(depth: number) {
+    super({
+      pos: new Position(56, 36),
+      spriteSheet: sprites.enemy_poison_worm,
+      health: 3 + Math.floor(depth / 4),
+      damage: 0 + Math.floor(((depth - 5) / 3) * 2) / 2,
+      attackCooldown: 4 - depth * 0.1,
+    });
+    this.cooldownTimer.goalFunc = () => {
+      this.reflection += 0.5;
+      return new EnemyAtack(this.damage, this);
+    };
   }
 }

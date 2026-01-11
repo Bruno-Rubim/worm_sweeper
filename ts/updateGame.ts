@@ -274,6 +274,15 @@ function setItemDescription(action: ItemDescription) {
   cursor.description.fontSize = action.descFontSize;
 }
 
+export function checkPlayerDead(gameState: GameState) {
+  if (gameState.health <= 0) {
+    if (inputState.mouse.heldLeft || inputState.mouse.heldRight) {
+      gameState.heldWhileDeath = true;
+    }
+    gameState.lose();
+  }
+}
+
 /**
  * Performs an enemy attack on the player
  * @param gameManager
@@ -289,26 +298,29 @@ function performEnemyAttack(gameManager: GameManager, action: EnemyAtack) {
   timerQueue.push(action.enemy.attackAnimTimer);
   let damage = action.damage;
 
-  const reflection = gameManager.gameState.battle!.reflection;
-  const leftoverReflection = Math.max(0, reflection - damage);
-  damage = Math.max(0, damage - reflection);
+  // Reflection
+  const enemyReflect = action.enemy.reflection;
+  const playerReflect = gameManager.gameState.battle.reflection;
+  const playerDefense = gameManager.gameState.battle.defense;
+  action.enemy.reflection = Math.max(0, enemyReflect - playerReflect);
+  const playerRefDamage = Math.max(
+    0,
+    Math.min(damage, playerReflect - enemyReflect)
+  );
+  gameManager.gameState.battle.reflection = Math.max(
+    0,
+    playerReflect - (enemyReflect + damage)
+  );
+  damage = Math.max(0, damage - Math.max(0, playerReflect - enemyReflect));
 
-  const defense = gameManager.gameState.battle.defense;
-  const leftoverDefense = Math.max(0, defense - damage);
-  damage = Math.max(0, damage - defense);
+  const leftoverDefense = Math.max(0, playerDefense - damage);
+
+  action.enemy.health -= playerRefDamage;
+  damage = Math.max(0, damage - playerDefense);
 
   gameManager.gameState.health -= Math.max(0, damage);
-  action.enemy.health -= reflection - leftoverReflection;
 
-  gameManager.gameState.battle!.reflection = leftoverReflection;
   gameManager.gameState.battle.defense = leftoverDefense;
-
-  if (gameManager.gameState.health <= 0) {
-    if (inputState.mouse.heldLeft || inputState.mouse.heldRight) {
-      gameManager.gameState.heldWhileDeath = true;
-    }
-    gameManager.gameState.lose();
-  }
   gameManager.levelManager.checkBattleEnd();
 }
 
