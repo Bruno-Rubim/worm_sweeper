@@ -15,7 +15,7 @@ export default class Bomb extends Consumable {
       spriteSheetPos: new Position(0, 0),
       name: "bomb",
       shopName: "Bomb",
-      cost: 13,
+      cost: 6,
       descriptionText:
         "Deal 5 damage or use on any block to destroy blocks around it, along with worms and gold.",
     });
