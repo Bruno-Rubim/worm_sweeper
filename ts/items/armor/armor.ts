@@ -4,7 +4,7 @@ import { Item } from "../item.js";
 
 export class Armor extends Item {
   defense: number;
-  speed: number;
+  speedMult: number;
   reflection: number;
   spikes: number;
 
@@ -14,13 +14,13 @@ export class Armor extends Item {
     shopName: string;
     cost: number;
     defense?: number;
-    speed?: number;
+    speedMult?: number;
     reflection?: number;
     spikes?: number;
   }) {
     args.defense = args.defense ?? 0;
     args.reflection = args.reflection ?? 0;
-    args.speed = args.speed ?? 0;
+    args.speedMult = args.speedMult ?? 1;
     super({
       ...args,
       pos: new Position(GAMEWIDTH - 20, 54),
@@ -29,21 +29,20 @@ export class Armor extends Item {
         (args.reflection ?? 0 > 0
           ? "$refDefense: " + args.reflection + "\n"
           : "") +
-        (args.speed < 0
-          ? "$slwSlowness: " + Math.abs(args.speed) + "s\n"
+        (args.speedMult > 1
+          ? "$slwSpeed: +" +
+            Math.abs(Math.floor((1 - args.speedMult) * 100)) +
+            "%"
           : "") +
-        (args.speed > 0 ? "$spdAgility: " + args.speed + "s\n" : ""),
+        (args.speedMult < 1 && args.speedMult
+          ? "$spdSpeed: -" + Math.floor((1 - args.speedMult) * 100) + "%"
+          : ""),
     });
-    this.defense = args.defense;
-    this.speed = args.speed ?? 0;
-    this.reflection = args.reflection ?? 0;
-    this.spikes = args.spikes ?? 0;
-    this.descriptionText =
-      (this.defense > 0 ? "$dfsDefense: " + this.defense + "\n" : "") +
-      (this.reflection > 0 ? "$refDefense: " + this.reflection + "\n" : "") +
-      (this.speed < 0 ? "$slwSlowness: " + Math.abs(this.speed) + "s\n" : "") +
-      (this.speed > 0 ? "$spdAgility: " + this.speed + "s\n" : "");
     this.descFontSize = 0.6;
+    this.defense = args.defense;
+    this.speedMult = args.speedMult;
+    this.reflection = args.reflection;
+    this.spikes = args.spikes ?? 0;
   }
 }
 
@@ -54,7 +53,7 @@ export const armorDic = {
     shopName: "Chainmail",
     cost: 22,
     defense: 1,
-    speed: -0.5,
+    speedMult: 1.2,
   }),
   swift_vest: new Armor({
     spriteSheetPos: new Position(2, 2),
@@ -62,7 +61,7 @@ export const armorDic = {
     shopName: "Swift Vest",
     cost: 38,
     defense: 0,
-    speed: 0.3,
+    speedMult: 0.7,
   }),
   silver_chestplate: new Armor({
     spriteSheetPos: new Position(4, 2),
@@ -70,7 +69,7 @@ export const armorDic = {
     shopName: "Silver Chestplate",
     cost: 72,
     defense: 5,
-    speed: -1,
+    speedMult: 1.3,
   }),
   empty: new Armor({
     spriteSheetPos: new Position(14, 2),

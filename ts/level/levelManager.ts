@@ -7,6 +7,7 @@ import {
   BORDERTHICKTOP,
   CLICKLEFT,
   CLICKRIGHT,
+  RIGHT,
   type cursorClick,
 } from "../global.js";
 import {
@@ -17,7 +18,7 @@ import {
   RestartGame,
   StartBattle,
 } from "../action.js";
-import { CURSORDEFAULT, CURSORNONE } from "../cursor.js";
+import { CURSORBOOK, CURSORDEFAULT, CURSORNONE } from "../cursor.js";
 import { sprites } from "../sprites.js";
 
 import timeTracker from "../timer/timeTracker.js";
@@ -31,6 +32,7 @@ import ShopManager from "./shopManager.js";
 import { Battle } from "./battle.js";
 import type { SoundManager } from "../soundManager.js";
 import sounds from "../sounds.js";
+import { bookPages } from "../bookPages.js";
 
 const transitionObject = new GameObject({
   sprite: sprites.scene_transition,
@@ -114,6 +116,16 @@ export class LevelManager extends GameObject {
         this.pos,
         this.width,
         this.height
+      );
+      const fontSize = 0.6;
+      const padding = 10 * fontSize;
+      canvasManager.renderText(
+        "book",
+        this.pos.add(padding, padding),
+        bookPages[this.gameState.bookPage]!,
+        RIGHT,
+        this.width - padding * 2,
+        fontSize
       );
       return;
     }
@@ -266,18 +278,16 @@ export class LevelManager extends GameObject {
    * @returns
    */
   hoverFunction = (cursorPos: Position) => {
-    let action = this.currentSceneManager.handleHover(cursorPos);
+    if (this.gameState.inBook) {
+      return new ChangeCursorState(CURSORBOOK);
+    }
     if (this.gameState.inTransition) {
-      action = new ChangeCursorState(CURSORNONE);
+      return new ChangeCursorState(CURSORNONE);
     }
-    if (
-      this.gameState.inBook ||
-      this.gameState.gameOver ||
-      this.gameState.paused
-    ) {
-      action = new ChangeCursorState(CURSORDEFAULT);
+    if (this.gameState.gameOver || this.gameState.paused) {
+      return new ChangeCursorState(CURSORDEFAULT);
     }
-    return action;
+    return this.currentSceneManager.handleHover(cursorPos);
   };
 
   /**
@@ -301,6 +311,17 @@ export class LevelManager extends GameObject {
     button: typeof CLICKRIGHT | typeof CLICKLEFT
   ) => {
     if (this.gameState.paused) {
+      return;
+    }
+    if (this.gameState.inBook) {
+      if (button == CLICKLEFT) {
+        this.gameState.bookPage = Math.min(
+          bookPages.length - 1,
+          this.gameState.bookPage + 1
+        );
+      } else {
+        this.gameState.bookPage = Math.max(0, this.gameState.bookPage - 1);
+      }
       return;
     }
     if (this.gameState.gameOver) {
