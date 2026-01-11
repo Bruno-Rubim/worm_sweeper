@@ -31,6 +31,16 @@ export const weaponDic = {
     damage: 1,
     cooldown: 1.3,
   }),
+  cactus: new Weapon({
+    spriteSheetPos: new Position(10, 3),
+    bigSprite: sprites.big_sword_cactus,
+    name: "cactus",
+    shopName: "Cactus",
+    cost: 13,
+    damage: 0.5,
+    spikes: 0.5,
+    cooldown: 1,
+  }),
   // mace: new Weapon({
   //   spriteSheetPos: new Position(8, 3),
   //   bigSprite: sprites.big_sword_dagger,

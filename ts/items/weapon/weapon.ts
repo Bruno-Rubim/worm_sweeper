@@ -6,6 +6,7 @@ import { Item } from ".././item.js";
 export class Weapon extends Item {
   bigSprite: Sprite;
   damage: number;
+  spikes: number;
   cooldown: number;
 
   constructor(args: {
@@ -15,6 +16,7 @@ export class Weapon extends Item {
     shopName: string;
     cost: number;
     damage: number;
+    spikes?: number;
     cooldown: number;
   }) {
     super({
@@ -25,6 +27,7 @@ export class Weapon extends Item {
     });
     this.bigSprite = args.bigSprite;
     this.damage = args.damage;
+    this.spikes = args.spikes ?? 0;
     this.cooldown = args.cooldown;
     this.descFontSize = 0.6;
   }

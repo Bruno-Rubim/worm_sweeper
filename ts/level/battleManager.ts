@@ -236,7 +236,8 @@ export default class BattleManager extends SceneManager {
     }
     const rId = utils.randomArrayId(this.gameState.battle.enemies);
     const enemy = this.gameState.battle.enemies[rId]!;
-    let damage = this.gameState.inventory.weapon.totalDamage;
+    const weapon = this.gameState.inventory.weapon;
+    let damage = weapon.totalDamage;
 
     let enemySpikeDamage = enemy.spikes;
     let reflectDamage = Math.min(
@@ -262,16 +263,17 @@ export default class BattleManager extends SceneManager {
     enemy.damagedTimer.start();
     timerQueue.push(enemy.damagedTimer);
 
+    // Spikes
+    this.gameState.battle.spikes += weapon.spikes;
+
     // Weapon animation
-    this.gameState.attackAnimationTimer.goalSecs =
-      this.gameState.inventory.weapon.cooldown / 3;
+    this.gameState.attackAnimationTimer.goalSecs = weapon.cooldown / 3;
     this.gameState.attackAnimationTimer.start();
 
     // Cooldown
     const tiredTimer = this.gameState.tiredTimer;
     tiredTimer.goalSecs =
-      this.gameState.inventory.weapon.cooldown -
-      this.gameState.inventory.armor.speed;
+      weapon.cooldown - this.gameState.inventory.armor.speed;
     tiredTimer.start();
     return this.checkBattleEnd();
   }
