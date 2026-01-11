@@ -28,7 +28,7 @@ export default class TimeBlade extends Weapon {
       "\n$spdCooldown: " +
       this.cooldown +
       "s" +
-      "\n1 Damage per 100 seconds left."
+      "\n1 Damage for every 100 seconds left."
     );
   }
 
