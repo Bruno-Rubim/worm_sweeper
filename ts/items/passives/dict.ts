@@ -78,7 +78,7 @@ export const itemDic = {
     name: "picaxe",
     shopName: "",
     cost: 0,
-    descriptionText: "Left click any block that's not hidden to break it.",
+    descriptionText: "Left click any block that's been revealed to break it.",
   }),
   flag: new Item({
     spriteSheetPos: new Position(2, 7),
