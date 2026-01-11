@@ -1,4 +1,5 @@
-import { PickupChisel } from "../../action.js";
+import { PickupChisel, SellItem } from "../../action.js";
+import { LEFT } from "../../global.js";
 import Position from "../../position.js";
 import { GAMETIMERSYNC, Timer } from "../../timer/timer.js";
 import { Item } from "../item.js";
@@ -20,8 +21,13 @@ export class Chisel extends Item {
         });
     }
     clickFunction = (cursorPos, button) => {
-        if (!this.chiselTimer.inMotion) {
-            return new PickupChisel(this);
+        if (button == LEFT) {
+            if (!this.chiselTimer.inMotion) {
+                return new PickupChisel(this);
+            }
+        }
+        else {
+            return new SellItem(this);
         }
     };
     clone() {

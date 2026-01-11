@@ -29,13 +29,17 @@ export class Timer {
         return this.goalSecs * timeTracker.ticsPerSecond;
     }
     get ticsRemaining() {
-        return this.ended
-            ? 0
-            : this.startTic +
-                this.goalTics +
-                this.extraTics +
-                this.totalPauseLapse -
-                (this.isPaused ? this.lastPausedTic : timeTracker.currentGameTic);
+        if (!this.started) {
+            return this.goalTics;
+        }
+        if (this.ended) {
+            return 0;
+        }
+        return (this.startTic +
+            this.goalTics +
+            this.extraTics +
+            this.totalPauseLapse -
+            (this.isPaused ? this.lastPausedTic : timeTracker.currentGameTic));
     }
     get secondsRemaining() {
         return this.ticsRemaining / timeTracker.ticsPerSecond;

@@ -1,4 +1,4 @@
-import { ItemDescription, ToggleBook } from "../action.js";
+import { SellItem, ItemDescription, ToggleBook } from "../action.js";
 import GameObject from "../gameObject.js";
 import { GAMEWIDTH, LEFT, RIGHT } from "../global.js";
 import Position from "../position.js";
@@ -22,10 +22,19 @@ export class Item extends GameObject {
         this.name = args.name;
         this.shopName = args.shopName;
         this.cost = args.cost;
-        if (args.name == "book") {
-            this.clickFunction = () => {
-                return new ToggleBook();
-            };
+        switch (args.name) {
+            case "book":
+                this.clickFunction = () => {
+                    return new ToggleBook();
+                };
+                break;
+            default:
+                this.clickFunction = (cursorPos, button) => {
+                    if (button == RIGHT) {
+                        return new SellItem(this);
+                    }
+                };
+                break;
         }
         this.descriptionText = args.descriptionText;
     }

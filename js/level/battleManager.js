@@ -8,6 +8,7 @@ import { sprites } from "../sprites.js";
 import { Timer } from "../timer/timer.js";
 import { timerQueue } from "../timer/timerQueue.js";
 import timeTracker from "../timer/timeTracker.js";
+import { checkPlayerDead } from "../updateGame.js";
 import { utils } from "../utils.js";
 import SceneManager from "./sceneManager.js";
 export default class BattleManager extends SceneManager {
@@ -27,6 +28,11 @@ export default class BattleManager extends SceneManager {
                 const roundedHealth = Math.floor(enemy.health);
                 canvasManager.renderText("icons", enemy.pos.add(33, 64), "$hrt".repeat(roundedHealth) +
                     (enemy.health > roundedHealth ? "$hhr" : ""), CENTER);
+            }
+            if (enemy.reflection > 0) {
+                const roundedReflection = Math.floor(enemy.reflection);
+                canvasManager.renderText("icons", enemy.pos.add(33, 73), "$ref".repeat(roundedReflection) +
+                    (enemy.reflection > roundedReflection ? "$hrf" : ""), CENTER);
             }
             if (this.stunTicStart != null) {
                 canvasManager.renderAnimationFrame(sprites.stun_sprite_sheet, enemy.pos.add(enemy.stunSpriteShift), 64, 64, 4, 1, this.stunTicStart, timeTracker.currentGameTic, 0.5);
@@ -69,9 +75,11 @@ export default class BattleManager extends SceneManager {
                 this.gameState.battle.enemies.splice(i, 1);
                 if (this.gameState.hasItem("carving_knife")) {
                     this.gameState.gold += 2;
+                    this.soundManager.playSound(sounds.gold);
                 }
             }
         });
+        checkPlayerDead(this.gameState);
         if (this.gameState.battle.enemies.length <= 0) {
             return new ChangeScene("cave");
         }
@@ -84,7 +92,18 @@ export default class BattleManager extends SceneManager {
         const rId = utils.randomArrayId(this.gameState.battle.enemies);
         const enemy = this.gameState.battle.enemies[rId];
         let damage = this.gameState.inventory.weapon.totalDamage;
+        const enemyReflect = enemy.reflection;
+        const playerReflect = this.gameState.battle.reflection;
+        const playerDefense = this.gameState.battle.defense;
+        enemy.reflection = Math.max(0, enemyReflect - (playerReflect + damage));
+        let enemyRefDamage = Math.max(0, Math.min(damage, enemyReflect - playerReflect));
+        this.gameState.battle.reflection = Math.max(0, playerReflect - enemyReflect);
+        damage = Math.max(0, damage - Math.max(0, enemyReflect - playerReflect));
         enemy.health -= damage;
+        const leftoverDefense = Math.max(0, playerDefense - enemyRefDamage);
+        enemyRefDamage = Math.max(0, enemyRefDamage - playerDefense);
+        this.gameState.health -= enemyRefDamage;
+        this.gameState.battle.defense = leftoverDefense;
         enemy.damagedTimer.start();
         timerQueue.push(enemy.damagedTimer);
         this.gameState.attackAnimationTimer.goalSecs =

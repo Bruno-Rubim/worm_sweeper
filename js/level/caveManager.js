@@ -1,4 +1,4 @@
-import { ChangeCursorState, ChangeScene, NextLevel, StartBattle, } from "../action.js";
+import { Action, ChangeCursorState, ChangeScene, NextLevel, StartBattle, } from "../action.js";
 import { CURSORARROW, CURSORDEFAULT, CURSORDETONATOR, CURSORGOLDWATER, CURSORPICAXE, } from "../cursor.js";
 import { CLICKLEFT } from "../global.js";
 import Bomb from "../items/consumable/bomb.js";
@@ -251,5 +251,10 @@ export default class CaveManager extends SceneManager {
             return new ChangeCursorState(CURSORARROW);
         }
         return new ChangeCursorState(CURSORPICAXE);
+    };
+    handleNotHover = () => {
+        if (this.bomb?.hoverScreenPos) {
+            this.bomb = null;
+        }
     };
 }

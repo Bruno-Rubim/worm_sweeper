@@ -1,7 +1,7 @@
 const logDict = {};
 class Utils {
     randomInt(max, min = 0) {
-        const r = Math.floor(Math.random() * max + min) + min;
+        const r = Math.floor(Math.random() * (max - min)) + min;
         return r;
     }
     logOnce(thing) {
@@ -11,6 +11,11 @@ class Utils {
         }
         console.log(text);
         logDict[text] = true;
+    }
+    conLog(con, thing) {
+        if (con) {
+            console.log(thing);
+        }
     }
     randomArrayId(arr) {
         return Math.floor(Math.random() * arr.length);

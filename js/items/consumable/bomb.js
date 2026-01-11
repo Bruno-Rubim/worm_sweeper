@@ -1,4 +1,5 @@
-import { PickupBomb } from "../../action.js";
+import { PickupBomb, SellItem } from "../../action.js";
+import { LEFT } from "../../global.js";
 import Position from "../../position.js";
 import { GAMETIMERSYNC, Timer } from "../../timer/timer.js";
 import { Consumable } from "./consumable.js";
@@ -13,11 +14,16 @@ export default class Bomb extends Consumable {
             spriteSheetPos: new Position(0, 0),
             name: "bomb",
             shopName: "Bomb",
-            cost: 13,
+            cost: 6,
             descriptionText: "Deal 5 damage or use on any block to destroy blocks around it, along with worms and gold.",
         });
     }
     clickFunction = (cursorPos, button) => {
-        return new PickupBomb(this);
+        if (button == LEFT) {
+            return new PickupBomb(this);
+        }
+        else {
+            return new SellItem(this);
+        }
     };
 }

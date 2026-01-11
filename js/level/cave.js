@@ -139,8 +139,20 @@ export default class Cave {
     bomb(block) {
         if (block.content == CONTENTWORM) {
             block.content = CONTENTEMPTY;
+            if (block.marked) {
+                block.marked = false;
+            }
+            else {
+                this.wormsLeft--;
+            }
         }
-        block.broken = true;
+        else {
+            if (block.marked) {
+                block.marked = false;
+                this.wormsLeft++;
+            }
+        }
+        this.breakBlock(block);
         this.getSurrBlocks(block.gridPos).forEach((b) => {
             if (b.content == CONTENTWORM) {
                 b.content = CONTENTEMPTY;

@@ -2,13 +2,20 @@ import { cursor, CURSORBOMB, CURSORCHISEL, CURSORDEFAULT, } from "./cursor.js";
 import { GameManager } from "./gameManager.js";
 import { CLICKLEFT, CLICKRIGHT, DEV } from "./global.js";
 import { inputState } from "./inputState.js";
-import { ChangeCursorState, ConsumeItem, Action, ToggleBook as ToggleBook, ItemDescription, RestartGame, EnemyAtack, RingBell, PickupChisel, PickupBomb, } from "./action.js";
+import { ChangeCursorState, ConsumeItem, Action, ToggleBook as ToggleBook, ItemDescription, RestartGame, EnemyAtack, RingBell, PickupChisel, PickupBomb, SellItem, } from "./action.js";
 import timeTracker from "./timer/timeTracker.js";
 import { timerQueue } from "./timer/timerQueue.js";
 import sounds from "./sounds.js";
 import { Chisel } from "./items/passives/chisel.js";
 import consumableDic from "./items/consumable/dict.js";
 import Bomb from "./items/consumable/bomb.js";
+import { Weapon } from "./items/weapon/weapon.js";
+import { Shield } from "./items/shield/shield.js";
+import { Armor, armorDic } from "./items/armor/armor.js";
+import { getItem } from "./items/passives/dict.js";
+import { utils } from "./utils.js";
+import { Consumable } from "./items/consumable/consumable.js";
+import Position from "./position.js";
 function changeCursorState(newState) {
     cursor.state = newState;
 }
@@ -35,6 +42,9 @@ export function handleMouseHover(objects) {
     objects.forEach((obj) => {
         if (!obj.hitbox.positionInside(cursor.pos) || obj.hidden) {
             obj.mouseHovering = false;
+            if (obj.notHoverFunction) {
+                obj.notHoverFunction();
+            }
             return null;
         }
         obj.mouseHovering = true;
@@ -50,6 +60,18 @@ export function handleMouseHover(objects) {
         return action;
     }
 }
+export function handleMouseNotHover(objects) {
+    objects.forEach((obj) => {
+        if (!obj.hitbox.positionInside(cursor.pos) || obj.hidden) {
+            obj.mouseHovering = false;
+            if (obj.notHoverFunction) {
+                obj.notHoverFunction();
+            }
+            return null;
+        }
+    });
+    return;
+}
 function handleMouseInput(objects) {
     let actions = [];
     objects.forEach((obj) => {
@@ -57,6 +79,9 @@ function handleMouseInput(objects) {
             obj.mouseHovering = false;
             obj.mouseHeldLeft = false;
             obj.mouseHeldRight = false;
+            if (obj.notHoverFunction) {
+                obj.notHoverFunction();
+            }
             return null;
         }
         obj.mouseHovering = true;
@@ -116,110 +141,187 @@ function handleKeyInput(gameManager) {
         }
     }
 }
+function consumeItem(gameManager, action) {
+    switch (action.itemName) {
+        case "time_potion":
+            gameManager.gameState.gameTimer.addSecs(60);
+            gameManager.soundManager.playSound(sounds.drink);
+            break;
+        case "health_vial":
+            gameManager.gameState.health += 0.5;
+            gameManager.soundManager.playSound(sounds.drink);
+            break;
+        case "health_potion":
+            gameManager.gameState.health += 1;
+            gameManager.soundManager.playSound(sounds.drink);
+            break;
+        case "health_potion_big":
+            gameManager.gameState.health += 2;
+            gameManager.soundManager.playSound(sounds.drink);
+            break;
+        case "empty":
+            if (gameManager.gameState.holding instanceof Bomb) {
+                gameManager.gameState.inventory.consumable =
+                    gameManager.gameState.holding;
+                gameManager.gameState.holding = null;
+            }
+            break;
+    }
+    if (action.itemName != "empty") {
+        gameManager.gameState.inventory.consumable = consumableDic.empty;
+    }
+}
+function toggleBook(gameManager) {
+    gameManager.gameState.inBook = !gameManager.gameState.inBook;
+    if (gameManager.gameState.inBook) {
+        timeTracker.pause();
+    }
+    else if (!gameManager.gameState.paused && !gameManager.gameState.gameOver) {
+        timeTracker.unpause();
+    }
+}
+function setItemDescription(action) {
+    cursor.description.hidden = false;
+    cursor.description.side = action.side;
+    cursor.description.text = action.description;
+    cursor.description.fontSize = action.descFontSize;
+}
+export function checkPlayerDead(gameState) {
+    if (gameState.health <= 0) {
+        if (inputState.mouse.heldLeft || inputState.mouse.heldRight) {
+            gameState.heldWhileDeath = true;
+        }
+        gameState.lose();
+    }
+}
+function performEnemyAttack(gameManager, action) {
+    if (!gameManager.gameState.battle) {
+        alert("this shouldn't happen outside of battle");
+        return;
+    }
+    action.enemy.attackAnimTimer.start();
+    timerQueue.push(action.enemy.attackAnimTimer);
+    let damage = action.damage;
+    const enemyReflect = action.enemy.reflection;
+    const playerReflect = gameManager.gameState.battle.reflection;
+    const playerDefense = gameManager.gameState.battle.defense;
+    action.enemy.reflection = Math.max(0, enemyReflect - playerReflect);
+    const playerRefDamage = Math.max(0, Math.min(damage, playerReflect - enemyReflect));
+    gameManager.gameState.battle.reflection = Math.max(0, playerReflect - (enemyReflect + damage));
+    damage = Math.max(0, damage - Math.max(0, playerReflect - enemyReflect));
+    const leftoverDefense = Math.max(0, playerDefense - damage);
+    action.enemy.health -= playerRefDamage;
+    damage = Math.max(0, damage - playerDefense);
+    gameManager.gameState.health -= Math.max(0, damage);
+    gameManager.gameState.battle.defense = leftoverDefense;
+    gameManager.levelManager.checkBattleEnd();
+}
+function ringBell(gameManager) {
+    if (gameManager.gameState.currentScene == "battle") {
+        gameManager.levelManager.battleManager.stunEnemy(3);
+    }
+    else {
+        gameManager.gameState.level.cave.bellRang = true;
+    }
+    gameManager.soundManager.playSound(sounds.bell);
+}
+function pickupChisel(gameManager, action) {
+    if (gameManager.gameState.holding == null) {
+        gameManager.gameState.holding = action.chiselItem;
+    }
+    else if (gameManager.gameState.holding instanceof Chisel) {
+        gameManager.gameState.holding = null;
+    }
+}
+function pickupBomb(gameManager, action) {
+    if (gameManager.gameState.holding == null) {
+        gameManager.gameState.holding = action.bombItem;
+        gameManager.gameState.inventory.consumable = consumableDic.empty;
+    }
+}
+function sellItem(gameManager, action) {
+    if (gameManager.gameState.currentScene == "shop" &&
+        !["empty", "book", "picaxe", "flag"].includes(action.item.name)) {
+        if (action.item instanceof Weapon || action.item instanceof Shield) {
+            gameManager.soundManager.playSound(sounds.wrong);
+            return;
+        }
+        const inventory = gameManager.gameState.inventory;
+        if (action.item instanceof Armor) {
+            inventory.armor = armorDic.empty;
+        }
+        else if (action.item instanceof Consumable) {
+            inventory.consumable = consumableDic.empty;
+        }
+        else {
+            if (inventory.passive_1 == action.item) {
+                inventory.passive_1 = getItem("empty", new Position(4, 18 * 1));
+            }
+            if (inventory.passive_2 == action.item) {
+                inventory.passive_2 = getItem("empty", new Position(4, 18 * 2));
+            }
+            if (inventory.passive_3 == action.item) {
+                inventory.passive_3 = getItem("empty", new Position(4, 18 * 3));
+            }
+            if (inventory.passive_4 == action.item) {
+                inventory.passive_4 = getItem("empty", new Position(4, 18 * 4));
+            }
+            if (inventory.passive_5 == action.item) {
+                inventory.passive_5 = getItem("empty", new Position(4, 18 * 5));
+            }
+            if (inventory.passive_6 == action.item) {
+                inventory.passive_6 = getItem("empty", new Position(4, 18 * 6));
+            }
+        }
+        gameManager.gameState.gold += utils.randomInt(4, 1);
+        gameManager.soundManager.playSound(sounds.gold);
+    }
+}
 function handleAction(gameManager, action) {
+    if (!action) {
+        return;
+    }
     if (action instanceof ChangeCursorState) {
         changeCursorState(action.newState);
         return "cursorChange";
     }
     if (action instanceof ConsumeItem) {
-        switch (action.itemName) {
-            case "time_potion":
-                gameManager.gameState.gameTimer.addSecs(60);
-                gameManager.soundManager.playSound(sounds.drink);
-                break;
-            case "health_vial":
-                gameManager.gameState.health += 0.5;
-                gameManager.soundManager.playSound(sounds.drink);
-                break;
-            case "health_potion":
-                gameManager.gameState.health += 1;
-                gameManager.soundManager.playSound(sounds.drink);
-                break;
-            case "health_potion_big":
-                gameManager.gameState.health += 2;
-                gameManager.soundManager.playSound(sounds.drink);
-                break;
-            case "empty":
-                if (gameManager.gameState.holding instanceof Bomb) {
-                    gameManager.gameState.inventory.consumable =
-                        gameManager.gameState.holding;
-                    gameManager.gameState.holding = null;
-                }
-                break;
-        }
-        if (action.itemName != "empty") {
-            gameManager.gameState.inventory.consumable = consumableDic.empty;
-        }
+        consumeItem(gameManager, action);
         return;
     }
     if (action instanceof ToggleBook) {
-        gameManager.gameState.inBook = !gameManager.gameState.inBook;
-        if (gameManager.gameState.inBook) {
-            timeTracker.pause();
-        }
-        else if (!gameManager.gameState.paused &&
-            !gameManager.gameState.gameOver) {
-            timeTracker.unpause();
-        }
+        toggleBook(gameManager);
         return;
     }
     if (action instanceof ItemDescription) {
-        cursor.description.hidden = false;
-        cursor.description.side = action.side;
-        cursor.description.text = action.description;
-        cursor.description.fontSize = action.descFontSize;
+        setItemDescription(action);
         return "itemDescription";
     }
     if (action instanceof RestartGame) {
         gameManager.restart();
+        return;
     }
     if (action instanceof EnemyAtack) {
-        if (!gameManager.gameState.battle) {
-            alert("this shouldn't happen outside of battle");
-            return;
-        }
-        action.enemy.attackAnimTimer.start();
-        timerQueue.push(action.enemy.attackAnimTimer);
-        let damage = action.damage;
-        const reflection = gameManager.gameState.battle.reflection;
-        const leftoverReflection = Math.max(0, reflection - damage);
-        damage = Math.max(0, damage - reflection);
-        const defense = gameManager.gameState.battle.defense;
-        const leftoverDefense = Math.max(0, defense - damage);
-        damage = Math.max(0, damage - defense);
-        gameManager.gameState.health -= Math.max(0, damage);
-        action.enemy.health -= gameManager.gameState.battle.reflection;
-        gameManager.gameState.battle.reflection = leftoverReflection;
-        gameManager.gameState.battle.defense = leftoverDefense;
-        if (gameManager.gameState.health <= 0) {
-            if (inputState.mouse.heldLeft || inputState.mouse.heldRight) {
-                gameManager.gameState.heldWhileDeath = true;
-            }
-            gameManager.gameState.lose();
-        }
-        gameManager.levelManager.checkBattleEnd();
+        performEnemyAttack(gameManager, action);
+        return;
     }
     if (action instanceof RingBell) {
-        if (gameManager.gameState.currentScene == "battle") {
-            gameManager.levelManager.battleManager.stunEnemy(3);
-        }
-        gameManager.gameState.level.cave.bellRang = true;
-        gameManager.soundManager.playSound(sounds.bell);
+        ringBell(gameManager);
+        return;
     }
     if (action instanceof PickupChisel) {
-        if (gameManager.gameState.holding == null) {
-            gameManager.gameState.holding = action.chiselItem;
-        }
-        else if (gameManager.gameState.holding instanceof Chisel) {
-            gameManager.gameState.holding = null;
-        }
+        pickupChisel(gameManager, action);
+        return;
     }
     if (action instanceof PickupBomb) {
-        if (gameManager.gameState.holding == null) {
-            gameManager.gameState.holding = action.bombItem;
-            gameManager.gameState.inventory.consumable = consumableDic.empty;
-        }
+        pickupBomb(gameManager, action);
+        return;
     }
+    if (action instanceof SellItem) {
+        sellItem(gameManager, action);
+        return;
+    }
+    console.warn("unhandled action", action);
 }
 function updateTimers(gameManager) {
     timerQueue.forEach((timer, i) => {

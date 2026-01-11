@@ -1,6 +1,6 @@
 import GameObject from "../gameObject.js";
 import { CENTER, CLICKLEFT } from "../global.js";
-import { BuyShopItem } from "../action.js";
+import { Action, BuyShopItem, ShopItemDescription } from "../action.js";
 import Position from "../position.js";
 import { sprites } from "../sprites.js";
 import timeTracker from "../timer/timeTracker.js";
@@ -36,6 +36,9 @@ export class ShopItem extends GameObject {
                 return new BuyShopItem(this);
         };
     }
+    hoverFunction = (cursorPos) => {
+        return new ShopItemDescription(this.item.shopName + "\n\n" + this.item.description);
+    };
     render(canvasManager) {
         canvasManager.renderSpriteFromSheet(sprites.item_sheet, this.pos, 16, 16, this.item.spriteSheetPos);
         if (this.mouseHovering) {
@@ -45,9 +48,6 @@ export class ShopItem extends GameObject {
         if (this.item.name == "time_potion") {
             canvasManager.renderAnimationFrame(sprites.time_potion_pointer_sheet, this.pos, 16, 16, 12, 1, this.firstAnimationTic, timeTracker.currentGameTic);
             canvasManager.renderAnimationFrame(sprites.time_potion_pointer_sheet, this.pos, 16, 16, 12, 1, this.firstAnimationTic, timeTracker.currentGameTic, 1 / 12, new Position(0, 1));
-        }
-        if (this.mouseHovering) {
-            canvasManager.renderText("shop_description", new Position(27, 95), this.item.shopName + "\n\n" + this.item.description, "right", 120, 0.8);
         }
     }
 }

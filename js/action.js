@@ -34,11 +34,25 @@ export class ChangeScene extends Action {
         this.newScene = newScene;
     }
 }
+export class ShopItemDescription extends Action {
+    description;
+    constructor(description) {
+        super();
+        this.description = description;
+    }
+}
 export class BuyShopItem extends Action {
     shopItem;
     constructor(shopItem) {
         super();
         this.shopItem = shopItem;
+    }
+}
+export class SellItem extends Action {
+    item;
+    constructor(item) {
+        super();
+        this.item = item;
     }
 }
 export class ConsumeItem extends Action {

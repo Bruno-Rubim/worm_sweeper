@@ -169,6 +169,10 @@ export class LevelManager extends GameObject {
         }
         return action;
     };
+    notHoverFunction = () => {
+        let action = this.currentSceneManager.handleNotHover();
+        return action;
+    };
     clickFunction = (cursorPos, button) => {
         if (this.gameState.paused) {
             return;

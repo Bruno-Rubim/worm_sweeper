@@ -43,7 +43,7 @@ export const itemDic = {
         spriteSheetPos: new Position(10, 4),
         name: "health_insurance",
         shopName: "Health Insurance",
-        cost: 40,
+        cost: 22,
         descriptionText: "Gain 1 heart when clearing a level.",
     }),
     carving_knife: new Item({

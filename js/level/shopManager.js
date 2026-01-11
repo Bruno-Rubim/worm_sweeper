@@ -1,4 +1,4 @@
-import { BuyShopItem } from "../action.js";
+import { Action, BuyShopItem, ShopItemDescription } from "../action.js";
 import { BORDERTHICKBOTTOM, BORDERTHICKLEFT, BORDERTHICKRIGHT, BORDERTHICKTOP, GAMEHEIGHT, GAMEWIDTH, } from "../global.js";
 import { Armor } from "../items/armor/armor.js";
 import { Consumable } from "../items/consumable/consumable.js";
@@ -7,9 +7,10 @@ import { Weapon } from "../items/weapon/weapon.js";
 import Position from "../position.js";
 import sounds from "../sounds.js";
 import { sprites } from "../sprites.js";
-import { handleMouseClick, handleMouseHover } from "../updateGame.js";
+import { handleMouseClick, handleMouseHover, handleMouseNotHover, } from "../updateGame.js";
 import SceneManager from "./sceneManager.js";
 export default class ShopManager extends SceneManager {
+    currentText = "";
     constructor(gameState, scenePos, soundManager) {
         super(gameState, scenePos, soundManager);
     }
@@ -20,6 +21,7 @@ export default class ShopManager extends SceneManager {
                 obj.render(canvasManager);
             }
         });
+        canvasManager.renderText("shop_description", new Position(27, 95), this.currentText, "right", 120, 0.8);
     };
     handleClick = () => {
         const action = handleMouseClick(this.gameState.level.shop.objects);
@@ -91,6 +93,19 @@ export default class ShopManager extends SceneManager {
         return action;
     };
     handleHover = (cursorPos) => {
-        return handleMouseHover(this.gameState.level.shop.objects);
+        let action = handleMouseHover(this.gameState.level.shop.objects);
+        if (action instanceof ShopItemDescription) {
+            this.currentText = action.description;
+            return;
+        }
+        else {
+            this.currentText =
+                "Right click one of your items to sell for some change.";
+        }
+        return action;
+    };
+    handleNotHover = () => {
+        let action = handleMouseNotHover(this.gameState.level.shop.objects);
+        return action;
     };
 }

@@ -17,6 +17,7 @@ export default class GameObject {
     clickFunction;
     heldFunction;
     hoverFunction;
+    notHoverFunction;
     constructor(args) {
         this.sprite = args.sprite;
         this.pos = args.pos ?? new Position();
@@ -32,6 +33,7 @@ export default class GameObject {
         this.clickFunction = args.clickFunction;
         this.heldFunction = args.heldFunction;
         this.hoverFunction = args.hoverFunction;
+        this.notHoverFunction = args.notHoverFunction;
         this.firstAnimationTic = timeTracker.currentGameTic;
     }
     updatePosition(newPos) {

@@ -58,25 +58,27 @@ export default class CanvasManager {
     renderText(font, pos, text, direction = RIGHT, limitWidth = Infinity, fontSize = 1) {
         const fontMap = fontMaps[font];
         const words = text.split(" ");
-        let lineWidth = 0;
+        let currentLineWidth = 0;
         words.forEach((word, i) => {
             if (word.includes("\n")) {
                 const breakWords = word.split("\n");
                 const firstWidth = measureTextWidth(font, breakWords[0]) * fontSize;
                 const lastWidth = measureTextWidth(font, utils.lastOfArray(breakWords)) * fontSize;
-                if (lineWidth + firstWidth > limitWidth) {
+                if (currentLineWidth + firstWidth > limitWidth) {
                     words[i] = "\n" + words[i];
                 }
-                lineWidth = lastWidth;
+                currentLineWidth = lastWidth;
                 return;
             }
             const wordWidth = measureTextWidth(font, word) * fontSize;
-            if (lineWidth + wordWidth > limitWidth) {
+            if (currentLineWidth + wordWidth > limitWidth) {
                 words[i] = "\n" + words[i];
-                lineWidth = wordWidth;
+                currentLineWidth =
+                    wordWidth + (fontMap.charMaps[" "]?.width ?? 0) * fontSize;
             }
             else {
-                lineWidth += wordWidth + (fontMap.charMaps[" "]?.width ?? 0) * fontSize;
+                currentLineWidth +=
+                    wordWidth + (fontMap.charMaps[" "]?.width ?? 0) * fontSize;
             }
         });
         const lines = words.join(" ").replaceAll(" \n", "\n").split("\n");
@@ -121,5 +123,16 @@ export default class CanvasManager {
             }
             currentY += fontMap.cellHeight * fontSize;
         }
+    }
+    renderBox(spriteSheet, pos, boxSpriteWidth, boxSpriteHeight, bodyWidth, bodyHeight, scale = 1) {
+        this.renderSpriteFromSheet(spriteSheet, pos, boxSpriteWidth * scale, boxSpriteHeight * scale, new Position(), boxSpriteWidth, boxSpriteHeight);
+        this.renderSpriteFromSheet(spriteSheet, pos.add(boxSpriteWidth * scale, 0), bodyWidth, boxSpriteHeight * scale, new Position(1, 0), boxSpriteWidth, boxSpriteHeight);
+        this.renderSpriteFromSheet(spriteSheet, pos.add(boxSpriteWidth * scale + bodyWidth, 0), boxSpriteWidth * scale, boxSpriteHeight * scale, new Position(2, 0), boxSpriteWidth, boxSpriteHeight);
+        this.renderSpriteFromSheet(spriteSheet, pos.add(0, boxSpriteHeight * scale), boxSpriteWidth * scale, bodyHeight, new Position(0, 1), boxSpriteWidth, boxSpriteHeight);
+        this.renderSpriteFromSheet(spriteSheet, pos.add(boxSpriteWidth * scale, boxSpriteHeight * scale), bodyWidth, bodyHeight, new Position(1, 1), boxSpriteWidth, boxSpriteHeight);
+        this.renderSpriteFromSheet(spriteSheet, pos.add(boxSpriteWidth * scale + bodyWidth, boxSpriteHeight * scale), boxSpriteWidth * scale, bodyHeight, new Position(2, 1), boxSpriteWidth, boxSpriteHeight);
+        this.renderSpriteFromSheet(spriteSheet, pos.add(0, boxSpriteHeight * scale + bodyHeight), boxSpriteWidth * scale, boxSpriteHeight * scale, new Position(0, 2), boxSpriteWidth, boxSpriteHeight);
+        this.renderSpriteFromSheet(spriteSheet, pos.add(boxSpriteWidth * scale, boxSpriteHeight * scale + bodyHeight), bodyWidth, boxSpriteHeight * scale, new Position(1, 2), boxSpriteWidth, boxSpriteHeight);
+        this.renderSpriteFromSheet(spriteSheet, pos.add(boxSpriteWidth * scale + bodyWidth, boxSpriteHeight * scale + bodyHeight), boxSpriteWidth * scale, boxSpriteHeight * scale, new Position(2, 2), boxSpriteWidth, boxSpriteHeight);
     }
 }

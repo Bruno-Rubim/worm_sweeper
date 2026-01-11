@@ -31,11 +31,6 @@ export class SoundManager {
             this.activeSounds[i].pause();
         }
     }
-    play() {
-        for (const i in this.activeSounds) {
-            this.activeSounds[i].play();
-        }
-    }
     playMusic(sound) {
         const cloneAudio = sound.audio.cloneNode(true);
         cloneAudio.currentTime = 0;
