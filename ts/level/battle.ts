@@ -6,6 +6,7 @@ export class Battle {
   enemies: Enemy[];
   defense: number = 0;
   reflection: number = 0;
+  spikes: number = 0;
 
   constructor(depth: number, enemyCount: number) {
     this.enemies = [];
@@ -19,9 +20,14 @@ export class Battle {
 
     this.enemies.push(arr[Math.min(x, utils.randomArrayId(arr))]!);
   }
-  start(armorDefense: number, armorReflection: number) {
-    this.defense = armorDefense;
-    this.reflection = armorReflection;
+  start(
+    initialDefense: number,
+    initialReflection: number,
+    initialSpikes: number
+  ) {
+    this.defense = initialDefense;
+    this.reflection = initialReflection;
+    this.spikes = initialSpikes;
     this.enemies.forEach((e) => {
       e.cooldownTimer.start();
       timerQueue.push(e.cooldownTimer, e.attackAnimTimer, e.damagedTimer);

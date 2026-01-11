@@ -178,6 +178,26 @@ export default class BattleManager extends SceneManager {
         CENTER
       );
     }
+
+    // Rendering spikes
+    if (this.gameState.battle.spikes) {
+      const spikes = this.gameState.battle.spikes;
+      const roundedSpikes = Math.floor(spikes);
+      canvasManager.renderText(
+        "icons",
+        new Position(
+          GAMEWIDTH / 2,
+          GAMEHEIGHT -
+            BORDERTHICKBOTTOM -
+            (this.gameState.battle.defense + this.gameState.battle.reflection >
+            0
+              ? 20
+              : 11)
+        ),
+        "$spk".repeat(roundedSpikes) + (spikes > roundedSpikes ? "$hsp" : ""),
+        CENTER
+      );
+    }
   };
 
   /**
@@ -269,6 +289,7 @@ export default class BattleManager extends SceneManager {
     this.gameState.battle.defense += this.gameState.inventory.shield.defense;
     this.gameState.battle.reflection +=
       this.gameState.inventory.shield.reflection;
+    this.gameState.battle.spikes += this.gameState.inventory.shield.spikes;
 
     // Defense animation
     this.gameState.defenseAnimationTimer.goalSecs =

@@ -305,6 +305,18 @@ function performEnemyAttack(gameManager: GameManager, action: EnemyAtack) {
   damage -= reflectDamage;
   gameManager.gameState.battle.reflection -= reflectDamage;
 
+  // Defense
+  const playerDefense = gameManager.gameState.battle.defense;
+  const leftoverDefense = Math.max(0, playerDefense - damage);
+  damage = Math.max(0, damage - playerDefense);
+  gameManager.gameState.battle.defense = leftoverDefense;
+
+  // Spikes
+  if (damage > 0) {
+    action.enemy.health -= gameManager.gameState.battle.spikes;
+    gameManager.gameState.battle.spikes = 0;
+  }
+
   gameManager.gameState.health -= Math.max(0, damage);
   gameManager.levelManager.checkBattleEnd();
 }

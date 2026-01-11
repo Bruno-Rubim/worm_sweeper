@@ -8,6 +8,7 @@ export class Shield extends Item {
   defense: number;
   cooldown: number;
   reflection: number;
+  spikes: number;
 
   constructor(args: {
     spriteSheetPos: Position;
@@ -18,9 +19,11 @@ export class Shield extends Item {
     cooldown: number;
     bigSprite: Sprite;
     reflection?: number;
+    spikes?: number;
   }) {
     args.defense = args.defense ?? 0;
     args.reflection = args.reflection ?? 0;
+    args.spikes = args.spikes ?? 0;
     super({
       ...args,
       pos: new Position(GAMEWIDTH - 20, 36),
@@ -29,12 +32,14 @@ export class Shield extends Item {
         (args.reflection > 0
           ? "$refReflection: " + args.reflection + "\n"
           : "") +
+        (args.spikes > 0 ? "$spkSpikes: " + args.spikes + "\n" : "") +
         (args.cooldown > 0 ? "$spdCooldown: " + args.cooldown + "s\n" : ""),
     });
     this.cooldown = args.cooldown;
     this.bigSprite = args.bigSprite;
-    this.defense = args.defense ?? 0;
-    this.reflection = args.reflection ?? 0;
+    this.defense = args.defense;
+    this.reflection = args.reflection;
+    this.spikes = args.spikes;
 
     this.descFontSize = 0.6;
   }
@@ -55,8 +60,8 @@ export const shieldDic = {
     bigSprite: sprites.big_shield_jade,
     name: "jade_shield",
     shopName: "Jade Shield",
-    cost: 26,
-    cooldown: 0.5,
+    cost: 32,
+    cooldown: 2,
     reflection: 1,
   }),
   steel_shield: new Shield({
@@ -76,5 +81,15 @@ export const shieldDic = {
     cost: 15,
     defense: 0.5,
     cooldown: 1,
+  }),
+  claw_shield: new Shield({
+    spriteSheetPos: new Position(8, 1),
+    bigSprite: sprites.big_shield_claw,
+    name: "claw_shield",
+    shopName: "Claw Shield",
+    cost: 35,
+    defense: 1,
+    spikes: 0.5,
+    cooldown: 2.5,
   }),
 };

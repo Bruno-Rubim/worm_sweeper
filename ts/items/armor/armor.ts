@@ -6,6 +6,7 @@ export class Armor extends Item {
   defense: number;
   speed: number;
   reflection: number;
+  spikes: number;
 
   constructor(args: {
     spriteSheetPos: Position;
@@ -14,7 +15,8 @@ export class Armor extends Item {
     cost: number;
     defense?: number;
     speed?: number;
-    reflection?: 0;
+    reflection?: number;
+    spikes?: number;
   }) {
     args.defense = args.defense ?? 0;
     args.reflection = args.reflection ?? 0;
@@ -35,6 +37,7 @@ export class Armor extends Item {
     this.defense = args.defense;
     this.speed = args.speed ?? 0;
     this.reflection = args.reflection ?? 0;
+    this.spikes = args.spikes ?? 0;
     this.descriptionText =
       (this.defense > 0 ? "$dfsDefense: " + this.defense + "\n" : "") +
       (this.reflection > 0 ? "$refDefense: " + this.reflection + "\n" : "") +
