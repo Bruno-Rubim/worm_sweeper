@@ -17,12 +17,13 @@ export default class BattleManager extends SceneManager {
         super(gameState, scenePos, soundManager);
     }
     render = (canvasManager) => {
-        if (!this.gameState.battle) {
+        const battle = this.gameState.battle;
+        if (!battle) {
             alert("this shouldn't happen outside of battle");
             return;
         }
         canvasManager.renderSprite(sprites.bg_battle, new Position(BORDERTHICKLEFT, BORDERTHICKTOP), GAMEWIDTH - BORDERTHICKLEFT - BORDERTHICKRIGHT, GAMEHEIGHT - BORDERTHICKTOP - BORDERTHICKBOTTOM);
-        this.gameState.battle.enemies.forEach((enemy) => {
+        battle.enemies.forEach((enemy) => {
             canvasManager.renderSpriteFromSheet(enemy.spriteSheet, enemy.pos, 64, 64, new Position(enemy.attackAnimTimer.inMotion ? 1 : 0, enemy.damagedTimer.inMotion ? 1 : 0));
             if (enemy.health > 0) {
                 const roundedHealth = Math.floor(enemy.health);
@@ -48,30 +49,32 @@ export default class BattleManager extends SceneManager {
         canvasManager.renderSprite(inventory.shield.bigSprite, new Position(BORDERTHICKLEFT +
             (this.gameState.defenseAnimationTimer.inMotion ? 0 : 24), BORDERTHICKTOP +
             (this.gameState.defenseAnimationTimer.inMotion ? 26 : 45)), 128, 128);
-        if (!this.gameState.tiredTimer.ended && this.gameState.tiredTimer.started) {
-            let counterFrame = Math.floor(Math.min(15, (this.gameState.tiredTimer.percentage / 100) * 16));
-            canvasManager.renderSpriteFromSheet(sprites.counter_sheet, new Position(GAMEWIDTH / 2 - 4, GAMEHEIGHT - BORDERTHICKBOTTOM - 22), 8, 8, new Position(counterFrame % 8, Math.floor(counterFrame / 8)));
-        }
-        if (this.gameState.battle.defense > 0 ||
-            this.gameState.battle.reflection > 0) {
-            const reflect = this.gameState.battle.reflection;
-            const defense = this.gameState.battle.defense;
+        if (battle.protection + battle.defense + battle.reflection > 0) {
+            const reflect = battle.reflection;
+            const defense = battle.defense;
+            const protection = battle.protection;
             const roundedReflect = Math.floor(reflect);
             const roundedDefense = Math.floor(defense);
+            const roundedProtection = Math.floor(protection);
             canvasManager.renderText("icons", new Position(GAMEWIDTH / 2, GAMEHEIGHT - BORDERTHICKBOTTOM - 11), "$ref".repeat(roundedReflect) +
                 (reflect > roundedReflect ? "$hrf" : "") +
                 "$dfs".repeat(roundedDefense) +
-                (defense > roundedDefense ? "$hdf" : ""), CENTER);
+                (defense > roundedDefense ? "$hdf" : "") +
+                "$pro".repeat(roundedProtection) +
+                (protection > roundedProtection ? "$hpr" : ""), CENTER);
         }
-        if (this.gameState.battle.spikes) {
-            const spikes = this.gameState.battle.spikes;
+        if (battle.spikes) {
+            const spikes = battle.spikes;
             const roundedSpikes = Math.floor(spikes);
             canvasManager.renderText("icons", new Position(GAMEWIDTH / 2, GAMEHEIGHT -
                 BORDERTHICKBOTTOM -
-                (this.gameState.battle.defense + this.gameState.battle.reflection >
-                    0
+                (battle.defense + battle.reflection + battle.protection > 0
                     ? 20
                     : 11)), "$spk".repeat(roundedSpikes) + (spikes > roundedSpikes ? "$hsp" : ""), CENTER);
+        }
+        if (!this.gameState.tiredTimer.ended && this.gameState.tiredTimer.started) {
+            let counterFrame = Math.floor(Math.min(15, (this.gameState.tiredTimer.percentage / 100) * 16));
+            canvasManager.renderSpriteFromSheet(sprites.counter_sheet, new Position(GAMEWIDTH / 2 - 4, GAMEHEIGHT - BORDERTHICKBOTTOM - (battle.spikes > 0 ? 31 : 22)), 8, 8, new Position(counterFrame % 8, Math.floor(counterFrame / 8)));
         }
     };
     checkBattleEnd() {
@@ -103,15 +106,17 @@ export default class BattleManager extends SceneManager {
         const enemy = this.gameState.battle.enemies[rId];
         const weapon = this.gameState.inventory.weapon;
         let damage = weapon.totalDamage;
+        const playerReflection = this.gameState.battle.reflection;
+        const playerDefense = this.gameState.battle.defense;
+        const playerProtection = this.gameState.battle.protection;
         let enemySpikeDamage = enemy.spikes;
-        let reflectDamage = Math.min(this.gameState.battle.reflection, enemySpikeDamage);
+        let reflectDamage = Math.min(playerReflection, enemySpikeDamage);
         enemy.health -= reflectDamage;
         this.gameState.battle.reflection -= reflectDamage;
-        const playerDefense = this.gameState.battle.defense;
         enemySpikeDamage -= reflectDamage;
         this.gameState.battle.defense = Math.max(0, playerDefense - enemySpikeDamage);
         enemySpikeDamage = Math.max(0, enemySpikeDamage - playerDefense);
-        this.gameState.health -= enemySpikeDamage;
+        this.gameState.health -= Math.max(0, enemySpikeDamage - playerProtection);
         enemy.spikes = 0;
         enemy.health -= damage;
         enemy.damagedTimer.start();

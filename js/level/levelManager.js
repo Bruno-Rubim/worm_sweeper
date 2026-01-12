@@ -2,7 +2,7 @@ import CanvasManager from "../canvasManager.js";
 import GameObject from "../gameObject.js";
 import Position from "../position.js";
 import { BORDERTHICKLEFT, BORDERTHICKTOP, CLICKLEFT, CLICKRIGHT, RIGHT, } from "../global.js";
-import { Action, ChangeCursorState, ChangeScene, NextLevel, RestartGame, StartBattle, } from "../action.js";
+import { Action, ChangeCursorState, ChangeScene, NextLevel, ResetShop, RestartGame, StartBattle, } from "../action.js";
 import { CURSORBOOK, CURSORDEFAULT, CURSORNONE } from "../cursor.js";
 import { sprites } from "../sprites.js";
 import timeTracker from "../timer/timeTracker.js";
@@ -116,7 +116,7 @@ export class LevelManager extends GameObject {
                     this.gameState.level.cave.clearExposedWorms();
                     this.gameState.level.cave.updateAllStats();
                     this.currentSceneManager = this.battleManager;
-                    this.gameState.battle?.start(this.gameState.inventory.armor.defense +
+                    this.gameState.battle?.start(this.gameState.inventory.armor.protection, this.gameState.inventory.armor.defense +
                         (this.gameState.hasItem("safety_helmet") ? 1 : 0), this.gameState.inventory.armor.reflection, this.gameState.inventory.armor.spikes);
                     break;
                 case "cave":
@@ -157,6 +157,17 @@ export class LevelManager extends GameObject {
             this.gameState.battle = new Battle(this.gameState.level.depth, action.enemyCount);
             this.changeScene("battle");
         }
+        else if (action instanceof ResetShop) {
+            if (this.gameState.gold >= this.gameState.shopResetPrice) {
+                this.gameState.level.shop.setItems();
+                this.soundManager.playSound(sounds.purchase);
+                this.gameState.gold -= this.gameState.shopResetPrice;
+                this.gameState.shopResetPrice += 5;
+            }
+            else {
+                this.soundManager.playSound(sounds.wrong);
+            }
+        }
         else {
             console.warn("unhandled action", action);
         }
@@ -165,11 +176,11 @@ export class LevelManager extends GameObject {
         if (this.gameState.inBook) {
             return new ChangeCursorState(CURSORBOOK);
         }
-        if (this.gameState.inTransition) {
-            return new ChangeCursorState(CURSORNONE);
-        }
         if (this.gameState.gameOver || this.gameState.paused) {
             return new ChangeCursorState(CURSORDEFAULT);
+        }
+        if (this.gameState.inTransition) {
+            return new ChangeCursorState(CURSORNONE);
         }
         return this.currentSceneManager.handleHover(cursorPos);
     };
@@ -178,9 +189,6 @@ export class LevelManager extends GameObject {
         return action;
     };
     clickFunction = (cursorPos, button) => {
-        if (this.gameState.paused) {
-            return;
-        }
         if (this.gameState.inBook) {
             if (button == CLICKLEFT) {
                 this.gameState.bookPage = Math.min(bookPages.length - 1, this.gameState.bookPage + 1);
@@ -188,6 +196,9 @@ export class LevelManager extends GameObject {
             else {
                 this.gameState.bookPage = Math.max(0, this.gameState.bookPage - 1);
             }
+            return;
+        }
+        if (this.gameState.paused) {
             return;
         }
         if (this.gameState.gameOver) {

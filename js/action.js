@@ -55,6 +55,8 @@ export class SellItem extends Action {
         this.item = item;
     }
 }
+export class ResetShop extends Action {
+}
 export class ConsumeItem extends Action {
     itemName;
     constructor(itemName) {

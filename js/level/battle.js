@@ -3,6 +3,7 @@ import { utils } from "../utils.js";
 import { Enemy, PosionWorm, ScaleWorm, Worm } from "./enemy.js";
 export class Battle {
     enemies;
+    protection = 0;
     defense = 0;
     reflection = 0;
     spikes = 0;
@@ -17,7 +18,8 @@ export class Battle {
         depth > 2 ? (depth > 4 ? (x = 2) : (x = 1)) : (x = 0);
         this.enemies.push(arr[Math.min(x, utils.randomArrayId(arr))]);
     }
-    start(initialDefense, initialReflection, initialSpikes) {
+    start(initialProtection, initialDefense, initialReflection, initialSpikes) {
+        this.protection = initialProtection;
         this.defense = initialDefense;
         this.reflection = initialReflection;
         this.spikes = initialSpikes;

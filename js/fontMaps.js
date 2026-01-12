@@ -1443,7 +1443,7 @@ export const fontMaps = {
                 pos: new Position(1, 1),
                 width: 9,
             },
-            $slw: {
+            $pro: {
                 pos: new Position(2, 1),
                 width: 9,
             },
@@ -1465,6 +1465,14 @@ export const fontMaps = {
             },
             $hhr: {
                 pos: new Position(0, 2),
+                width: 9,
+            },
+            $hpr: {
+                pos: new Position(2, 2),
+                width: 9,
+            },
+            $slw: {
+                pos: new Position(1, 2),
                 width: 9,
             },
             $hdf: {

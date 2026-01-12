@@ -18,6 +18,7 @@ export default class GameState {
     gold = 0;
     health = 5;
     deathCount = 0;
+    shopResetPrice = 0;
     level;
     inTransition = false;
     currentScene = "cave";
@@ -46,6 +47,8 @@ export default class GameState {
         passive_4: getItem("empty", new Position(4, 18 * 4)),
         passive_5: getItem("empty", new Position(4, 18 * 5)),
         passive_6: getItem("empty", new Position(4, 18 * 6)),
+        passive_7: getItem("locked_slot", new Position(4, 18 * 7)),
+        bag: getItem("empty", new Position(-Infinity, -Infinity)),
     };
     constructor() {
         this.gameTimer = new Timer({
@@ -91,6 +94,7 @@ export default class GameState {
         this.deathCount++;
         this.gold = 0;
         this.health = 5;
+        this.shopResetPrice = 0;
         this.inventory = {
             picaxe: getItem("picaxe", new Position(GAMEWIDTH - 20, 90)),
             flag: getItem("flag", new Position(GAMEWIDTH - 20, 109)),
@@ -105,6 +109,8 @@ export default class GameState {
             passive_4: getItem("empty", new Position(4, 18 * 4)),
             passive_5: getItem("empty", new Position(4, 18 * 5)),
             passive_6: getItem("empty", new Position(4, 18 * 6)),
+            passive_7: getItem("locked_slot", new Position(4, 18 * 7)),
+            bag: getItem("empty", new Position(-Infinity, -Infinity)),
         };
         this.level = new Level(0, this);
         this.gameOver = false;
@@ -149,6 +155,9 @@ export default class GameState {
             space++;
         }
         if (this.inventory.passive_6.name == "empty") {
+            space++;
+        }
+        if (this.inventory.passive_7.name == "empty") {
             space++;
         }
         return space;

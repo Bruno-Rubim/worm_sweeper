@@ -61,9 +61,23 @@ export const itemDic = {
         cost: 22,
         descriptionText: "+1 defense each fight.",
     }),
+    backpack: new Item({
+        spriteSheetPos: new Position(4, 5),
+        name: "backpack",
+        shopName: "Backpack",
+        cost: 16,
+        descriptionText: "Get an additional inventory space. Not resellable.",
+    }),
     empty: new Item({
         spriteSheetPos: new Position(14, 4),
         name: "empty",
+        shopName: "",
+        cost: 0,
+        descriptionText: "",
+    }),
+    locked_slot: new Item({
+        spriteSheetPos: new Position(-1, -1),
+        name: "locked_slot",
         shopName: "",
         cost: 0,
         descriptionText: "",

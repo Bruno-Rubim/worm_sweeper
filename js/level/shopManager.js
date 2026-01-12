@@ -1,7 +1,8 @@
 import { Action, BuyShopItem, ShopItemDescription } from "../action.js";
-import { BORDERTHICKBOTTOM, BORDERTHICKLEFT, BORDERTHICKRIGHT, BORDERTHICKTOP, GAMEHEIGHT, GAMEWIDTH, } from "../global.js";
+import { BORDERTHICKBOTTOM, BORDERTHICKLEFT, BORDERTHICKRIGHT, BORDERTHICKTOP, CENTER, GAMEHEIGHT, GAMEWIDTH, RIGHT, } from "../global.js";
 import { Armor } from "../items/armor/armor.js";
 import { Consumable } from "../items/consumable/consumable.js";
+import { getItem } from "../items/passives/dict.js";
 import { Shield } from "../items/shield/shield.js";
 import { Weapon } from "../items/weapon/weapon.js";
 import Position from "../position.js";
@@ -21,7 +22,8 @@ export default class ShopManager extends SceneManager {
                 obj.render(canvasManager);
             }
         });
-        canvasManager.renderText("shop_description", new Position(27, 95), this.currentText, "right", 120, 0.8);
+        canvasManager.renderText("shop_description", new Position(27, 95), this.currentText, RIGHT, 120, 0.8);
+        canvasManager.renderText("numbers_gold", new Position(GAMEWIDTH - BORDERTHICKRIGHT - 12, BORDERTHICKTOP + 59), this.gameState.shopResetPrice.toString(), CENTER);
     };
     handleClick = () => {
         const action = handleMouseClick(this.gameState.level.shop.objects);
@@ -30,6 +32,7 @@ export default class ShopManager extends SceneManager {
         }
         if (action instanceof BuyShopItem) {
             if (action.shopItem.item.cost > this.gameState.gold) {
+                this.soundManager.playSound(sounds.wrong);
                 return;
             }
             const item = action.shopItem.item;
@@ -51,41 +54,45 @@ export default class ShopManager extends SceneManager {
                 action.shopItem.hidden = true;
             }
             else {
-                if (this.gameState.passiveSpace < 1) {
+                if (item.name == "backpack") {
+                    item.pos.update(-Infinity, -Infinity);
+                    inventory.bag = item;
+                    inventory.passive_7 = getItem("empty", new Position(4, 18 * 7));
+                }
+                else if (this.gameState.passiveSpace < 1) {
                     this.soundManager.playSound(sounds.wrong);
                     return;
                 }
-                if (inventory.passive_1.name == "empty") {
+                else if (inventory.passive_1.name == "empty") {
                     item.pos.update(4, 18 * 1);
                     inventory.passive_1 = item;
-                    action.shopItem.hidden = true;
                 }
                 else if (inventory.passive_2.name == "empty") {
                     item.pos.update(4, 18 * 2);
                     inventory.passive_2 = item;
-                    action.shopItem.hidden = true;
                 }
                 else if (inventory.passive_3.name == "empty") {
                     item.pos.update(4, 18 * 3);
                     inventory.passive_3 = item;
-                    action.shopItem.hidden = true;
                 }
                 else if (inventory.passive_4.name == "empty") {
                     item.pos.update(4, 18 * 4);
                     inventory.passive_4 = item;
-                    action.shopItem.hidden = true;
                 }
                 else if (inventory.passive_5.name == "empty") {
                     item.pos.update(4, 18 * 5);
                     inventory.passive_5 = item;
-                    action.shopItem.hidden = true;
                 }
                 else if (inventory.passive_6.name == "empty") {
                     item.pos.update(4, 18 * 6);
                     inventory.passive_6 = item;
-                    action.shopItem.hidden = true;
+                }
+                else if (inventory.passive_7.name == "empty") {
+                    item.pos.update(4, 18 * 7);
+                    inventory.passive_7 = item;
                 }
             }
+            action.shopItem.hidden = true;
             this.gameState.gold -= action.shopItem.item.cost;
             this.soundManager.playSound(sounds.purchase);
             return;

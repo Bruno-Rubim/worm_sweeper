@@ -4,7 +4,7 @@ import { BORDERTHICKLEFT, BORDERTHICKRIGHT, BORDERTHICKTOP, GAMEWIDTH, } from ".
 import { armorDic } from "../items/armor/armor.js";
 import {} from "../items/consumable/consumable.js";
 import { ShopItem } from "../items/shopItem.js";
-import { ChangeScene } from "../action.js";
+import { ChangeScene, ResetShop, ShopItemDescription } from "../action.js";
 import Position from "../position.js";
 import { sprites } from "../sprites.js";
 import { utils } from "../utils.js";
@@ -25,6 +25,20 @@ const exitBtn = new GameObject({
 exitBtn.render = (canvasManager) => {
     canvasManager.renderSpriteFromSheet(exitBtn.sprite, exitBtn.pos, 32, 16, new Position().add(exitBtn.mouseHovering ? 1 : 0, 0));
 };
+const resetBtn = new GameObject({
+    sprite: sprites.button_reset,
+    pos: new Position(GAMEWIDTH - BORDERTHICKRIGHT - 34, BORDERTHICKTOP + 56),
+    width: 32,
+    clickFunction: () => {
+        return new ResetShop();
+    },
+    hoverFunction: () => {
+        return new ShopItemDescription("Reset items.\n\nItems will always be different than the previous set if possible.");
+    },
+});
+resetBtn.render = (canvasManager) => {
+    canvasManager.renderSpriteFromSheet(resetBtn.sprite, resetBtn.pos, 32, 16, new Position().add(resetBtn.mouseHovering ? 1 : 0, 0));
+};
 const shopItemList = Object.values(itemDic).filter((x) => x.cost > 0);
 const shopArmorList = Object.values(armorDic).filter((x) => x.cost > 0);
 const shopWeaponList = Object.values(weaponDic).filter((x) => x.cost > 0);
@@ -34,45 +48,71 @@ const shelfItemDistance = 20;
 const shelfStartDistance = 12;
 export default class Shop {
     objects;
-    items;
+    passives;
     armor;
     weapon;
     shield;
     consumable;
     gameState;
+    inventoryItemNames = [];
+    previousSetItemNames = [];
     constructor(gameState) {
-        const inventoryItemNames = [
-            gameState.inventory.weapon.name,
-            gameState.inventory.shield.name,
-            gameState.inventory.armor.name,
-            gameState.inventory.passive_1?.name,
-            gameState.inventory.passive_2?.name,
-            gameState.inventory.passive_3?.name,
-            gameState.inventory.passive_4?.name,
-            gameState.inventory.passive_5?.name,
-            gameState.inventory.passive_6?.name,
-        ];
         this.gameState = gameState;
-        this.items = utils
-            .shuffleArray(shopItemList.filter((x) => !inventoryItemNames.includes(x.name)))
+        this.setItems();
+    }
+    setItems() {
+        this.inventoryItemNames = [
+            this.gameState.inventory.weapon.name,
+            this.gameState.inventory.shield.name,
+            this.gameState.inventory.armor.name,
+            this.gameState.inventory.passive_1.name,
+            this.gameState.inventory.passive_2.name,
+            this.gameState.inventory.passive_3.name,
+            this.gameState.inventory.passive_4.name,
+            this.gameState.inventory.passive_5.name,
+            this.gameState.inventory.passive_6.name,
+            this.gameState.inventory.passive_7.name,
+            this.gameState.inventory.bag.name,
+        ];
+        let filterNames = [
+            ...this.inventoryItemNames,
+            ...this.previousSetItemNames,
+        ];
+        this.previousSetItemNames = [];
+        this.passives = utils
+            .shuffleArray(shopItemList.filter((x) => !filterNames.includes(x.name)))
             .slice(0, 3)
             .map((x) => new ShopItem(x.name));
-        this.items.forEach((item, i) => {
-            item.pos.update(BORDERTHICKLEFT + shelfStartDistance + i * shelfItemDistance, 28);
+        if (this.passives.length < 3) {
+            this.passives = utils
+                .shuffleArray(shopItemList.filter((x) => ![
+                ...this.inventoryItemNames,
+                ...this.passives.map((x) => x.item.name),
+            ].includes(x.name)))
+                .slice(0, 3)
+                .map((x) => new ShopItem(x.name));
+        }
+        this.passives.forEach((shopItem, i) => {
+            shopItem.pos.update(BORDERTHICKLEFT + shelfStartDistance + i * shelfItemDistance, 28);
+            this.previousSetItemNames.push(shopItem.item.name);
         });
-        const chosenarmor = utils.shuffleArray(shopArmorList.filter((x) => !inventoryItemNames.includes(x.name)))[0];
+        const chosenarmor = utils.shuffleArray(shopArmorList.filter((x) => !filterNames.includes(x.name)))[0];
         this.armor = new ShopItem(chosenarmor.name);
-        const chosenWeapon = utils.shuffleArray(shopWeaponList.filter((x) => !inventoryItemNames.includes(x.name)))[0];
+        this.previousSetItemNames.push(this.armor.item.name);
+        const chosenWeapon = utils.shuffleArray(shopWeaponList.filter((x) => !filterNames.includes(x.name)))[0];
         this.weapon = new ShopItem(chosenWeapon.name);
         if (this.weapon.item instanceof TimeBlade) {
             this.weapon.item.gameTimer = this.gameState.gameTimer;
         }
-        const chosenShield = utils.shuffleArray(shopShieldList.filter((x) => !inventoryItemNames.includes(x.name)))[0];
+        this.previousSetItemNames.push(this.weapon.item.name);
+        const chosenShield = utils.shuffleArray(shopShieldList.filter((x) => !filterNames.includes(x.name)))[0];
         this.shield = new ShopItem(chosenShield.name);
-        const chosenConsumable = utils.shuffleArray(shopConsList)[0];
+        this.previousSetItemNames.push(this.shield.item.name);
+        const chosenConsumable = utils.shuffleArray(shopConsList.filter((x) => !filterNames.includes(x.name)))[0];
         this.consumable = new ShopItem(chosenConsumable.name);
-        this.consumable.pos.update(GAMEWIDTH - BORDERTHICKRIGHT - 28, 46);
-        this.objects = [exitBtn, ...this.items, this.consumable];
+        this.consumable.pos.update(GAMEWIDTH - BORDERTHICKRIGHT - 28, 40);
+        this.previousSetItemNames.push(this.consumable.item.name);
+        this.objects = [exitBtn, resetBtn, ...this.passives, this.consumable];
         let xShift = shelfStartDistance;
         if (this.armor) {
             this.armor.pos.update(BORDERTHICKLEFT + xShift, 60);
