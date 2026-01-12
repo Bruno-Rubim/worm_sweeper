@@ -40,6 +40,7 @@ export default class GameState {
   gold: number = 0;
   health: number = 5;
   deathCount = 0;
+  shopResetPrice = 0;
 
   level: Level;
   inTransition: boolean = false;
@@ -138,6 +139,7 @@ export default class GameState {
     this.deathCount++;
     this.gold = 0;
     this.health = 5;
+    this.shopResetPrice = 0;
     this.inventory = {
       picaxe: getItem("picaxe", new Position(GAMEWIDTH - 20, 90)),
       flag: getItem("flag", new Position(GAMEWIDTH - 20, 109)),
@@ -209,6 +211,9 @@ export default class GameState {
       space++;
     }
     if (this.inventory.passive_6.name == "empty") {
+      space++;
+    }
+    if (this.inventory.passive_7.name == "empty") {
       space++;
     }
     return space;

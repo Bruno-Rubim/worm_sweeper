@@ -15,6 +15,7 @@ import {
   ChangeCursorState,
   ChangeScene,
   NextLevel,
+  ResetShop,
   RestartGame,
   StartBattle,
 } from "../action.js";
@@ -267,6 +268,16 @@ export class LevelManager extends GameObject {
         action.enemyCount
       );
       this.changeScene("battle");
+    } else if (action instanceof ResetShop) {
+      // Reset shop items
+      if (this.gameState.gold >= this.gameState.shopResetPrice) {
+        this.gameState.level.shop.setItems();
+        this.soundManager.playSound(sounds.purchase);
+        this.gameState.gold -= this.gameState.shopResetPrice;
+        this.gameState.shopResetPrice += 5;
+      } else {
+        this.soundManager.playSound(sounds.wrong);
+      }
     } else {
       console.warn("unhandled action", action);
     }

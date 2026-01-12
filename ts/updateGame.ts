@@ -393,6 +393,9 @@ function sellItem(gameManager: GameManager, action: SellItem) {
       if (inventory.passive_6 == action.item) {
         inventory.passive_6 = getItem("empty", new Position(4, 18 * 6));
       }
+      if (inventory.passive_7 == action.item) {
+        inventory.passive_7 = getItem("empty", new Position(4, 18 * 7));
+      }
     }
     gameManager.gameState.gold += utils.randomInt(4, 1);
     gameManager.soundManager.playSound(sounds.gold);

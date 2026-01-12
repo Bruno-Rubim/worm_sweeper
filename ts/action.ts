@@ -78,6 +78,9 @@ export class SellItem extends Action {
   }
 }
 
+// Calls to reset the items of the current shop
+export class ResetShop extends Action {}
+
 // Calls for consumption of a consumable item
 export class ConsumeItem extends Action {
   itemName: string;

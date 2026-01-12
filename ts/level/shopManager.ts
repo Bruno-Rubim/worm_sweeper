@@ -6,8 +6,10 @@ import {
   BORDERTHICKLEFT,
   BORDERTHICKRIGHT,
   BORDERTHICKTOP,
+  CENTER,
   GAMEHEIGHT,
   GAMEWIDTH,
+  RIGHT,
 } from "../global.js";
 import { Armor } from "../items/armor/armor.js";
 import { Consumable } from "../items/consumable/consumable.js";
@@ -57,9 +59,15 @@ export default class ShopManager extends SceneManager {
       "shop_description",
       new Position(27, 95),
       this.currentText,
-      "right",
+      RIGHT,
       120,
       0.8
+    );
+    canvasManager.renderText(
+      "numbers_gold",
+      new Position(GAMEWIDTH - BORDERTHICKRIGHT - 12, BORDERTHICKTOP + 59),
+      this.gameState.shopResetPrice.toString(),
+      CENTER
     );
   };
 
@@ -70,6 +78,7 @@ export default class ShopManager extends SceneManager {
     }
     if (action instanceof BuyShopItem) {
       if (action.shopItem.item.cost > this.gameState.gold) {
+        this.soundManager.playSound(sounds.wrong);
         return;
       }
       const item = action.shopItem.item;
@@ -87,14 +96,13 @@ export default class ShopManager extends SceneManager {
         inventory.consumable = item;
         action.shopItem.hidden = true;
       } else {
-        if (this.gameState.passiveSpace < 1) {
-          this.soundManager.playSound(sounds.wrong);
-          return;
-        }
         if (item.name == "backpack") {
           item.pos.update(-Infinity, -Infinity);
           inventory.bag = item;
           inventory.passive_7 = getItem("empty", new Position(4, 18 * 7));
+        } else if (this.gameState.passiveSpace < 1) {
+          this.soundManager.playSound(sounds.wrong);
+          return;
         } else if (inventory.passive_1.name == "empty") {
           item.pos.update(4, 18 * 1);
           inventory.passive_1 = item;
