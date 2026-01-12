@@ -19,13 +19,13 @@ const consumableDic = {
     cost: 7,
     descriptionText: "Gain 1 heart.",
   }),
-  health_vial: new Consumable({
-    spriteSheetPos: new Position(8, 0),
-    name: "health_vial",
-    shopName: "Health Vial",
-    cost: 4,
-    descriptionText: "Gain 0.5 hearts.",
-  }),
+  // health_vial: new Consumable({
+  //   spriteSheetPos: new Position(8, 0),
+  //   name: "health_vial",
+  //   shopName: "Health Vial",
+  //   cost: 4,
+  //   descriptionText: "Gain 0.5 hearts.",
+  // }),
   time_potion: new TimePotion(),
   empty: new Consumable({
     spriteSheetPos: new Position(14, 0),

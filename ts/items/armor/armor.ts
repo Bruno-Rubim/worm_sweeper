@@ -6,6 +6,7 @@ export class Armor extends Item {
   defense: number;
   speedMult: number;
   reflection: number;
+  protection: number;
   spikes: number;
 
   constructor(args: {
@@ -17,15 +18,22 @@ export class Armor extends Item {
     speedMult?: number;
     reflection?: number;
     spikes?: number;
+    protection?: number;
   }) {
     args.defense = args.defense ?? 0;
     args.reflection = args.reflection ?? 0;
+    args.spikes = args.spikes ?? 0;
+    args.protection = args.protection ?? 0;
     args.speedMult = args.speedMult ?? 1;
     super({
       ...args,
       pos: new Position(GAMEWIDTH - 20, 54),
       descriptionText:
         (args.defense > 0 ? "$dfsDefense: " + args.defense + "\n" : "") +
+        (args.protection > 0
+          ? "$proProtection: " + args.protection + "\n"
+          : "") +
+        (args.spikes > 0 ? "$spkSpikes: " + args.spikes + "\n" : "") +
         (args.reflection ?? 0 > 0
           ? "$refDefense: " + args.reflection + "\n"
           : "") +
@@ -42,7 +50,8 @@ export class Armor extends Item {
     this.defense = args.defense;
     this.speedMult = args.speedMult;
     this.reflection = args.reflection;
-    this.spikes = args.spikes ?? 0;
+    this.spikes = args.spikes;
+    this.protection = args.protection;
   }
 }
 
@@ -51,9 +60,10 @@ export const armorDic = {
     spriteSheetPos: new Position(0, 2),
     name: "chainmail",
     shopName: "Chainmail",
-    cost: 22,
+    cost: 25,
     defense: 1,
-    speedMult: 1.2,
+    protection: 1,
+    speedMult: 1.1,
   }),
   swift_vest: new Armor({
     spriteSheetPos: new Position(2, 2),
@@ -69,7 +79,8 @@ export const armorDic = {
     shopName: "Silver Chestplate",
     cost: 72,
     defense: 5,
-    speedMult: 1.3,
+    speedMult: 1.2,
+    protection: 3,
   }),
   empty: new Armor({
     spriteSheetPos: new Position(14, 2),

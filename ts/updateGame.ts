@@ -314,8 +314,10 @@ function performEnemyAttack(gameManager: GameManager, action: EnemyAtack) {
   // Defense
   const playerDefense = gameManager.gameState.battle.defense;
   const leftoverDefense = Math.max(0, playerDefense - damage);
-  damage = Math.max(0, damage - playerDefense);
   gameManager.gameState.battle.defense = leftoverDefense;
+
+  const playerProtection = gameManager.gameState.battle.protection;
+  damage = Math.max(0, damage - playerDefense - playerProtection);
 
   gameManager.gameState.health -= Math.max(0, damage);
   gameManager.levelManager.checkBattleEnd();
@@ -392,6 +394,9 @@ function sellItem(gameManager: GameManager, action: SellItem) {
       }
       if (inventory.passive_6 == action.item) {
         inventory.passive_6 = getItem("empty", new Position(4, 18 * 6));
+      }
+      if (inventory.passive_7 == action.item) {
+        inventory.passive_7 = getItem("empty", new Position(4, 18 * 7));
       }
     }
     gameManager.gameState.gold += utils.randomInt(4, 1);
