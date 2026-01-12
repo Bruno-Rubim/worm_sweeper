@@ -146,18 +146,6 @@ export default class BattleManager extends SceneManager {
       128,
       128
     );
-    if (!this.gameState.tiredTimer.ended && this.gameState.tiredTimer.started) {
-      let counterFrame = Math.floor(
-        Math.min(15, (this.gameState.tiredTimer.percentage / 100) * 16)
-      );
-      canvasManager.renderSpriteFromSheet(
-        sprites.counter_sheet,
-        new Position(GAMEWIDTH / 2 - 4, GAMEHEIGHT - BORDERTHICKBOTTOM - 22),
-        8,
-        8,
-        new Position(counterFrame % 8, Math.floor(counterFrame / 8))
-      );
-    }
 
     // Rendering defense stats
     if (
@@ -196,6 +184,25 @@ export default class BattleManager extends SceneManager {
         ),
         "$spk".repeat(roundedSpikes) + (spikes > roundedSpikes ? "$hsp" : ""),
         CENTER
+      );
+    }
+
+    // Renders cooldown counter
+    if (!this.gameState.tiredTimer.ended && this.gameState.tiredTimer.started) {
+      let counterFrame = Math.floor(
+        Math.min(15, (this.gameState.tiredTimer.percentage / 100) * 16)
+      );
+      canvasManager.renderSpriteFromSheet(
+        sprites.counter_sheet,
+        new Position(
+          GAMEWIDTH / 2 - 4,
+          GAMEHEIGHT -
+            BORDERTHICKBOTTOM -
+            (this.gameState.battle.spikes > 0 ? 31 : 22)
+        ),
+        8,
+        8,
+        new Position(counterFrame % 8, Math.floor(counterFrame / 8))
       );
     }
   };
