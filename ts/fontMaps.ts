@@ -1460,10 +1460,7 @@ export const fontMaps: Record<string, fontMap> = {
         pos: new Position(1, 1),
         width: 9,
       },
-      $slw: {
-        pos: new Position(2, 1),
-        width: 9,
-      },
+
       $dmg: {
         pos: new Position(3, 1),
         width: 9,
@@ -1482,6 +1479,10 @@ export const fontMaps: Record<string, fontMap> = {
       },
       $hhr: {
         pos: new Position(0, 2),
+        width: 9,
+      },
+      $slw: {
+        pos: new Position(1, 2),
         width: 9,
       },
       $hdf: {

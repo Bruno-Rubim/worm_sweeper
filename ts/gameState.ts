@@ -30,6 +30,8 @@ export type inventory = {
   passive_4: Item;
   passive_5: Item;
   passive_6: Item;
+  passive_7: Item;
+  bag: Item;
 };
 
 // Holds the current state of the game at any given time
@@ -72,6 +74,8 @@ export default class GameState {
     passive_4: getItem("empty", new Position(4, 18 * 4)),
     passive_5: getItem("empty", new Position(4, 18 * 5)),
     passive_6: getItem("empty", new Position(4, 18 * 6)),
+    passive_7: getItem("locked_slot", new Position(4, 18 * 7)),
+    bag: getItem("empty", new Position(-Infinity, -Infinity)),
   };
 
   constructor() {
@@ -148,6 +152,8 @@ export default class GameState {
       passive_4: getItem("empty", new Position(4, 18 * 4)),
       passive_5: getItem("empty", new Position(4, 18 * 5)),
       passive_6: getItem("empty", new Position(4, 18 * 6)),
+      passive_7: getItem("locked_slot", new Position(4, 18 * 7)),
+      bag: getItem("empty", new Position(-Infinity, -Infinity)),
     };
     this.level = new Level(0, this);
     this.gameOver = false;

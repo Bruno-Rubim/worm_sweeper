@@ -75,12 +75,13 @@ export default class Shop {
       gameState.inventory.weapon.name,
       gameState.inventory.shield.name,
       gameState.inventory.armor.name,
-      gameState.inventory.passive_1?.name,
-      gameState.inventory.passive_2?.name,
-      gameState.inventory.passive_3?.name,
-      gameState.inventory.passive_4?.name,
-      gameState.inventory.passive_5?.name,
-      gameState.inventory.passive_6?.name,
+      gameState.inventory.passive_1.name,
+      gameState.inventory.passive_2.name,
+      gameState.inventory.passive_3.name,
+      gameState.inventory.passive_4.name,
+      gameState.inventory.passive_5.name,
+      gameState.inventory.passive_6.name,
+      gameState.inventory.bag.name,
     ];
     this.gameState = gameState;
     this.items = utils

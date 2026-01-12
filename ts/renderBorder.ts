@@ -78,7 +78,7 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
 function renderItems(canvasManager: CanvasManager, gameState: GameState) {
   for (const key of Object.keys(gameState.inventory) as (keyof inventory)[]) {
     const item = gameState.inventory[key];
-    if (!item) {
+    if (!item || key == "bag") {
       continue;
     }
     item.render(canvasManager);
