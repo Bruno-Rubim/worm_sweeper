@@ -314,8 +314,10 @@ function performEnemyAttack(gameManager: GameManager, action: EnemyAtack) {
   // Defense
   const playerDefense = gameManager.gameState.battle.defense;
   const leftoverDefense = Math.max(0, playerDefense - damage);
-  damage = Math.max(0, damage - playerDefense);
   gameManager.gameState.battle.defense = leftoverDefense;
+
+  const playerProtection = gameManager.gameState.battle.protection;
+  damage = Math.max(0, damage - playerDefense - playerProtection);
 
   gameManager.gameState.health -= Math.max(0, damage);
   gameManager.levelManager.checkBattleEnd();

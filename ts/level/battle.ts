@@ -4,6 +4,7 @@ import { Enemy, PosionWorm, ScaleWorm, Worm } from "./enemy.js";
 
 export class Battle {
   enemies: Enemy[];
+  protection: number = 0;
   defense: number = 0;
   reflection: number = 0;
   spikes: number = 0;
@@ -21,10 +22,12 @@ export class Battle {
     this.enemies.push(arr[Math.min(x, utils.randomArrayId(arr))]!);
   }
   start(
+    initialProtection: number,
     initialDefense: number,
     initialReflection: number,
     initialSpikes: number
   ) {
+    this.protection = initialProtection;
     this.defense = initialDefense;
     this.reflection = initialReflection;
     this.spikes = initialSpikes;

@@ -43,7 +43,8 @@ export default class BattleManager extends SceneManager {
    * @param canvasManager
    */
   render = (canvasManager: CanvasManager) => {
-    if (!this.gameState.battle) {
+    const battle = this.gameState.battle;
+    if (!battle) {
       alert("this shouldn't happen outside of battle");
       return;
     }
@@ -54,7 +55,7 @@ export default class BattleManager extends SceneManager {
       GAMEWIDTH - BORDERTHICKLEFT - BORDERTHICKRIGHT,
       GAMEHEIGHT - BORDERTHICKTOP - BORDERTHICKBOTTOM
     );
-    this.gameState.battle.enemies.forEach((enemy) => {
+    battle.enemies.forEach((enemy) => {
       canvasManager.renderSpriteFromSheet(
         enemy.spriteSheet,
         enemy.pos,
@@ -148,28 +149,29 @@ export default class BattleManager extends SceneManager {
     );
 
     // Rendering defense stats
-    if (
-      this.gameState.battle.defense > 0 ||
-      this.gameState.battle.reflection > 0
-    ) {
-      const reflect = this.gameState.battle.reflection;
-      const defense = this.gameState.battle.defense;
+    if (battle.protection + battle.defense + battle.reflection > 0) {
+      const reflect = battle.reflection;
+      const defense = battle.defense;
+      const protection = battle.protection;
       const roundedReflect = Math.floor(reflect);
       const roundedDefense = Math.floor(defense);
+      const roundedProtection = Math.floor(protection);
       canvasManager.renderText(
         "icons",
         new Position(GAMEWIDTH / 2, GAMEHEIGHT - BORDERTHICKBOTTOM - 11),
         "$ref".repeat(roundedReflect) +
           (reflect > roundedReflect ? "$hrf" : "") +
           "$dfs".repeat(roundedDefense) +
-          (defense > roundedDefense ? "$hdf" : ""),
+          (defense > roundedDefense ? "$hdf" : "") +
+          "$pro".repeat(roundedProtection) +
+          (protection > roundedProtection ? "$hpr" : ""),
         CENTER
       );
     }
 
     // Rendering spikes
-    if (this.gameState.battle.spikes) {
-      const spikes = this.gameState.battle.spikes;
+    if (battle.spikes) {
+      const spikes = battle.spikes;
       const roundedSpikes = Math.floor(spikes);
       canvasManager.renderText(
         "icons",
@@ -177,8 +179,7 @@ export default class BattleManager extends SceneManager {
           GAMEWIDTH / 2,
           GAMEHEIGHT -
             BORDERTHICKBOTTOM -
-            (this.gameState.battle.defense + this.gameState.battle.reflection >
-            0
+            (battle.defense + battle.reflection + battle.protection > 0
               ? 20
               : 11)
         ),
@@ -196,9 +197,7 @@ export default class BattleManager extends SceneManager {
         sprites.counter_sheet,
         new Position(
           GAMEWIDTH / 2 - 4,
-          GAMEHEIGHT -
-            BORDERTHICKBOTTOM -
-            (this.gameState.battle.spikes > 0 ? 31 : 22)
+          GAMEHEIGHT - BORDERTHICKBOTTOM - (battle.spikes > 0 ? 31 : 22)
         ),
         8,
         8,
@@ -246,16 +245,16 @@ export default class BattleManager extends SceneManager {
     const weapon = this.gameState.inventory.weapon;
     let damage = weapon.totalDamage;
 
+    const playerReflection = this.gameState.battle.reflection;
+    const playerDefense = this.gameState.battle.defense;
+    const playerProtection = this.gameState.battle.protection;
+
     let enemySpikeDamage = enemy.spikes;
-    let reflectDamage = Math.min(
-      this.gameState.battle.reflection,
-      enemySpikeDamage
-    );
+    let reflectDamage = Math.min(playerReflection, enemySpikeDamage);
     enemy.health -= reflectDamage;
 
     this.gameState.battle.reflection -= reflectDamage;
 
-    const playerDefense = this.gameState.battle.defense;
     enemySpikeDamage -= reflectDamage;
     this.gameState.battle.defense = Math.max(
       0,
@@ -263,7 +262,7 @@ export default class BattleManager extends SceneManager {
     );
     enemySpikeDamage = Math.max(0, enemySpikeDamage - playerDefense);
 
-    this.gameState.health -= enemySpikeDamage;
+    this.gameState.health -= Math.max(0, enemySpikeDamage - playerProtection);
     enemy.spikes = 0;
 
     enemy.health -= damage;

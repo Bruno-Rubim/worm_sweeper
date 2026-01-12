@@ -210,6 +210,7 @@ export class LevelManager extends GameObject {
             this.gameState.level.cave.updateAllStats();
             this.currentSceneManager = this.battleManager;
             this.gameState.battle?.start(
+              this.gameState.inventory.armor.protection,
               this.gameState.inventory.armor.defense +
                 (this.gameState.hasItem("safety_helmet") ? 1 : 0),
               this.gameState.inventory.armor.reflection,
