@@ -292,11 +292,11 @@ export class LevelManager extends GameObject {
     if (this.gameState.inBook) {
       return new ChangeCursorState(CURSORBOOK);
     }
-    if (this.gameState.inTransition) {
-      return new ChangeCursorState(CURSORNONE);
-    }
     if (this.gameState.gameOver || this.gameState.paused) {
       return new ChangeCursorState(CURSORDEFAULT);
+    }
+    if (this.gameState.inTransition) {
+      return new ChangeCursorState(CURSORNONE);
     }
     return this.currentSceneManager.handleHover(cursorPos);
   };
@@ -321,9 +321,6 @@ export class LevelManager extends GameObject {
     cursorPos: Position,
     button: typeof CLICKRIGHT | typeof CLICKLEFT
   ) => {
-    if (this.gameState.paused) {
-      return;
-    }
     if (this.gameState.inBook) {
       if (button == CLICKLEFT) {
         this.gameState.bookPage = Math.min(
@@ -333,6 +330,9 @@ export class LevelManager extends GameObject {
       } else {
         this.gameState.bookPage = Math.max(0, this.gameState.bookPage - 1);
       }
+      return;
+    }
+    if (this.gameState.paused) {
       return;
     }
     if (this.gameState.gameOver) {

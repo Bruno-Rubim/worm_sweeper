@@ -36,9 +36,9 @@ export const weaponDic = {
     bigSprite: sprites.big_sword_cactus,
     name: "cactus",
     shopName: "Cactus",
-    cost: 13,
+    cost: 19,
     damage: 0.5,
-    spikes: 0.5,
+    spikes: 1,
     cooldown: 1,
   }),
   // mace: new Weapon({
