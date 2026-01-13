@@ -177,6 +177,7 @@ export default class GameState {
       this.inventory.passive_4.name,
       this.inventory.passive_5.name,
       this.inventory.passive_6.name,
+      this.inventory.passive_7.name,
       this.inventory.consumable.name,
       this.inventory.weapon.name,
       this.inventory.shield.name,
