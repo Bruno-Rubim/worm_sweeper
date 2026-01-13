@@ -336,9 +336,6 @@ export default class Cave {
       window.alert("not enough worms");
     }
     let wormsPlaced = 0;
-    if (this.wormQuantity > Math.floor((this.size * this.size) / 3)) {
-      this.wormQuantity = Math.floor((this.size * this.size) / 3);
-    }
     for (let i = 0; wormsPlaced < this.wormQuantity && i < 300; i++) {
       const r = utils.randomArrayId(this.blocksCanPlaceWorm);
       const block = this.blocksCanPlaceWorm[r]!;
@@ -369,7 +366,7 @@ export default class Cave {
 
   start(startPos: Position, passiveItemNames: string[]) {
     if (passiveItemNames.includes("gold_bug")) {
-      this.wormQuantity = Math.ceil(this.wormQuantity * 1.3);
+      this.wormQuantity = Math.ceil(this.wormQuantity * 1.2);
       this.wormsLeft = this.wormQuantity;
       this.goldChance += 0.3;
       this.blocksLeft = this.size * this.size - this.wormsLeft;
