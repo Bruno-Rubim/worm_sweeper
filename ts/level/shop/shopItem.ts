@@ -1,18 +1,18 @@
-import type CanvasManager from "../canvasManager.js";
-import GameObject from "../gameObject.js";
-import { CENTER, CLICKLEFT, type cursorClick } from "../global.js";
-import { Action, BuyShopItem, ShopItemDescription } from "../action.js";
-import Position from "../position.js";
-import { sprites } from "../sprites.js";
-import timeTracker from "../timer/timeTracker.js";
-import { armorDic } from "./armor/armor.js";
-import { timerQueue } from "../timer/timerQueue.js";
-import { SilverBell } from "./passives/silverBell.js";
-import { itemDic } from "./passives/dict.js";
-import type { Item } from "./item.js";
-import { weaponDic } from "./weapon/dict.js";
-import { shieldDic } from "./shield/shield.js";
-import consumableDic from "./consumable/dict.js";
+import type CanvasManager from "../../canvasManager.js";
+import GameObject from "../../gameObject.js";
+import { CENTER, CLICKLEFT, type cursorClick } from "../../global.js";
+import { Action, BuyShopItem, ShopItemDescription } from "../../action.js";
+import Position from "../../position.js";
+import { sprites } from "../../sprites.js";
+import timeTracker from "../../timer/timeTracker.js";
+import { armorDic } from "../../items/armor/armor.js";
+import { timerQueue } from "../../timer/timerQueue.js";
+import { SilverBell } from "../../items/passives/silverBell.js";
+import { itemDic } from "../../items/passives/dict.js";
+import type { Item } from "../../items/item.js";
+import { weaponDic } from "../../items/weapon/dict.js";
+import { shieldDic } from "../../items/shield/shield.js";
+import consumableDic from "../../items/consumable/dict.js";
 
 type itemName =
   | keyof typeof armorDic
@@ -41,9 +41,6 @@ export class ShopItem extends GameObject {
     });
     this.item = items[itemName];
     this.clickFunction = (cursorPos: Position, button: cursorClick) => {
-      if (this.item instanceof SilverBell) {
-        timerQueue.push(this.item.ringTimer);
-      }
       if (button == CLICKLEFT) return new BuyShopItem(this);
     };
   }

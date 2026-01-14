@@ -1,7 +1,7 @@
-import { EnemyAtack } from "../action.js";
-import Position from "../position.js";
-import { sprites, type Sprite } from "../sprites.js";
-import { Timer } from "../timer/timer.js";
+import { EnemyAtack } from "../../action.js";
+import Position from "../../position.js";
+import { sprites, type Sprite } from "../../sprites.js";
+import { Timer } from "../../timer/timer.js";
 
 export class Enemy {
   health: number;
@@ -37,6 +37,18 @@ export class Enemy {
         return new EnemyAtack(this.damage, this);
       },
       loop: true,
+    });
+  }
+}
+
+export class TestingWorm extends Enemy {
+  constructor(depth: number) {
+    super({
+      pos: new Position(56, 36),
+      spriteSheet: sprites.enemy_worm,
+      health: 500,
+      damage: 0,
+      attackCooldown: 5,
     });
   }
 }

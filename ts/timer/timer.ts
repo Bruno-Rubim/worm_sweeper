@@ -1,4 +1,5 @@
 import type { Action } from "../action.js";
+import { timerQueue } from "./timerQueue.js";
 import timeTracker from "./timeTracker.js";
 
 export const GAMETIMERSYNC = "gameTimerSync";
@@ -35,6 +36,7 @@ export class Timer {
     this.loop = args.loop;
     this.deleteAtEnd = args.deleteAtEnd;
     this.classes = args.classes;
+    timerQueue.push(this);
   }
 
   get goalTics() {
@@ -61,8 +63,16 @@ export class Timer {
     return this.ticsRemaining / timeTracker.ticsPerSecond;
   }
 
-  get percentage() {
+  get currentSecs() {
+    return this.goalSecs - this.secondsRemaining;
+  }
+
+  get percentageLeft() {
     return Math.max(0, (this.ticsRemaining / this.goalTics) * 100);
+  }
+
+  get percentageProgress() {
+    return 100 - this.percentageLeft;
   }
 
   get inMotion() {

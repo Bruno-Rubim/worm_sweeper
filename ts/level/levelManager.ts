@@ -27,10 +27,10 @@ import { Timer } from "../timer/timer.js";
 import { timerQueue } from "../timer/timerQueue.js";
 
 import type SceneManager from "./sceneManager.js";
-import CaveManager from "./caveManager.js";
-import BattleManager from "./battleManager.js";
-import ShopManager from "./shopManager.js";
-import { Battle } from "./battle.js";
+import CaveManager from "./cave/caveManager.js";
+import BattleManager from "./battle/battleManager.js";
+import ShopManager from "./shop/shopManager.js";
+import { Battle } from "./battle/battle.js";
 import type { SoundManager } from "../soundManager.js";
 import sounds from "../sounds.js";
 import { bookPages } from "../bookPages.js";
@@ -184,12 +184,10 @@ export class LevelManager extends GameObject {
             this.gameState.inTransition = false;
           },
         });
-        timerQueue.push(transitionFuncTimer, transitionEndTimer);
         transitionFuncTimer.start();
         transitionEndTimer.start();
       },
     });
-    timerQueue.push(delayTimer);
     delayTimer.start();
   }
 

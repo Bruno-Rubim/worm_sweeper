@@ -5,7 +5,7 @@ import Position from "./position.js";
 import Level from "./level/level.js";
 import { GAMEWIDTH } from "./global.js";
 import { GAMETIMERSYNC, Timer } from "./timer/timer.js";
-import { Battle } from "./level/battle.js";
+import { Battle } from "./level/battle/battle.js";
 import { timerQueue } from "./timer/timerQueue.js";
 import timeTracker from "./timer/timeTracker.js";
 import { getItem } from "./items/passives/dict.js";
@@ -46,10 +46,10 @@ export default class GameState {
   inTransition: boolean = false;
   currentScene: "cave" | "shop" | "battle" = "cave";
 
-  battle: Battle | null = null;
+  battle: Battle = new Battle(0, 1);
   tiredTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
-  attackAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
-  defenseAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
+  attackAnimationTimer = new Timer({ goalSecs: 0.2, deleteAtEnd: false });
+  defenseAnimationTimer = new Timer({ goalSecs: 0.2, deleteAtEnd: false });
 
   paused: boolean = false;
   started: boolean = false;
@@ -86,10 +86,6 @@ export default class GameState {
       deleteAtEnd: false,
     });
     this.level = new Level(0, this);
-    timerQueue.push(this.gameTimer);
-    timerQueue.push(this.tiredTimer);
-    timerQueue.push(this.attackAnimationTimer);
-    timerQueue.push(this.defenseAnimationTimer);
   }
 
   /**
@@ -134,7 +130,7 @@ export default class GameState {
     this.attackAnimationTimer.restart();
     this.currentScene = "cave";
     this.inTransition = false;
-    this.battle = null;
+    this.battle = new Battle(0, 1);
     this.holding = null;
     this.deathCount++;
     this.gold = 0;
@@ -159,10 +155,6 @@ export default class GameState {
     };
     this.level = new Level(0, this);
     this.gameOver = false;
-    timerQueue.push(this.gameTimer);
-    timerQueue.push(this.tiredTimer);
-    timerQueue.push(this.attackAnimationTimer);
-    timerQueue.push(this.defenseAnimationTimer);
     timeTracker.unpause();
   }
 

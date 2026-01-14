@@ -1,3 +1,4 @@
+import { ActionBar } from "../actionBar.js";
 import Position from "../../position.js";
 import { sprites } from "../../sprites.js";
 import { Timer } from "../../timer/timer.js";
@@ -15,6 +16,10 @@ export default class TimeBlade extends Weapon {
       cost: 52,
       damage: 1,
       cooldown: 2.8,
+      actionBar: new ActionBar(3, [
+        { startPerc: 0.7, widthPerc: 0.6, type: "green" },
+        { startPerc: 1.5, widthPerc: 0.3, type: "green" },
+      ]),
     });
     this.descriptionText = "";
     this.descFontSize = 0.4;

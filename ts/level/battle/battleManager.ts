@@ -1,7 +1,7 @@
-import { ChangeCursorState, ChangeScene } from "../action.js";
-import type CanvasManager from "../canvasManager.js";
-import { CURSORBATTLE } from "../cursor.js";
-import type GameState from "../gameState.js";
+import { ChangeCursorState, ChangeScene } from "../../action.js";
+import type CanvasManager from "../../canvasManager.js";
+import { CURSORBATTLE } from "../../cursor.js";
+import type GameState from "../../gameState.js";
 import {
   BORDERTHICKBOTTOM,
   BORDERTHICKLEFT,
@@ -13,18 +13,19 @@ import {
   GAMEHEIGHT,
   GAMEWIDTH,
   LEFT,
-} from "../global.js";
-import Bomb from "../items/consumable/bomb.js";
-import Position from "../position.js";
-import type { SoundManager } from "../soundManager.js";
-import sounds from "../sounds.js";
-import { sprites } from "../sprites.js";
-import { Timer } from "../timer/timer.js";
-import { timerQueue } from "../timer/timerQueue.js";
-import timeTracker from "../timer/timeTracker.js";
-import { checkPlayerDead } from "../updateGame.js";
-import { utils } from "../utils.js";
-import SceneManager from "./sceneManager.js";
+} from "../../global.js";
+import Bomb from "../../items/consumable/bomb.js";
+import Position from "../../position.js";
+import type { SoundManager } from "../../soundManager.js";
+import sounds from "../../sounds.js";
+import { sprites } from "../../sprites.js";
+import { Timer } from "../../timer/timer.js";
+import { timerQueue } from "../../timer/timerQueue.js";
+import timeTracker from "../../timer/timeTracker.js";
+import { checkPlayerDead } from "../../updateGame.js";
+import { utils } from "../../utils.js";
+import SceneManager from "../sceneManager.js";
+import { ActionBar } from "../../items/actionBar.js";
 
 // Manages rendering and interactions with the currentBattle scene of the gameState
 export default class BattleManager extends SceneManager {
@@ -48,13 +49,14 @@ export default class BattleManager extends SceneManager {
       alert("this shouldn't happen outside of battle");
       return;
     }
-    // Render enemies
+    // Render background
     canvasManager.renderSprite(
       sprites.bg_battle,
       new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
       GAMEWIDTH - BORDERTHICKLEFT - BORDERTHICKRIGHT,
       GAMEHEIGHT - BORDERTHICKTOP - BORDERTHICKBOTTOM
     );
+    // Render enemies
     battle.enemies.forEach((enemy) => {
       canvasManager.renderSpriteFromSheet(
         enemy.spriteSheet,
@@ -110,7 +112,7 @@ export default class BattleManager extends SceneManager {
         LEFT
       );
       let counterFrame = Math.floor(
-        Math.min(15, (enemy.cooldownTimer.percentage / 100) * 16)
+        Math.min(15, (enemy.cooldownTimer.percentageLeft / 100) * 16)
       );
       canvasManager.renderSpriteFromSheet(
         sprites.counter_sheet,
@@ -188,10 +190,15 @@ export default class BattleManager extends SceneManager {
       );
     }
 
+    // Render action bar
+    if (this.gameState.battle?.actionBar?.markerTimer.inMotion) {
+      this.gameState.battle.actionBar.render(canvasManager);
+    }
+
     // Renders cooldown counter
     if (!this.gameState.tiredTimer.ended && this.gameState.tiredTimer.started) {
       let counterFrame = Math.floor(
-        Math.min(15, (this.gameState.tiredTimer.percentage / 100) * 16)
+        Math.min(15, (this.gameState.tiredTimer.percentageLeft / 100) * 16)
       );
       canvasManager.renderSpriteFromSheet(
         sprites.counter_sheet,
@@ -240,47 +247,31 @@ export default class BattleManager extends SceneManager {
       alert("this shouldn't happen outside of battle");
       return;
     }
+
+    const weapon = this.gameState.inventory.weapon;
+    const actionBar = this.gameState.battle.actionBar;
+
+    if (!actionBar?.started) {
+      this.gameState.battle.actionBar = new ActionBar(
+        weapon.cooldown * this.gameState.inventory.armor.speedMult,
+        weapon.actionHighlights
+      );
+      this.gameState.battle.actionBar.start();
+      return;
+    }
+
     const rId = utils.randomArrayId(this.gameState.battle.enemies);
     const enemy = this.gameState.battle.enemies[rId]!;
-    const weapon = this.gameState.inventory.weapon;
-    let damage = weapon.totalDamage;
 
-    const playerReflection = this.gameState.battle.reflection;
-    const playerDefense = this.gameState.battle.defense;
-    const playerProtection = this.gameState.battle.protection;
+    let checkResult = actionBar.actionCheck();
+    if (checkResult) {
+      this.gameState.attackAnimationTimer.start();
+      enemy.health -= checkResult.value;
+      this.gameState.battle.spikes += weapon.spikes;
+    } else {
+      this.soundManager.playSound(sounds.wrong);
+    }
 
-    let enemySpikeDamage = enemy.spikes;
-    let reflectDamage = Math.min(playerReflection, enemySpikeDamage);
-    enemy.health -= reflectDamage;
-
-    this.gameState.battle.reflection -= reflectDamage;
-
-    enemySpikeDamage -= reflectDamage;
-    this.gameState.battle.defense = Math.max(
-      0,
-      playerDefense - enemySpikeDamage
-    );
-    enemySpikeDamage = Math.max(0, enemySpikeDamage - playerDefense);
-
-    this.gameState.health -= Math.max(0, enemySpikeDamage - playerProtection);
-    enemy.spikes = 0;
-
-    enemy.health -= damage;
-    enemy.damagedTimer.start();
-    timerQueue.push(enemy.damagedTimer);
-
-    // Spikes
-    this.gameState.battle.spikes += weapon.spikes;
-
-    // Weapon animation
-    this.gameState.attackAnimationTimer.goalSecs = weapon.cooldown / 3;
-    this.gameState.attackAnimationTimer.start();
-
-    // Cooldown
-    const tiredTimer = this.gameState.tiredTimer;
-    tiredTimer.goalSecs =
-      weapon.cooldown * this.gameState.inventory.armor.speedMult;
-    tiredTimer.start();
     return this.checkBattleEnd();
   }
 
@@ -326,7 +317,6 @@ export default class BattleManager extends SceneManager {
     this.soundManager.playSound(sounds.explosion);
     enemy.health -= 5;
     enemy.damagedTimer.start();
-    timerQueue.push(enemy.damagedTimer);
     tiredTimer.goalSecs = 2 - 2 * this.gameState.inventory.armor.speedMult;
     tiredTimer.goalSecs = 2 - this.gameState.inventory.armor.speedMult;
     tiredTimer.start();
@@ -354,7 +344,6 @@ export default class BattleManager extends SceneManager {
         this.stunTicStart = null;
       },
     });
-    timerQueue.push(stunTimer);
     stunTimer.start();
     this.stunTicStart = timeTracker.currentGameTic;
   }
@@ -365,6 +354,26 @@ export default class BattleManager extends SceneManager {
    * @param button
    * @returns
    */
+  handleClick = (
+    cursorPos: Position,
+    button: typeof CLICKRIGHT | typeof CLICKLEFT
+  ) => {
+    if (!this.gameState.battle) {
+      alert("this shouldn't happen outside of battle");
+      return;
+    }
+    if (this.gameState.tiredTimer.inMotion) {
+      return;
+    }
+    if (button == CLICKLEFT) {
+      if (this.gameState.holding instanceof Bomb) {
+        this.gameState.holding = null;
+        return this.bomb();
+      }
+      return this.playerAttack();
+    }
+  };
+
   handleHeld = (
     cursorPos: Position,
     button: typeof CLICKRIGHT | typeof CLICKLEFT
@@ -373,15 +382,12 @@ export default class BattleManager extends SceneManager {
       alert("this shouldn't happen outside of battle");
       return;
     }
-    const tiredTimer = this.gameState.tiredTimer;
-    if (tiredTimer.ended || !tiredTimer.started) {
-      if (button == CLICKLEFT) {
-        if (this.gameState.holding instanceof Bomb) {
-          this.gameState.holding = null;
-          return this.bomb();
-        }
-        return this.playerAttack();
-      } else {
+
+    if (
+      !this.gameState.battle.actionBar?.markerTimer.inMotion &&
+      !this.gameState.tiredTimer.inMotion
+    ) {
+      if (button == CLICKRIGHT) {
         return this.playerDefend();
       }
     }

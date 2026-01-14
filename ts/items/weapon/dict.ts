@@ -1,3 +1,4 @@
+import { ActionBar } from "../actionBar.js";
 import Position from "../../position.js";
 import { sprites } from "../../sprites.js";
 import TimeBlade from "./timeBlade.js";
@@ -11,7 +12,11 @@ export const weaponDic = {
     shopName: "",
     cost: 0,
     damage: 1,
-    cooldown: 2,
+    cooldown: 2.5,
+    actionHighlights: [
+      { startPerc: 30, widthPerc: 20, type: "damage", value: 1 },
+      { startPerc: 80, widthPerc: 3, type: "damage", value: 1 },
+    ],
   }),
   big_sword: new Weapon({
     spriteSheetPos: new Position(2, 3),
@@ -21,6 +26,11 @@ export const weaponDic = {
     cost: 50,
     damage: 3,
     cooldown: 3.2,
+    actionHighlights: [
+      { startPerc: 20, widthPerc: 15, type: "damage", value: 1 },
+      { startPerc: 50, widthPerc: 15, type: "damage", value: 1 },
+      { startPerc: 80, widthPerc: 15, type: "damage", value: 1 },
+    ],
   }),
   dagger: new Weapon({
     spriteSheetPos: new Position(4, 3),
@@ -30,6 +40,10 @@ export const weaponDic = {
     cost: 37,
     damage: 1,
     cooldown: 1.3,
+    actionHighlights: [
+      { startPerc: 15, widthPerc: 3, type: "damage", value: 1 },
+      { startPerc: 80, widthPerc: 10, type: "damage", value: 1 },
+    ],
   }),
   cactus: new Weapon({
     spriteSheetPos: new Position(10, 3),
@@ -40,15 +54,9 @@ export const weaponDic = {
     damage: 0.5,
     spikes: 1,
     cooldown: 1,
+    actionHighlights: [
+      { startPerc: 30, widthPerc: 10, type: "damage", value: 0.5 },
+    ],
   }),
-  // mace: new Weapon({
-  //   spriteSheetPos: new Position(8, 3),
-  //   bigSprite: sprites.big_sword_dagger,
-  //   name: "mace",
-  //   shopName: "Mace",
-  //   cost: 50,
-  //   damage: 4,
-  //   cooldown: 5,
-  // }),
   time_blade: new TimeBlade(),
 };

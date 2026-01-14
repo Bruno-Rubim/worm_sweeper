@@ -295,7 +295,6 @@ function performEnemyAttack(gameManager: GameManager, action: EnemyAtack) {
     return;
   }
   action.enemy.attackAnimTimer.start();
-  timerQueue.push(action.enemy.attackAnimTimer);
   let damage = action.damage;
 
   // Spikes

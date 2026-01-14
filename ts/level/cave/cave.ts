@@ -5,9 +5,9 @@ import Block, {
   CONTENTWATER,
   CONTENTWORM,
 } from "./block.js";
-import Position from "../position.js";
-import { StartBattle } from "../action.js";
-import { utils } from "../utils.js";
+import Position from "../../position.js";
+import { StartBattle } from "../../action.js";
+import { utils } from "../../utils.js";
 
 type breakResult = {
   battle: StartBattle;

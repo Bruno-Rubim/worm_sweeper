@@ -29,9 +29,6 @@ export class SilverBell extends Item {
       descriptionText:
         "Reveals the location of doors, also stuns enemies if used during battle. Recharges outside of shop every 60 seconds.",
     });
-    if (!timerQueue.includes(this.ringTimer)) {
-      timerQueue.push(this.ringTimer);
-    }
   }
 
   render(canvasManager: CanvasManager): void {

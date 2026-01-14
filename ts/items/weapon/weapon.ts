@@ -1,4 +1,5 @@
 import { GAMEWIDTH } from "../../global.js";
+import { type highlight } from "../actionBar.js";
 import Position from "../../position.js";
 import { type Sprite } from "../../sprites.js";
 import { Item } from ".././item.js";
@@ -8,6 +9,7 @@ export class Weapon extends Item {
   damage: number;
   spikes: number;
   cooldown: number;
+  actionHighlights: highlight[];
 
   constructor(args: {
     spriteSheetPos: Position;
@@ -16,8 +18,9 @@ export class Weapon extends Item {
     shopName: string;
     cost: number;
     damage: number;
-    spikes?: number;
+    actionHighlights: highlight[];
     cooldown: number;
+    spikes?: number;
   }) {
     super({
       ...args,
@@ -26,7 +29,7 @@ export class Weapon extends Item {
         "$dmgDamage: " +
         args.damage +
         (args.spikes ?? 0 > 0 ? "\n$spkSpikes: " + args.spikes : "") +
-        "\n$spdCooldown: " +
+        "\n$spdAttack Time: " +
         args.cooldown +
         "s",
     });
@@ -35,6 +38,7 @@ export class Weapon extends Item {
     this.spikes = args.spikes ?? 0;
     this.cooldown = args.cooldown;
     this.descFontSize = 0.6;
+    this.actionHighlights = args.actionHighlights;
   }
 
   get totalDamage() {

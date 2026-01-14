@@ -4,25 +4,25 @@ import {
   ChangeScene,
   NextLevel,
   StartBattle,
-} from "../action.js";
-import type CanvasManager from "../canvasManager.js";
+} from "../../action.js";
+import type CanvasManager from "../../canvasManager.js";
 import {
   CURSORARROW,
   CURSORDEFAULT,
   CURSORDETONATOR,
   CURSORGOLDWATER,
   CURSORPICAXE,
-} from "../cursor.js";
-import type GameState from "../gameState.js";
-import { CLICKLEFT, type CLICKRIGHT } from "../global.js";
-import Bomb from "../items/consumable/bomb.js";
-import { Chisel } from "../items/passives/chisel.js";
-import Position from "../position.js";
-import type { SoundManager } from "../soundManager.js";
-import sounds from "../sounds.js";
-import { sprites } from "../sprites.js";
-import { Timer } from "../timer/timer.js";
-import { timerQueue } from "../timer/timerQueue.js";
+} from "../../cursor.js";
+import type GameState from "../../gameState.js";
+import { CLICKLEFT, type CLICKRIGHT } from "../../global.js";
+import Bomb from "../../items/consumable/bomb.js";
+import { Chisel } from "../../items/passives/chisel.js";
+import Position from "../../position.js";
+import type { SoundManager } from "../../soundManager.js";
+import sounds from "../../sounds.js";
+import { sprites } from "../../sprites.js";
+import { Timer } from "../../timer/timer.js";
+import { timerQueue } from "../../timer/timerQueue.js";
 import {
   blockSheetPos,
   CONTENTDOOREXIT,
@@ -32,7 +32,7 @@ import {
   CONTENTEMPTY,
   CONTENTWATER,
 } from "./block.js";
-import SceneManager from "./sceneManager.js";
+import SceneManager from "../sceneManager.js";
 
 // Handles rendering and interactions with the cave scene of the current Level
 export default class CaveManager extends SceneManager {
@@ -164,7 +164,7 @@ export default class CaveManager extends SceneManager {
         framePos = new Position(
           Math.min(
             2,
-            Math.floor(this.bomb.timer.percentage / ((1 / 3) * 100))
+            Math.floor(this.bomb.timer.percentageLeft / ((1 / 3) * 100))
           ) + 1,
           0
         );
@@ -206,7 +206,7 @@ export default class CaveManager extends SceneManager {
         blockSize,
         blockSize,
         framePos.add(
-          Math.floor(this.activeChisel.timer.percentage / (100 / 6)) % 2,
+          Math.floor(this.activeChisel.timer.percentageLeft / (100 / 6)) % 2,
           0
         ),
         16,
@@ -256,7 +256,6 @@ export default class CaveManager extends SceneManager {
           }),
           hoverScreenPos: null,
         };
-        timerQueue.push(this.bomb?.timer);
         this.bomb.timer.start();
         this.soundManager.playSound(sounds.bomb_fuse);
         this.gameState.holding = null;
@@ -280,7 +279,6 @@ export default class CaveManager extends SceneManager {
             timer: chisel.chiselTimer,
             chisel: chisel,
           };
-          timerQueue.push(chisel.chiselTimer);
           chisel.chiselTimer.start();
           this.gameState.holding = null;
         }
