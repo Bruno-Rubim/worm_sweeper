@@ -1,6 +1,7 @@
 import { ChangeCursorState, ChangeScene } from "../action.js";
 import type CanvasManager from "../canvasManager.js";
 import { CURSORBATTLE } from "../cursor.js";
+import GameObject from "../gameObject.js";
 import type GameState from "../gameState.js";
 import {
   BORDERTHICKBOTTOM,
@@ -25,6 +26,34 @@ import timeTracker from "../timer/timeTracker.js";
 import { checkPlayerDead } from "../updateGame.js";
 import { utils } from "../utils.js";
 import SceneManager from "./sceneManager.js";
+
+const damageOverlay = new GameObject({
+  sprite: sprites.damage_sheet,
+  height: 128,
+  width: 128,
+  pos: new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
+});
+
+damageOverlay.render = (canvasManager: CanvasManager) => {
+  if (damageOverlay.hidden) {
+    return;
+  }
+  canvasManager.renderAnimationFrame(
+    damageOverlay.sprite,
+    damageOverlay.pos,
+    damageOverlay.width,
+    damageOverlay.height,
+    4,
+    1,
+    damageOverlay.firstAnimationTic,
+    timeTracker.currentGameTic,
+    1,
+    new Position(),
+    false
+  );
+};
+
+damageOverlay.hidden;
 
 // Manages rendering and interactions with the currentBattle scene of the gameState
 export default class BattleManager extends SceneManager {
@@ -204,6 +233,10 @@ export default class BattleManager extends SceneManager {
         new Position(counterFrame % 8, Math.floor(counterFrame / 8))
       );
     }
+
+    // Render damage overlay
+
+    damageOverlay.render(canvasManager);
   };
 
   /**
@@ -231,6 +264,11 @@ export default class BattleManager extends SceneManager {
     }
   }
 
+  playDamageOverlay() {
+    damageOverlay.hidden = false;
+    damageOverlay.firstAnimationTic = timeTracker.currentGameTic;
+  }
+
   /**
    * Deals damage to a random enemy and starts the tired timer according to current weapon stats
    * @returns
@@ -240,10 +278,13 @@ export default class BattleManager extends SceneManager {
       alert("this shouldn't happen outside of battle");
       return;
     }
+
     const rId = utils.randomArrayId(this.gameState.battle.enemies);
     const enemy = this.gameState.battle.enemies[rId]!;
     const weapon = this.gameState.inventory.weapon;
     let damage = weapon.totalDamage;
+
+    this.soundManager.playSound(weapon.sound);
 
     const playerReflection = this.gameState.battle.reflection;
     const playerDefense = this.gameState.battle.defense;
@@ -262,7 +303,11 @@ export default class BattleManager extends SceneManager {
     );
     enemySpikeDamage = Math.max(0, enemySpikeDamage - playerDefense);
 
-    this.gameState.health -= Math.max(0, enemySpikeDamage - playerProtection);
+    const takenDamage = Math.max(0, enemySpikeDamage - playerProtection);
+    if (takenDamage > 0) {
+      this.gameState.health -= takenDamage;
+      this.playDamageOverlay();
+    }
     enemy.spikes = 0;
 
     enemy.health -= damage;

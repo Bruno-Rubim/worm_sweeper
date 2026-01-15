@@ -176,6 +176,22 @@ export const sounds = {
     volumeMult: 0.4,
     fixedPitches: [1],
   }),
+  stab: new Sound({
+    soundName: "stab",
+    volumeMult: 0.1,
+    pitchRange: {
+      min: 0.9,
+      max: 1.3,
+    },
+  }),
+  bite: new Sound({
+    soundName: "bite",
+    volumeMult: 0.5,
+    pitchRange: {
+      min: 0.8,
+      max: 1.4,
+    },
+  }),
 };
 
 export const music = {
