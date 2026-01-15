@@ -449,7 +449,7 @@ export default class BattleManager extends SceneManager {
     }
 
     this.gameState.health -= Math.max(0, damage);
-    this.checkBattleEnd();
+    return this.checkBattleEnd();
   }
 
   /**

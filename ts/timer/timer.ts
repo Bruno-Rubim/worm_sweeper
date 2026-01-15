@@ -124,4 +124,6 @@ export class Timer {
     this.totalPauseLapse = 0;
     this.extraTics = 0;
   }
+
+  delete() {}
 }

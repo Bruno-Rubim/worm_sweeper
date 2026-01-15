@@ -250,7 +250,7 @@ export class LevelManager extends GameObject {
     } else if (action instanceof NextLevel) {
       this.screenTransition(() => {
         this.gameState.level = this.gameState.level.nextLevel();
-        this.gameState.gameTimer.addSecs(60);
+        this.gameState.gameTimer.addSecs(15);
         this.gameState.level.cave.start(
           action.starterGridPos,
           this.gameState.itemNames

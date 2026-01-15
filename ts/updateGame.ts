@@ -21,6 +21,7 @@ import {
   PickupChisel,
   PickupBomb,
   SellItem,
+  ChangeScene,
 } from "./action.js";
 import timeTracker from "./timer/timeTracker.js";
 import { timerQueue } from "./timer/timerQueue.js";
@@ -290,7 +291,7 @@ export function checkPlayerDead(gameState: GameState) {
  * @returns
  */
 function performEnemyAttack(gameManager: GameManager, action: EnemyAtack) {
-  gameManager.levelManager.battleManager.enemyAtack(action);
+  return gameManager.levelManager.battleManager.enemyAtack(action);
 }
 
 /**
@@ -411,7 +412,10 @@ function handleAction(
     return;
   }
   if (action instanceof EnemyAtack) {
-    performEnemyAttack(gameManager, action);
+    const changeScene = performEnemyAttack(gameManager, action);
+    if (changeScene instanceof ChangeScene) {
+      handleAction(gameManager, changeScene);
+    }
     return;
   }
   if (action instanceof RingBell) {
@@ -428,6 +432,10 @@ function handleAction(
   }
   if (action instanceof SellItem) {
     sellItem(gameManager, action);
+    return;
+  }
+  if (action instanceof ChangeScene) {
+    gameManager.levelManager.handleAction(action);
     return;
   }
   console.warn("unhandled action", action);
