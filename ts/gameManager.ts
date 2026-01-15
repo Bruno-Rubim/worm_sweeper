@@ -2,14 +2,15 @@ import { LevelManager } from "./level/levelManager.js";
 import CanvasManager from "./canvasManager.js";
 import GameState from "./gameState.js";
 import { renderBorder } from "./renderBorder.js";
-import { timerQueue } from "./timer/timerQueue.js";
 import { SoundManager } from "./soundManager.js";
+import { TimerMnager } from "./timer/timerManager.js";
 
 // Object that holds all information of the game and its pieces
 export class GameManager {
   gameState = new GameState();
   soundManager = new SoundManager();
   levelManager = new LevelManager(this.gameState, this.soundManager);
+  timerManager = new TimerMnager();
 
   constructor() {
     document.querySelector("button")!.onclick = () => {
@@ -25,7 +26,7 @@ export class GameManager {
    * Clears the timer queue, restarts the gameState and replaces the levelManager
    */
   restart() {
-    timerQueue.splice(0, Infinity);
+    this.timerManager.clearQueue();
     this.gameState.restart();
     this.levelManager = new LevelManager(this.gameState, this.soundManager);
   }

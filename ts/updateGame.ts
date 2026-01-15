@@ -24,7 +24,6 @@ import {
   ChangeScene,
 } from "./action.js";
 import timeTracker from "./timer/timeTracker.js";
-import { timerQueue } from "./timer/timerQueue.js";
 import sounds from "./sounds.js";
 import type GameState from "./gameState.js";
 import { Chisel } from "./items/passives/chisel.js";
@@ -445,8 +444,8 @@ function handleAction(
  * Loops through all timers in game, triggering their functions if ready and handling their actions
  * @param gameManager
  */
-function updateTimers(gameManager: GameManager) {
-  timerQueue.forEach((timer, i) => {
+function checkTimers(gameManager: GameManager) {
+  gameManager.timerManager.queue.forEach((timer, i) => {
     // Possible action in result of timer reaching goal
     let action: Action | void | null = null;
     if (timer.ticsRemaining <= 0 && !timer.ended) {
@@ -459,7 +458,7 @@ function updateTimers(gameManager: GameManager) {
         timer.ended = true;
         if (timer.deleteAtEnd) {
           // Deletes timer
-          timerQueue.splice(i, 1);
+          gameManager.timerManager.deleteTimer(timer);
         }
       }
       handleAction(gameManager, action);
@@ -476,7 +475,7 @@ export default function updateGame(
   renderScale: number,
   gameManager: GameManager
 ) {
-  updateTimers(gameManager);
+  checkTimers(gameManager);
   cursor.pos.update(inputState.mouse.pos.divide(renderScale));
 
   const gameObjects = [

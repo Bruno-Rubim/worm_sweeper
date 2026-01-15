@@ -4,9 +4,8 @@ import { Item } from "./items/item.js";
 import Position from "./position.js";
 import Level from "./level/level.js";
 import { GAMEWIDTH } from "./global.js";
-import { GAMETIMERSYNC, Timer } from "./timer/timer.js";
+import { Timer } from "./timer/timer.js";
 import { Battle } from "./level/battle/battle.js";
-import { timerQueue } from "./timer/timerQueue.js";
 import timeTracker from "./timer/timeTracker.js";
 import { getItem } from "./items/passives/dict.js";
 import { Weapon } from "./items/weapon/weapon.js";
@@ -15,6 +14,7 @@ import type { Chisel } from "./items/passives/chisel.js";
 import { weaponDic } from "./items/weapon/dict.js";
 import consumableDic from "./items/consumable/dict.js";
 import type Bomb from "./items/consumable/bomb.js";
+import { GAMETIMERSYNC, SKIPCLEAR } from "./timer/timerManager.js";
 
 export type inventory = {
   armor: Armor;
@@ -47,9 +47,21 @@ export default class GameState {
   currentScene: "cave" | "shop" | "battle" = "cave";
 
   battle: Battle | null = new Battle(0, 1);
-  tiredTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
-  attackAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
-  defenseAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
+  tiredTimer = new Timer({
+    goalSecs: 0,
+    deleteAtEnd: false,
+    classes: [SKIPCLEAR],
+  });
+  attackAnimationTimer = new Timer({
+    goalSecs: 0,
+    deleteAtEnd: false,
+    classes: [SKIPCLEAR],
+  });
+  defenseAnimationTimer = new Timer({
+    goalSecs: 0,
+    deleteAtEnd: false,
+    classes: [SKIPCLEAR],
+  });
 
   paused: boolean = false;
   started: boolean = false;
@@ -84,36 +96,9 @@ export default class GameState {
       goalSecs: 180,
       goalFunc: () => this.lose(),
       deleteAtEnd: false,
+      classes: [GAMETIMERSYNC, SKIPCLEAR],
     });
     this.level = new Level(0, this);
-    timerQueue.push(this.gameTimer);
-    timerQueue.push(this.tiredTimer);
-    timerQueue.push(this.attackAnimationTimer);
-    timerQueue.push(this.defenseAnimationTimer);
-  }
-
-  /**
-   * Pauses the game timer and any timer in the timerQueue that has the class GAMETIMERSYNC
-   */
-  pauseGameTimer() {
-    this.gameTimer.pause();
-    timerQueue.forEach((x) => {
-      if (x.classes.includes(GAMETIMERSYNC)) {
-        x.pause();
-      }
-    });
-  }
-
-  /**
-   * Unpauses the game timer and any timer in the timerQueue that has the class GAMETIMERSYNC
-   */
-  unpauseGameTimer() {
-    this.gameTimer.unpause();
-    timerQueue.forEach((x) => {
-      if (x.classes.includes(GAMETIMERSYNC)) {
-        x.unpause();
-      }
-    });
   }
 
   /**
@@ -159,10 +144,6 @@ export default class GameState {
     };
     this.level = new Level(0, this);
     this.gameOver = false;
-    timerQueue.push(this.gameTimer);
-    timerQueue.push(this.tiredTimer);
-    timerQueue.push(this.attackAnimationTimer);
-    timerQueue.push(this.defenseAnimationTimer);
     timeTracker.unpause();
   }
 

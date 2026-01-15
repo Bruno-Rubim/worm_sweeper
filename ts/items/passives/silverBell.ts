@@ -3,8 +3,8 @@ import type CanvasManager from "../../canvasManager.js";
 import { LEFT, type cursorClick } from "../../global.js";
 import Position from "../../position.js";
 import { sprites } from "../../sprites.js";
-import { GAMETIMERSYNC, Timer } from "../../timer/timer.js";
-import { timerQueue } from "../../timer/timerQueue.js";
+import { Timer } from "../../timer/timer.js";
+import { GAMETIMERSYNC } from "../../timer/timerManager.js";
 import timeTracker from "../../timer/timeTracker.js";
 import { Item } from "../item.js";
 
