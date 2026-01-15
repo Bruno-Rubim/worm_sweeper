@@ -46,7 +46,7 @@ export default class GameState {
   inTransition: boolean = false;
   currentScene: "cave" | "shop" | "battle" = "cave";
 
-  battle: Battle | null = null;
+  battle: Battle | null = new Battle(0, 1);
   tiredTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
   attackAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
   defenseAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
@@ -65,7 +65,7 @@ export default class GameState {
     picaxe: getItem("picaxe", new Position(GAMEWIDTH - 20, 90)),
     flag: getItem("flag", new Position(GAMEWIDTH - 20, 109)),
     book: getItem("book", new Position(GAMEWIDTH - 20, 127)),
-    weapon: weaponDic.wood_sword,
+    weapon: weaponDic.big_sword,
     shield: shieldDic.wood_shield,
     armor: armorDic.empty,
     consumable: consumableDic.empty,
@@ -85,7 +85,7 @@ export default class GameState {
       goalFunc: () => this.lose(),
       deleteAtEnd: false,
     });
-    this.level = new Level(0, this);
+    this.level = new Level(5, this);
     timerQueue.push(this.gameTimer);
     timerQueue.push(this.tiredTimer);
     timerQueue.push(this.attackAnimationTimer);
@@ -134,7 +134,7 @@ export default class GameState {
     this.attackAnimationTimer.restart();
     this.currentScene = "cave";
     this.inTransition = false;
-    this.battle = null;
+    this.battle = new Battle(0, 1);
     this.holding = null;
     this.deathCount++;
     this.gold = 0;

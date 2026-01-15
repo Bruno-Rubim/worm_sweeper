@@ -57,8 +57,6 @@ damageOverlay.hidden;
 
 // Manages rendering and interactions with the currentBattle scene of the gameState
 export default class BattleManager extends SceneManager {
-  stunTicStart: number | null = null;
-
   constructor(
     gameState: GameState,
     scenePos: Position,
@@ -117,7 +115,7 @@ export default class BattleManager extends SceneManager {
           CENTER
         );
       }
-      if (this.stunTicStart != null) {
+      if (enemy.stunTicStart != null) {
         // Render stun animation
         canvasManager.renderAnimationFrame(
           sprites.stun_sprite_sheet,
@@ -126,7 +124,7 @@ export default class BattleManager extends SceneManager {
           64,
           4,
           1,
-          this.stunTicStart,
+          enemy.stunTicStart,
           timeTracker.currentGameTic,
           0.5
         );
@@ -250,7 +248,7 @@ export default class BattleManager extends SceneManager {
     }
     this.gameState.battle.enemies.forEach((e, i) => {
       if (e.health <= 0) {
-        timerQueue.splice(timerQueue.indexOf(e.cooldownTimer), 1);
+        e.die();
         this.gameState.battle!.enemies.splice(i, 1);
         if (this.gameState.hasItem("carving_knife")) {
           this.gameState.gold += 2;
@@ -264,6 +262,9 @@ export default class BattleManager extends SceneManager {
     }
   }
 
+  /**
+   * Sets the animation start of damage overlay to current tic and makes sure it's not hidden
+   */
   playDamageOverlay() {
     damageOverlay.hidden = false;
     damageOverlay.firstAnimationTic = timeTracker.currentGameTic;
@@ -313,6 +314,10 @@ export default class BattleManager extends SceneManager {
     enemy.health -= damage;
     enemy.damagedTimer.start();
     timerQueue.push(enemy.damagedTimer);
+
+    if (weapon.stunSecs > 0) {
+      enemy.stun(weapon.stunSecs);
+    }
 
     // Spikes
     this.gameState.battle.spikes += weapon.spikes;
@@ -388,20 +393,8 @@ export default class BattleManager extends SceneManager {
       return;
     }
     this.gameState.battle.enemies.forEach((e) => {
-      e.cooldownTimer.pause();
+      e.stun(seconds);
     });
-    const stunTimer = new Timer({
-      goalSecs: seconds,
-      goalFunc: () => {
-        this.gameState.battle!.enemies.forEach((e) => {
-          e.cooldownTimer.unpause();
-        });
-        this.stunTicStart = null;
-      },
-    });
-    timerQueue.push(stunTimer);
-    stunTimer.start();
-    this.stunTicStart = timeTracker.currentGameTic;
   }
 
   /**

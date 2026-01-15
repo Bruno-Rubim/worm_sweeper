@@ -3,6 +3,8 @@ import Position from "../../position.js";
 import { sounds, type Sound } from "../../sounds.js";
 import { sprites, type Sprite } from "../../sprites.js";
 import { Timer } from "../../timer/timer.js";
+import { timerQueue } from "../../timer/timerQueue.js";
+import timeTracker from "../../timer/timeTracker.js";
 
 export class Enemy {
   health: number;
@@ -15,6 +17,8 @@ export class Enemy {
   spriteSheet: Sprite;
   stunSpriteShift: Position;
   biteSound: Sound;
+  stunTimer: Timer = new Timer({});
+  stunTicStart: number | null = null;
 
   constructor(args: {
     health: number;
@@ -42,6 +46,26 @@ export class Enemy {
       },
       loop: true,
     });
+  }
+
+  stun(seconds: number) {
+    this.stunTimer = new Timer({
+      goalSecs: seconds,
+      goalFunc: () => {
+        this.cooldownTimer.unpause();
+        this.stunTicStart = null;
+      },
+    });
+    this.stunTimer.start();
+    this.cooldownTimer.pause();
+    this.stunTicStart = timeTracker.currentGameTic;
+  }
+
+  die() {
+    timerQueue.splice(timerQueue.indexOf(this.cooldownTimer), 1);
+    timerQueue.splice(timerQueue.indexOf(this.stunTimer), 1);
+    timerQueue.splice(timerQueue.indexOf(this.damagedTimer), 1);
+    timerQueue.splice(timerQueue.indexOf(this.attackAnimTimer), 1);
   }
 }
 

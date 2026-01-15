@@ -1,4 +1,5 @@
 import type { Action } from "../action.js";
+import { timerQueue } from "./timerQueue.js";
 import timeTracker from "./timeTracker.js";
 
 export const GAMETIMERSYNC = "gameTimerSync";
@@ -35,6 +36,7 @@ export class Timer {
     this.loop = args.loop;
     this.deleteAtEnd = args.deleteAtEnd;
     this.classes = args.classes;
+    timerQueue.push(this);
   }
 
   get goalTics() {
