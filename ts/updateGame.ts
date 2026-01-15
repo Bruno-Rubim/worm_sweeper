@@ -290,43 +290,7 @@ export function checkPlayerDead(gameState: GameState) {
  * @returns
  */
 function performEnemyAttack(gameManager: GameManager, action: EnemyAtack) {
-  if (!gameManager.gameState.battle) {
-    alert("this shouldn't happen outside of battle");
-    return;
-  }
-  gameManager.soundManager.playSound(action.enemy.biteSound);
-
-  action.enemy.attackAnimTimer.start();
-  timerQueue.push(action.enemy.attackAnimTimer);
-  let damage = action.damage;
-
-  // Spikes
-  if (damage > 0) {
-    action.enemy.health -= gameManager.gameState.battle.spikes;
-    gameManager.gameState.battle.spikes = 0;
-  }
-
-  // Reflection
-  const playerReflect = gameManager.gameState.battle.reflection;
-  const reflectDamage = Math.min(playerReflect, damage);
-  action.enemy.health -= reflectDamage;
-  damage -= reflectDamage;
-  gameManager.gameState.battle.reflection -= reflectDamage;
-
-  // Defense
-  const playerDefense = gameManager.gameState.battle.defense;
-  const leftoverDefense = Math.max(0, playerDefense - damage);
-  gameManager.gameState.battle.defense = leftoverDefense;
-
-  const playerProtection = gameManager.gameState.battle.protection;
-  damage = Math.max(0, damage - playerDefense - playerProtection);
-
-  if (damage > 0) {
-    gameManager.levelManager.battleManager.playDamageOverlay();
-  }
-
-  gameManager.gameState.health -= Math.max(0, damage);
-  gameManager.levelManager.checkBattleEnd();
+  gameManager.levelManager.battleManager.enemyAtack(action);
 }
 
 /**

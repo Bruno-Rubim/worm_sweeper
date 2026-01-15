@@ -9,6 +9,7 @@ export class Battle {
   defense: number = 0;
   reflection: number = 0;
   spikes: number = 0;
+  stun: number = 0;
 
   constructor(depth: number, enemyCount: number) {
     this.enemies = [];

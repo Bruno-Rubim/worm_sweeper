@@ -3,7 +3,6 @@ import Position from "../../position.js";
 import { sounds, type Sound } from "../../sounds.js";
 import { sprites, type Sprite } from "../../sprites.js";
 import { Timer } from "../../timer/timer.js";
-import { timerQueue } from "../../timer/timerQueue.js";
 import timeTracker from "../../timer/timeTracker.js";
 
 export class Enemy {
@@ -62,10 +61,10 @@ export class Enemy {
   }
 
   die() {
-    timerQueue.splice(timerQueue.indexOf(this.cooldownTimer), 1);
-    timerQueue.splice(timerQueue.indexOf(this.stunTimer), 1);
-    timerQueue.splice(timerQueue.indexOf(this.damagedTimer), 1);
-    timerQueue.splice(timerQueue.indexOf(this.attackAnimTimer), 1);
+    this.cooldownTimer.pause();
+    this.stunTimer.pause();
+    this.damagedTimer.pause();
+    this.attackAnimTimer.pause();
   }
 }
 

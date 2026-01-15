@@ -65,7 +65,7 @@ export default class GameState {
     picaxe: getItem("picaxe", new Position(GAMEWIDTH - 20, 90)),
     flag: getItem("flag", new Position(GAMEWIDTH - 20, 109)),
     book: getItem("book", new Position(GAMEWIDTH - 20, 127)),
-    weapon: weaponDic.big_sword,
+    weapon: weaponDic.wood_sword,
     shield: shieldDic.wood_shield,
     armor: armorDic.empty,
     consumable: consumableDic.empty,
@@ -85,7 +85,7 @@ export default class GameState {
       goalFunc: () => this.lose(),
       deleteAtEnd: false,
     });
-    this.level = new Level(5, this);
+    this.level = new Level(0, this);
     timerQueue.push(this.gameTimer);
     timerQueue.push(this.tiredTimer);
     timerQueue.push(this.attackAnimationTimer);

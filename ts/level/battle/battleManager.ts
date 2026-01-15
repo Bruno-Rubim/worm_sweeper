@@ -1,4 +1,4 @@
-import { ChangeCursorState, ChangeScene } from "../../action.js";
+import { ChangeCursorState, ChangeScene, EnemyAtack } from "../../action.js";
 import type CanvasManager from "../../canvasManager.js";
 import { CURSORBATTLE } from "../../cursor.js";
 import GameObject from "../../gameObject.js";
@@ -75,7 +75,7 @@ export default class BattleManager extends SceneManager {
       alert("this shouldn't happen outside of battle");
       return;
     }
-    // Render enemies
+    // Renders enemies
     canvasManager.renderSprite(
       sprites.bg_battle,
       new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
@@ -94,7 +94,7 @@ export default class BattleManager extends SceneManager {
         )
       );
       if (enemy.health > 0) {
-        // Render enemy health
+        // Renders enemy health
         const roundedHealth = Math.floor(enemy.health);
         canvasManager.renderText(
           "icons",
@@ -105,7 +105,7 @@ export default class BattleManager extends SceneManager {
         );
       }
       if (enemy.spikes > 0) {
-        // Render enemy spikes
+        // Renders enemy spikes
         const roundedReflection = Math.floor(enemy.spikes);
         canvasManager.renderText(
           "icons",
@@ -148,7 +148,7 @@ export default class BattleManager extends SceneManager {
       );
     });
 
-    // Weapon rendering
+    // Renders weapon
     const inventory = this.gameState.inventory;
     canvasManager.renderSprite(
       inventory.weapon.bigSprite,
@@ -162,7 +162,7 @@ export default class BattleManager extends SceneManager {
       128
     );
 
-    // Shield rendering
+    // Renders shield
     canvasManager.renderSprite(
       inventory.shield.bigSprite,
       new Position(
@@ -175,7 +175,7 @@ export default class BattleManager extends SceneManager {
       128
     );
 
-    // Rendering defense stats
+    // Renders defense stats
     if (battle.protection + battle.defense + battle.reflection > 0) {
       const reflect = battle.reflection;
       const defense = battle.defense;
@@ -196,10 +196,12 @@ export default class BattleManager extends SceneManager {
       );
     }
 
-    // Rendering spikes
-    if (battle.spikes) {
+    // Rendering other stats
+    if (battle.spikes || battle.stun) {
       const spikes = battle.spikes;
       const roundedSpikes = Math.floor(spikes);
+      const stun = battle.stun;
+      const roundedStun = Math.floor(stun);
       canvasManager.renderText(
         "icons",
         new Position(
@@ -210,7 +212,10 @@ export default class BattleManager extends SceneManager {
               ? 20
               : 11)
         ),
-        "$spk".repeat(roundedSpikes) + (spikes > roundedSpikes ? "$hsp" : ""),
+        "$spk".repeat(roundedSpikes) +
+          (spikes > roundedSpikes ? "$hsp" : "") +
+          "$stn".repeat(roundedStun) +
+          (stun > roundedStun ? "$hst" : ""),
         CENTER
       );
     }
@@ -224,7 +229,9 @@ export default class BattleManager extends SceneManager {
         sprites.counter_sheet,
         new Position(
           GAMEWIDTH / 2 - 4,
-          GAMEHEIGHT - BORDERTHICKBOTTOM - (battle.spikes > 0 ? 31 : 22)
+          GAMEHEIGHT -
+            BORDERTHICKBOTTOM -
+            (battle.spikes + battle.stun > 0 ? 31 : 22)
         ),
         8,
         8,
@@ -349,6 +356,7 @@ export default class BattleManager extends SceneManager {
     this.gameState.battle.defense += shield.defense;
     this.gameState.battle.reflection += shield.reflection;
     this.gameState.battle.spikes += shield.spikes;
+    this.gameState.battle.stun += shield.stun;
 
     // Defense animation
     this.gameState.defenseAnimationTimer.goalSecs = shield.cooldown / 3;
@@ -395,6 +403,53 @@ export default class BattleManager extends SceneManager {
     this.gameState.battle.enemies.forEach((e) => {
       e.stun(seconds);
     });
+  }
+
+  enemyAtack(action: EnemyAtack) {
+    if (!this.gameState.battle) {
+      alert("this shouldn't happen outside of battle");
+      return;
+    }
+    const battle = this.gameState.battle;
+    this.soundManager.playSound(action.enemy.biteSound);
+
+    action.enemy.attackAnimTimer.start();
+    timerQueue.push(action.enemy.attackAnimTimer);
+    let damage = action.damage;
+
+    // Spikes
+    if (damage > 0) {
+      action.enemy.health -= battle.spikes;
+      battle.spikes = 0;
+    }
+
+    // Stun
+    if (damage > 0 && battle.stun > 0) {
+      action.enemy.stun(battle.stun);
+      battle.stun = 0;
+    }
+
+    // Reflection
+    const playerReflect = battle.reflection;
+    const reflectDamage = Math.min(playerReflect, damage);
+    action.enemy.health -= reflectDamage;
+    damage -= reflectDamage;
+    battle.reflection -= reflectDamage;
+
+    // Defense
+    const playerDefense = battle.defense;
+    const leftoverDefense = Math.max(0, playerDefense - damage);
+    battle.defense = leftoverDefense;
+
+    const playerProtection = battle.protection;
+    damage = Math.max(0, damage - playerDefense - playerProtection);
+
+    if (damage > 0) {
+      this.playDamageOverlay();
+    }
+
+    this.gameState.health -= Math.max(0, damage);
+    this.checkBattleEnd();
   }
 
   /**

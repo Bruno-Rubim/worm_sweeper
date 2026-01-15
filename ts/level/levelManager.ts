@@ -153,13 +153,6 @@ export class LevelManager extends GameObject {
   }
 
   /**
-   * Checks if the current battle is over
-   */
-  checkBattleEnd() {
-    this.handleAction(this.battleManager.checkBattleEnd());
-  }
-
-  /**
    * Plays the screen transition animation and runs a given function halfway through, can have a delay before the transition
    * @param transitionFunc will run when the screen is completely black
    * @param delay seconds to delay the transition
