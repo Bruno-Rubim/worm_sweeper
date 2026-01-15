@@ -4,25 +4,25 @@ import {
   ChangeScene,
   NextLevel,
   StartBattle,
-} from "../action.js";
-import type CanvasManager from "../canvasManager.js";
+} from "../../action.js";
+import type CanvasManager from "../../canvasManager.js";
 import {
   CURSORARROW,
   CURSORDEFAULT,
   CURSORDETONATOR,
   CURSORGOLDWATER,
   CURSORPICAXE,
-} from "../cursor.js";
-import type GameState from "../gameState.js";
-import { CLICKLEFT, type CLICKRIGHT } from "../global.js";
-import Bomb from "../items/consumable/bomb.js";
-import { Chisel } from "../items/passives/chisel.js";
-import Position from "../position.js";
-import type { SoundManager } from "../soundManager.js";
-import sounds from "../sounds.js";
-import { sprites } from "../sprites.js";
-import { Timer } from "../timer/timer.js";
-import { timerQueue } from "../timer/timerQueue.js";
+} from "../../cursor.js";
+import type GameState from "../../gameState.js";
+import { CLICKLEFT, type CLICKRIGHT } from "../../global.js";
+import Bomb from "../../items/consumable/bomb.js";
+import { Chisel } from "../../items/passives/chisel.js";
+import Position from "../../position.js";
+import type { SoundManager } from "../../soundManager.js";
+import sounds from "../../sounds.js";
+import { sprites } from "../../sprites.js";
+import { Timer } from "../../timer/timer.js";
+import { timerQueue } from "../../timer/timerQueue.js";
 import {
   blockSheetPos,
   CONTENTDOOREXIT,
@@ -32,7 +32,7 @@ import {
   CONTENTEMPTY,
   CONTENTWATER,
 } from "./block.js";
-import SceneManager from "./sceneManager.js";
+import SceneManager from "../sceneManager.js";
 
 // Handles rendering and interactions with the cave scene of the current Level
 export default class CaveManager extends SceneManager {

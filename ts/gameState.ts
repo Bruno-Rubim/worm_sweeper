@@ -5,7 +5,7 @@ import Position from "./position.js";
 import Level from "./level/level.js";
 import { GAMEWIDTH } from "./global.js";
 import { GAMETIMERSYNC, Timer } from "./timer/timer.js";
-import { Battle } from "./level/battle.js";
+import { Battle } from "./level/battle/battle.js";
 import { timerQueue } from "./timer/timerQueue.js";
 import timeTracker from "./timer/timeTracker.js";
 import { getItem } from "./items/passives/dict.js";

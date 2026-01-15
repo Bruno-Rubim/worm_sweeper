@@ -1,6 +1,6 @@
-import { Action, BuyShopItem, ShopItemDescription } from "../action.js";
-import type CanvasManager from "../canvasManager.js";
-import type GameState from "../gameState.js";
+import { Action, BuyShopItem, ShopItemDescription } from "../../action.js";
+import type CanvasManager from "../../canvasManager.js";
+import type GameState from "../../gameState.js";
 import {
   BORDERTHICKBOTTOM,
   BORDERTHICKLEFT,
@@ -10,22 +10,22 @@ import {
   GAMEHEIGHT,
   GAMEWIDTH,
   RIGHT,
-} from "../global.js";
-import { Armor } from "../items/armor/armor.js";
-import { Consumable } from "../items/consumable/consumable.js";
-import { getItem } from "../items/passives/dict.js";
-import { Shield } from "../items/shield/shield.js";
-import { Weapon } from "../items/weapon/weapon.js";
-import Position from "../position.js";
-import type { SoundManager } from "../soundManager.js";
-import sounds from "../sounds.js";
-import { sprites } from "../sprites.js";
+} from "../../global.js";
+import { Armor } from "../../items/armor/armor.js";
+import { Consumable } from "../../items/consumable/consumable.js";
+import { getItem } from "../../items/passives/dict.js";
+import { Shield } from "../../items/shield/shield.js";
+import { Weapon } from "../../items/weapon/weapon.js";
+import Position from "../../position.js";
+import type { SoundManager } from "../../soundManager.js";
+import sounds from "../../sounds.js";
+import { sprites } from "../../sprites.js";
 import {
   handleMouseClick,
   handleMouseHover,
   handleMouseNotHover,
-} from "../updateGame.js";
-import SceneManager from "./sceneManager.js";
+} from "../../updateGame.js";
+import SceneManager from "../sceneManager.js";
 
 // Handles rendering and interactions with the shop scene of the current level
 export default class ShopManager extends SceneManager {

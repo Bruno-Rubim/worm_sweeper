@@ -1,27 +1,27 @@
-import CanvasManager from "../canvasManager.js";
-import GameObject from "../gameObject.js";
-import type { inventory } from "../gameState.js";
+import CanvasManager from "../../canvasManager.js";
+import GameObject from "../../gameObject.js";
+import type { inventory } from "../../gameState.js";
 import {
   BORDERTHICKLEFT,
   BORDERTHICKRIGHT,
   BORDERTHICKTOP,
   GAMEWIDTH,
-} from "../global.js";
-import { armorDic, type Armor } from "../items/armor/armor.js";
-import { type Consumable } from "../items/consumable/consumable.js";
-import { ShopItem } from "../items/shopItem.js";
-import { ChangeScene, ResetShop, ShopItemDescription } from "../action.js";
-import Position from "../position.js";
-import { sprites } from "../sprites.js";
-import { utils } from "../utils.js";
-import type { Item } from "../items/item.js";
-import { itemDic } from "../items/passives/dict.js";
-import { Weapon } from "../items/weapon/weapon.js";
-import { Shield, shieldDic } from "../items/shield/shield.js";
-import { weaponDic } from "../items/weapon/dict.js";
-import type GameState from "../gameState.js";
-import TimeBlade from "../items/weapon/timeBlade.js";
-import consumableDic from "../items/consumable/dict.js";
+} from "../../global.js";
+import { armorDic, type Armor } from "../../items/armor/armor.js";
+import { type Consumable } from "../../items/consumable/consumable.js";
+import { ShopItem } from "./shopItem.js";
+import { ChangeScene, ResetShop, ShopItemDescription } from "../../action.js";
+import Position from "../../position.js";
+import { sprites } from "../../sprites.js";
+import { utils } from "../../utils.js";
+import type { Item } from "../../items/item.js";
+import { itemDic } from "../../items/passives/dict.js";
+import { Weapon } from "../../items/weapon/weapon.js";
+import { Shield, shieldDic } from "../../items/shield/shield.js";
+import { weaponDic } from "../../items/weapon/dict.js";
+import type GameState from "../../gameState.js";
+import TimeBlade from "../../items/weapon/timeBlade.js";
+import consumableDic from "../../items/consumable/dict.js";
 
 const exitBtn = new GameObject({
   sprite: sprites.button_exit,

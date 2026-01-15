@@ -1,8 +1,8 @@
-import { ChangeCursorState, ChangeScene } from "../action.js";
-import type CanvasManager from "../canvasManager.js";
-import { CURSORBATTLE } from "../cursor.js";
-import GameObject from "../gameObject.js";
-import type GameState from "../gameState.js";
+import { ChangeCursorState, ChangeScene } from "../../action.js";
+import type CanvasManager from "../../canvasManager.js";
+import { CURSORBATTLE } from "../../cursor.js";
+import GameObject from "../../gameObject.js";
+import type GameState from "../../gameState.js";
 import {
   BORDERTHICKBOTTOM,
   BORDERTHICKLEFT,
@@ -14,18 +14,18 @@ import {
   GAMEHEIGHT,
   GAMEWIDTH,
   LEFT,
-} from "../global.js";
-import Bomb from "../items/consumable/bomb.js";
-import Position from "../position.js";
-import type { SoundManager } from "../soundManager.js";
-import sounds from "../sounds.js";
-import { sprites } from "../sprites.js";
-import { Timer } from "../timer/timer.js";
-import { timerQueue } from "../timer/timerQueue.js";
-import timeTracker from "../timer/timeTracker.js";
-import { checkPlayerDead } from "../updateGame.js";
-import { utils } from "../utils.js";
-import SceneManager from "./sceneManager.js";
+} from "../../global.js";
+import Bomb from "../../items/consumable/bomb.js";
+import Position from "../../position.js";
+import type { SoundManager } from "../../soundManager.js";
+import sounds from "../../sounds.js";
+import { sprites } from "../../sprites.js";
+import { Timer } from "../../timer/timer.js";
+import { timerQueue } from "../../timer/timerQueue.js";
+import timeTracker from "../../timer/timeTracker.js";
+import { checkPlayerDead } from "../../updateGame.js";
+import { utils } from "../../utils.js";
+import SceneManager from "../sceneManager.js";
 
 const damageOverlay = new GameObject({
   sprite: sprites.damage_sheet,

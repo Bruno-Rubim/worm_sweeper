@@ -1,5 +1,5 @@
-import { timerQueue } from "../timer/timerQueue.js";
-import { utils } from "../utils.js";
+import { timerQueue } from "../../timer/timerQueue.js";
+import { utils } from "../../utils.js";
 import { Enemy, PosionWorm, ScaleWorm, Worm } from "./enemy.js";
 
 export class Battle {

@@ -3,8 +3,8 @@ import type { LEFT, RIGHT } from "./global.js";
 import type Bomb from "./items/consumable/bomb.js";
 import type { Item } from "./items/item.js";
 import type { Chisel } from "./items/passives/chisel.js";
-import type { ShopItem } from "./items/shopItem.js";
-import type { Enemy } from "./level/enemy.js";
+import type { ShopItem } from "./level/shop/shopItem.js";
+import type { Enemy } from "./level/battle/enemy.js";
 import type Position from "./position.js";
 
 // Represents a consequence of something happening in game

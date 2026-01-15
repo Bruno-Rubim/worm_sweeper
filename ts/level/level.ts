@@ -1,6 +1,6 @@
 import type GameState from "../gameState.js";
-import Cave from "./cave.js";
-import Shop from "./shop.js";
+import Cave from "./cave/cave.js";
+import Shop from "./shop/shop.js";
 
 // Object represents the game data of a level
 export default class Level {
