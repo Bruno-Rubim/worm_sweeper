@@ -209,7 +209,7 @@ function handleKeyInput(gameManager: GameManager) {
     }
     if (inputState.keyboard.w == "pressed") {
       inputState.keyboard.w = "read";
-      gameManager.soundManager.playSound(sounds.purchase);
+      gameManager.soundManager.playSound(sounds.stab);
     }
   }
 }
@@ -294,6 +294,8 @@ function performEnemyAttack(gameManager: GameManager, action: EnemyAtack) {
     alert("this shouldn't happen outside of battle");
     return;
   }
+  gameManager.soundManager.playSound(action.enemy.biteSound);
+
   action.enemy.attackAnimTimer.start();
   timerQueue.push(action.enemy.attackAnimTimer);
   let damage = action.damage;
@@ -318,6 +320,10 @@ function performEnemyAttack(gameManager: GameManager, action: EnemyAtack) {
 
   const playerProtection = gameManager.gameState.battle.protection;
   damage = Math.max(0, damage - playerDefense - playerProtection);
+
+  if (damage > 0) {
+    gameManager.levelManager.battleManager.playDamageOverlay();
+  }
 
   gameManager.gameState.health -= Math.max(0, damage);
   gameManager.levelManager.checkBattleEnd();

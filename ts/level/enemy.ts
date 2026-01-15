@@ -1,5 +1,6 @@
 import { EnemyAtack } from "../action.js";
 import Position from "../position.js";
+import { sounds, type Sound } from "../sounds.js";
 import { sprites, type Sprite } from "../sprites.js";
 import { Timer } from "../timer/timer.js";
 
@@ -13,6 +14,7 @@ export class Enemy {
   damagedTimer: Timer;
   spriteSheet: Sprite;
   stunSpriteShift: Position;
+  biteSound: Sound;
 
   constructor(args: {
     health: number;
@@ -22,11 +24,13 @@ export class Enemy {
     attackCooldown: number;
     spriteSheet: Sprite;
     stunSpriteShift?: Position;
+    biteSound?: Sound;
   }) {
     this.health = args.health;
     this.damage = args.damage;
     this.spikes = args.spikes ?? 0;
     this.pos = args.pos;
+    this.biteSound = args.biteSound ?? sounds.bite;
     this.spriteSheet = args.spriteSheet;
     this.stunSpriteShift = args.stunSpriteShift ?? new Position();
     this.attackAnimTimer = new Timer({ goalSecs: 0.3 });
