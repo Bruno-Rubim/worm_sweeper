@@ -1,5 +1,6 @@
 import { ChangeCursorState, ChangeScene } from "../action.js";
 import { CURSORBATTLE } from "../cursor.js";
+import GameObject from "../gameObject.js";
 import { BORDERTHICKBOTTOM, BORDERTHICKLEFT, BORDERTHICKRIGHT, BORDERTHICKTOP, CENTER, CLICKLEFT, CLICKRIGHT, GAMEHEIGHT, GAMEWIDTH, LEFT, } from "../global.js";
 import Bomb from "../items/consumable/bomb.js";
 import Position from "../position.js";
@@ -11,6 +12,19 @@ import timeTracker from "../timer/timeTracker.js";
 import { checkPlayerDead } from "../updateGame.js";
 import { utils } from "../utils.js";
 import SceneManager from "./sceneManager.js";
+const damageOverlay = new GameObject({
+    sprite: sprites.damage_sheet,
+    height: 128,
+    width: 128,
+    pos: new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
+});
+damageOverlay.render = (canvasManager) => {
+    if (damageOverlay.hidden) {
+        return;
+    }
+    canvasManager.renderAnimationFrame(damageOverlay.sprite, damageOverlay.pos, damageOverlay.width, damageOverlay.height, 4, 1, damageOverlay.firstAnimationTic, timeTracker.currentGameTic, 1, new Position(), false);
+};
+damageOverlay.hidden;
 export default class BattleManager extends SceneManager {
     stunTicStart = null;
     constructor(gameState, scenePos, soundManager) {
@@ -76,6 +90,7 @@ export default class BattleManager extends SceneManager {
             let counterFrame = Math.floor(Math.min(15, (this.gameState.tiredTimer.percentage / 100) * 16));
             canvasManager.renderSpriteFromSheet(sprites.counter_sheet, new Position(GAMEWIDTH / 2 - 4, GAMEHEIGHT - BORDERTHICKBOTTOM - (battle.spikes > 0 ? 31 : 22)), 8, 8, new Position(counterFrame % 8, Math.floor(counterFrame / 8)));
         }
+        damageOverlay.render(canvasManager);
     };
     checkBattleEnd() {
         if (!this.gameState.battle) {
@@ -97,6 +112,10 @@ export default class BattleManager extends SceneManager {
             return new ChangeScene("cave");
         }
     }
+    playDamageOverlay() {
+        damageOverlay.hidden = false;
+        damageOverlay.firstAnimationTic = timeTracker.currentGameTic;
+    }
     playerAttack() {
         if (!this.gameState.battle) {
             alert("this shouldn't happen outside of battle");
@@ -106,6 +125,7 @@ export default class BattleManager extends SceneManager {
         const enemy = this.gameState.battle.enemies[rId];
         const weapon = this.gameState.inventory.weapon;
         let damage = weapon.totalDamage;
+        this.soundManager.playSound(weapon.sound);
         const playerReflection = this.gameState.battle.reflection;
         const playerDefense = this.gameState.battle.defense;
         const playerProtection = this.gameState.battle.protection;
@@ -116,7 +136,11 @@ export default class BattleManager extends SceneManager {
         enemySpikeDamage -= reflectDamage;
         this.gameState.battle.defense = Math.max(0, playerDefense - enemySpikeDamage);
         enemySpikeDamage = Math.max(0, enemySpikeDamage - playerDefense);
-        this.gameState.health -= Math.max(0, enemySpikeDamage - playerProtection);
+        const takenDamage = Math.max(0, enemySpikeDamage - playerProtection);
+        if (takenDamage > 0) {
+            this.gameState.health -= takenDamage;
+            this.playDamageOverlay();
+        }
         enemy.spikes = 0;
         enemy.health -= damage;
         enemy.damagedTimer.start();

@@ -1,5 +1,6 @@
 import { GAMEWIDTH } from "../../global.js";
 import Position from "../../position.js";
+import { sounds } from "../../sounds.js";
 import {} from "../../sprites.js";
 import { Item } from ".././item.js";
 export class Weapon extends Item {
@@ -7,6 +8,7 @@ export class Weapon extends Item {
     damage;
     spikes;
     cooldown;
+    sound;
     constructor(args) {
         super({
             ...args,
@@ -21,6 +23,7 @@ export class Weapon extends Item {
         this.bigSprite = args.bigSprite;
         this.damage = args.damage;
         this.spikes = args.spikes ?? 0;
+        this.sound = args.sound ?? sounds.stab;
         this.cooldown = args.cooldown;
         this.descFontSize = 0.6;
     }
