@@ -18,7 +18,6 @@ export default class GameState {
   health: number = 5;
   deathCount = 0;
   shopResetPrice = 0;
-  inventorySpace = 6;
 
   level: Level;
   inTransition: boolean = false;
