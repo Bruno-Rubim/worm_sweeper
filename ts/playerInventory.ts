@@ -76,3 +76,29 @@ export function resetInventory() {
   playerInventory.passive_7 = baseInventory.passive_7;
   playerInventory.bag = baseInventory.bag;
 }
+
+export function getInventorySpace() {
+  let space = 0;
+  if (playerInventory.passive_1.name == "empty") {
+    space++;
+  }
+  if (playerInventory.passive_2.name == "empty") {
+    space++;
+  }
+  if (playerInventory.passive_3.name == "empty") {
+    space++;
+  }
+  if (playerInventory.passive_4.name == "empty") {
+    space++;
+  }
+  if (playerInventory.passive_5.name == "empty") {
+    space++;
+  }
+  if (playerInventory.passive_6.name == "empty") {
+    space++;
+  }
+  if (playerInventory.passive_7.name == "empty") {
+    space++;
+  }
+  return space;
+}
