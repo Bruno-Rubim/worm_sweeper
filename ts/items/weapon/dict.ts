@@ -1,4 +1,4 @@
-import Position from "../../position.js";
+import Position from "../../gameElements/position.js";
 import { sprites } from "../../sprites.js";
 import TimeBlade from "./timeBlade.js";
 import { Weapon } from "./weapon.js";
@@ -20,7 +20,8 @@ export const weaponDic = {
     shopName: "Big Sword",
     cost: 50,
     damage: 3,
-    cooldown: 3.2,
+    cooldown: 4.2,
+    stunSecs: 1,
   }),
   dagger: new Weapon({
     spriteSheetPos: new Position(4, 3),

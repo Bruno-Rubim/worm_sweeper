@@ -1,5 +1,5 @@
+import Position from "../../gameElements/position.js";
 import { GAMEWIDTH } from "../../global.js";
-import Position from "../../position.js";
 import { Item } from "../item.js";
 
 export class Armor extends Item {
@@ -34,7 +34,7 @@ export class Armor extends Item {
           ? "$proProtection: " + args.protection + "\n"
           : "") +
         (args.spikes > 0 ? "$spkSpikes: " + args.spikes + "\n" : "") +
-        (args.reflection ?? 0 > 0
+        ((args.reflection ?? 0 > 0)
           ? "$refDefense: " + args.reflection + "\n"
           : "") +
         (args.speedMult > 1
@@ -63,7 +63,7 @@ export const armorDic = {
     cost: 25,
     defense: 1,
     protection: 1,
-    speedMult: 1.1,
+    speedMult: 1.2,
   }),
   swift_vest: new Armor({
     spriteSheetPos: new Position(2, 2),
@@ -78,8 +78,8 @@ export const armorDic = {
     name: "silver_chestplate",
     shopName: "Silver Chestplate",
     cost: 72,
-    defense: 5,
-    speedMult: 1.2,
+    defense: 2,
+    speedMult: 1.3,
     protection: 3,
   }),
   empty: new Armor({

@@ -1,17 +1,8 @@
-import Position from "../../position.js";
-import { Item } from "../item.js";
-import { Chisel } from "./chisel.js";
+import Position from "../gameElements/position.js";
+import { Item } from "./item.js";
 import { SilverBell } from "./silverBell.js";
 
-const book = new Item({
-  spriteSheetPos: new Position(4, 7),
-  name: "book",
-  shopName: "",
-  cost: 0,
-  descriptionText: "Click to open the guide book.",
-});
-
-export const itemDic = {
+const genericDict = {
   gold_bug: new Item({
     spriteSheetPos: new Position(0, 4),
     name: "gold_bug",
@@ -20,7 +11,6 @@ export const itemDic = {
     descriptionText:
       "More gold during caves and when clearing levels. More worms.",
   }),
-  silver_bell: new SilverBell(),
   dark_crystal: new Item({
     spriteSheetPos: new Position(4, 4),
     name: "dark_crystal",
@@ -58,7 +48,6 @@ export const itemDic = {
     cost: 8,
     descriptionText: "Gain 2 gold for every enemy killed.",
   }),
-  chisel: new Chisel(),
   safety_helmet: new Item({
     spriteSheetPos: new Position(2, 5),
     name: "safety_helmet",
@@ -101,7 +90,7 @@ export const itemDic = {
     cost: 0,
     descriptionText: "Right click any block to mark it as a possible threat.",
   }),
-  book: book,
+  silver_bell: new SilverBell(),
 };
 
 /**
@@ -111,10 +100,12 @@ export const itemDic = {
  * @returns
  */
 export function getItem(
-  itemName: keyof typeof itemDic,
-  screenPos: Position = new Position()
+  itemName: keyof typeof genericDict,
+  screenPos: Position = new Position(),
 ) {
-  let item = itemDic[itemName].clone();
+  let item = genericDict[itemName].clone();
   item.pos.update(screenPos);
   return item;
 }
+
+export default genericDict;

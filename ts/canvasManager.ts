@@ -1,6 +1,6 @@
 import { fontMaps, measureTextWidth } from "./fontMaps.js";
 import { GAMEHEIGHT, GAMEWIDTH, LEFT, RIGHT, CENTER } from "./global.js";
-import Position from "./position.js";
+import Position from "./gameElements/position.js";
 import type { Sprite } from "./sprites.js";
 import { utils } from "./utils.js";
 
@@ -50,7 +50,7 @@ export default class CanvasManager {
       0,
       0,
       this.canvasElement.width,
-      this.canvasElement.height
+      this.canvasElement.height,
     );
   }
 
@@ -67,7 +67,7 @@ export default class CanvasManager {
       Math.floor(pos.x * this.renderScale),
       Math.floor(pos.y * this.renderScale),
       width * this.renderScale,
-      height * this.renderScale
+      height * this.renderScale,
     );
   }
 
@@ -88,7 +88,7 @@ export default class CanvasManager {
     height: number,
     posInSheet: Position,
     widthInSheet?: number,
-    heightInSheet?: number
+    heightInSheet?: number,
   ) {
     widthInSheet ??= width;
     heightInSheet ??= height;
@@ -101,7 +101,7 @@ export default class CanvasManager {
       Math.floor(pos.x * this.renderScale),
       Math.floor(pos.y * this.renderScale),
       width * this.renderScale,
-      height * this.renderScale
+      height * this.renderScale,
     );
   }
 
@@ -132,7 +132,7 @@ export default class CanvasManager {
     currentTic: number,
     animationSpeed: number = 1,
     sheetPosShift: Position = new Position(),
-    loop: boolean = true
+    loop: boolean = true,
   ) {
     const totalFrames = sheetWidthInFrames * sheetHeightInFrames;
     const currentFrame =
@@ -143,7 +143,7 @@ export default class CanvasManager {
     }
     const sheetPos = new Position(
       currentFrame % sheetWidthInFrames,
-      Math.floor(currentFrame / sheetWidthInFrames)
+      Math.floor(currentFrame / sheetWidthInFrames),
     ).add(sheetPosShift);
     this.ctx.drawImage(
       spriteSheet.img,
@@ -154,7 +154,7 @@ export default class CanvasManager {
       Math.floor(pos.x * this.renderScale),
       Math.floor(pos.y * this.renderScale),
       width * this.renderScale,
-      height * this.renderScale
+      height * this.renderScale,
     );
   }
 
@@ -178,7 +178,7 @@ export default class CanvasManager {
     text: string,
     direction: typeof LEFT | typeof RIGHT | typeof CENTER = RIGHT,
     limitWidth: number = Infinity,
-    fontSize = 1
+    fontSize = 1,
   ) {
     const fontMap = fontMaps[font]!;
     const words = text.split(" ");
@@ -243,7 +243,7 @@ export default class CanvasManager {
               fontMaps.icons.cellHeight * fontSize,
               fontMaps.icons.charMaps[iconWord]!.pos,
               fontMaps.icons.cellWidth,
-              fontMaps.icons.cellHeight
+              fontMaps.icons.cellHeight,
             );
             currentX += iconChar.width * fontSize;
           } else {
@@ -260,7 +260,7 @@ export default class CanvasManager {
           fontMap.cellHeight * fontSize,
           charMap.pos,
           fontMap.cellWidth,
-          fontMap.cellHeight
+          fontMap.cellHeight,
         );
         currentX += charMap.width * fontSize;
       }
@@ -277,7 +277,7 @@ export default class CanvasManager {
     boxSpriteHeight: number,
     bodyWidth: number,
     bodyHeight: number,
-    scale: number = 1
+    scale: number = 1,
   ) {
     // Top left corner
     this.renderSpriteFromSheet(
@@ -287,7 +287,7 @@ export default class CanvasManager {
       boxSpriteHeight * scale,
       new Position(),
       boxSpriteWidth,
-      boxSpriteHeight
+      boxSpriteHeight,
     );
 
     // Ceiling
@@ -298,7 +298,7 @@ export default class CanvasManager {
       boxSpriteHeight * scale,
       new Position(1, 0),
       boxSpriteWidth,
-      boxSpriteHeight
+      boxSpriteHeight,
     );
 
     // Top right corner
@@ -309,7 +309,7 @@ export default class CanvasManager {
       boxSpriteHeight * scale,
       new Position(2, 0),
       boxSpriteWidth,
-      boxSpriteHeight
+      boxSpriteHeight,
     );
 
     // Left wall
@@ -320,7 +320,7 @@ export default class CanvasManager {
       bodyHeight,
       new Position(0, 1),
       boxSpriteWidth,
-      boxSpriteHeight
+      boxSpriteHeight,
     );
 
     // Body
@@ -331,7 +331,7 @@ export default class CanvasManager {
       bodyHeight,
       new Position(1, 1),
       boxSpriteWidth,
-      boxSpriteHeight
+      boxSpriteHeight,
     );
 
     // Right wall
@@ -342,7 +342,7 @@ export default class CanvasManager {
       bodyHeight,
       new Position(2, 1),
       boxSpriteWidth,
-      boxSpriteHeight
+      boxSpriteHeight,
     );
 
     // Bottom left corner
@@ -353,7 +353,7 @@ export default class CanvasManager {
       boxSpriteHeight * scale,
       new Position(0, 2),
       boxSpriteWidth,
-      boxSpriteHeight
+      boxSpriteHeight,
     );
 
     // Floor
@@ -364,7 +364,7 @@ export default class CanvasManager {
       boxSpriteHeight * scale,
       new Position(1, 2),
       boxSpriteWidth,
-      boxSpriteHeight
+      boxSpriteHeight,
     );
 
     // Top right corner
@@ -372,13 +372,14 @@ export default class CanvasManager {
       spriteSheet,
       pos.add(
         boxSpriteWidth * scale + bodyWidth,
-        boxSpriteHeight * scale + bodyHeight
+        boxSpriteHeight * scale + bodyHeight,
       ),
       boxSpriteWidth * scale,
       boxSpriteHeight * scale,
       new Position(2, 2),
       boxSpriteWidth,
-      boxSpriteHeight
+      boxSpriteHeight,
     );
   }
 }
+export const canvasManager = new CanvasManager();

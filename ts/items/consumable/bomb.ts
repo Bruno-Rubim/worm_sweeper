@@ -1,7 +1,8 @@
 import { PickupBomb, SellItem } from "../../action.js";
+import Position from "../../gameElements/position.js";
 import { LEFT, type cursorClick } from "../../global.js";
-import Position from "../../position.js";
-import { GAMETIMERSYNC, Timer } from "../../timer/timer.js";
+import { Timer } from "../../timer/timer.js";
+import { GAMETIMERSYNC } from "../../timer/timerManager.js";
 import { Consumable } from "./consumable.js";
 
 export default class Bomb extends Consumable {

@@ -1,21 +1,23 @@
-import CanvasManager from "./canvasManager.js";
-import GameObject from "./gameObject.js";
-import GameState, { type inventory } from "./gameState.js";
+import { canvasManager } from "./canvasManager.js";
+import GameObject from "./gameElements/gameObject.js";
+import { gameState } from "./gameState.js";
 import { GAMEHEIGHT, GAMEWIDTH, LEFT, CENTER } from "./global.js";
-import Position from "./position.js";
+import Position from "./gameElements/position.js";
 import { sprites } from "./sprites.js";
+import playerInventory, { type inventory } from "./playerInventory.js";
+import { flagItem, picaxeItem } from "./items/uiItems.js";
 
 /**
  * Renders the current game stats
  * @param canvasManager
  * @param gameState
  */
-function renderStats(canvasManager: CanvasManager, gameState: GameState) {
+function renderStats() {
   // Time left
   canvasManager.renderText(
     "numbers_blue",
     new Position(6, 6),
-    "$tim " + Math.floor(gameState.gameTimer.secondsRemaining).toString()
+    "$tim " + Math.floor(gameState.gameTimer.secondsRemaining).toString(),
   );
 
   // Worms number
@@ -23,7 +25,7 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
     "numbers_red",
     new Position(62, 6),
     "$wrm " + gameState.level.cave.wormsLeft.toString(),
-    CENTER
+    CENTER,
   );
 
   // Blocks left
@@ -31,7 +33,7 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
     "numbers_brown",
     new Position(GAMEWIDTH - 66, 6),
     "$blk " + gameState.level.cave.blocksLeft.toString(),
-    CENTER
+    CENTER,
   );
 
   // Gold number
@@ -39,14 +41,14 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
     "numbers_gold",
     new Position(GAMEWIDTH - 4, 6),
     "$gld " + gameState.gold.toString(),
-    LEFT
+    LEFT,
   );
 
   // Level number
   canvasManager.renderText(
     "numbers_green",
     new Position(6, GAMEHEIGHT - 14),
-    "$dor " + (gameState.level.depth + 1).toString()
+    "$dor " + (gameState.level.depth + 1).toString(),
   );
 
   // Death count
@@ -54,7 +56,7 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
     "numbers_red",
     new Position(GAMEWIDTH - 4, GAMEHEIGHT - 14),
     "$skl" + gameState.deathCount.toString(),
-    LEFT
+    LEFT,
   );
 
   // Player health
@@ -65,7 +67,7 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
       new Position(GAMEWIDTH / 2, GAMEHEIGHT - 14),
       "$hrt".repeat(roundedHealth) +
         (gameState.health > roundedHealth ? "$hhr" : ""),
-      CENTER
+      CENTER,
     );
   }
 }
@@ -75,14 +77,16 @@ function renderStats(canvasManager: CanvasManager, gameState: GameState) {
  * @param canvasManager
  * @param gameState
  */
-function renderItems(canvasManager: CanvasManager, gameState: GameState) {
-  for (const key of Object.keys(gameState.inventory) as (keyof inventory)[]) {
-    const item = gameState.inventory[key];
+function renderItems() {
+  for (const key of Object.keys(playerInventory) as (keyof inventory)[]) {
+    const item = playerInventory[key];
     if (!item || key == "bag") {
       continue;
     }
-    item.render(canvasManager);
+    item.render();
   }
+  picaxeItem.render();
+  flagItem.render();
 }
 
 // Object for the border of the game
@@ -97,11 +101,8 @@ const gameBorder = new GameObject({
  * @param canvasManager
  * @param gameState
  */
-export function renderBorder(
-  canvasManager: CanvasManager,
-  gameState: GameState
-) {
-  gameBorder.render(canvasManager);
-  renderItems(canvasManager, gameState);
-  renderStats(canvasManager, gameState);
+export function renderBorder() {
+  gameBorder.render();
+  renderItems();
+  renderStats();
 }

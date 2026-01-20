@@ -1,4 +1,4 @@
-import Position from "../position.js";
+import Position from "../../gameElements/position.js";
 
 export const CONTENTEMPTY = "empty";
 export const CONTENTDOOREXIT = "door_exit";

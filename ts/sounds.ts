@@ -71,12 +71,12 @@ export class Sound {
             },
             {
               once: true,
-            }
+            },
           );
 
           audio.src = src;
           audio.load();
-        })
+        }),
       );
     });
     return promises;

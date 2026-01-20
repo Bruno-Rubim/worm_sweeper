@@ -1,5 +1,5 @@
-import type CanvasManager from "../../canvasManager.js";
-import Position from "../../position.js";
+import { canvasManager } from "../../canvasManager.js";
+import Position from "../../gameElements/position.js";
 import { sprites } from "../../sprites.js";
 import timeTracker from "../../timer/timeTracker.js";
 import { Consumable } from "./consumable.js";
@@ -15,14 +15,14 @@ export default class TimePotion extends Consumable {
     });
   }
 
-  render(canvasManager: CanvasManager): void {
+  render(): void {
     let sheetPos = this.spriteSheetPos;
     canvasManager.renderSpriteFromSheet(
       this.sprite,
       this.pos,
       this.width,
       this.height,
-      sheetPos
+      sheetPos,
     );
     if (this.mouseHovering) {
       canvasManager.renderSpriteFromSheet(
@@ -30,7 +30,7 @@ export default class TimePotion extends Consumable {
         this.pos,
         16,
         16,
-        this.spriteSheetPos.add(1, 0)
+        this.spriteSheetPos.add(1, 0),
       );
     }
     canvasManager.renderAnimationFrame(
@@ -41,7 +41,7 @@ export default class TimePotion extends Consumable {
       12,
       1,
       this.firstAnimationTic,
-      timeTracker.currentGameTic
+      timeTracker.currentGameTic,
     );
     canvasManager.renderAnimationFrame(
       sprites.time_potion_pointer_sheet,
@@ -53,7 +53,7 @@ export default class TimePotion extends Consumable {
       this.firstAnimationTic,
       timeTracker.currentGameTic,
       1 / 12,
-      new Position(0, 1)
+      new Position(0, 1),
     );
   }
 }

@@ -1,4 +1,4 @@
-import Position from "./position.js";
+import Position from "./gameElements/position.js";
 import { sprites, type Sprite } from "./sprites.js";
 import { utils } from "./utils.js";
 
@@ -1452,7 +1452,7 @@ export const fontMaps: Record<string, fontMap> = {
         pos: new Position(5, 0),
         width: 9,
       },
-      $hrt: {
+      $slw: {
         pos: new Position(0, 1),
         width: 9,
       },
@@ -1460,48 +1460,57 @@ export const fontMaps: Record<string, fontMap> = {
         pos: new Position(1, 1),
         width: 9,
       },
-      $pro: {
+
+      $dmg: {
         pos: new Position(2, 1),
         width: 9,
       },
-      $dmg: {
-        pos: new Position(3, 1),
-        width: 9,
-      },
-      $dfs: {
-        pos: new Position(4, 1),
-        width: 9,
-      },
-      $ref: {
-        pos: new Position(5, 1),
-        width: 9,
-      },
-      $spk: {
-        pos: new Position(6, 1),
-        width: 9,
-      },
-      $hhr: {
+      $hrt: {
         pos: new Position(0, 2),
         width: 9,
       },
-      $hpr: {
-        pos: new Position(2, 2),
-        width: 9,
-      },
-      $slw: {
+      $dfs: {
         pos: new Position(1, 2),
         width: 9,
       },
-      $hdf: {
+      $pro: {
+        pos: new Position(2, 2),
+        width: 9,
+      },
+      $ref: {
+        pos: new Position(3, 2),
+        width: 9,
+      },
+      $spk: {
         pos: new Position(4, 2),
         width: 9,
       },
-      $hrf: {
+      $stn: {
         pos: new Position(5, 2),
         width: 9,
       },
+      $hhr: {
+        pos: new Position(0, 3),
+        width: 9,
+      },
+      $hdf: {
+        pos: new Position(1, 3),
+        width: 9,
+      },
+      $hpr: {
+        pos: new Position(2, 3),
+        width: 9,
+      },
+      $hrf: {
+        pos: new Position(3, 3),
+        width: 9,
+      },
       $hsp: {
-        pos: new Position(6, 2),
+        pos: new Position(4, 3),
+        width: 9,
+      },
+      $hst: {
+        pos: new Position(5, 3),
         width: 9,
       },
       " ": {
@@ -1540,7 +1549,7 @@ export function measureTextBoxHeight(
   font: string,
   text: string,
   limitWidth: number,
-  fontSize: number = 1
+  fontSize: number = 1,
 ) {
   if (utils.lastOfArray(text.split("")) == "\n") {
     text = text.slice(0, text.length - 2);

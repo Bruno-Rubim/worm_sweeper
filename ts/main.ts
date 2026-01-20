@@ -1,20 +1,13 @@
-import CanvasManager from "./canvasManager.js";
-import { GameManager } from "./gameManager.js";
-import { bindListeners } from "./inputState.js";
-import { renderGame } from "./renderGame.js";
-import updateGame from "./updateGame.js";
+import GameManager from "./gameManager.js";
 
-const canvasManager = new CanvasManager();
-const gameManager = new GameManager();
-
-bindListeners(canvasManager.canvasElement);
+export const gameManager = new GameManager();
 
 /**
  * Recursive function to update the game and render it
  */
 function frameLoop() {
-  updateGame(canvasManager.renderScale, gameManager);
-  renderGame(canvasManager, gameManager);
+  gameManager.updateGame();
+  gameManager.renderGame();
   requestAnimationFrame(frameLoop);
 }
 

@@ -1,5 +1,4 @@
-import { timerQueue } from "../timer/timerQueue.js";
-import { utils } from "../utils.js";
+import { utils } from "../../utils.js";
 import { Enemy, PosionWorm, ScaleWorm, Worm } from "./enemy.js";
 
 export class Battle {
@@ -8,6 +7,7 @@ export class Battle {
   defense: number = 0;
   reflection: number = 0;
   spikes: number = 0;
+  stun: number = 0;
 
   constructor(depth: number, enemyCount: number) {
     this.enemies = [];
@@ -25,7 +25,7 @@ export class Battle {
     initialProtection: number,
     initialDefense: number,
     initialReflection: number,
-    initialSpikes: number
+    initialSpikes: number,
   ) {
     this.protection = initialProtection;
     this.defense = initialDefense;
@@ -33,7 +33,6 @@ export class Battle {
     this.spikes = initialSpikes;
     this.enemies.forEach((e) => {
       e.cooldownTimer.start();
-      timerQueue.push(e.cooldownTimer, e.attackAnimTimer, e.damagedTimer);
     });
   }
 }

@@ -1,12 +1,13 @@
-import { SellItem as SellItem, RingBell } from "../../action.js";
-import type CanvasManager from "../../canvasManager.js";
-import { LEFT, type cursorClick } from "../../global.js";
-import Position from "../../position.js";
-import { sprites } from "../../sprites.js";
-import { GAMETIMERSYNC, Timer } from "../../timer/timer.js";
-import { timerQueue } from "../../timer/timerQueue.js";
-import timeTracker from "../../timer/timeTracker.js";
-import { Item } from "../item.js";
+import { SellItem as SellItem, RingBell } from "../action.js";
+import type CanvasManager from "../canvasManager.js";
+import { canvasManager } from "../canvasManager.js";
+import Position from "../gameElements/position.js";
+import { LEFT, type cursorClick } from "../global.js";
+import { sprites } from "../sprites.js";
+import { Timer } from "../timer/timer.js";
+import { GAMETIMERSYNC } from "../timer/timerManager.js";
+import timeTracker from "../timer/timeTracker.js";
+import { Item } from "./item.js";
 
 export class SilverBell extends Item {
   rang = false;
@@ -17,7 +18,7 @@ export class SilverBell extends Item {
       this.firstAnimationTic = timeTracker.currentGameTic;
     },
     classes: [GAMETIMERSYNC],
-    deleteAtEnd: false,
+    autoStart: true,
   });
   constructor(pos?: Position) {
     super({
@@ -27,21 +28,18 @@ export class SilverBell extends Item {
       shopName: "Silver Bell",
       cost: 15,
       descriptionText:
-        "Reveals the location of doors, also stuns enemies if used during battle. Recharges outside of shop every 60 seconds.",
+        "Reveals the location of doors, or $stn stuns enemies if used during battle. Recharges outside of shop every 60 seconds.",
     });
-    if (!timerQueue.includes(this.ringTimer)) {
-      timerQueue.push(this.ringTimer);
-    }
   }
 
-  render(canvasManager: CanvasManager): void {
+  render(): void {
     if (this.ringTimer.inMotion) {
       canvasManager.renderSpriteFromSheet(
         this.sprite,
         this.pos,
         this.width,
         this.height,
-        this.spriteSheetPos
+        this.spriteSheetPos,
       );
     } else {
       canvasManager.renderAnimationFrame(
@@ -53,7 +51,7 @@ export class SilverBell extends Item {
         2,
         this.firstAnimationTic,
         timeTracker.currentTic,
-        0.5
+        0.5,
       );
     }
     if (this.mouseHovering) {
@@ -62,7 +60,7 @@ export class SilverBell extends Item {
         this.pos,
         this.width,
         this.height,
-        this.spriteSheetPos.add(1, 0)
+        this.spriteSheetPos.add(1, 0),
       );
     }
   }
