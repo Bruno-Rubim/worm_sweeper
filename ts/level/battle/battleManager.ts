@@ -16,6 +16,7 @@ import {
   GAMEWIDTH,
   LEFT,
 } from "../../global.js";
+import Bomb from "../../items/consumable/bomb.js";
 import playerInventory, { hasItem } from "../../playerInventory.js";
 import { soundManager } from "../../soundManager.js";
 import sounds from "../../sounds.js";
@@ -445,12 +446,15 @@ export default class BattleManager extends SceneManager {
     const tiredTimer = gameState.tiredTimer;
     if (tiredTimer.ended || !tiredTimer.started) {
       if (button == CLICKLEFT) {
-        // if (gameState.holding instanceof Bomb) {
-        //   gameState.holding = null;
-        //   return this.bomb();
-        // }
+        if (gameState.holding instanceof Bomb) {
+          gameState.holding = null;
+          return this.bomb();
+        }
         return this.playerAttack();
       } else {
+        if (hasItem("bracer")) {
+          gameState.battle.defense += 0.5;
+        }
         return this.playerDefend();
       }
     }

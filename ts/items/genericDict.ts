@@ -62,6 +62,14 @@ const genericDict = {
     cost: 16,
     descriptionText: "Get an additional inventory space. Not resellable.",
   }),
+  bracer: new Item({
+    spriteSheetPos: new Position(6, 5),
+    name: "bracer",
+    shopName: "Bracer",
+    cost: 36,
+    descriptionText: "Adds 0.5 $dfsdefense to your shield.",
+  }),
+  silver_bell: new SilverBell(),
   empty: new Item({
     spriteSheetPos: new Position(14, 4),
     name: "empty",
@@ -76,21 +84,6 @@ const genericDict = {
     cost: 0,
     descriptionText: "",
   }),
-  picaxe: new Item({
-    spriteSheetPos: new Position(0, 7),
-    name: "picaxe",
-    shopName: "",
-    cost: 0,
-    descriptionText: "Left click any block that's been revealed to break it.",
-  }),
-  flag: new Item({
-    spriteSheetPos: new Position(2, 7),
-    name: "flag",
-    shopName: "",
-    cost: 0,
-    descriptionText: "Right click any block to mark it as a possible threat.",
-  }),
-  silver_bell: new SilverBell(),
 };
 
 /**

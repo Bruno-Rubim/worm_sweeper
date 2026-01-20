@@ -21,7 +21,7 @@ export default class GameState {
 
   level: Level;
   inTransition: boolean = false;
-  currentScene: "cave" | "shop" | "battle" = "cave";
+  currentScene: "cave" | "shop" | "battle" = "shop";
   battle: Battle | null = new Battle(0, 1);
 
   tiredTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
