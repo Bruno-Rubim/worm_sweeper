@@ -40,3 +40,4 @@ export class SoundManager {
         cloneAudio.play();
     }
 }
+export const soundManager = new SoundManager();

@@ -1,10 +1,12 @@
-import CanvasManager from "./canvasManager.js";
-import GameObject from "./gameObject.js";
-import GameState, {} from "./gameState.js";
+import { canvasManager } from "./canvasManager.js";
+import GameObject from "./gameElements/gameObject.js";
+import { gameState } from "./gameState.js";
 import { GAMEHEIGHT, GAMEWIDTH, LEFT, CENTER } from "./global.js";
-import Position from "./position.js";
+import Position from "./gameElements/position.js";
 import { sprites } from "./sprites.js";
-function renderStats(canvasManager, gameState) {
+import playerInventory, {} from "./playerInventory.js";
+import { flagItem, picaxeItem } from "./items/uiItems.js";
+function renderStats() {
     canvasManager.renderText("numbers_blue", new Position(6, 6), "$tim " + Math.floor(gameState.gameTimer.secondsRemaining).toString());
     canvasManager.renderText("numbers_red", new Position(62, 6), "$wrm " + gameState.level.cave.wormsLeft.toString(), CENTER);
     canvasManager.renderText("numbers_brown", new Position(GAMEWIDTH - 66, 6), "$blk " + gameState.level.cave.blocksLeft.toString(), CENTER);
@@ -17,22 +19,24 @@ function renderStats(canvasManager, gameState) {
             (gameState.health > roundedHealth ? "$hhr" : ""), CENTER);
     }
 }
-function renderItems(canvasManager, gameState) {
-    for (const key of Object.keys(gameState.inventory)) {
-        const item = gameState.inventory[key];
+function renderItems() {
+    for (const key of Object.keys(playerInventory)) {
+        const item = playerInventory[key];
         if (!item || key == "bag") {
             continue;
         }
-        item.render(canvasManager);
+        item.render();
     }
+    picaxeItem.render();
+    flagItem.render();
 }
 const gameBorder = new GameObject({
     sprite: sprites.game_border,
     height: GAMEHEIGHT,
     width: GAMEWIDTH,
 });
-export function renderBorder(canvasManager, gameState) {
-    gameBorder.render(canvasManager);
-    renderItems(canvasManager, gameState);
-    renderStats(canvasManager, gameState);
+export function renderBorder() {
+    gameBorder.render();
+    renderItems();
+    renderStats();
 }

@@ -1,6 +1,6 @@
 import { fontMaps, measureTextWidth } from "./fontMaps.js";
 import { GAMEHEIGHT, GAMEWIDTH, LEFT, RIGHT, CENTER } from "./global.js";
-import Position from "./position.js";
+import Position from "./gameElements/position.js";
 import { utils } from "./utils.js";
 export default class CanvasManager {
     canvasElement = document.querySelector("canvas");
@@ -136,3 +136,4 @@ export default class CanvasManager {
         this.renderSpriteFromSheet(spriteSheet, pos.add(boxSpriteWidth * scale + bodyWidth, boxSpriteHeight * scale + bodyHeight), boxSpriteWidth * scale, boxSpriteHeight * scale, new Position(2, 2), boxSpriteWidth, boxSpriteHeight);
     }
 }
+export const canvasManager = new CanvasManager();

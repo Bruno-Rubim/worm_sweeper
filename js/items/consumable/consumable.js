@@ -1,6 +1,6 @@
 import { GAMEWIDTH, LEFT } from "../../global.js";
 import { ConsumeItem, SellItem } from "../../action.js";
-import Position from "../../position.js";
+import Position from "../../gameElements/position.js";
 import { Item } from "../item.js";
 export class Consumable extends Item {
     constructor(args) {

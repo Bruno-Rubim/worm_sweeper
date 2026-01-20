@@ -1,8 +1,9 @@
-import { EnemyAtack } from "../action.js";
-import Position from "../position.js";
-import { sounds } from "../sounds.js";
-import { sprites } from "../sprites.js";
-import { Timer } from "../timer/timer.js";
+import { EnemyAtack } from "../../action.js";
+import Position from "../../gameElements/position.js";
+import { sounds } from "../../sounds.js";
+import { sprites } from "../../sprites.js";
+import { Timer } from "../../timer/timer.js";
+import timeTracker from "../../timer/timeTracker.js";
 export class Enemy {
     health;
     spikes;
@@ -14,6 +15,8 @@ export class Enemy {
     spriteSheet;
     stunSpriteShift;
     biteSound;
+    stunTimer = new Timer({});
+    stunTicStart = null;
     constructor(args) {
         this.health = args.health;
         this.damage = args.damage;
@@ -22,15 +25,34 @@ export class Enemy {
         this.biteSound = args.biteSound ?? sounds.bite;
         this.spriteSheet = args.spriteSheet;
         this.stunSpriteShift = args.stunSpriteShift ?? new Position();
-        this.attackAnimTimer = new Timer({ goalSecs: 0.3 });
-        this.damagedTimer = new Timer({ goalSecs: 0.16 });
+        this.attackAnimTimer = new Timer({ goalSecs: 0.3, autoStart: false });
+        this.damagedTimer = new Timer({ goalSecs: 0.16, autoStart: false });
         this.cooldownTimer = new Timer({
             goalSecs: args.attackCooldown,
             goalFunc: () => {
                 return new EnemyAtack(this.damage, this);
             },
             loop: true,
+            autoStart: false,
         });
+    }
+    stun(seconds) {
+        this.stunTimer = new Timer({
+            goalSecs: seconds,
+            goalFunc: () => {
+                this.cooldownTimer.unpause();
+                this.stunTicStart = null;
+            },
+        });
+        this.stunTimer.start();
+        this.cooldownTimer.pause();
+        this.stunTicStart = timeTracker.currentGameTic;
+    }
+    die() {
+        this.cooldownTimer.pause();
+        this.stunTimer.pause();
+        this.damagedTimer.pause();
+        this.attackAnimTimer.pause();
     }
 }
 export class Worm extends Enemy {

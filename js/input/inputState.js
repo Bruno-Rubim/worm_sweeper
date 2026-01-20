@@ -1,4 +1,4 @@
-import Position from "./position.js";
+import Position from "../gameElements/position.js";
 export const inputState = {
     mouse: {
         pos: new Position(),

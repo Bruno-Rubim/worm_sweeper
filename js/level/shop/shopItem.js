@@ -1,37 +1,32 @@
-import GameObject from "../gameObject.js";
-import { CENTER, CLICKLEFT } from "../global.js";
-import { Action, BuyShopItem, ShopItemDescription } from "../action.js";
-import Position from "../position.js";
-import { sprites } from "../sprites.js";
-import timeTracker from "../timer/timeTracker.js";
-import { armorDic } from "./armor/armor.js";
-import { timerQueue } from "../timer/timerQueue.js";
-import { SilverBell } from "./passives/silverBell.js";
-import { itemDic } from "./passives/dict.js";
-import { weaponDic } from "./weapon/dict.js";
-import { shieldDic } from "./shield/shield.js";
-import consumableDic from "./consumable/dict.js";
+import { CENTER, CLICKLEFT } from "../../global.js";
+import { sprites } from "../../sprites.js";
+import timeTracker from "../../timer/timeTracker.js";
+import GameObject from "../../gameElements/gameObject.js";
+import Position from "../../gameElements/position.js";
+import { BuyShopItem, ShopItemDescription } from "../../action.js";
+import { canvasManager } from "../../canvasManager.js";
+import { armorDic } from "../../items/armor/armor.js";
+import consumableDict from "../../items/consumable/dict.js";
+import { weaponDic } from "../../items/weapon/dict.js";
+import { shieldDic } from "../../items/shield/shield.js";
+import genericDict from "../../items/genericDict.js";
 const items = {
+    ...genericDict,
     ...weaponDic,
     ...armorDic,
-    ...consumableDic,
+    ...consumableDict,
     ...shieldDic,
-    ...itemDic,
 };
 export class ShopItem extends GameObject {
     item;
     constructor(itemName) {
         super({
-            pos: new Position(),
             sprite: sprites.item_sheet,
             hitboxWidth: 20,
             hitboxPosShift: new Position(-2, 0),
         });
         this.item = items[itemName];
         this.clickFunction = (cursorPos, button) => {
-            if (this.item instanceof SilverBell) {
-                timerQueue.push(this.item.ringTimer);
-            }
             if (button == CLICKLEFT)
                 return new BuyShopItem(this);
         };
@@ -39,7 +34,7 @@ export class ShopItem extends GameObject {
     hoverFunction = (cursorPos) => {
         return new ShopItemDescription(this.item.shopName + "\n\n" + this.item.description);
     };
-    render(canvasManager) {
+    render() {
         canvasManager.renderSpriteFromSheet(sprites.item_sheet, this.pos, 16, 16, this.item.spriteSheetPos);
         if (this.mouseHovering) {
             canvasManager.renderSpriteFromSheet(sprites.item_sheet, this.pos, 16, 16, this.item.spriteSheetPos.add(1, 0));

@@ -1,4 +1,5 @@
-import Position from "../../position.js";
+import { canvasManager } from "../../canvasManager.js";
+import Position from "../../gameElements/position.js";
 import { sprites } from "../../sprites.js";
 import timeTracker from "../../timer/timeTracker.js";
 import { Consumable } from "./consumable.js";
@@ -12,7 +13,7 @@ export default class TimePotion extends Consumable {
             descriptionText: "Recover 60 seconds$tim",
         });
     }
-    render(canvasManager) {
+    render() {
         let sheetPos = this.spriteSheetPos;
         canvasManager.renderSpriteFromSheet(this.sprite, this.pos, this.width, this.height, sheetPos);
         if (this.mouseHovering) {

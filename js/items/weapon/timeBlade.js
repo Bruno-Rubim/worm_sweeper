@@ -1,4 +1,4 @@
-import Position from "../../position.js";
+import Position from "../../gameElements/position.js";
 import { sprites } from "../../sprites.js";
 import { Timer } from "../../timer/timer.js";
 import { Weapon } from "./weapon.js";

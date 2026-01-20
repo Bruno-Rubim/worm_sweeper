@@ -86,6 +86,8 @@ export class ItemDescription extends Action {
         this.descFontSize = descFontSize;
     }
 }
+export class LoseGame extends Action {
+}
 export class RestartGame extends Action {
 }
 export class StartBattle extends Action {
@@ -95,14 +97,9 @@ export class StartBattle extends Action {
         this.enemyCount = enemyCount;
     }
 }
-export class RingBell extends Action {
+export class PauseGameTimer extends Action {
 }
-export class PickupChisel extends Action {
-    chiselItem;
-    constructor(item) {
-        super();
-        this.chiselItem = item;
-    }
+export class RingBell extends Action {
 }
 export class PickupBomb extends Action {
     bombItem;

@@ -1,5 +1,5 @@
+import { GAMETIMERSYNC, timerManager } from "./timerManager.js";
 import timeTracker from "./timeTracker.js";
-export const GAMETIMERSYNC = "gameTimerSync";
 export class Timer {
     startTic;
     lastPausedTic = 0;
@@ -17,6 +17,7 @@ export class Timer {
         args.goalSecs ??= Infinity;
         args.loop ??= false;
         args.deleteAtEnd ??= true;
+        args.autoStart ??= true;
         args.classes ??= [];
         this.startTic = timeTracker.currentGameTic;
         this.goalSecs = args.goalSecs;
@@ -24,6 +25,9 @@ export class Timer {
         this.loop = args.loop;
         this.deleteAtEnd = args.deleteAtEnd;
         this.classes = args.classes;
+        if (args.autoStart) {
+            this.start();
+        }
     }
     get goalTics() {
         return this.goalSecs * timeTracker.ticsPerSecond;
@@ -56,6 +60,7 @@ export class Timer {
         this.startTic = timeTracker.currentGameTic;
         this.totalPauseLapse = 0;
         this.isPaused = false;
+        timerManager.addTimer(this);
     }
     pause() {
         if (!this.isPaused) {

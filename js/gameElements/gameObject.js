@@ -1,7 +1,8 @@
 import Position from "./position.js";
+import { Sprite } from "../sprites.js";
 import Hitbox from "./hitbox.js";
-import { Sprite } from "./sprites.js";
-import timeTracker from "./timer/timeTracker.js";
+import timeTracker from "../timer/timeTracker.js";
+import { canvasManager } from "../canvasManager.js";
 export default class GameObject {
     sprite;
     hidden = false;
@@ -40,7 +41,7 @@ export default class GameObject {
         this.pos = newPos;
         this.hitbox.objPos = this.pos.add(this.hitboxPosShift ?? new Position());
     }
-    render(canvasManager) {
+    render() {
         if (this.hidden) {
             return;
         }
