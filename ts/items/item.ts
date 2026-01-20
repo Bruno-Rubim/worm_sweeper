@@ -1,8 +1,8 @@
-import { SellItem, ItemDescription, ToggleBook } from "../action.js";
-import type CanvasManager from "../canvasManager.js";
-import GameObject from "../gameObject.js";
+import { ItemDescription, SellItem } from "../action.js";
+import { canvasManager } from "../canvasManager.js";
+import GameObject from "../gameElements/gameObject.js";
 import { GAMEWIDTH, LEFT, RIGHT, type cursorClick } from "../global.js";
-import Position from "../position.js";
+import Position from "../gameElements/position.js";
 import { sprites } from "../sprites.js";
 
 export class Item extends GameObject {
@@ -32,20 +32,11 @@ export class Item extends GameObject {
     this.name = args.name;
     this.shopName = args.shopName;
     this.cost = args.cost;
-    switch (args.name) {
-      case "book":
-        this.clickFunction = () => {
-          return new ToggleBook();
-        };
-        break;
-      default:
-        this.clickFunction = (cursorPos: Position, button: cursorClick) => {
-          if (button == RIGHT) {
-            return new SellItem(this);
-          }
-        };
-        break;
-    }
+    this.clickFunction = (cursorPos: Position, button: cursorClick) => {
+      if (button == RIGHT) {
+        return new SellItem(this);
+      }
+    };
     this.descriptionText = args.descriptionText;
   }
 
@@ -64,13 +55,13 @@ export class Item extends GameObject {
     });
   }
 
-  render(canvasManager: CanvasManager): void {
+  render(): void {
     canvasManager.renderSpriteFromSheet(
       this.sprite,
       this.pos,
       this.width,
       this.height,
-      this.spriteSheetPos
+      this.spriteSheetPos,
     );
     if (this.mouseHovering) {
       canvasManager.renderSpriteFromSheet(
@@ -78,7 +69,7 @@ export class Item extends GameObject {
         this.pos,
         this.width,
         this.height,
-        this.spriteSheetPos.add(1, 0)
+        this.spriteSheetPos.add(1, 0),
       );
     }
   }

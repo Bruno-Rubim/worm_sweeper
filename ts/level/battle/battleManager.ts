@@ -1,8 +1,9 @@
 import { ChangeCursorState, ChangeScene, EnemyAtack } from "../../action.js";
-import type CanvasManager from "../../canvasManager.js";
+import { canvasManager } from "../../canvasManager.js";
 import { CURSORBATTLE } from "../../cursor.js";
-import GameObject from "../../gameObject.js";
-import type GameState from "../../gameState.js";
+import GameObject from "../../gameElements/gameObject.js";
+import Position from "../../gameElements/position.js";
+import { gameState } from "../../gameState.js";
 import {
   BORDERTHICKBOTTOM,
   BORDERTHICKLEFT,
@@ -15,15 +16,11 @@ import {
   GAMEWIDTH,
   LEFT,
 } from "../../global.js";
-import Bomb from "../../items/consumable/bomb.js";
-import Position from "../../position.js";
-import type { SoundManager } from "../../soundManager.js";
+import playerInventory, { hasItem } from "../../playerInventory.js";
+import { soundManager } from "../../soundManager.js";
 import sounds from "../../sounds.js";
 import { sprites } from "../../sprites.js";
-import { Timer } from "../../timer/timer.js";
-import { timerQueue } from "../../timer/timerQueue.js";
 import timeTracker from "../../timer/timeTracker.js";
-import { checkPlayerDead } from "../../updateGame.js";
 import { utils } from "../../utils.js";
 import SceneManager from "../sceneManager.js";
 
@@ -34,7 +31,7 @@ const damageOverlay = new GameObject({
   pos: new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
 });
 
-damageOverlay.render = (canvasManager: CanvasManager) => {
+damageOverlay.render = () => {
   if (damageOverlay.hidden) {
     return;
   }
@@ -49,7 +46,7 @@ damageOverlay.render = (canvasManager: CanvasManager) => {
     timeTracker.currentGameTic,
     1,
     new Position(),
-    false
+    false,
   );
 };
 
@@ -57,20 +54,12 @@ damageOverlay.hidden;
 
 // Manages rendering and interactions with the currentBattle scene of the gameState
 export default class BattleManager extends SceneManager {
-  constructor(
-    gameState: GameState,
-    scenePos: Position,
-    soundManager: SoundManager
-  ) {
-    super(gameState, scenePos, soundManager);
-  }
-
   /**
    * Renders enemies and player weapons
    * @param canvasManager
    */
-  render = (canvasManager: CanvasManager) => {
-    const battle = this.gameState.battle;
+  render = () => {
+    const battle = gameState.battle;
     if (!battle) {
       alert("this shouldn't happen outside of battle");
       return;
@@ -80,7 +69,7 @@ export default class BattleManager extends SceneManager {
       sprites.bg_battle,
       new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
       GAMEWIDTH - BORDERTHICKLEFT - BORDERTHICKRIGHT,
-      GAMEHEIGHT - BORDERTHICKTOP - BORDERTHICKBOTTOM
+      GAMEHEIGHT - BORDERTHICKTOP - BORDERTHICKBOTTOM,
     );
     battle.enemies.forEach((enemy) => {
       canvasManager.renderSpriteFromSheet(
@@ -90,8 +79,8 @@ export default class BattleManager extends SceneManager {
         64,
         new Position(
           enemy.attackAnimTimer.inMotion ? 1 : 0,
-          enemy.damagedTimer.inMotion ? 1 : 0
-        )
+          enemy.damagedTimer.inMotion ? 1 : 0,
+        ),
       );
       if (enemy.health > 0) {
         // Renders enemy health
@@ -101,7 +90,7 @@ export default class BattleManager extends SceneManager {
           enemy.pos.add(33, 64),
           "$hrt".repeat(roundedHealth) +
             (enemy.health > roundedHealth ? "$hhr" : ""),
-          CENTER
+          CENTER,
         );
       }
       if (enemy.spikes > 0) {
@@ -112,7 +101,7 @@ export default class BattleManager extends SceneManager {
           enemy.pos.add(33, 73),
           "$spk".repeat(roundedReflection) +
             (enemy.spikes > roundedReflection ? "$hsp" : ""),
-          CENTER
+          CENTER,
         );
       }
       if (enemy.stunTicStart != null) {
@@ -126,7 +115,7 @@ export default class BattleManager extends SceneManager {
           1,
           enemy.stunTicStart,
           timeTracker.currentGameTic,
-          0.5
+          0.5,
         );
       }
 
@@ -134,45 +123,41 @@ export default class BattleManager extends SceneManager {
         "numbers_gray",
         enemy.pos.add(34, 8),
         enemy.damage.toString() + "$dmg",
-        LEFT
+        LEFT,
       );
       let counterFrame = Math.floor(
-        Math.min(15, (enemy.cooldownTimer.percentage / 100) * 16)
+        Math.min(15, (enemy.cooldownTimer.percentage / 100) * 16),
       );
       canvasManager.renderSpriteFromSheet(
         sprites.counter_sheet,
         enemy.pos.add(34, 8),
         8,
         8,
-        new Position(counterFrame % 8, Math.floor(counterFrame / 8))
+        new Position(counterFrame % 8, Math.floor(counterFrame / 8)),
       );
     });
 
     // Renders weapon
-    const inventory = this.gameState.inventory;
+    const inventory = playerInventory;
     canvasManager.renderSprite(
       inventory.weapon.bigSprite,
       new Position(
-        BORDERTHICKLEFT -
-          (this.gameState.attackAnimationTimer.inMotion ? 0 : 24),
-        BORDERTHICKTOP +
-          (this.gameState.attackAnimationTimer.inMotion ? 26 : 45)
+        BORDERTHICKLEFT - (gameState.attackAnimationTimer.inMotion ? 0 : 24),
+        BORDERTHICKTOP + (gameState.attackAnimationTimer.inMotion ? 26 : 45),
       ),
       128,
-      128
+      128,
     );
 
     // Renders shield
     canvasManager.renderSprite(
       inventory.shield.bigSprite,
       new Position(
-        BORDERTHICKLEFT +
-          (this.gameState.defenseAnimationTimer.inMotion ? 0 : 24),
-        BORDERTHICKTOP +
-          (this.gameState.defenseAnimationTimer.inMotion ? 26 : 45)
+        BORDERTHICKLEFT + (gameState.defenseAnimationTimer.inMotion ? 0 : 24),
+        BORDERTHICKTOP + (gameState.defenseAnimationTimer.inMotion ? 26 : 45),
       ),
       128,
-      128
+      128,
     );
 
     // Renders defense stats
@@ -192,7 +177,7 @@ export default class BattleManager extends SceneManager {
           (defense > roundedDefense ? "$hdf" : "") +
           "$pro".repeat(roundedProtection) +
           (protection > roundedProtection ? "$hpr" : ""),
-        CENTER
+        CENTER,
       );
     }
 
@@ -210,20 +195,20 @@ export default class BattleManager extends SceneManager {
             BORDERTHICKBOTTOM -
             (battle.defense + battle.reflection + battle.protection > 0
               ? 20
-              : 11)
+              : 11),
         ),
         "$spk".repeat(roundedSpikes) +
           (spikes > roundedSpikes ? "$hsp" : "") +
           "$stn".repeat(roundedStun) +
           (stun > roundedStun ? "$hst" : ""),
-        CENTER
+        CENTER,
       );
     }
 
     // Renders cooldown counter
-    if (!this.gameState.tiredTimer.ended && this.gameState.tiredTimer.started) {
+    if (!gameState.tiredTimer.ended && gameState.tiredTimer.started) {
       let counterFrame = Math.floor(
-        Math.min(15, (this.gameState.tiredTimer.percentage / 100) * 16)
+        Math.min(15, (gameState.tiredTimer.percentage / 100) * 16),
       );
       canvasManager.renderSpriteFromSheet(
         sprites.counter_sheet,
@@ -231,17 +216,17 @@ export default class BattleManager extends SceneManager {
           GAMEWIDTH / 2 - 4,
           GAMEHEIGHT -
             BORDERTHICKBOTTOM -
-            (battle.spikes + battle.stun > 0 ? 31 : 22)
+            (battle.spikes + battle.stun > 0 ? 31 : 22),
         ),
         8,
         8,
-        new Position(counterFrame % 8, Math.floor(counterFrame / 8))
+        new Position(counterFrame % 8, Math.floor(counterFrame / 8)),
       );
     }
 
     // Render damage overlay
 
-    damageOverlay.render(canvasManager);
+    damageOverlay.render();
   };
 
   /**
@@ -249,22 +234,21 @@ export default class BattleManager extends SceneManager {
    * @returns
    */
   checkBattleEnd() {
-    if (!this.gameState.battle) {
+    if (!gameState.battle) {
       alert("this shouldn't happen outside of battle");
       return;
     }
-    this.gameState.battle.enemies.forEach((e, i) => {
+    gameState.battle.enemies.forEach((e, i) => {
       if (e.health <= 0) {
         e.die();
-        this.gameState.battle!.enemies.splice(i, 1);
-        if (this.gameState.hasItem("carving_knife")) {
-          this.gameState.gold += 2;
-          this.soundManager.playSound(sounds.gold);
+        gameState.battle!.enemies.splice(i, 1);
+        if (hasItem("carving_knife")) {
+          gameState.gold += 2;
+          soundManager.playSound(sounds.gold);
         }
       }
     });
-    checkPlayerDead(this.gameState);
-    if (this.gameState.battle.enemies.length <= 0) {
+    if (gameState.battle.enemies.length <= 0) {
       return new ChangeScene("cave");
     }
   }
@@ -282,61 +266,56 @@ export default class BattleManager extends SceneManager {
    * @returns
    */
   playerAttack() {
-    if (!this.gameState.battle) {
+    if (!gameState.battle) {
       alert("this shouldn't happen outside of battle");
       return;
     }
 
-    const rId = utils.randomArrayId(this.gameState.battle.enemies);
-    const enemy = this.gameState.battle.enemies[rId]!;
-    const weapon = this.gameState.inventory.weapon;
+    const rId = utils.randomArrayId(gameState.battle.enemies);
+    const enemy = gameState.battle.enemies[rId]!;
+    const weapon = playerInventory.weapon;
     let damage = weapon.totalDamage;
 
-    this.soundManager.playSound(weapon.sound);
+    soundManager.playSound(weapon.sound);
 
-    const playerReflection = this.gameState.battle.reflection;
-    const playerDefense = this.gameState.battle.defense;
-    const playerProtection = this.gameState.battle.protection;
+    const playerReflection = gameState.battle.reflection;
+    const playerDefense = gameState.battle.defense;
+    const playerProtection = gameState.battle.protection;
 
     let enemySpikeDamage = enemy.spikes;
     let reflectDamage = Math.min(playerReflection, enemySpikeDamage);
     enemy.health -= reflectDamage;
 
-    this.gameState.battle.reflection -= reflectDamage;
+    gameState.battle.reflection -= reflectDamage;
 
     enemySpikeDamage -= reflectDamage;
-    this.gameState.battle.defense = Math.max(
-      0,
-      playerDefense - enemySpikeDamage
-    );
+    gameState.battle.defense = Math.max(0, playerDefense - enemySpikeDamage);
     enemySpikeDamage = Math.max(0, enemySpikeDamage - playerDefense);
 
     const takenDamage = Math.max(0, enemySpikeDamage - playerProtection);
     if (takenDamage > 0) {
-      this.gameState.health -= takenDamage;
+      gameState.health -= takenDamage;
       this.playDamageOverlay();
     }
     enemy.spikes = 0;
 
     enemy.health -= damage;
     enemy.damagedTimer.start();
-    timerQueue.push(enemy.damagedTimer);
 
     if (weapon.stunSecs > 0) {
       enemy.stun(weapon.stunSecs);
     }
 
     // Spikes
-    this.gameState.battle.spikes += weapon.spikes;
+    gameState.battle.spikes += weapon.spikes;
 
     // Weapon animation
-    this.gameState.attackAnimationTimer.goalSecs = weapon.cooldown / 3;
-    this.gameState.attackAnimationTimer.start();
+    gameState.attackAnimationTimer.goalSecs = weapon.cooldown / 3;
+    gameState.attackAnimationTimer.start();
 
     // Cooldown
-    const tiredTimer = this.gameState.tiredTimer;
-    tiredTimer.goalSecs =
-      weapon.cooldown * this.gameState.inventory.armor.speedMult;
+    const tiredTimer = gameState.tiredTimer;
+    tiredTimer.goalSecs = weapon.cooldown * playerInventory.armor.speedMult;
     tiredTimer.start();
     return this.checkBattleEnd();
   }
@@ -346,26 +325,25 @@ export default class BattleManager extends SceneManager {
    * @returns
    */
   playerDefend() {
-    if (!this.gameState.battle) {
+    if (!gameState.battle) {
       alert("this shouldn't happen outside of battle");
       return;
     }
-    const shield = this.gameState.inventory.shield;
+    const shield = playerInventory.shield;
 
     // Setting defense stats
-    this.gameState.battle.defense += shield.defense;
-    this.gameState.battle.reflection += shield.reflection;
-    this.gameState.battle.spikes += shield.spikes;
-    this.gameState.battle.stun += shield.stun;
+    gameState.battle.defense += shield.defense;
+    gameState.battle.reflection += shield.reflection;
+    gameState.battle.spikes += shield.spikes;
+    gameState.battle.stun += shield.stun;
 
     // Defense animation
-    this.gameState.defenseAnimationTimer.goalSecs = shield.cooldown / 3;
-    this.gameState.defenseAnimationTimer.start();
+    gameState.defenseAnimationTimer.goalSecs = shield.cooldown / 3;
+    gameState.defenseAnimationTimer.start();
 
     // Cooldown
-    const tiredTimer = this.gameState.tiredTimer;
-    tiredTimer.goalSecs =
-      shield.cooldown * this.gameState.inventory.armor.speedMult;
+    const tiredTimer = gameState.tiredTimer;
+    tiredTimer.goalSecs = shield.cooldown * playerInventory.armor.speedMult;
     tiredTimer.start();
   }
 
@@ -374,19 +352,18 @@ export default class BattleManager extends SceneManager {
    * @returns
    */
   bomb() {
-    if (!this.gameState.battle) {
+    if (!gameState.battle) {
       alert("this shouldn't happen outside of battle");
       return;
     }
-    const tiredTimer = this.gameState.tiredTimer;
-    const rId = utils.randomArrayId(this.gameState.battle.enemies);
-    const enemy = this.gameState.battle.enemies[rId]!;
-    this.soundManager.playSound(sounds.explosion);
+    const tiredTimer = gameState.tiredTimer;
+    const rId = utils.randomArrayId(gameState.battle.enemies);
+    const enemy = gameState.battle.enemies[rId]!;
+    soundManager.playSound(sounds.explosion);
     enemy.health -= 5;
     enemy.damagedTimer.start();
-    timerQueue.push(enemy.damagedTimer);
-    tiredTimer.goalSecs = 2 - 2 * this.gameState.inventory.armor.speedMult;
-    tiredTimer.goalSecs = 2 - this.gameState.inventory.armor.speedMult;
+    tiredTimer.goalSecs = 2 - 2 * playerInventory.armor.speedMult;
+    tiredTimer.goalSecs = 2 - playerInventory.armor.speedMult;
     tiredTimer.start();
     return this.checkBattleEnd();
   }
@@ -396,25 +373,24 @@ export default class BattleManager extends SceneManager {
    * @param seconds
    */
   stunEnemy(seconds: number) {
-    if (!this.gameState.battle) {
+    if (!gameState.battle) {
       alert("not in battle");
       return;
     }
-    this.gameState.battle.enemies.forEach((e) => {
+    gameState.battle.enemies.forEach((e) => {
       e.stun(seconds);
     });
   }
 
   enemyAtack(action: EnemyAtack) {
-    if (!this.gameState.battle) {
+    if (!gameState.battle) {
       alert("this shouldn't happen outside of battle");
       return;
     }
-    const battle = this.gameState.battle;
-    this.soundManager.playSound(action.enemy.biteSound);
+    const battle = gameState.battle;
+    soundManager.playSound(action.enemy.biteSound);
 
     action.enemy.attackAnimTimer.start();
-    timerQueue.push(action.enemy.attackAnimTimer);
     let damage = action.damage;
 
     // Spikes
@@ -448,7 +424,7 @@ export default class BattleManager extends SceneManager {
       this.playDamageOverlay();
     }
 
-    this.gameState.health -= Math.max(0, damage);
+    gameState.health -= Math.max(0, damage);
     return this.checkBattleEnd();
   }
 
@@ -460,19 +436,19 @@ export default class BattleManager extends SceneManager {
    */
   handleHeld = (
     cursorPos: Position,
-    button: typeof CLICKRIGHT | typeof CLICKLEFT
+    button: typeof CLICKRIGHT | typeof CLICKLEFT,
   ) => {
-    if (!this.gameState.battle) {
+    if (!gameState.battle) {
       alert("this shouldn't happen outside of battle");
       return;
     }
-    const tiredTimer = this.gameState.tiredTimer;
+    const tiredTimer = gameState.tiredTimer;
     if (tiredTimer.ended || !tiredTimer.started) {
       if (button == CLICKLEFT) {
-        if (this.gameState.holding instanceof Bomb) {
-          this.gameState.holding = null;
-          return this.bomb();
-        }
+        // if (gameState.holding instanceof Bomb) {
+        //   gameState.holding = null;
+        //   return this.bomb();
+        // }
         return this.playerAttack();
       } else {
         return this.playerDefend();

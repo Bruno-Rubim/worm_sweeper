@@ -1,32 +1,30 @@
-import type CanvasManager from "../../canvasManager.js";
-import GameObject from "../../gameObject.js";
 import { CENTER, CLICKLEFT, type cursorClick } from "../../global.js";
-import { Action, BuyShopItem, ShopItemDescription } from "../../action.js";
-import Position from "../../position.js";
 import { sprites } from "../../sprites.js";
 import timeTracker from "../../timer/timeTracker.js";
-import { armorDic } from "../../items/armor/armor.js";
-import { timerQueue } from "../../timer/timerQueue.js";
-import { SilverBell } from "../../items/passives/silverBell.js";
-import { itemDic } from "../../items/passives/dict.js";
 import type { Item } from "../../items/item.js";
+import GameObject from "../../gameElements/gameObject.js";
+import Position from "../../gameElements/position.js";
+import { BuyShopItem, ShopItemDescription } from "../../action.js";
+import { canvasManager } from "../../canvasManager.js";
+import { armorDic } from "../../items/armor/armor.js";
+import consumableDict from "../../items/consumable/dict.js";
 import { weaponDic } from "../../items/weapon/dict.js";
 import { shieldDic } from "../../items/shield/shield.js";
-import consumableDic from "../../items/consumable/dict.js";
+import genericDict from "../../items/genericDict.js";
 
 type itemName =
+  | keyof typeof genericDict
   | keyof typeof armorDic
-  | keyof typeof itemDic
-  | keyof typeof consumableDic
+  | keyof typeof consumableDict
   | keyof typeof weaponDic
   | keyof typeof shieldDic;
 
 const items: Record<itemName, Item> = {
+  ...genericDict,
   ...weaponDic,
   ...armorDic,
-  ...consumableDic,
+  ...consumableDict,
   ...shieldDic,
-  ...itemDic,
 };
 
 export class ShopItem extends GameObject {
@@ -34,33 +32,32 @@ export class ShopItem extends GameObject {
 
   constructor(itemName: itemName) {
     super({
-      pos: new Position(),
       sprite: sprites.item_sheet,
       hitboxWidth: 20,
       hitboxPosShift: new Position(-2, 0),
     });
     this.item = items[itemName];
     this.clickFunction = (cursorPos: Position, button: cursorClick) => {
-      if (this.item instanceof SilverBell) {
-        timerQueue.push(this.item.ringTimer);
-      }
+      // if (this.item instanceof SilverBell) {
+      //   timerQueue.push(this.item.ringTimer);
+      // }
       if (button == CLICKLEFT) return new BuyShopItem(this);
     };
   }
 
   hoverFunction = (cursorPos: Position) => {
     return new ShopItemDescription(
-      this.item.shopName + "\n\n" + this.item.description
+      this.item.shopName + "\n\n" + this.item.description,
     );
   };
 
-  render(canvasManager: CanvasManager): void {
+  render(): void {
     canvasManager.renderSpriteFromSheet(
       sprites.item_sheet,
       this.pos,
       16,
       16,
-      this.item.spriteSheetPos
+      this.item.spriteSheetPos,
     );
     if (this.mouseHovering) {
       canvasManager.renderSpriteFromSheet(
@@ -68,14 +65,14 @@ export class ShopItem extends GameObject {
         this.pos,
         16,
         16,
-        this.item.spriteSheetPos.add(1, 0)
+        this.item.spriteSheetPos.add(1, 0),
       );
     }
     canvasManager.renderText(
       "numbers_cost",
       this.pos.add(9, 18),
       this.item.cost.toString(),
-      CENTER
+      CENTER,
     );
     if (this.item.name == "time_potion") {
       canvasManager.renderAnimationFrame(
@@ -86,7 +83,7 @@ export class ShopItem extends GameObject {
         12,
         1,
         this.firstAnimationTic,
-        timeTracker.currentGameTic
+        timeTracker.currentGameTic,
       );
       canvasManager.renderAnimationFrame(
         sprites.time_potion_pointer_sheet,
@@ -98,7 +95,7 @@ export class ShopItem extends GameObject {
         this.firstAnimationTic,
         timeTracker.currentGameTic,
         1 / 12,
-        new Position(0, 1)
+        new Position(0, 1),
       );
     }
   }

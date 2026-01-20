@@ -1,5 +1,5 @@
+import Position from "../../gameElements/position.js";
 import { GAMEWIDTH } from "../../global.js";
-import Position from "../../position.js";
 import { Item } from "../item.js";
 
 export class Armor extends Item {
@@ -34,7 +34,7 @@ export class Armor extends Item {
           ? "$proProtection: " + args.protection + "\n"
           : "") +
         (args.spikes > 0 ? "$spkSpikes: " + args.spikes + "\n" : "") +
-        (args.reflection ?? 0 > 0
+        ((args.reflection ?? 0 > 0)
           ? "$refDefense: " + args.reflection + "\n"
           : "") +
         (args.speedMult > 1

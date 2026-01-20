@@ -1,7 +1,5 @@
-import CanvasManager from "../canvasManager.js";
-import GameObject from "../gameObject.js";
-import Position from "../position.js";
-import type GameState from "../gameState.js";
+import GameObject from "../gameElements/gameObject.js";
+import Position from "../gameElements/position.js";
 import {
   BORDERTHICKLEFT,
   BORDERTHICKTOP,
@@ -24,130 +22,97 @@ import { sprites } from "../sprites.js";
 
 import timeTracker from "../timer/timeTracker.js";
 import { Timer } from "../timer/timer.js";
-import { timerQueue } from "../timer/timerQueue.js";
 
 import type SceneManager from "./sceneManager.js";
-import CaveManager from "./cave/caveManager.js";
-import BattleManager from "./battle/battleManager.js";
-import ShopManager from "./shop/shopManager.js";
-import { Battle } from "./battle/battle.js";
-import type { SoundManager } from "../soundManager.js";
 import sounds from "../sounds.js";
+import CaveManager from "./cave/caveManager.js";
+import ShopManager from "./shop/shopManager.js";
 import { bookPages } from "../bookPages.js";
-
-const transitionObject = new GameObject({
-  sprite: sprites.scene_transition,
-  height: 128,
-  width: 128,
-  pos: new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
-});
-
-transitionObject.render = (canvasManager: CanvasManager) => {
-  if (transitionObject.hidden) {
-    return;
-  }
-  canvasManager.renderAnimationFrame(
-    transitionObject.sprite,
-    transitionObject.pos,
-    transitionObject.width,
-    transitionObject.height,
-    4,
-    4,
-    transitionObject.firstAnimationTic,
-    timeTracker.currentGameTic,
-    1,
-    new Position(),
-    false
-  );
-};
-
-transitionObject.hidden = true;
+import { canvasManager } from "../canvasManager.js";
+import { gameState } from "../gameState.js";
+import { soundManager } from "../soundManager.js";
+import BattleManager from "./battle/battleManager.js";
+import { Battle } from "./battle/battle.js";
+import playerInventory, { hasItem } from "../playerInventory.js";
+import { GAMETIMERSYNC, timerManager } from "../timer/timerManager.js";
+import { transitionOverlay } from "./transitionOverlay.js";
 
 // Manages rendering and interactions with the current level from gameState
 export class LevelManager extends GameObject {
-  gameState: GameState;
-  soundManager: SoundManager;
-
-  currentSceneManager: SceneManager;
   // Holds the current current sceneManager which can be any of the 3 below
   // (check strategy design pattern for a general idea of what this is)
   shopManager: ShopManager;
   caveManager: CaveManager;
   battleManager: BattleManager;
 
-  constructor(gameState: GameState, soundManager: SoundManager) {
+  constructor() {
     super({
       pos: new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
       sprite: sprites.transparent_pixel,
       width: 128,
       height: 128,
     });
-    this.gameState = gameState;
-    this.soundManager = soundManager;
-    this.shopManager = new ShopManager(gameState, this.pos, this.soundManager);
-    this.caveManager = new CaveManager(gameState, this.pos, this.soundManager);
-    this.battleManager = new BattleManager(
-      gameState,
-      this.pos,
-      this.soundManager
-    );
+    this.shopManager = new ShopManager();
+    this.caveManager = new CaveManager();
+    this.battleManager = new BattleManager();
+
+    transitionOverlay.endAnimation();
+  }
+
+  get currentSceneManager(): SceneManager {
     switch (gameState.currentScene) {
       case "battle":
-        this.currentSceneManager = this.battleManager;
-        break;
+        return this.battleManager;
       case "cave":
-        this.currentSceneManager = this.caveManager;
-        break;
+        return this.caveManager;
+
       case "shop":
-        this.currentSceneManager = this.shopManager;
-        break;
+        return this.shopManager;
     }
-    transitionObject.endAnimation();
   }
 
   /**
    * Renders the current screen or level depending on the gameState
-   * @param canvasManager
    * @returns
    */
-  render(canvasManager: CanvasManager): void {
-    if (this.gameState.inBook) {
+  render(): void {
+    if (gameState.inBook) {
       canvasManager.renderSprite(
         sprites.bg_rules,
         this.pos,
         this.width,
-        this.height
+        this.height,
       );
       const fontSize = 0.6;
       const padding = 10 * fontSize;
       canvasManager.renderText(
         "book",
         this.pos.add(padding, padding),
-        bookPages[this.gameState.bookPage]!,
+        bookPages[gameState.bookPage]!,
         RIGHT,
         this.width - padding * 2,
-        fontSize
+        fontSize,
       );
       return;
     }
-    if (this.gameState.paused) {
+    if (gameState.paused) {
       canvasManager.renderSprite(
         sprites.screen_paused,
         this.pos,
         this.width,
-        this.height
+        this.height,
       );
       return;
     }
 
-    this.currentSceneManager.render(canvasManager);
-    transitionObject.render(canvasManager);
-    if (this.gameState.gameOver) {
+    this.currentSceneManager.render();
+    transitionOverlay.render();
+    if (gameState.gameOver) {
       canvasManager.renderSprite(
         sprites.screen_defeat,
         this.pos,
         this.width,
-        this.height
+        this.height,
       );
     }
   }
@@ -159,31 +124,26 @@ export class LevelManager extends GameObject {
    */
   screenTransition(
     transitionFunc: (() => Action | void | null) | undefined,
-    delay: number = 0
+    delay: number = 0,
   ) {
-    this.gameState.inTransition = true;
-    const delayTimer = new Timer({
+    gameState.inTransition = true;
+    new Timer({
       goalSecs: delay,
       goalFunc: () => {
-        transitionObject.hidden = false;
-        transitionObject.resetAnimation();
-        const transitionFuncTimer = new Timer({
+        transitionOverlay.hidden = false;
+        transitionOverlay.resetAnimation();
+        new Timer({
           goalSecs: 8 / timeTracker.ticsPerSecond,
           goalFunc: transitionFunc,
         });
-        const transitionEndTimer = new Timer({
+        new Timer({
           goalSecs: 16 / timeTracker.ticsPerSecond,
           goalFunc: () => {
-            this.gameState.inTransition = false;
+            gameState.inTransition = false;
           },
         });
-        timerQueue.push(transitionFuncTimer, transitionEndTimer);
-        transitionFuncTimer.start();
-        transitionEndTimer.start();
       },
     });
-    timerQueue.push(delayTimer);
-    delayTimer.start();
   }
 
   /**
@@ -191,48 +151,46 @@ export class LevelManager extends GameObject {
    * @param scene
    */
   changeScene(scene: "battle" | "cave" | "shop") {
-    const currentScene = this.gameState.currentScene;
+    const currentScene = gameState.currentScene;
     if (scene == "cave" && currentScene == "shop") {
-      this.soundManager.playSound(sounds.steps);
+      soundManager.playSound(sounds.steps);
     }
     this.screenTransition(
       () => {
         switch (scene) {
           case "battle":
-            this.gameState.level.cave.clearExposedWorms();
-            this.gameState.level.cave.updateAllStats();
-            this.currentSceneManager = this.battleManager;
-            this.gameState.battle?.start(
-              this.gameState.inventory.armor.protection,
-              this.gameState.inventory.armor.defense +
-                (this.gameState.hasItem("safety_helmet") ? 1 : 0),
-              this.gameState.inventory.armor.reflection,
-              this.gameState.inventory.armor.spikes
+            this.caveManager.clearExposedWorms();
+            this.caveManager.updateAllStats();
+            gameState.battle?.start(
+              // TO-DO: put this on battle
+              playerInventory.armor.protection,
+              playerInventory.armor.defense +
+                (hasItem("safety_helmet") ? 1 : 0),
+              playerInventory.armor.reflection,
+              playerInventory.armor.spikes,
             );
             break;
           case "cave":
             switch (currentScene) {
               case "battle":
-                this.gameState.level.cave.wormsLeft--;
-                this.gameState.level.cave.wormQuantity--;
+                gameState.level.cave.wormsLeft--;
+                gameState.level.cave.wormQuantity--;
                 this.caveManager.checkCaveClear();
               // Falls through the next lines
               case "shop":
-                this.currentSceneManager = this.caveManager;
-                this.gameState.unpauseGameTimer();
+                timerManager.unpauseTimers(GAMETIMERSYNC);
                 break;
             }
             break;
           case "shop":
             // Pauses timer when entering a shop
-            this.gameState.pauseGameTimer();
-            this.currentSceneManager = this.shopManager;
+            timerManager.pauseTimers(GAMETIMERSYNC);
             break;
         }
-        this.gameState.currentScene = scene;
+        gameState.currentScene = scene;
       },
       // Sets the transition delay to 0.5 if going into battle, 0 otherwise
-      scene == "battle" ? 0.5 : 0
+      scene == "battle" ? 0.5 : 0,
     );
   }
 
@@ -246,31 +204,27 @@ export class LevelManager extends GameObject {
       return;
     }
     if (action instanceof ChangeScene) {
-      this.changeScene(action.newScene);
-    } else if (action instanceof NextLevel) {
+      return this.changeScene(action.newScene);
+    }
+    if (action instanceof NextLevel) {
       this.screenTransition(() => {
-        this.gameState.level = this.gameState.level.nextLevel();
-        this.gameState.gameTimer.addSecs(15);
-        this.gameState.level.cave.start(
-          action.starterGridPos,
-          this.gameState.itemNames
-        );
+        // TO-DO: Put this on the cave manager
+        gameState.level = gameState.level.nextLevel();
+        gameState.gameTimer.addSecs(15);
+        this.caveManager.startCave(action.starterGridPos);
       });
     } else if (action instanceof StartBattle) {
-      this.gameState.battle = new Battle(
-        this.gameState.level.depth,
-        action.enemyCount
-      );
+      gameState.battle = new Battle(gameState.level.depth, action.enemyCount);
       this.changeScene("battle");
     } else if (action instanceof ResetShop) {
       // Reset shop items
-      if (this.gameState.gold >= this.gameState.shopResetPrice) {
-        this.gameState.level.shop.setItems();
-        this.soundManager.playSound(sounds.purchase);
-        this.gameState.gold -= this.gameState.shopResetPrice;
-        this.gameState.shopResetPrice += 5;
+      if (gameState.gold >= gameState.shopResetPrice) {
+        gameState.level.shop.setItems();
+        soundManager.playSound(sounds.purchase);
+        gameState.gold -= gameState.shopResetPrice;
+        gameState.shopResetPrice += 5;
       } else {
-        this.soundManager.playSound(sounds.wrong);
+        soundManager.playSound(sounds.wrong);
       }
     } else {
       console.warn("unhandled action", action);
@@ -283,13 +237,13 @@ export class LevelManager extends GameObject {
    * @returns
    */
   hoverFunction = (cursorPos: Position) => {
-    if (this.gameState.inBook) {
+    if (gameState.inBook) {
       return new ChangeCursorState(CURSORBOOK);
     }
-    if (this.gameState.gameOver || this.gameState.paused) {
+    if (gameState.gameOver || gameState.paused) {
       return new ChangeCursorState(CURSORDEFAULT);
     }
-    if (this.gameState.inTransition) {
+    if (gameState.inTransition) {
       return new ChangeCursorState(CURSORNONE);
     }
     return this.currentSceneManager.handleHover(cursorPos);
@@ -313,36 +267,38 @@ export class LevelManager extends GameObject {
    */
   clickFunction = (
     cursorPos: Position,
-    button: typeof CLICKRIGHT | typeof CLICKLEFT
+    button: typeof CLICKRIGHT | typeof CLICKLEFT,
   ) => {
-    if (this.gameState.inBook) {
+    if (gameState.inBook) {
       if (button == CLICKLEFT) {
-        this.gameState.bookPage = Math.min(
+        gameState.bookPage = Math.min(
           bookPages.length - 1,
-          this.gameState.bookPage + 1
+          gameState.bookPage + 1,
         );
       } else {
-        this.gameState.bookPage = Math.max(0, this.gameState.bookPage - 1);
+        gameState.bookPage = Math.max(0, gameState.bookPage - 1);
       }
       return;
     }
-    if (this.gameState.paused) {
+    if (gameState.paused) {
       return;
     }
-    if (this.gameState.gameOver) {
-      if (this.gameState.heldWhileDeath) {
-        this.gameState.heldWhileDeath = false;
+    if (gameState.gameOver) {
+      if (gameState.heldWhileDeath) {
+        gameState.heldWhileDeath = false;
         return;
       }
       return new RestartGame();
     }
-    if (this.gameState.inTransition) {
+    if (gameState.inTransition) {
       return;
     }
-    if (this.gameState.inBook) {
+    if (gameState.inBook) {
       return;
     }
-    this.handleAction(this.currentSceneManager.handleClick(cursorPos, button));
+    return this.handleAction(
+      this.currentSceneManager.handleClick(cursorPos, button),
+    );
   };
 
   /**
@@ -353,13 +309,14 @@ export class LevelManager extends GameObject {
    */
   heldFunction = (cursorPos: Position, button: cursorClick) => {
     if (
-      this.gameState.inTransition ||
-      this.gameState.inBook ||
-      this.gameState.gameOver ||
-      this.gameState.paused
+      gameState.inTransition ||
+      gameState.inBook ||
+      gameState.gameOver ||
+      gameState.paused
     ) {
       return;
     }
     this.handleAction(this.currentSceneManager.handleHeld(cursorPos, button));
   };
 }
+export let levelManager = new LevelManager();

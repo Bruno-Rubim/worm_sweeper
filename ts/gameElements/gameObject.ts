@@ -1,10 +1,11 @@
-import type CanvasManager from "./canvasManager.js";
+import type CanvasManager from "../canvasManager.js";
 import Position from "./position.js";
+import type { Action } from "../action.js";
+import type { cursorClick } from "../global.js";
+import { Sprite } from "../sprites.js";
 import Hitbox from "./hitbox.js";
-import type { Action } from "./action.js";
-import type { cursorClick } from "./global.js";
-import { Sprite } from "./sprites.js";
-import timeTracker from "./timer/timeTracker.js";
+import timeTracker from "../timer/timeTracker.js";
+import { canvasManager } from "../canvasManager.js";
 
 // Represents a given object in game, can have interaction functions that return Actions
 export default class GameObject {
@@ -88,11 +89,10 @@ export default class GameObject {
   }
 
   /**
-   * Render the object's sprite with its stats using a given canvasManager
-   * @param canvasManager
+   * Render the object's sprite with its stats using the canvasManager
    * @returns
    */
-  render(canvasManager: CanvasManager) {
+  render() {
     if (this.hidden) {
       return;
     }

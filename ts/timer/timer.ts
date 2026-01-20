@@ -1,6 +1,15 @@
 import type { Action } from "../action.js";
-import { timerQueue } from "./timerQueue.js";
+import { GAMETIMERSYNC, timerManager } from "./timerManager.js";
 import timeTracker from "./timeTracker.js";
+
+export type timerArgs = {
+  goalSecs?: number;
+  goalFunc?: (() => Action | void | null) | undefined;
+  loop?: boolean;
+  autoStart?: boolean;
+  deleteAtEnd?: boolean;
+  classes?: string[];
+};
 
 export class Timer {
   startTic: number;
@@ -17,16 +26,11 @@ export class Timer {
   deleteAtEnd: boolean;
   classes: string[];
 
-  constructor(args: {
-    goalSecs?: number;
-    goalFunc?: (() => Action | void | null) | undefined;
-    loop?: boolean;
-    deleteAtEnd?: boolean;
-    classes?: string[];
-  }) {
+  constructor(args: timerArgs) {
     args.goalSecs ??= Infinity;
     args.loop ??= false;
     args.deleteAtEnd ??= true;
+    args.autoStart ??= true;
     args.classes ??= [];
     this.startTic = timeTracker.currentGameTic;
     this.goalSecs = args.goalSecs;
@@ -34,7 +38,9 @@ export class Timer {
     this.loop = args.loop;
     this.deleteAtEnd = args.deleteAtEnd;
     this.classes = args.classes;
-    timerQueue.push(this);
+    if (args.autoStart) {
+      this.start();
+    }
   }
 
   get goalTics() {
@@ -75,6 +81,7 @@ export class Timer {
     this.startTic = timeTracker.currentGameTic;
     this.totalPauseLapse = 0;
     this.isPaused = false;
+    timerManager.addTimer(this);
   }
 
   pause() {
@@ -122,6 +129,4 @@ export class Timer {
     this.totalPauseLapse = 0;
     this.extraTics = 0;
   }
-
-  delete() {}
 }

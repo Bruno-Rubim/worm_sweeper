@@ -1,15 +1,15 @@
 import { type Timer } from "./timer.js";
 
-// Timer class for timers that aren't deleted at clearQueue
-export const SKIPCLEAR = "skip_clear";
-// Timer class for timers that pause and unpause along with game timer
+// Timer class for timers that aren synced to the gameTimer
 export const GAMETIMERSYNC = "gameTimerSync";
 
-export class TimerMnager {
+export class TimerManager {
   queue: Timer[] = [];
 
   addTimer(timer: Timer) {
-    this.queue.push(timer);
+    if (!this.queue.includes(timer)) {
+      this.queue.push(timer);
+    }
   }
 
   deleteTimer(timer: Timer) {
@@ -17,7 +17,7 @@ export class TimerMnager {
   }
 
   clearQueue() {
-    this.queue = this.queue.filter((x) => x.classes.includes(SKIPCLEAR));
+    this.queue = [];
   }
 
   pauseTimers(timerClass: string) {
@@ -36,3 +36,5 @@ export class TimerMnager {
     });
   }
 }
+
+export const timerManager = new TimerManager();

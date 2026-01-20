@@ -43,7 +43,6 @@ export const sprites = {
   bomb_sheet: new Sprite("bomb_sheet"),
   button_exit: new Sprite("button_exit"),
   button_reset: new Sprite("button_reset"),
-  chisel_sheet: new Sprite("chisel_sheet"),
   counter_sheet: new Sprite("counter_sheet"),
   cursor_sheet: new Sprite("cursor_sheet"),
   description_box: new Sprite("description_box"),
@@ -56,7 +55,7 @@ export const sprites = {
   item_sheet: new Sprite("item_sheet"),
   item_potion_time_pointer_hour: new Sprite("item_potion_time_pointer_hour"),
   item_potion_time_pointer_minute: new Sprite(
-    "item_potion_time_pointer_minute"
+    "item_potion_time_pointer_minute",
   ),
   letters_book: new Sprite("letters_book"),
   letters_shop_description: new Sprite("letters_shop_description"),

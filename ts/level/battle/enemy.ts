@@ -1,5 +1,5 @@
 import { EnemyAtack } from "../../action.js";
-import Position from "../../position.js";
+import Position from "../../gameElements/position.js";
 import { sounds, type Sound } from "../../sounds.js";
 import { sprites, type Sprite } from "../../sprites.js";
 import { Timer } from "../../timer/timer.js";
@@ -36,14 +36,15 @@ export class Enemy {
     this.biteSound = args.biteSound ?? sounds.bite;
     this.spriteSheet = args.spriteSheet;
     this.stunSpriteShift = args.stunSpriteShift ?? new Position();
-    this.attackAnimTimer = new Timer({ goalSecs: 0.3 });
-    this.damagedTimer = new Timer({ goalSecs: 0.16 });
+    this.attackAnimTimer = new Timer({ goalSecs: 0.3, autoStart: false });
+    this.damagedTimer = new Timer({ goalSecs: 0.16, autoStart: false });
     this.cooldownTimer = new Timer({
       goalSecs: args.attackCooldown,
       goalFunc: () => {
         return new EnemyAtack(this.damage, this);
       },
       loop: true,
+      autoStart: false,
     });
   }
 

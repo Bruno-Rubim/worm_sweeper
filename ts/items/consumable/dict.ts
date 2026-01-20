@@ -1,10 +1,9 @@
-import Position from "../../position.js";
+import Position from "../../gameElements/position.js";
 import Bomb from "./bomb.js";
 import { Consumable } from "./consumable.js";
 import TimePotion from "./timePotion.js";
 
-const consumableDic = {
-  bomb: new Bomb(),
+const consumableDict = {
   health_potion_big: new Consumable({
     spriteSheetPos: new Position(2, 0),
     name: "health_potion_big",
@@ -19,13 +18,6 @@ const consumableDic = {
     cost: 7,
     descriptionText: "Gain 1 heart.",
   }),
-  // health_vial: new Consumable({
-  //   spriteSheetPos: new Position(8, 0),
-  //   name: "health_vial",
-  //   shopName: "Health Vial",
-  //   cost: 4,
-  //   descriptionText: "Gain 0.5 hearts.",
-  // }),
   time_potion: new TimePotion(),
   empty: new Consumable({
     spriteSheetPos: new Position(14, 0),
@@ -34,6 +26,7 @@ const consumableDic = {
     cost: 0,
     descriptionText: "",
   }),
+  bomb: new Bomb(),
 };
 
-export default consumableDic;
+export default consumableDict;

@@ -34,7 +34,7 @@ export class SoundManager {
   // Delete finished sounds from the active sounds
   clean() {
     this.activeSounds = this.activeSounds.filter(
-      (sound) => !(sound.paused && sound.currentTime > 0)
+      (sound) => !(sound.paused && sound.currentTime > 0),
     );
   }
 
@@ -54,3 +54,4 @@ export class SoundManager {
     cloneAudio.play();
   }
 }
+export const soundManager = new SoundManager();

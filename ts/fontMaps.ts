@@ -1,4 +1,4 @@
-import Position from "./position.js";
+import Position from "./gameElements/position.js";
 import { sprites, type Sprite } from "./sprites.js";
 import { utils } from "./utils.js";
 
@@ -1549,7 +1549,7 @@ export function measureTextBoxHeight(
   font: string,
   text: string,
   limitWidth: number,
-  fontSize: number = 1
+  fontSize: number = 1,
 ) {
   if (utils.lastOfArray(text.split("")) == "\n") {
     text = text.slice(0, text.length - 2);

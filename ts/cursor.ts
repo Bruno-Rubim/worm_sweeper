@@ -1,10 +1,11 @@
 import type CanvasManager from "./canvasManager.js";
+import { canvasManager } from "./canvasManager.js";
 import { measureTextBoxHeight } from "./fontMaps.js";
-import GameObject from "./gameObject.js";
+import GameObject from "./gameElements/gameObject.js";
 import { RIGHT, type LEFT } from "./global.js";
-import { inputState } from "./inputState.js";
-import Position from "./position.js";
+import Position from "./gameElements/position.js";
 import { sprites } from "./sprites.js";
+import { inputState } from "./input/inputState.js";
 
 export const CURSORDEFAULT = "cursor_default";
 export const CURSORPICAXE = "cursor_picaxe";
@@ -13,7 +14,6 @@ export const CURSORARROW = "cursor_arrow";
 export const CURSORBATTLE = "cursor_battle";
 export const CURSORBOMB = "cursor_bomb";
 export const CURSORGOLDWATER = "cursor_gold_water";
-export const CURSORCHISEL = "cursor_chisel";
 export const CURSORBOOK = "cursor_book";
 export const CURSORNONE = "cursor_none";
 
@@ -26,7 +26,6 @@ const cursorSheetPos = {
   [CURSORBATTLE]: new Position(4, 0),
   [CURSORBOMB]: new Position(5, 0),
   [CURSORGOLDWATER]: new Position(6, 0),
-  [CURSORCHISEL]: new Position(7, 0),
   [CURSORBOOK]: new Position(0, 3),
   [CURSORNONE]: new Position(6, 3),
 };
@@ -49,7 +48,7 @@ class Description extends GameObject {
     });
   }
 
-  render(canvasManager: CanvasManager): void {
+  render(): void {
     if (this.hidden) {
       return;
     }
@@ -64,10 +63,10 @@ class Description extends GameObject {
         "description",
         this.text,
         this.width,
-        this.fontSize
+        this.fontSize,
       ) +
         3 * this.renderScale,
-      this.renderScale
+      this.renderScale,
     );
     canvasManager.renderText(
       "description",
@@ -75,7 +74,7 @@ class Description extends GameObject {
       this.text,
       RIGHT,
       this.width,
-      this.fontSize
+      this.fontSize,
     );
   }
 }
@@ -97,10 +96,10 @@ class Cursor {
       16,
       cursorSheetPos[this.state].add(
         0,
-        inputState.mouse.heldLeft ? 1 : inputState.mouse.heldRight ? 2 : 0
-      )
+        inputState.mouse.heldLeft ? 1 : inputState.mouse.heldRight ? 2 : 0,
+      ),
     );
-    this.description.render(canvasManager);
+    this.description.render();
   }
 }
 

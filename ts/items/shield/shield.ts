@@ -1,5 +1,5 @@
 import { GAMEWIDTH } from "../../global.js";
-import Position from "../../position.js";
+import Position from "../../gameElements/position.js";
 import { sprites, type Sprite } from "../../sprites.js";
 import { Item } from ".././item.js";
 

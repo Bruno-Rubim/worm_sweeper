@@ -1,5 +1,5 @@
+import Position from "../../gameElements/position.js";
 import { GAMEWIDTH } from "../../global.js";
-import Position from "../../position.js";
 import { sounds, type Sound } from "../../sounds.js";
 import { type Sprite } from "../../sprites.js";
 import { Item } from ".././item.js";
@@ -30,8 +30,8 @@ export class Weapon extends Item {
       descriptionText:
         "$dmgDamage: " +
         args.damage +
-        (args.spikes ?? 0 > 0 ? "\n$spkSpikes: " + args.spikes : "") +
-        (args.stunSecs ?? 0 > 0 ? "\n$stnStun: " + args.stunSecs + "s" : "") +
+        ((args.spikes ?? 0 > 0) ? "\n$spkSpikes: " + args.spikes : "") +
+        ((args.stunSecs ?? 0 > 0) ? "\n$stnStun: " + args.stunSecs + "s" : "") +
         "\n$spdCooldown: " +
         args.cooldown +
         "s",
