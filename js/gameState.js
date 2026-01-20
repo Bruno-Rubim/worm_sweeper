@@ -15,7 +15,6 @@ export default class GameState {
     health = 5;
     deathCount = 0;
     shopResetPrice = 0;
-    inventorySpace = 6;
     level;
     inTransition = false;
     currentScene = "cave";

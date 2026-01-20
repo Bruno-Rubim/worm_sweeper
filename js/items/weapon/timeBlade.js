@@ -1,10 +1,10 @@
 import Position from "../../gameElements/position.js";
+import { gameState } from "../../gameState.js";
 import { sprites } from "../../sprites.js";
 import { Timer } from "../../timer/timer.js";
 import { Weapon } from "./weapon.js";
 export default class TimeBlade extends Weapon {
-    gameTimer;
-    constructor(gameTimer = new Timer({})) {
+    constructor() {
         super({
             spriteSheetPos: new Position(6, 3),
             bigSprite: sprites.big_time_blade,
@@ -16,7 +16,6 @@ export default class TimeBlade extends Weapon {
         });
         this.descriptionText = "";
         this.descFontSize = 0.4;
-        this.gameTimer = gameTimer;
     }
     get description() {
         return ("$dmgDamage: " +
@@ -27,6 +26,6 @@ export default class TimeBlade extends Weapon {
             "\n1 Damage for every 100 seconds left.");
     }
     get totalDamage() {
-        return Math.floor((this.gameTimer.secondsRemaining / 100) * 2) / 2;
+        return Math.floor((gameState.gameTimer.secondsRemaining / 100) * 2) / 2;
     }
 }

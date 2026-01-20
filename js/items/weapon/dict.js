@@ -19,8 +19,7 @@ export const weaponDic = {
         shopName: "Big Sword",
         cost: 50,
         damage: 3,
-        cooldown: 4.2,
-        stunSecs: 1,
+        cooldown: 3.2,
     }),
     dagger: new Weapon({
         spriteSheetPos: new Position(4, 3),

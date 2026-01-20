@@ -8,7 +8,7 @@ import { BuyShopItem, ShopItemDescription } from "../../action.js";
 import { handleMouseClick, handleMouseHover, handleMouseNotHover, } from "../../input/handleInput.js";
 import { soundManager } from "../../soundManager.js";
 import sounds from "../../sounds.js";
-import playerInventory from "../../playerInventory.js";
+import playerInventory, { getInventorySpace } from "../../playerInventory.js";
 import { Armor } from "../../items/armor/armor.js";
 import { Shield } from "../../items/shield/shield.js";
 import { Weapon } from "../../items/weapon/weapon.js";
@@ -54,9 +54,8 @@ export default class ShopManager extends SceneManager {
                     item.pos.update(-Infinity, -Infinity);
                     playerInventory.bag = item;
                     playerInventory.passive_7 = getItem("empty", new Position(4, 18 * 7));
-                    gameState.inventorySpace += 2;
                 }
-                else if (gameState.inventorySpace < 1) {
+                else if (getInventorySpace() < 1) {
                     soundManager.playSound(sounds.wrong);
                     return;
                 }
@@ -91,7 +90,6 @@ export default class ShopManager extends SceneManager {
             }
             action.shopItem.hidden = true;
             gameState.gold -= action.shopItem.item.cost;
-            gameState.inventorySpace--;
             soundManager.playSound(sounds.purchase);
             return;
         }

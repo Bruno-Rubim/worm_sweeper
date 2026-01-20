@@ -81,12 +81,10 @@ export default class Shop {
             .map((x) => new ShopItem(x.name));
         if (this.generics.length < 3) {
             this.generics = utils
-                .shuffleArray(shopItemList.filter((x) => ![
-                ...this.inventoryItemNames,
-                ...this.generics.map((x) => x.item.name),
-            ].includes(x.name)))
+                .shuffleArray(shopItemList.filter((x) => ![...this.inventoryItemNames].includes(x.name)))
                 .slice(0, 3)
                 .map((x) => new ShopItem(x.name));
+            console.log(this.generics);
         }
         this.generics.forEach((shopItem, i) => {
             shopItem.pos.update(BORDERTHICKLEFT + shelfStartDistance + i * shelfItemDistance, 28);

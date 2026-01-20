@@ -98,7 +98,6 @@ export default class GameManager {
         gameState.gold = 0;
         gameState.health = 5;
         gameState.deathCount++;
-        gameState.inventorySpace = 6;
         resetInventory();
         transitionOverlay.endAnimation();
         timeTracker.unpause();
