@@ -37,7 +37,7 @@ import { Consumable } from "./items/consumable/consumable.js";
 import consumableDict from "./items/consumable/dict.js";
 import Position from "./gameElements/position.js";
 import { utils } from "./utils.js";
-import { flagItem, picaxeItem } from "./items/uiItems.js";
+import { bookItem, flagItem, picaxeItem } from "./items/uiItems.js";
 import { DEV } from "./global.js";
 import Level from "./level/level.js";
 import { transitionOverlay } from "./level/transitionOverlay.js";
@@ -375,6 +375,7 @@ export default class GameManager {
       ...Object.values(playerInventory),
       picaxeItem,
       flagItem,
+      bookItem,
     ];
 
     const actions: Action[] | void = handleMouseInput(gameObjects);

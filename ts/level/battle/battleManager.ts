@@ -1,4 +1,9 @@
-import { ChangeCursorState, ChangeScene, EnemyAtack } from "../../action.js";
+import {
+  ChangeCursorState,
+  ChangeScene,
+  EnemyAtack,
+  LoseGame,
+} from "../../action.js";
 import { canvasManager } from "../../canvasManager.js";
 import { CURSORBATTLE } from "../../cursor.js";
 import GameObject from "../../gameElements/gameObject.js";
@@ -226,7 +231,6 @@ export default class BattleManager extends SceneManager {
     }
 
     // Render damage overlay
-
     damageOverlay.render();
   };
 
@@ -238,6 +242,9 @@ export default class BattleManager extends SceneManager {
     if (!gameState.battle) {
       alert("this shouldn't happen outside of battle");
       return;
+    }
+    if (gameState.health <= 0) {
+      return new LoseGame();
     }
     gameState.battle.enemies.forEach((e, i) => {
       if (e.health <= 0) {
@@ -316,7 +323,10 @@ export default class BattleManager extends SceneManager {
 
     // Cooldown
     const tiredTimer = gameState.tiredTimer;
-    tiredTimer.goalSecs = weapon.cooldown * playerInventory.armor.speedMult;
+    tiredTimer.goalSecs =
+      weapon.cooldown *
+      playerInventory.armor.speedMult *
+      (hasItem("whetstone") ? 1 - damage * 0.1 : 1);
     tiredTimer.start();
     return this.checkBattleEnd();
   }
