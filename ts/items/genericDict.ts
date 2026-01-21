@@ -48,6 +48,14 @@ const genericDict = {
     cost: 8,
     descriptionText: "Gain 2 gold for every enemy killed.",
   }),
+  whetstone: new Item({
+    spriteSheetPos: new Position(0, 5),
+    name: "whetstone",
+    shopName: "Whetstone",
+    cost: 18,
+    descriptionText:
+      "Reduces weapon $spdcooldown after attacking for 10% per damage dealt.",
+  }),
   safety_helmet: new Item({
     spriteSheetPos: new Position(2, 5),
     name: "safety_helmet",

@@ -18,8 +18,8 @@ export default class Cave {
   bellRang = false;
 
   constructor(depth: number) {
-    this.difficulty = (depth % 3) + Math.floor(depth / 3) + 4;
-    this.size = Math.floor(depth / 3) + 6;
+    this.difficulty = (depth % 4) + Math.floor(depth / 3) + 4;
+    this.size = Math.floor(depth / 4) + 6;
     this.hasShop = depth > 0;
     this.hasWater = depth > 1 && utils.randomInt(3) == 0;
     this.wormQuantity = Math.floor(
