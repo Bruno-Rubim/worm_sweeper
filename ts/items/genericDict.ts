@@ -54,7 +54,7 @@ const genericDict = {
     shopName: "Whetstone",
     cost: 18,
     descriptionText:
-      "Reduces weapon $spdcooldown after attacking for 10% per damage dealt.",
+      "Reduces weapon $spdcooldown after attacking for 5% per damage dealt.",
   }),
   safety_helmet: new Item({
     spriteSheetPos: new Position(2, 5),

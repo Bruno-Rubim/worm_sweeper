@@ -36,16 +36,20 @@ export function handleMouseInput(objects: GameObject[]): Action[] | void {
         actions.push(clickAction);
       }
     }
+    let heldAction: Action | void | null = null;
     if (inputState.mouse.heldLeft || inputState.mouse.clickedLeft) {
       obj.mouseHeldLeft = true;
       if (obj.heldFunction) {
-        obj.heldFunction(cursor.pos, CLICKLEFT);
+        heldAction = obj.heldFunction(cursor.pos, CLICKLEFT);
       }
     } else if (inputState.mouse.heldRight || inputState.mouse.clickedRight) {
       obj.mouseHeldRight = true;
       if (obj.heldFunction) {
-        obj.heldFunction(cursor.pos, CLICKRIGHT);
+        heldAction = obj.heldFunction(cursor.pos, CLICKRIGHT);
       }
+    }
+    if (heldAction instanceof Action) {
+      actions.push(heldAction);
     }
   });
   if (actions.length) {
