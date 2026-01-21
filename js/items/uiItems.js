@@ -1,3 +1,4 @@
+import { ToggleBook } from "../action.js";
 import Position from "../gameElements/position.js";
 import { GAMEWIDTH } from "../global.js";
 import { Item } from "./item.js";
@@ -17,3 +18,12 @@ export const flagItem = new Item({
     descriptionText: "Right click any block to mark it as a possible threat.",
     pos: new Position(GAMEWIDTH - 20, 109),
 });
+export const bookItem = new Item({
+    spriteSheetPos: new Position(4, 7),
+    name: "book",
+    shopName: "",
+    cost: 0,
+    descriptionText: "Click to open or close the guide book.",
+    pos: new Position(GAMEWIDTH - 20, 128),
+});
+bookItem.clickFunction = () => new ToggleBook();

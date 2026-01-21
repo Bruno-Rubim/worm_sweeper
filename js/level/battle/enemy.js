@@ -72,8 +72,8 @@ export class ScaleWorm extends Enemy {
             pos: new Position(56, 36),
             spriteSheet: sprites.enemy_scale_worm,
             health: 6 + Math.floor(depth / 3),
-            damage: 2 + Math.floor(depth / 5),
-            attackCooldown: 8 - Math.floor(depth / 3) * 0.5,
+            damage: 2 + Math.floor((depth / 6) * 2) / 2,
+            attackCooldown: 8 - Math.floor(depth / 3) * 0.3,
             stunSpriteShift: new Position(8, 21),
         });
     }
@@ -84,12 +84,12 @@ export class PosionWorm extends Enemy {
             pos: new Position(56, 36),
             spriteSheet: sprites.enemy_poison_worm,
             health: 3 + Math.floor(depth / 5),
-            damage: Math.max(0, 0 + Math.floor((depth - 5) / 4) / 2),
-            attackCooldown: 4 - depth * 0.1,
-            spikes: 0.5,
+            damage: Math.max(0, 0.5 + Math.floor((depth - 5) / 4) / 2),
+            attackCooldown: 6,
+            spikes: Math.max(0, 0.5 + Math.floor((depth - 5) / 4) / 2),
         });
         this.cooldownTimer.goalFunc = () => {
-            this.spikes += 0.5;
+            this.spikes += this.damage;
             return new EnemyAtack(this.damage, this);
         };
     }
