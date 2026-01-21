@@ -227,7 +227,7 @@ export class LevelManager extends GameObject {
         soundManager.playSound(sounds.wrong);
       }
     } else {
-      console.warn("unhandled action", action);
+      return action;
     }
   }
 
@@ -316,7 +316,11 @@ export class LevelManager extends GameObject {
     ) {
       return;
     }
-    this.handleAction(this.currentSceneManager.handleHeld(cursorPos, button));
+    let action = this.handleAction(
+      this.currentSceneManager.handleHeld(cursorPos, button),
+    );
+    console.log(action);
+    return action;
   };
 }
 export let levelManager = new LevelManager();

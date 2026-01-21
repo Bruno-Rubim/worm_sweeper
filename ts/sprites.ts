@@ -76,5 +76,5 @@ export const sprites = {
 
 const spriteArr = Object.values(sprites);
 const promises = spriteArr.map((sprite) => sprite.load());
-// awaits all images on spriteArr to load
+// Awaits all images on spriteArr to load
 await Promise.all(promises);

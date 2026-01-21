@@ -73,14 +73,14 @@ export default class CaveManager extends SceneManager {
       !this.cave.cleared
     ) {
       this.cave.cleared = true;
-      // if (hasItem("health_insurance")) {
-      //   gameState.health++;
-      // }
+      if (hasItem("health_insurance")) {
+        gameState.health++;
+      }
       gameState.gold += 5;
       gameState.gameTimer.addSecs(60);
-      // if (hasItem("gold_bug")) {
-      //   gameState.gold += 5;
-      // }
+      if (hasItem("gold_bug")) {
+        gameState.gold += 5;
+      }
       soundManager.playSound(sounds.clear);
     }
   }
