@@ -30,7 +30,7 @@ export default class GameState {
     bookPage = 0;
     holding = null;
     constructor() {
-        this.level = new Level(8);
+        this.level = new Level(0);
     }
 }
 export const gameState = new GameState();
