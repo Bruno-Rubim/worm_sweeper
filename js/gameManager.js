@@ -57,6 +57,10 @@ export default class GameManager {
                 soundManager.playSound(sounds.drink);
                 break;
             case "empty":
+                if (gameState.holding instanceof Bomb) {
+                    playerInventory.consumable = gameState.holding;
+                    gameState.holding = null;
+                }
                 break;
         }
         if (action.itemName != "empty") {

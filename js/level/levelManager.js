@@ -143,7 +143,7 @@ export class LevelManager extends GameObject {
             }
         }
         else {
-            console.warn("unhandled action", action);
+            return action;
         }
     }
     hoverFunction = (cursorPos) => {
@@ -197,7 +197,9 @@ export class LevelManager extends GameObject {
             gameState.paused) {
             return;
         }
-        this.handleAction(this.currentSceneManager.handleHeld(cursorPos, button));
+        let action = this.handleAction(this.currentSceneManager.handleHeld(cursorPos, button));
+        console.log(action);
+        return action;
     };
 }
 export let levelManager = new LevelManager();
