@@ -21,7 +21,7 @@ export default class GameState {
 
   level: Level;
   inTransition: boolean = false;
-  currentScene: "cave" | "shop" | "battle" = "shop";
+  currentScene: "cave" | "shop" | "battle" = "cave";
   battle: Battle | null = new Battle(0, 1);
 
   tiredTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
@@ -33,6 +33,7 @@ export default class GameState {
   gameOver: boolean = false;
   heldWhileDeath: boolean = false;
 
+  inInventory: boolean = false;
   inBook: boolean = false;
   bookPage: number = 0;
 

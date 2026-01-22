@@ -104,14 +104,7 @@ export default class Shop {
       playerInventory.weapon.name,
       playerInventory.shield.name,
       playerInventory.armor.name,
-      playerInventory.passive_1.name,
-      playerInventory.passive_2.name,
-      playerInventory.passive_3.name,
-      playerInventory.passive_4.name,
-      playerInventory.passive_5.name,
-      playerInventory.passive_6.name,
-      playerInventory.passive_7.name,
-      playerInventory.bag.name,
+      ...playerInventory.general.map((x) => x.name),
     ];
     let filterNames = [
       ...this.inventoryItemNames,

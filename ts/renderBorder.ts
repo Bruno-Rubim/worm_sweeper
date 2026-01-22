@@ -5,7 +5,7 @@ import { GAMEHEIGHT, GAMEWIDTH, LEFT, CENTER } from "./global.js";
 import Position from "./gameElements/position.js";
 import { sprites } from "./sprites.js";
 import playerInventory, { type inventory } from "./playerInventory.js";
-import { bookItem, flagItem, picaxeItem } from "./items/uiItems.js";
+import { bagItem, bookItem, flagItem, picaxeItem } from "./items/uiItems.js";
 
 /**
  * Renders the current game stats
@@ -78,16 +78,12 @@ function renderStats() {
  * @param gameState
  */
 function renderItems() {
-  for (const key of Object.keys(playerInventory) as (keyof inventory)[]) {
-    const item = playerInventory[key];
-    if (!item || key == "bag") {
-      continue;
-    }
-    item.render();
-  }
-  picaxeItem.render();
-  flagItem.render();
+  playerInventory.weapon.render();
+  playerInventory.shield.render();
+  playerInventory.armor.render();
+  playerInventory.consumable.render();
   bookItem.render();
+  bagItem.render();
 }
 
 // Object for the border of the game

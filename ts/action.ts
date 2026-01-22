@@ -104,6 +104,9 @@ export class EnemyAtack extends Action {
 // Calls to open/close the rule book
 export class ToggleBook extends Action {}
 
+// Calls to open/close the rule book
+export class ToggleInventory extends Action {}
+
 // Calls to render an item description next to the cursor
 export class ItemDescription extends Action {
   description: string;

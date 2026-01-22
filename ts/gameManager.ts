@@ -11,6 +11,7 @@ import {
   RingBell,
   SellItem,
   ToggleBook,
+  ToggleInventory,
 } from "./action.js";
 import { canvasManager } from "./canvasManager.js";
 import {
@@ -31,13 +32,16 @@ import { handleMouseInput } from "./input/handleInput.js";
 import { bindListeners, inputState } from "./input/inputState.js";
 import { Weapon } from "./items/weapon/weapon.js";
 import { Shield } from "./items/shield/shield.js";
-import playerInventory, { resetInventory } from "./playerInventory.js";
+import playerInventory, {
+  getInventoryItems,
+  resetInventory,
+} from "./playerInventory.js";
 import { Armor, armorDic } from "./items/armor/armor.js";
 import { Consumable } from "./items/consumable/consumable.js";
 import consumableDict from "./items/consumable/dict.js";
 import Position from "./gameElements/position.js";
 import { utils } from "./utils.js";
-import { bookItem, flagItem, picaxeItem } from "./items/uiItems.js";
+import { bagItem, bookItem, flagItem, picaxeItem } from "./items/uiItems.js";
 import { DEV } from "./global.js";
 import Level from "./level/level.js";
 import { transitionOverlay } from "./level/transitionOverlay.js";
@@ -116,6 +120,13 @@ export default class GameManager {
     } else if (!gameState.paused && !gameState.gameOver) {
       timeTracker.unpause();
     }
+  }
+
+  /**
+   * Opens/closes the inventory
+   */
+  toggleInventory() {
+    gameState.inInventory = !gameState.inInventory;
   }
 
   /**
@@ -211,27 +222,7 @@ export default class GameManager {
       } else if (action.item instanceof Consumable) {
         playerInventory.consumable = consumableDict.empty;
       } else {
-        if (playerInventory.passive_1 == action.item) {
-          playerInventory.passive_1 = getItem("empty", new Position(4, 18 * 1));
-        }
-        if (playerInventory.passive_2 == action.item) {
-          playerInventory.passive_2 = getItem("empty", new Position(4, 18 * 2));
-        }
-        if (playerInventory.passive_3 == action.item) {
-          playerInventory.passive_3 = getItem("empty", new Position(4, 18 * 3));
-        }
-        if (playerInventory.passive_4 == action.item) {
-          playerInventory.passive_4 = getItem("empty", new Position(4, 18 * 4));
-        }
-        if (playerInventory.passive_5 == action.item) {
-          playerInventory.passive_5 = getItem("empty", new Position(4, 18 * 5));
-        }
-        if (playerInventory.passive_6 == action.item) {
-          playerInventory.passive_6 = getItem("empty", new Position(4, 18 * 6));
-        }
-        if (playerInventory.passive_7 == action.item) {
-          playerInventory.passive_7 = getItem("empty", new Position(4, 18 * 7));
-        }
+        console.log("selling item from bag");
       }
       gameState.gold += utils.randomInt(4, 1);
       soundManager.playSound(sounds.gold);
@@ -261,6 +252,10 @@ export default class GameManager {
     }
     if (action instanceof ToggleBook) {
       this.toggleBook();
+      return;
+    }
+    if (action instanceof ToggleInventory) {
+      this.toggleInventory();
       return;
     }
     if (action instanceof ItemDescription) {
@@ -369,13 +364,10 @@ export default class GameManager {
     this.checkTimers();
     cursor.pos.update(inputState.mouse.pos.divide(canvasManager.renderScale));
 
-    const gameObjects: GameObject[] = [
-      levelManager,
-      ...Object.values(playerInventory),
-      picaxeItem,
-      flagItem,
-      bookItem,
-    ];
+    const gameObjects: GameObject[] = [levelManager, bagItem, bookItem];
+    if (gameState.inInventory) {
+      gameObjects.push(...getInventoryItems());
+    }
 
     const actions: Action[] | void = handleMouseInput(gameObjects);
 
