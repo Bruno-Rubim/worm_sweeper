@@ -72,6 +72,13 @@ const genericDict = {
         cost: 36,
         descriptionText: "Adds 0.5 $dfsdefense to your shield.",
     }),
+    feather: new Item({
+        spriteSheetPos: new Position(8, 5),
+        name: "feather",
+        shopName: "Feather",
+        cost: 21,
+        descriptionText: "Reduces weapon $spdcooldown by 0.3 Seconds.",
+    }),
     silver_bell: new SilverBell(),
     empty: new Item({
         spriteSheetPos: new Position(14, 4),

@@ -37,7 +37,7 @@ export const weaponDic = {
         shopName: "Cactus",
         cost: 19,
         damage: 0.5,
-        spikes: 1,
+        spikes: 0.5,
         cooldown: 1,
     }),
     time_blade: new TimeBlade(),

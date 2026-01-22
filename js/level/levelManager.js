@@ -198,7 +198,6 @@ export class LevelManager extends GameObject {
             return;
         }
         let action = this.handleAction(this.currentSceneManager.handleHeld(cursorPos, button));
-        console.log(action);
         return action;
     };
 }

@@ -26,11 +26,13 @@ export class Armor extends Item {
                     : "") +
                 (args.speedMult > 1
                     ? "$slwSpeed: +" +
-                        Math.abs(Math.floor((1 - args.speedMult) * 100)) +
+                        Math.abs(Math.floor((Math.round((1 - args.speedMult) * 10) / 10) * 100)) +
                         "%"
                     : "") +
                 (args.speedMult < 1 && args.speedMult
-                    ? "$spdSpeed: -" + Math.floor((1 - args.speedMult) * 100) + "%"
+                    ? "$spdSpeed: -" +
+                        Math.floor((Math.round((1 - args.speedMult) * 10) / 10) * 100) +
+                        "%"
                     : ""),
         });
         this.descFontSize = 0.6;
@@ -63,10 +65,10 @@ export const armorDic = {
         spriteSheetPos: new Position(4, 2),
         name: "silver_chestplate",
         shopName: "Silver Chestplate",
-        cost: 72,
-        defense: 2,
+        cost: 62,
+        defense: 1,
         speedMult: 1.3,
-        protection: 3,
+        protection: 2,
     }),
     empty: new Armor({
         spriteSheetPos: new Position(14, 2),

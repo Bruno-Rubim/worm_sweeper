@@ -17,7 +17,7 @@ export default class GameState {
     shopResetPrice = 0;
     level;
     inTransition = false;
-    currentScene = "cave";
+    currentScene = "shop";
     battle = new Battle(0, 1);
     tiredTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
     attackAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
