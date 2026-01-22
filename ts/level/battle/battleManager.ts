@@ -324,7 +324,7 @@ export default class BattleManager extends SceneManager {
     // Cooldown
     const tiredTimer = gameState.tiredTimer;
     tiredTimer.goalSecs =
-      weapon.cooldown *
+      (weapon.cooldown - (hasItem("feather") ? 0.3 : 0)) *
       (playerInventory.armor.speedMult -
         (hasItem("whetstone") ? damage * 0.05 : 0));
     tiredTimer.start();
