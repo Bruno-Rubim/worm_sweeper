@@ -39,7 +39,7 @@ export default class GameState {
   holding: Bomb | null = null;
 
   constructor() {
-    this.level = new Level(8);
+    this.level = new Level(0);
   }
 }
 
