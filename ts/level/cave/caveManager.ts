@@ -209,21 +209,23 @@ export default class CaveManager extends SceneManager {
   }
 
   bombBlock(block: Block) {
-    if (block.content == CONTENTWORM) {
-      block.content = CONTENTEMPTY;
-      if (block.marked) {
-        block.marked = false;
+    if (!block.broken) {
+      if (block.content == CONTENTWORM) {
+        block.content = CONTENTEMPTY;
+        if (block.marked) {
+          block.marked = false;
+        } else {
+          this.cave.wormsLeft--;
+        }
       } else {
-        this.cave.wormsLeft--;
+        if (block.marked) {
+          block.marked = false;
+          this.cave.wormsLeft++;
+        }
+        this.cave.blocksLeft--;
       }
-    } else {
-      if (block.marked) {
-        block.marked = false;
-        this.cave.wormsLeft++;
-      }
-      this.cave.blocksLeft--;
+      block.broken = true;
     }
-    block.broken = true;
     this.getSurrBlocks(block.gridPos).forEach((b) => {
       if (b.content == CONTENTWORM) {
         b.content = CONTENTEMPTY;
