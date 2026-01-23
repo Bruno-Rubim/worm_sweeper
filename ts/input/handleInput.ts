@@ -47,6 +47,9 @@ export function handleMouseInput(objects: GameObject[]): Action[] | void {
       if (obj.heldFunction) {
         heldAction = obj.heldFunction(cursor.pos, CLICKRIGHT);
       }
+    } else {
+      obj.mouseHeldLeft = false;
+      obj.mouseHeldRight = false;
     }
     if (heldAction instanceof Action) {
       actions.push(heldAction);

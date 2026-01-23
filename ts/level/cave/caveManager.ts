@@ -13,7 +13,7 @@ import {
 } from "../../cursor.js";
 import { CLICKLEFT, type CLICKRIGHT } from "../../global.js";
 import Position from "../../gameElements/position.js";
-import sounds from "../../sounds.js";
+import sounds from "../../sounds/sounds.js";
 import { sprites } from "../../sprites.js";
 import Block, {
   blockSheetPos,
@@ -28,10 +28,11 @@ import Block, {
 import SceneManager from "../sceneManager.js";
 import { gameState } from "../../gameState.js";
 import { canvasManager } from "../../canvasManager.js";
-import { soundManager } from "../../soundManager.js";
+import { soundManager } from "../../sounds/soundManager.js";
 import { utils } from "../../utils.js";
 import { hasItem } from "../../playerInventory.js";
 import { Timer } from "../../timer/timer.js";
+import { musicTracks } from "../../sounds/music.js";
 
 type breakResult = {
   battle: StartBattle;
@@ -513,7 +514,7 @@ export default class CaveManager extends SceneManager {
       this.startCave(block.gridPos);
       soundManager.playSound(sounds.break);
       if (!gameState.started) {
-        // soundManager.playMusic(music.drums);
+        soundManager.playMusic(musicTracks.music);
         gameState.started = true;
         gameState.gameTimer.start();
       }

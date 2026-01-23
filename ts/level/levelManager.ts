@@ -24,13 +24,13 @@ import timeTracker from "../timer/timeTracker.js";
 import { Timer } from "../timer/timer.js";
 
 import type SceneManager from "./sceneManager.js";
-import sounds from "../sounds.js";
+import sounds from "../sounds/sounds.js";
 import CaveManager from "./cave/caveManager.js";
 import ShopManager from "./shop/shopManager.js";
 import { bookPages } from "../bookPages.js";
 import { canvasManager } from "../canvasManager.js";
 import { gameState } from "../gameState.js";
-import { soundManager } from "../soundManager.js";
+import { soundManager } from "../sounds/soundManager.js";
 import BattleManager from "./battle/battleManager.js";
 import { Battle } from "./battle/battle.js";
 import playerInventory, { hasItem } from "../playerInventory.js";

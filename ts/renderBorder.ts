@@ -5,7 +5,14 @@ import { GAMEHEIGHT, GAMEWIDTH, LEFT, CENTER } from "./global.js";
 import Position from "./gameElements/position.js";
 import { sprites } from "./sprites.js";
 import playerInventory, { type inventory } from "./playerInventory.js";
-import { bagItem, bookItem, flagItem, picaxeItem } from "./items/uiItems.js";
+import {
+  bagItem,
+  bookItem,
+  flagItem,
+  musicButton,
+  picaxeItem,
+  sfxButton,
+} from "./items/uiItems.js";
 
 /**
  * Renders the current game stats
@@ -84,6 +91,8 @@ function renderItems() {
   playerInventory.active.render();
   bookItem.render();
   bagItem.render();
+  musicButton.render();
+  sfxButton.render();
 }
 
 // Object for the border of the game
