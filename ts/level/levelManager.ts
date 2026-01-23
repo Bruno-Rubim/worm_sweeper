@@ -102,7 +102,7 @@ export class LevelManager extends GameObject {
         this.width,
         this.height,
       );
-      playerInventory.general.forEach((item, i) => {
+      playerInventory.passives.forEach((item, i) => {
         item.render();
       });
       return;
@@ -252,7 +252,7 @@ export class LevelManager extends GameObject {
     if (gameState.inBook) {
       return new ChangeCursorState(CURSORBOOK);
     }
-    if (gameState.gameOver || gameState.paused) {
+    if (gameState.gameOver || gameState.paused || gameState.inInventory) {
       return new ChangeCursorState(CURSORDEFAULT);
     }
     if (gameState.inTransition) {

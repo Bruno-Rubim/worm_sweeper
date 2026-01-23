@@ -4,8 +4,6 @@ import type { Item } from "./items/item.js";
 import type Position from "./gameElements/position.js";
 import type { ShopItem } from "./level/shop/shopItem.js";
 import type { Enemy } from "./level/battle/enemy.js";
-import type Bomb from "./items/consumable/bomb.js";
-// import type Bomb from "./items/consumable/bomb.js";
 
 // Represents a consequence of something happening in game
 export class Action {}
@@ -141,13 +139,5 @@ export class StartBattle extends Action {
 
 export class PauseGameTimer extends Action {}
 
-// Calls to ring the bell item
-export class RingBell extends Action {}
-
-export class PickupBomb extends Action {
-  bombItem: Bomb;
-  constructor(item: Bomb) {
-    super();
-    this.bombItem = item;
-  }
-}
+// Calls to use the current active item
+export class UseActiveItem extends Action {}

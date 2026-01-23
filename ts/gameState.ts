@@ -1,5 +1,5 @@
 import { LoseGame } from "./action.js";
-import type Bomb from "./items/consumable/bomb.js";
+import type { ActiveItem } from "./items/active/active.js";
 import { Battle } from "./level/battle/battle.js";
 import Level from "./level/level.js";
 import { Timer } from "./timer/timer.js";
@@ -18,6 +18,7 @@ export default class GameState {
   health: number = 5;
   deathCount = 0;
   shopResetPrice = 0;
+  bugCurse: boolean = false;
 
   level: Level;
   inTransition: boolean = false;
@@ -37,11 +38,27 @@ export default class GameState {
   inBook: boolean = false;
   bookPage: number = 0;
 
-  holding: Bomb | null = null;
+  holding: ActiveItem | null = null;
 
   constructor() {
     this.level = new Level(0);
   }
 }
 
+const baseState = new GameState();
+
 export const gameState = new GameState();
+
+export function resetGameState() {
+  gameState.gameOver = baseState.gameOver;
+  gameState.started = baseState.started;
+  gameState.inTransition = baseState.inTransition;
+  gameState.currentScene = baseState.currentScene;
+  gameState.gold = baseState.gold;
+  gameState.health = baseState.health;
+  gameState.level = new Level(0);
+  gameState.gameTimer.restart();
+  gameState.tiredTimer.restart();
+  gameState.attackAnimationTimer.restart();
+  gameState.defenseAnimationTimer.restart();
+}

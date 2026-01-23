@@ -13,7 +13,12 @@ import {
 import Position from "../../gameElements/position.js";
 import { sprites } from "../../sprites.js";
 import SceneManager from "../sceneManager.js";
-import { BuyShopItem, ShopItemDescription, type Action } from "../../action.js";
+import {
+  Action,
+  BuyShopItem,
+  ConsumeItem,
+  ShopItemDescription,
+} from "../../action.js";
 import {
   handleMouseClick,
   handleMouseHover,
@@ -25,8 +30,8 @@ import playerInventory from "../../playerInventory.js";
 import { Armor } from "../../items/armor/armor.js";
 import { Shield } from "../../items/shield/shield.js";
 import { Weapon } from "../../items/weapon/weapon.js";
+import { ActiveItem } from "../../items/active/active.js";
 import { Consumable } from "../../items/consumable/consumable.js";
-import { getItem } from "../../items/genericDict.js";
 
 // Handles rendering and interactions with the shop scene of the current level
 export default class ShopManager extends SceneManager {
@@ -70,29 +75,38 @@ export default class ShopManager extends SceneManager {
         return;
       }
       const item = action.shopItem.item;
-      if (item instanceof Armor) {
-        playerInventory.armor = item;
-        action.shopItem.hidden = true;
-      } else if (item instanceof Shield) {
-        playerInventory.shield = item;
-        action.shopItem.hidden = true;
-      } else if (item instanceof Weapon) {
-        playerInventory.weapon = item;
-        action.shopItem.hidden = true;
-      } else if (item instanceof Consumable) {
-        playerInventory.consumable = item;
-        action.shopItem.hidden = true;
-      } else {
-        const i = playerInventory.general.length;
-        item.pos.update(
-          BORDERTHICKLEFT + 13 + 18 * (i % 6),
-          BORDERTHICKTOP + 13 + 18 * Math.floor(i / 6),
-        );
-        playerInventory.general.push(item);
-      }
       action.shopItem.hidden = true;
       gameState.gold -= action.shopItem.item.cost;
       soundManager.playSound(sounds.purchase);
+      if (item instanceof Armor) {
+        playerInventory.armor = item;
+        action.shopItem.hidden = true;
+        return;
+      }
+      if (item instanceof Shield) {
+        playerInventory.shield = item;
+        action.shopItem.hidden = true;
+        return;
+      }
+      if (item instanceof Weapon) {
+        playerInventory.weapon = item;
+        action.shopItem.hidden = true;
+        return;
+      }
+      if (item instanceof ActiveItem) {
+        playerInventory.active = item;
+        action.shopItem.hidden = true;
+        return;
+      }
+      if (item instanceof Consumable) {
+        return new ConsumeItem(item.name);
+      }
+      const i = playerInventory.passives.length;
+      item.pos.update(
+        BORDERTHICKLEFT + 13 + 18 * (i % 6),
+        BORDERTHICKTOP + 13 + 18 * Math.floor(i / 6),
+      );
+      playerInventory.passives.push(item);
       return;
     }
     return action;

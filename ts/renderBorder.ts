@@ -81,7 +81,7 @@ function renderItems() {
   playerInventory.weapon.render();
   playerInventory.shield.render();
   playerInventory.armor.render();
-  playerInventory.consumable.render();
+  playerInventory.active.render();
   bookItem.render();
   bagItem.render();
 }

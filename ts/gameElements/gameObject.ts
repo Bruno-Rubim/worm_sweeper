@@ -1,4 +1,3 @@
-import type CanvasManager from "../canvasManager.js";
 import Position from "./position.js";
 import type { Action } from "../action.js";
 import type { cursorClick } from "../global.js";

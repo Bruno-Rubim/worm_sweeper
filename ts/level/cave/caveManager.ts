@@ -31,7 +31,6 @@ import { canvasManager } from "../../canvasManager.js";
 import { soundManager } from "../../soundManager.js";
 import { utils } from "../../utils.js";
 import { hasItem } from "../../playerInventory.js";
-import Bomb from "../../items/consumable/bomb.js";
 import { Timer } from "../../timer/timer.js";
 
 type breakResult = {
@@ -511,10 +510,7 @@ export default class CaveManager extends SceneManager {
     const block = this.getBlockFromScrenPos(cursorPos);
     if (!this.cave.started) {
       // Start game
-      this.startCave(
-        block.gridPos,
-        // gameState.itemNames,
-      );
+      this.startCave(block.gridPos);
       soundManager.playSound(sounds.break);
       if (!gameState.started) {
         // soundManager.playMusic(music.drums);
@@ -525,7 +521,7 @@ export default class CaveManager extends SceneManager {
     }
 
     if (button == CLICKLEFT) {
-      if (gameState.holding instanceof Bomb) {
+      if (gameState.holding?.name == "bomb") {
         // Bomb functionality
         if (block.broken && block.content != CONTENTEMPTY) {
           return;
@@ -631,7 +627,7 @@ export default class CaveManager extends SceneManager {
     });
     const block = this.getBlockFromScrenPos(cursorPos);
     block.cursorHovering = true;
-    if (gameState.holding instanceof Bomb) {
+    if (gameState.holding?.name == "bomb") {
       this.bomb = {
         hoverScreenPos: cursorPos,
         screenPos: new Position(cursorPos),
