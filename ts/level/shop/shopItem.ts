@@ -10,17 +10,19 @@ import { armorDic } from "../../items/armor/armor.js";
 import consumableDict from "../../items/consumable/dict.js";
 import { weaponDic } from "../../items/weapon/dict.js";
 import { shieldDic } from "../../items/shield/shield.js";
-import genericDict from "../../items/genericDict.js";
+import passivesDict from "../../items/passiveDict.js";
+import activeDict from "../../items/active/dict.js";
 
 type itemName =
-  | keyof typeof genericDict
+  | keyof typeof passivesDict
   | keyof typeof armorDic
   | keyof typeof consumableDict
   | keyof typeof weaponDic
   | keyof typeof shieldDic;
 
 const items: Record<itemName, Item> = {
-  ...genericDict,
+  ...passivesDict,
+  ...activeDict,
   ...weaponDic,
   ...armorDic,
   ...consumableDict,
@@ -38,9 +40,6 @@ export class ShopItem extends GameObject {
     });
     this.item = items[itemName];
     this.clickFunction = (cursorPos: Position, button: cursorClick) => {
-      // if (this.item instanceof SilverBell) {
-      //   timerQueue.push(this.item.ringTimer);
-      // }
       if (button == CLICKLEFT) return new BuyShopItem(this);
     };
   }

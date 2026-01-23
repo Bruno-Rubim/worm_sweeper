@@ -41,14 +41,5 @@ export const weaponDic = {
     spikes: 0.5,
     cooldown: 1,
   }),
-  // mace: new Weapon({
-  //   spriteSheetPos: new Position(8, 3),
-  //   bigSprite: sprites.big_sword_dagger,
-  //   name: "mace",
-  //   shopName: "Mace",
-  //   cost: 50,
-  //   damage: 4,
-  //   cooldown: 5,
-  // }),
   time_blade: new TimeBlade(),
 };

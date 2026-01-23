@@ -53,6 +53,7 @@ export function bindListeners(element: HTMLElement) {
     }
   });
   element.addEventListener("keydown", (e) => {
+    // console.log(e.key);
     if (inputState.keyboard[e.key] != "read")
       inputState.keyboard[e.key] = "pressed";
   });

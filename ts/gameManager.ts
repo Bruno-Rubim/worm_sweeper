@@ -6,11 +6,11 @@ import {
   EnemyAtack,
   ItemDescription,
   LoseGame,
-  PickupBomb,
   RestartGame,
-  RingBell,
   SellItem,
   ToggleBook,
+  ToggleInventory,
+  UseActiveItem,
 } from "./action.js";
 import { canvasManager } from "./canvasManager.js";
 import {
@@ -20,7 +20,7 @@ import {
   type cursorState,
 } from "./cursor.js";
 import type GameObject from "./gameElements/gameObject.js";
-import { gameState } from "./gameState.js";
+import { gameState, resetGameState } from "./gameState.js";
 import { levelManager } from "./level/levelManager.js";
 import { renderBorder } from "./renderBorder.js";
 import { soundManager } from "./soundManager.js";
@@ -31,18 +31,21 @@ import { handleMouseInput } from "./input/handleInput.js";
 import { bindListeners, inputState } from "./input/inputState.js";
 import { Weapon } from "./items/weapon/weapon.js";
 import { Shield } from "./items/shield/shield.js";
-import playerInventory, { resetInventory } from "./playerInventory.js";
+import playerInventory, {
+  getInventoryItems,
+  resetInventory,
+} from "./playerInventory.js";
 import { Armor, armorDic } from "./items/armor/armor.js";
 import { Consumable } from "./items/consumable/consumable.js";
-import consumableDict from "./items/consumable/dict.js";
-import Position from "./gameElements/position.js";
 import { utils } from "./utils.js";
-import { bookItem, flagItem, picaxeItem } from "./items/uiItems.js";
+import { bagItem, bookItem } from "./items/uiItems.js";
 import { DEV } from "./global.js";
 import Level from "./level/level.js";
 import { transitionOverlay } from "./level/transitionOverlay.js";
-import { getItem } from "./items/genericDict.js";
-import Bomb from "./items/consumable/bomb.js";
+import activeDict from "./items/active/dict.js";
+import { SilverBell } from "./items/active/silverBell.js";
+import Position from "./gameElements/position.js";
+import { ActiveItem } from "./items/active/active.js";
 
 // Says if the cursor has changed or if there's an item description to show TO-DO: change this
 type actionResponse = "cursorChange" | "itemDescription" | void;
@@ -94,15 +97,6 @@ export default class GameManager {
         gameState.health += 2;
         soundManager.playSound(sounds.drink);
         break;
-      case "empty":
-        if (gameState.holding instanceof Bomb) {
-          playerInventory.consumable = gameState.holding;
-          gameState.holding = null;
-        }
-        break;
-    }
-    if (action.itemName != "empty") {
-      playerInventory.consumable = consumableDict.empty;
     }
   }
 
@@ -116,6 +110,13 @@ export default class GameManager {
     } else if (!gameState.paused && !gameState.gameOver) {
       timeTracker.unpause();
     }
+  }
+
+  /**
+   * Opens/closes the inventory
+   */
+  toggleInventory() {
+    gameState.inInventory = !gameState.inInventory;
   }
 
   /**
@@ -141,17 +142,7 @@ export default class GameManager {
 
   restartGame() {
     timerManager.clearQueue();
-    gameState.gameOver = false;
-    gameState.started = false;
-    gameState.inTransition = false;
-    gameState.level = new Level(0);
-    gameState.gameTimer.restart();
-    gameState.tiredTimer.restart();
-    gameState.attackAnimationTimer.restart();
-    gameState.defenseAnimationTimer.restart();
-    gameState.currentScene = "cave";
-    gameState.gold = 0;
-    gameState.health = 5;
+    resetGameState();
     gameState.deathCount++;
     resetInventory();
     transitionOverlay.endAnimation();
@@ -171,25 +162,42 @@ export default class GameManager {
     }
   }
 
-  /**
-   * Ring bell functionality
-   */
-  ringBell() {
-    if (gameState.currentScene == "battle") {
-      levelManager.battleManager.stunEnemy(3);
-    } else {
-      gameState.level.cave.bellRang = true;
-    }
-    soundManager.playSound(sounds.bell);
-  }
-
-  /**
-   * Sets the current holding object as the bomb and empties the consumable slot
-   */
-  pickupBomb(action: PickupBomb) {
-    if (gameState.holding == null) {
-      gameState.holding = action.bombItem;
-      playerInventory.consumable = consumableDict.empty;
+  useActiveItem() {
+    switch (playerInventory.active.name) {
+      case "silver_bell":
+        if (!(playerInventory.active instanceof SilverBell)) {
+          alert("something is wrong");
+          break;
+        }
+        if (playerInventory.active.ringTimer.inMotion) {
+          break;
+        }
+        if (gameState.currentScene == "battle") {
+          levelManager.battleManager.stunEnemy(3);
+        } else {
+          gameState.level.cave.bellRang = true;
+        }
+        soundManager.playSound(sounds.bell);
+        playerInventory.active.ringTimer.start();
+        break;
+      case "bomb":
+        if (gameState.currentScene == "battle") {
+          levelManager.handleAction(levelManager.battleManager.bomb());
+          playerInventory.active = activeDict.empty;
+          break;
+        }
+        gameState.holding = playerInventory.active;
+        playerInventory.active = activeDict.empty;
+        break;
+      case "empty":
+        if (gameState.holding != null) {
+          if (gameState.holding.name == "bomb") {
+            levelManager.caveManager.bomb = null;
+          }
+          playerInventory.active = gameState.holding;
+          gameState.holding = null;
+        }
+        break;
     }
   }
 
@@ -208,30 +216,12 @@ export default class GameManager {
       }
       if (action.item instanceof Armor) {
         playerInventory.armor = armorDic.empty;
-      } else if (action.item instanceof Consumable) {
-        playerInventory.consumable = consumableDict.empty;
+      } else if (action.item instanceof ActiveItem) {
+        playerInventory.active = activeDict.empty;
       } else {
-        if (playerInventory.passive_1 == action.item) {
-          playerInventory.passive_1 = getItem("empty", new Position(4, 18 * 1));
-        }
-        if (playerInventory.passive_2 == action.item) {
-          playerInventory.passive_2 = getItem("empty", new Position(4, 18 * 2));
-        }
-        if (playerInventory.passive_3 == action.item) {
-          playerInventory.passive_3 = getItem("empty", new Position(4, 18 * 3));
-        }
-        if (playerInventory.passive_4 == action.item) {
-          playerInventory.passive_4 = getItem("empty", new Position(4, 18 * 4));
-        }
-        if (playerInventory.passive_5 == action.item) {
-          playerInventory.passive_5 = getItem("empty", new Position(4, 18 * 5));
-        }
-        if (playerInventory.passive_6 == action.item) {
-          playerInventory.passive_6 = getItem("empty", new Position(4, 18 * 6));
-        }
-        if (playerInventory.passive_7 == action.item) {
-          playerInventory.passive_7 = getItem("empty", new Position(4, 18 * 7));
-        }
+        playerInventory.passives = playerInventory.passives.filter(
+          (x) => x != action.item,
+        );
       }
       gameState.gold += utils.randomInt(4, 1);
       soundManager.playSound(sounds.gold);
@@ -263,6 +253,10 @@ export default class GameManager {
       this.toggleBook();
       return;
     }
+    if (action instanceof ToggleInventory) {
+      this.toggleInventory();
+      return;
+    }
     if (action instanceof ItemDescription) {
       this.setItemDescription(action);
       return "itemDescription";
@@ -282,13 +276,8 @@ export default class GameManager {
       }
       return;
     }
-    if (action instanceof RingBell) {
-      this.ringBell();
-      return;
-    }
-
-    if (action instanceof PickupBomb) {
-      this.pickupBomb(action);
+    if (action instanceof UseActiveItem) {
+      this.useActiveItem();
       return;
     }
     if (action instanceof SellItem) {
@@ -343,11 +332,15 @@ export default class GameManager {
       }
       this.pauseGame();
     }
+    if (inputState.keyboard[" "] == "pressed") {
+      inputState.keyboard[" "] = "read";
+      return new UseActiveItem();
+    }
     // Functions avaliable for devs. Check the global.ts
     if (DEV) {
       if (inputState.keyboard.q == "pressed") {
         inputState.keyboard.q = "read";
-        if (confirm("Would you like to quit the game?")) {
+        if (confirm("Would you like to lose this run?")) {
           this.loseGame();
         }
         inputState.keyboard.q = "unpressed";
@@ -371,11 +364,16 @@ export default class GameManager {
 
     const gameObjects: GameObject[] = [
       levelManager,
-      ...Object.values(playerInventory),
-      picaxeItem,
-      flagItem,
+      bagItem,
       bookItem,
+      playerInventory.weapon,
+      playerInventory.shield,
+      playerInventory.armor,
+      playerInventory.active,
     ];
+    if (gameState.inInventory) {
+      gameObjects.push(...getInventoryItems());
+    }
 
     const actions: Action[] | void = handleMouseInput(gameObjects);
 
@@ -384,7 +382,7 @@ export default class GameManager {
     });
 
     if (gameState.holding != null) {
-      if (gameState.holding instanceof Bomb) {
+      if (gameState.holding.name == "bomb") {
         this.changeCursorState(CURSORBOMB);
       }
     }
@@ -397,12 +395,8 @@ export default class GameManager {
       cursor.description.hidden = true;
     }
 
-    if (inputState.mouse.clickedRight) {
-      inputState.mouse.clickedRight = false;
-    }
-    if (inputState.mouse.clickedLeft) {
-      inputState.mouse.clickedLeft = false;
-    }
+    inputState.mouse.clickedRight = false;
+    inputState.mouse.clickedLeft = false;
 
     cursor.pos.update(cursor.pos.subtract(8, 8));
 

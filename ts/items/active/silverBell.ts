@@ -1,29 +1,23 @@
-import { SellItem as SellItem, RingBell } from "../action.js";
-import type CanvasManager from "../canvasManager.js";
-import { canvasManager } from "../canvasManager.js";
-import Position from "../gameElements/position.js";
-import { LEFT, type cursorClick } from "../global.js";
-import { sprites } from "../sprites.js";
-import { Timer } from "../timer/timer.js";
-import { GAMETIMERSYNC } from "../timer/timerManager.js";
-import timeTracker from "../timer/timeTracker.js";
-import { Item } from "./item.js";
+import { SellItem as SellItem, UseActiveItem } from "../../action.js";
+import { canvasManager } from "../../canvasManager.js";
+import Position from "../../gameElements/position.js";
+import { LEFT, type cursorClick } from "../../global.js";
+import { sprites } from "../../sprites.js";
+import { Timer } from "../../timer/timer.js";
+import { GAMETIMERSYNC } from "../../timer/timerManager.js";
+import timeTracker from "../../timer/timeTracker.js";
+import { ActiveItem } from "./active.js";
 
-export class SilverBell extends Item {
-  rang = false;
+export class SilverBell extends ActiveItem {
   ringTimer = new Timer({
     goalSecs: 60,
-    goalFunc: () => {
-      this.rang = true;
-      this.firstAnimationTic = timeTracker.currentGameTic;
-    },
     classes: [GAMETIMERSYNC],
-    autoStart: true,
+    autoStart: false,
   });
   constructor(pos?: Position) {
     super({
       pos: pos ?? new Position(),
-      spriteSheetPos: new Position(2, 4),
+      spriteSheetPos: new Position(2, 0),
       name: "silver_bell",
       shopName: "Silver Bell",
       cost: 15,
@@ -64,17 +58,6 @@ export class SilverBell extends Item {
       );
     }
   }
-
-  clickFunction = (cursorPos: Position, button: cursorClick) => {
-    if (button == LEFT) {
-      if (!this.ringTimer.inMotion) {
-        this.ringTimer.start();
-        return new RingBell();
-      }
-    } else {
-      return new SellItem(this);
-    }
-  };
 
   clone(): SilverBell {
     return new SilverBell(new Position().add(this.pos));

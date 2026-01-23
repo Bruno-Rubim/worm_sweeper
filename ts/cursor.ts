@@ -55,7 +55,7 @@ class Description extends GameObject {
     const padding = 4 * this.renderScale;
     canvasManager.renderBox(
       sprites.description_box_sheet,
-      this.pos.add(this.side == RIGHT ? -59 : 15, 0),
+      this.pos.add(this.side == RIGHT ? -54 : 15, 6),
       3,
       3,
       this.width,
@@ -70,7 +70,7 @@ class Description extends GameObject {
     );
     canvasManager.renderText(
       "description",
-      this.pos.add((this.side == RIGHT ? -59 : 15) + padding, padding),
+      this.pos.add((this.side == RIGHT ? -54 : 15) + padding, padding + 6),
       this.text,
       RIGHT,
       this.width,

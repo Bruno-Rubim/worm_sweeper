@@ -13,7 +13,12 @@ import {
 import Position from "../../gameElements/position.js";
 import { sprites } from "../../sprites.js";
 import SceneManager from "../sceneManager.js";
-import { BuyShopItem, ShopItemDescription, type Action } from "../../action.js";
+import {
+  Action,
+  BuyShopItem,
+  ConsumeItem,
+  ShopItemDescription,
+} from "../../action.js";
 import {
   handleMouseClick,
   handleMouseHover,
@@ -21,12 +26,12 @@ import {
 } from "../../input/handleInput.js";
 import { soundManager } from "../../soundManager.js";
 import sounds from "../../sounds.js";
-import playerInventory, { getInventorySpace } from "../../playerInventory.js";
+import playerInventory from "../../playerInventory.js";
 import { Armor } from "../../items/armor/armor.js";
 import { Shield } from "../../items/shield/shield.js";
 import { Weapon } from "../../items/weapon/weapon.js";
+import { ActiveItem } from "../../items/active/active.js";
 import { Consumable } from "../../items/consumable/consumable.js";
-import { getItem } from "../../items/genericDict.js";
 
 // Handles rendering and interactions with the shop scene of the current level
 export default class ShopManager extends SceneManager {
@@ -70,52 +75,38 @@ export default class ShopManager extends SceneManager {
         return;
       }
       const item = action.shopItem.item;
-      if (item instanceof Armor) {
-        playerInventory.armor = item;
-        action.shopItem.hidden = true;
-      } else if (item instanceof Shield) {
-        playerInventory.shield = item;
-        action.shopItem.hidden = true;
-      } else if (item instanceof Weapon) {
-        playerInventory.weapon = item;
-        action.shopItem.hidden = true;
-      } else if (item instanceof Consumable) {
-        playerInventory.consumable = item;
-        action.shopItem.hidden = true;
-      } else {
-        if (item.name == "backpack") {
-          item.pos.update(-Infinity, -Infinity);
-          playerInventory.bag = item;
-          playerInventory.passive_7 = getItem("empty", new Position(4, 18 * 7));
-        } else if (getInventorySpace() < 1) {
-          soundManager.playSound(sounds.wrong);
-          return;
-        } else if (playerInventory.passive_1.name == "empty") {
-          item.pos.update(4, 18 * 1);
-          playerInventory.passive_1 = item;
-        } else if (playerInventory.passive_2.name == "empty") {
-          item.pos.update(4, 18 * 2);
-          playerInventory.passive_2 = item;
-        } else if (playerInventory.passive_3.name == "empty") {
-          item.pos.update(4, 18 * 3);
-          playerInventory.passive_3 = item;
-        } else if (playerInventory.passive_4.name == "empty") {
-          item.pos.update(4, 18 * 4);
-          playerInventory.passive_4 = item;
-        } else if (playerInventory.passive_5.name == "empty") {
-          item.pos.update(4, 18 * 5);
-          playerInventory.passive_5 = item;
-        } else if (playerInventory.passive_6.name == "empty") {
-          item.pos.update(4, 18 * 6);
-          playerInventory.passive_6 = item;
-        } else if (playerInventory.passive_7.name == "empty") {
-          item.pos.update(4, 18 * 7);
-          playerInventory.passive_7 = item;
-        }
-      }
       action.shopItem.hidden = true;
       gameState.gold -= action.shopItem.item.cost;
       soundManager.playSound(sounds.purchase);
+      if (item instanceof Armor) {
+        playerInventory.armor = item;
+        action.shopItem.hidden = true;
+        return;
+      }
+      if (item instanceof Shield) {
+        playerInventory.shield = item;
+        action.shopItem.hidden = true;
+        return;
+      }
+      if (item instanceof Weapon) {
+        playerInventory.weapon = item;
+        action.shopItem.hidden = true;
+        return;
+      }
+      if (item instanceof ActiveItem) {
+        playerInventory.active = item;
+        action.shopItem.hidden = true;
+        return;
+      }
+      if (item instanceof Consumable) {
+        return new ConsumeItem(item.name);
+      }
+      const i = playerInventory.passives.length;
+      item.pos.update(
+        BORDERTHICKLEFT + 13 + 18 * (i % 6),
+        BORDERTHICKTOP + 13 + 18 * Math.floor(i / 6),
+      );
+      playerInventory.passives.push(item);
       return;
     }
     return action;

@@ -1,8 +1,7 @@
 import Position from "../gameElements/position.js";
 import { Item } from "./item.js";
-import { SilverBell } from "./silverBell.js";
 
-const genericDict = {
+const passivesDict = {
   gold_bug: new Item({
     spriteSheetPos: new Position(0, 4),
     name: "gold_bug",
@@ -63,13 +62,6 @@ const genericDict = {
     cost: 22,
     descriptionText: "+1 defense each fight.",
   }),
-  backpack: new Item({
-    spriteSheetPos: new Position(4, 5),
-    name: "backpack",
-    shopName: "Backpack",
-    cost: 16,
-    descriptionText: "Get an additional inventory space. Not resellable.",
-  }),
   bracer: new Item({
     spriteSheetPos: new Position(6, 5),
     name: "bracer",
@@ -78,13 +70,12 @@ const genericDict = {
     descriptionText: "Adds 0.5 $dfsdefense to your shield.",
   }),
   feather: new Item({
-    spriteSheetPos: new Position(8, 5),
+    spriteSheetPos: new Position(2, 4),
     name: "feather",
     shopName: "Feather",
     cost: 21,
     descriptionText: "Reduces weapon $spdcooldown by 0.3 Seconds.",
   }),
-  silver_bell: new SilverBell(),
   empty: new Item({
     spriteSheetPos: new Position(14, 4),
     name: "empty",
@@ -108,12 +99,12 @@ const genericDict = {
  * @returns
  */
 export function getItem(
-  itemName: keyof typeof genericDict,
+  itemName: keyof typeof passivesDict,
   screenPos: Position = new Position(),
 ) {
-  let item = genericDict[itemName].clone();
+  let item = passivesDict[itemName].clone();
   item.pos.update(screenPos);
   return item;
 }
 
-export default genericDict;
+export default passivesDict;

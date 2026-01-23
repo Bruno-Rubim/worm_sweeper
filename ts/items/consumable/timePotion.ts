@@ -7,7 +7,7 @@ import { Consumable } from "./consumable.js";
 export default class TimePotion extends Consumable {
   constructor() {
     super({
-      spriteSheetPos: new Position(6, 0),
+      spriteSheetPos: new Position(4, 6),
       name: "time_potion",
       shopName: "Time Potion",
       cost: 10,
