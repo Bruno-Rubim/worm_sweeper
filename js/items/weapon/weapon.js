@@ -1,6 +1,6 @@
 import Position from "../../gameElements/position.js";
 import { GAMEWIDTH } from "../../global.js";
-import { sounds } from "../../sounds.js";
+import { sounds } from "../../sounds/sounds.js";
 import {} from "../../sprites.js";
 import { Item } from ".././item.js";
 export class Weapon extends Item {

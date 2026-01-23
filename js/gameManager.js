@@ -4,8 +4,8 @@ import { cursor, CURSORBOMB, CURSORDEFAULT, } from "./cursor.js";
 import { gameState, resetGameState } from "./gameState.js";
 import { levelManager } from "./level/levelManager.js";
 import { renderBorder } from "./renderBorder.js";
-import { soundManager } from "./soundManager.js";
-import sounds from "./sounds.js";
+import { soundManager } from "./sounds/soundManager.js";
+import sounds from "./sounds/sounds.js";
 import { timerManager } from "./timer/timerManager.js";
 import timeTracker from "./timer/timeTracker.js";
 import { handleMouseInput } from "./input/handleInput.js";
@@ -16,7 +16,7 @@ import playerInventory, { getInventoryItems, resetInventory, } from "./playerInv
 import { Armor, armorDic } from "./items/armor/armor.js";
 import { Consumable } from "./items/consumable/consumable.js";
 import { utils } from "./utils.js";
-import { bagItem, bookItem } from "./items/uiItems.js";
+import { bagItem, bookItem, musicButton, sfxButton } from "./items/uiItems.js";
 import { DEV } from "./global.js";
 import Level from "./level/level.js";
 import { transitionOverlay } from "./level/transitionOverlay.js";
@@ -36,6 +36,7 @@ export default class GameManager {
     }
     pauseGame() {
         timeTracker.togglePause();
+        soundManager.pauseMusic();
         gameState.paused = timeTracker.isPaused;
     }
     consumeItem(action) {
@@ -273,6 +274,8 @@ export default class GameManager {
             levelManager,
             bagItem,
             bookItem,
+            musicButton,
+            sfxButton,
             playerInventory.weapon,
             playerInventory.shield,
             playerInventory.armor,

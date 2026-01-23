@@ -2,16 +2,17 @@ import { ChangeCursorState, ChangeScene, NextLevel, StartBattle, } from "../../a
 import { CURSORARROW, CURSORDEFAULT, CURSORDETONATOR, CURSORGOLDWATER, CURSORPICAXE, } from "../../cursor.js";
 import { CLICKLEFT } from "../../global.js";
 import Position from "../../gameElements/position.js";
-import sounds from "../../sounds.js";
+import sounds from "../../sounds/sounds.js";
 import { sprites } from "../../sprites.js";
 import Block, { blockSheetPos, CONTENTDOOREXIT, CONTENTDOOREXITOPEN, CONTENTDOORSHOP, CONTENTDOORSHOPOPEN, CONTENTEMPTY, CONTENTWATER, CONTENTWORM, } from "./block.js";
 import SceneManager from "../sceneManager.js";
 import { gameState } from "../../gameState.js";
 import { canvasManager } from "../../canvasManager.js";
-import { soundManager } from "../../soundManager.js";
+import { soundManager } from "../../sounds/soundManager.js";
 import { utils } from "../../utils.js";
 import { hasItem } from "../../playerInventory.js";
 import { Timer } from "../../timer/timer.js";
+import { musicTracks } from "../../sounds/music.js";
 export default class CaveManager extends SceneManager {
     bomb = null;
     get cave() {
@@ -365,6 +366,7 @@ export default class CaveManager extends SceneManager {
             this.startCave(block.gridPos);
             soundManager.playSound(sounds.break);
             if (!gameState.started) {
+                soundManager.playMusic(musicTracks.music);
                 gameState.started = true;
                 gameState.gameTimer.start();
             }
