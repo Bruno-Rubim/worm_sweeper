@@ -280,6 +280,7 @@ export default class CaveManager extends SceneManager {
       result.gold++;
     }
     this.updateBlockStats(block);
+    soundManager.playSound(sounds.break);
     return result;
   }
 
@@ -512,7 +513,6 @@ export default class CaveManager extends SceneManager {
     if (!this.cave.started) {
       // Start game
       this.startCave(block.gridPos);
-      soundManager.playSound(sounds.break);
       if (!gameState.started) {
         soundManager.playMusic(musicTracks.music);
         gameState.started = true;
@@ -533,10 +533,6 @@ export default class CaveManager extends SceneManager {
             goalSecs: 1.9,
             goalFunc: () => {
               this.bombBlock(block);
-              soundManager.playSound(sounds.break);
-              soundManager.playSound(sounds.break);
-              soundManager.playSound(sounds.break);
-              soundManager.playSound(sounds.break);
               this.checkCaveClear();
               this.bomb = null;
               soundManager.playSound(sounds.explosion);
@@ -555,7 +551,6 @@ export default class CaveManager extends SceneManager {
         !block.marked
       ) {
         // Regular block break
-        soundManager.playSound(sounds.break);
         let breakResult = this.breakBlock(block);
         enemyCount += breakResult.battle.enemyCount;
         gameState.gold += breakResult.gold;
