@@ -62,6 +62,13 @@ const passivesDict = {
     cost: 22,
     descriptionText: "+1 defense each fight.",
   }),
+  // gunpowder: new Item({
+  //   spriteSheetPos: new Position(4, 5),
+  //   name: "gunpowder",
+  //   shopName: "Gunpowder",
+  //   cost: 13,
+  //   descriptionText: "50% discount on bombs.",
+  // }),
   bracer: new Item({
     spriteSheetPos: new Position(6, 5),
     name: "bracer",
