@@ -6,7 +6,7 @@ export class MusicTrack {
   gainNode = this.audioCtx.createGain();
 
   constructor(trackName: string) {
-    this.src = `../../sounds/${trackName}.mp3`;
+    this.src = `./sounds/${trackName}.mp3`;
     this.gainNode.gain.value = 1;
     this.gainNode.connect(this.audioCtx.destination);
   }
