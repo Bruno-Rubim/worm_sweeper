@@ -22,8 +22,8 @@ import {
   LEFT,
 } from "../../global.js";
 import playerInventory, { hasItem } from "../../playerInventory.js";
-import { soundManager } from "../../soundManager.js";
-import sounds from "../../sounds.js";
+import { soundManager } from "../../sounds/soundManager.js";
+import sounds from "../../sounds/sounds.js";
 import { sprites } from "../../sprites.js";
 import timeTracker from "../../timer/timeTracker.js";
 import { utils } from "../../utils.js";

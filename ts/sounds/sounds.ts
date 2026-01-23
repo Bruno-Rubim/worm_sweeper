@@ -1,4 +1,4 @@
-import { utils } from "./utils.js";
+import { utils } from "../utils.js";
 
 export type fixedPitches = number[];
 export type pitchRange = {
@@ -194,12 +194,8 @@ export const sounds = {
   }),
 };
 
-export const music = {
-  drums: new Sound({ soundName: "drums", volumeMult: 0.3 }),
-};
-
 // Makes a list of all sounds and awaits their loading
-const soundArr = [...Object.values(sounds), ...Object.values(music)];
+const soundArr = [...Object.values(sounds)];
 const promiseArrays = soundArr.map((sound) => sound.load());
 promiseArrays.forEach(async (arr) => {
   await Promise.all(arr);

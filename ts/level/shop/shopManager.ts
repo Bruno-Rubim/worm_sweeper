@@ -24,8 +24,8 @@ import {
   handleMouseHover,
   handleMouseNotHover,
 } from "../../input/handleInput.js";
-import { soundManager } from "../../soundManager.js";
-import sounds from "../../sounds.js";
+import { soundManager } from "../../sounds/soundManager.js";
+import sounds from "../../sounds/sounds.js";
 import playerInventory from "../../playerInventory.js";
 import { Armor } from "../../items/armor/armor.js";
 import { Shield } from "../../items/shield/shield.js";

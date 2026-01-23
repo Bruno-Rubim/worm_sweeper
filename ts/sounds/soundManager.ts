@@ -1,5 +1,6 @@
-import type { Sound } from "./sounds.js";
-import { utils } from "./utils.js";
+import { type Sound } from "./sounds.js";
+import { utils } from "../utils.js";
+import { musicTracks } from "./music.js";
 
 // Plays sounds
 export class SoundManager {
@@ -45,13 +46,12 @@ export class SoundManager {
     }
   }
 
-  playMusic(sound: Sound) {
-    const cloneAudio = sound.audio.cloneNode(true) as HTMLAudioElement;
-    cloneAudio.currentTime = 0;
-    cloneAudio.loop = true;
-    cloneAudio.volume =
-      this.generalVolume * this.sfxVolume * sound.volumeMult * this.mute;
-    cloneAudio.play();
+  playMusic() {
+    const source = musicTracks.music.audioCtx.createBufferSource();
+    source.buffer = musicTracks.music.buffer;
+    source.loop = true;
+    source.connect(musicTracks.music.gainNode);
+    source.start(musicTracks.music.audioCtx.currentTime);
   }
 }
 export const soundManager = new SoundManager();

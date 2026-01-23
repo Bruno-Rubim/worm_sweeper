@@ -1,6 +1,6 @@
 import Position from "../../gameElements/position.js";
 import { GAMEWIDTH } from "../../global.js";
-import { sounds, type Sound } from "../../sounds.js";
+import { sounds, type Sound } from "../../sounds/sounds.js";
 import { type Sprite } from "../../sprites.js";
 import { Item } from ".././item.js";
 
