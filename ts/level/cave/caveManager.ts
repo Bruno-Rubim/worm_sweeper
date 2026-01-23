@@ -32,6 +32,7 @@ import { soundManager } from "../../sounds/soundManager.js";
 import { utils } from "../../utils.js";
 import { hasItem } from "../../playerInventory.js";
 import { Timer } from "../../timer/timer.js";
+import { musicTracks } from "../../sounds/music.js";
 
 type breakResult = {
   battle: StartBattle;
@@ -513,7 +514,7 @@ export default class CaveManager extends SceneManager {
       this.startCave(block.gridPos);
       soundManager.playSound(sounds.break);
       if (!gameState.started) {
-        soundManager.playMusic();
+        soundManager.playMusic(musicTracks.music);
         gameState.started = true;
         gameState.gameTimer.start();
       }

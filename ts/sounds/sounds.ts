@@ -10,12 +10,10 @@ export type pitchRange = {
 export class Sound {
   srcList: string[] = [];
   audioList: HTMLAudioElement[] = [];
-  volumeMult: number;
   pitch: fixedPitches | pitchRange;
 
   constructor(args: {
     soundName: string;
-    volumeMult?: number;
     altCount?: number;
     pitchRange?: pitchRange;
     fixedPitches?: fixedPitches;
@@ -29,8 +27,6 @@ export class Sound {
         this.srcList.push("./sounds/" + args.soundName + "-" + i + ".mp3");
       }
     }
-    this.volumeMult = args.volumeMult ?? 1;
-
     if (args.pitchRange) {
       this.pitch = {
         min: args.pitchRange.min,
@@ -87,7 +83,6 @@ export class Sound {
 export const sounds = {
   bell: new Sound({
     soundName: "bell",
-    volumeMult: 0.3,
     pitchRange: {
       min: 0.9,
       max: 1.1,
@@ -95,7 +90,6 @@ export const sounds = {
   }),
   break: new Sound({
     soundName: "break",
-    volumeMult: 0.4,
     pitchRange: {
       min: 0.9,
       max: 1.3,
@@ -103,11 +97,9 @@ export const sounds = {
   }),
   clear: new Sound({
     soundName: "clear",
-    volumeMult: 0.4,
   }),
   beep: new Sound({
     soundName: "beep",
-    volumeMult: 0.5,
     pitchRange: {
       min: 0.9,
       max: 1.1,
@@ -115,7 +107,6 @@ export const sounds = {
   }),
   bomb_fuse: new Sound({
     soundName: "bomb_fuse",
-    volumeMult: 0.8,
     pitchRange: {
       min: 0.9,
       max: 1.1,
@@ -123,7 +114,6 @@ export const sounds = {
   }),
   explosion: new Sound({
     soundName: "explosion",
-    volumeMult: 0.8,
     pitchRange: {
       min: 0.9,
       max: 1.1,
@@ -131,16 +121,14 @@ export const sounds = {
   }),
   door: new Sound({
     soundName: "door",
-    volumeMult: 0.7,
     pitchRange: {
       min: 0.9,
       max: 1.3,
     },
   }),
-  steps: new Sound({ soundName: "steps", volumeMult: 0.7 }),
+  steps: new Sound({ soundName: "steps" }),
   detonate: new Sound({
     soundName: "detonate",
-    volumeMult: 0.2,
     pitchRange: {
       min: 0.9,
       max: 1.1,
@@ -148,7 +136,6 @@ export const sounds = {
   }),
   drill: new Sound({
     soundName: "drill",
-    volumeMult: 0.15,
     pitchRange: {
       min: 0.9,
       max: 1.5,
@@ -156,7 +143,6 @@ export const sounds = {
   }),
   gold: new Sound({
     soundName: "gold",
-    volumeMult: 0.2,
     pitchRange: {
       min: 1.1,
       max: 1.5,
@@ -164,21 +150,17 @@ export const sounds = {
   }),
   wrong: new Sound({
     soundName: "wrong",
-    volumeMult: 0.5,
   }),
   purchase: new Sound({
     soundName: "purchase",
-    volumeMult: 0.4,
     fixedPitches: [1],
   }),
   drink: new Sound({
     soundName: "drink",
-    volumeMult: 0.4,
     fixedPitches: [1],
   }),
   stab: new Sound({
     soundName: "stab",
-    volumeMult: 0.1,
     pitchRange: {
       min: 0.9,
       max: 1.3,
@@ -186,7 +168,6 @@ export const sounds = {
   }),
   bite: new Sound({
     soundName: "bite",
-    volumeMult: 0.5,
     pitchRange: {
       min: 0.8,
       max: 1.4,

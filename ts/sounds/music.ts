@@ -2,11 +2,12 @@ export class MusicTrack {
   audioCtx = new AudioContext();
   buffer!: AudioBuffer;
   src: string;
+  isPlaying = false;
   gainNode = this.audioCtx.createGain();
 
-  constructor(trackName: string, volume: number) {
+  constructor(trackName: string) {
     this.src = `../../sounds/${trackName}.mp3`;
-    this.gainNode.gain.value = volume;
+    this.gainNode.gain.value = 1;
     this.gainNode.connect(this.audioCtx.destination);
   }
 
@@ -18,7 +19,7 @@ export class MusicTrack {
 }
 
 export const musicTracks = {
-  music: new MusicTrack("music", 0.3),
+  music: new MusicTrack("music"),
 };
 
 // Makes a list of all sounds and awaits their loading

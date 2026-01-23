@@ -19,7 +19,7 @@ const baseInventory: inventory = {
   weapon: weaponDic.wood_sword,
   shield: shieldDic.wood_shield,
   armor: armorDic.empty,
-  active: activeDict.empty,
+  active: activeDict.bomb,
   passives: [picaxeItem, flagItem],
 };
 
