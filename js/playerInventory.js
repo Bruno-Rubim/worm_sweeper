@@ -1,6 +1,7 @@
 import activeDict from "./items/active/dict.js";
 import { armorDic } from "./items/armor/armor.js";
 import { Item } from "./items/item.js";
+import passivesDict from "./items/passiveDict.js";
 import { shieldDic } from "./items/shield/shield.js";
 import { flagItem, picaxeItem } from "./items/uiItems.js";
 import { weaponDic } from "./items/weapon/dict.js";
@@ -8,7 +9,7 @@ const baseInventory = {
     weapon: weaponDic.wood_sword,
     shield: shieldDic.wood_shield,
     armor: armorDic.empty,
-    active: activeDict.bomb,
+    active: activeDict.empty,
     passives: [picaxeItem, flagItem],
 };
 const playerInventory = {
