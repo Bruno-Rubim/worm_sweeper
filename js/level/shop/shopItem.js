@@ -9,9 +9,11 @@ import { armorDic } from "../../items/armor/armor.js";
 import consumableDict from "../../items/consumable/dict.js";
 import { weaponDic } from "../../items/weapon/dict.js";
 import { shieldDic } from "../../items/shield/shield.js";
-import genericDict from "../../items/genericDict.js";
+import passivesDict from "../../items/passiveDict.js";
+import activeDict from "../../items/active/dict.js";
 const items = {
-    ...genericDict,
+    ...passivesDict,
+    ...activeDict,
     ...weaponDic,
     ...armorDic,
     ...consumableDict,

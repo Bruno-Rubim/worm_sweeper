@@ -11,7 +11,8 @@ import { weaponDic } from "../../items/weapon/dict.js";
 import { Shield, shieldDic } from "../../items/shield/shield.js";
 import consumableDict from "../../items/consumable/dict.js";
 import playerInventory from "../../playerInventory.js";
-import genericDict from "../../items/genericDict.js";
+import passivesDict from "../../items/passiveDict.js";
+import activeDict from "../../items/active/dict.js";
 const exitBtn = new GameObject({
     sprite: sprites.button_exit,
     pos: new Position(GAMEWIDTH - BORDERTHICKRIGHT - 32, BORDERTHICKTOP),
@@ -37,7 +38,10 @@ const resetBtn = new GameObject({
 resetBtn.render = () => {
     canvasManager.renderSpriteFromSheet(resetBtn.sprite, resetBtn.pos, 32, 16, new Position().add(resetBtn.mouseHovering ? 1 : 0, 0));
 };
-const shopItemList = Object.values(genericDict).filter((x) => x.cost > 0);
+const shopItemList = [
+    ...Object.values(passivesDict),
+    ...Object.values(activeDict),
+].filter((x) => x.cost > 0);
 const shopArmorList = Object.values(armorDic).filter((x) => x.cost > 0);
 const shopWeaponList = Object.values(weaponDic).filter((x) => x.cost > 0);
 const shopShieldList = Object.values(shieldDic).filter((x) => x.cost > 0);
@@ -46,7 +50,7 @@ const shelfItemDistance = 20;
 const shelfStartDistance = 12;
 export default class Shop {
     objects;
-    generics;
+    genericItems;
     armor;
     weapon;
     shield;
@@ -61,31 +65,25 @@ export default class Shop {
             playerInventory.weapon.name,
             playerInventory.shield.name,
             playerInventory.armor.name,
-            playerInventory.passive_1.name,
-            playerInventory.passive_2.name,
-            playerInventory.passive_3.name,
-            playerInventory.passive_4.name,
-            playerInventory.passive_5.name,
-            playerInventory.passive_6.name,
-            playerInventory.passive_7.name,
-            playerInventory.bag.name,
+            playerInventory.active.name,
+            ...playerInventory.passives.map((x) => x.name),
         ];
         let filterNames = [
             ...this.inventoryItemNames,
             ...this.previousSetItemNames,
         ];
         this.previousSetItemNames = [];
-        this.generics = utils
+        this.genericItems = utils
             .shuffleArray(shopItemList.filter((x) => !filterNames.includes(x.name)))
             .slice(0, 3)
             .map((x) => new ShopItem(x.name));
-        if (this.generics.length < 3) {
-            this.generics = utils
+        if (this.genericItems.length < 3) {
+            this.genericItems = utils
                 .shuffleArray(shopItemList.filter((x) => ![...this.inventoryItemNames].includes(x.name)))
                 .slice(0, 3)
                 .map((x) => new ShopItem(x.name));
         }
-        this.generics.forEach((shopItem, i) => {
+        this.genericItems.forEach((shopItem, i) => {
             shopItem.pos.update(BORDERTHICKLEFT + shelfStartDistance + i * shelfItemDistance, 28);
             this.previousSetItemNames.push(shopItem.item.name);
         });
@@ -102,7 +100,7 @@ export default class Shop {
         this.consumable = new ShopItem(chosenConsumable.name);
         this.consumable.pos.update(GAMEWIDTH - BORDERTHICKRIGHT - 28, 40);
         this.previousSetItemNames.push(this.consumable.item.name);
-        this.objects = [exitBtn, resetBtn, ...this.generics, this.consumable];
+        this.objects = [exitBtn, resetBtn, ...this.genericItems, this.consumable];
         let xShift = shelfStartDistance;
         if (this.armor) {
             this.armor.pos.update(BORDERTHICKLEFT + xShift, 60);

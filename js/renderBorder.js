@@ -5,7 +5,7 @@ import { GAMEHEIGHT, GAMEWIDTH, LEFT, CENTER } from "./global.js";
 import Position from "./gameElements/position.js";
 import { sprites } from "./sprites.js";
 import playerInventory, {} from "./playerInventory.js";
-import { bookItem, flagItem, picaxeItem } from "./items/uiItems.js";
+import { bagItem, bookItem, flagItem, picaxeItem } from "./items/uiItems.js";
 function renderStats() {
     canvasManager.renderText("numbers_blue", new Position(6, 6), "$tim " + Math.floor(gameState.gameTimer.secondsRemaining).toString());
     canvasManager.renderText("numbers_red", new Position(62, 6), "$wrm " + gameState.level.cave.wormsLeft.toString(), CENTER);
@@ -20,16 +20,12 @@ function renderStats() {
     }
 }
 function renderItems() {
-    for (const key of Object.keys(playerInventory)) {
-        const item = playerInventory[key];
-        if (!item || key == "bag") {
-            continue;
-        }
-        item.render();
-    }
-    picaxeItem.render();
-    flagItem.render();
+    playerInventory.weapon.render();
+    playerInventory.shield.render();
+    playerInventory.armor.render();
+    playerInventory.active.render();
     bookItem.render();
+    bagItem.render();
 }
 const gameBorder = new GameObject({
     sprite: sprites.game_border,

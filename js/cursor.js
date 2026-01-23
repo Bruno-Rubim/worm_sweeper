@@ -43,9 +43,9 @@ class Description extends GameObject {
             return;
         }
         const padding = 4 * this.renderScale;
-        canvasManager.renderBox(sprites.description_box_sheet, this.pos.add(this.side == RIGHT ? -59 : 15, 0), 3, 3, this.width, measureTextBoxHeight("description", this.text, this.width, this.fontSize) +
+        canvasManager.renderBox(sprites.description_box_sheet, this.pos.add(this.side == RIGHT ? -54 : 15, 6), 3, 3, this.width, measureTextBoxHeight("description", this.text, this.width, this.fontSize) +
             3 * this.renderScale, this.renderScale);
-        canvasManager.renderText("description", this.pos.add((this.side == RIGHT ? -59 : 15) + padding, padding), this.text, RIGHT, this.width, this.fontSize);
+        canvasManager.renderText("description", this.pos.add((this.side == RIGHT ? -54 : 15) + padding, padding + 6), this.text, RIGHT, this.width, this.fontSize);
     }
 }
 class Cursor {

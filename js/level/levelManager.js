@@ -52,6 +52,13 @@ export class LevelManager extends GameObject {
             canvasManager.renderText("book", this.pos.add(padding, padding), bookPages[gameState.bookPage], RIGHT, this.width - padding * 2, fontSize);
             return;
         }
+        if (gameState.inInventory) {
+            canvasManager.renderSprite(sprites.bg_bag, this.pos, this.width, this.height);
+            playerInventory.passives.forEach((item, i) => {
+                item.render();
+            });
+            return;
+        }
         if (gameState.paused) {
             canvasManager.renderSprite(sprites.screen_paused, this.pos, this.width, this.height);
             return;
@@ -150,7 +157,7 @@ export class LevelManager extends GameObject {
         if (gameState.inBook) {
             return new ChangeCursorState(CURSORBOOK);
         }
-        if (gameState.gameOver || gameState.paused) {
+        if (gameState.gameOver || gameState.paused || gameState.inInventory) {
             return new ChangeCursorState(CURSORDEFAULT);
         }
         if (gameState.inTransition) {
@@ -172,6 +179,9 @@ export class LevelManager extends GameObject {
             }
             return;
         }
+        if (gameState.inInventory) {
+            return;
+        }
         if (gameState.paused) {
             return;
         }
@@ -183,9 +193,6 @@ export class LevelManager extends GameObject {
             return new RestartGame();
         }
         if (gameState.inTransition) {
-            return;
-        }
-        if (gameState.inBook) {
             return;
         }
         return this.handleAction(this.currentSceneManager.handleClick(cursorPos, button));

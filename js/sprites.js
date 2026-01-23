@@ -21,6 +21,7 @@ export const sprites = {
     "9s": new Sprite("9s"),
     battle_bar: new Sprite("battle_bar"),
     bell_shine_sheet: new Sprite("bell_shine_sheet"),
+    bg_bag: new Sprite("bg_bag"),
     bg_battle: new Sprite("bg_battle"),
     bg_game: new Sprite("bg_game"),
     bg_shop: new Sprite("bg_shop"),

@@ -72,7 +72,7 @@ export class ScaleWorm extends Enemy {
             pos: new Position(56, 36),
             spriteSheet: sprites.enemy_scale_worm,
             health: 6 + Math.floor(depth / 3),
-            damage: 2 + Math.floor((depth / 8) * 2) / 2,
+            damage: 1.5 + Math.floor((depth / 8) * 2) / 2,
             attackCooldown: 8 - Math.floor(depth / 3) * 0.3,
             stunSpriteShift: new Position(8, 21),
         });

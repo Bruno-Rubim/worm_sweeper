@@ -4,7 +4,7 @@ import Position from "../../gameElements/position.js";
 import { Item } from "../item.js";
 export class Consumable extends Item {
     constructor(args) {
-        super({ ...args, pos: new Position(GAMEWIDTH - 20, 72) });
+        super({ ...args });
         this.clickFunction = (cursorPos, button) => {
             if (button == LEFT) {
                 return new ConsumeItem(this.name);

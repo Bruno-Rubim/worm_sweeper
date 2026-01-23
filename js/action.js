@@ -75,6 +75,8 @@ export class EnemyAtack extends Action {
 }
 export class ToggleBook extends Action {
 }
+export class ToggleInventory extends Action {
+}
 export class ItemDescription extends Action {
     description;
     side;
@@ -99,12 +101,5 @@ export class StartBattle extends Action {
 }
 export class PauseGameTimer extends Action {
 }
-export class RingBell extends Action {
-}
-export class PickupBomb extends Action {
-    bombItem;
-    constructor(item) {
-        super();
-        this.bombItem = item;
-    }
+export class UseActiveItem extends Action {
 }
