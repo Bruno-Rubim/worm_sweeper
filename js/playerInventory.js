@@ -13,7 +13,11 @@ const baseInventory = {
     passives: [picaxeItem, flagItem],
 };
 const playerInventory = {
-    ...baseInventory,
+    weapon: baseInventory.weapon,
+    shield: baseInventory.shield,
+    armor: baseInventory.armor,
+    active: baseInventory.active,
+    passives: [...baseInventory.passives],
 };
 export default playerInventory;
 export function hasItem(name) {
@@ -31,7 +35,7 @@ export function resetInventory() {
     playerInventory.shield = baseInventory.shield;
     playerInventory.armor = baseInventory.armor;
     playerInventory.active = baseInventory.active;
-    playerInventory.passives = baseInventory.passives;
+    playerInventory.passives = [...baseInventory.passives];
 }
 export function getInventoryItems() {
     return [

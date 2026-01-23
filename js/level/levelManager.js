@@ -52,15 +52,15 @@ export class LevelManager extends GameObject {
             canvasManager.renderText("book", this.pos.add(padding, padding), bookPages[gameState.bookPage], RIGHT, this.width - padding * 2, fontSize);
             return;
         }
+        if (gameState.paused) {
+            canvasManager.renderSprite(sprites.screen_paused, this.pos, this.width, this.height);
+            return;
+        }
         if (gameState.inInventory) {
             canvasManager.renderSprite(sprites.bg_bag, this.pos, this.width, this.height);
             playerInventory.passives.forEach((item, i) => {
                 item.render();
             });
-            return;
-        }
-        if (gameState.paused) {
-            canvasManager.renderSprite(sprites.screen_paused, this.pos, this.width, this.height);
             return;
         }
         this.currentSceneManager.render();

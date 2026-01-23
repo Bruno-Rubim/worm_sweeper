@@ -7,7 +7,7 @@ const activeDict = {
         name: "bomb",
         shopName: "Bomb",
         cost: 6,
-        descriptionText: "Deal 5 damage or use on any block to destroy blocks around it, along with worms and gold.",
+        descriptionText: "Deal 5 damage during battle or use on any block to destroy blocks around it, along with worms and gold.",
     }),
     silver_bell: new SilverBell(),
     empty: new ActiveItem({
