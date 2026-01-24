@@ -94,15 +94,21 @@ export default class GameManager {
             return true;
         }
     }
-    useActiveItem() {
-        switch (playerInventory.active.name) {
+    useActiveItem(action) {
+        const item = action.alt
+            ? playerInventory.altActive
+            : playerInventory.active;
+        const clonePos = action.alt
+            ? new Position(GAMEWIDTH - 20, 90)
+            : new Position(GAMEWIDTH - 20, 72);
+        switch (item.name) {
             case "silver_bell":
-                if (!(playerInventory.active instanceof SilverBell)) {
+                if (!(item instanceof SilverBell)) {
                     alert("something is wrong");
                     break;
                 }
-                if (playerInventory.active.ringTimer.inMotion) {
-                    break;
+                if (item.ringTimer.inMotion) {
+                    return;
                 }
                 if (gameState.currentScene == "battle") {
                     levelManager.battleManager.stunEnemy(3);
@@ -111,31 +117,40 @@ export default class GameManager {
                     gameState.level.cave.bellRang = true;
                 }
                 soundManager.playSound(sounds.bell);
-                playerInventory.active.ringTimer.start();
-                break;
-            case "bomb":
-                if (gameState.currentScene == "battle") {
-                    levelManager.handleAction(levelManager.battleManager.bomb());
-                    playerInventory.active = activeDict.empty;
-                    break;
-                }
-                gameState.holding = playerInventory.active;
-                playerInventory.active = activeDict.empty;
-                break;
-            case "energy_potion":
-                gameState.tiredTimer.restart();
-                playerInventory.active = activeDict.empty;
-                soundManager.playSound(sounds.drink);
-                break;
+                item.ringTimer.start();
+                return;
             case "empty":
                 if (gameState.holding != null) {
                     if (gameState.holding.name == "bomb") {
                         levelManager.caveManager.bomb = null;
                     }
-                    playerInventory.active = gameState.holding;
+                    gameState.holding = gameState.holding.clone(clonePos, item.isAlt);
+                    if (item.isAlt) {
+                        playerInventory.altActive = gameState.holding;
+                    }
+                    else {
+                        playerInventory.active = gameState.holding;
+                    }
                     gameState.holding = null;
                 }
+                return;
+            case "bomb":
+                if (gameState.currentScene == "battle") {
+                    levelManager.handleAction(levelManager.battleManager.bomb());
+                    break;
+                }
+                gameState.holding = item;
                 break;
+            case "energy_potion":
+                gameState.tiredTimer.restart();
+                soundManager.playSound(sounds.drink);
+                break;
+        }
+        if (item.isAlt) {
+            playerInventory.altActive = activeDict.empty.clone(clonePos, true);
+        }
+        else {
+            playerInventory.active = activeDict.empty.clone(clonePos);
         }
     }
     healPlayer(value) {
@@ -152,9 +167,8 @@ export default class GameManager {
                 playerInventory.armor = armorDic.empty;
             }
             else if (action.item instanceof ActiveItem) {
-                console.log(action.item.isAlt, action.item);
                 if (action.item.isAlt) {
-                    playerInventory.altActive = activeDict.empty.clone(new Position(GAMEWIDTH - 20, 90));
+                    playerInventory.altActive = activeDict.empty.clone(new Position(GAMEWIDTH - 20, 90), true);
                 }
                 else {
                     playerInventory.active = activeDict.empty;
@@ -210,7 +224,7 @@ export default class GameManager {
             return;
         }
         if (action instanceof UseActiveItem) {
-            this.useActiveItem();
+            this.useActiveItem(action);
             return;
         }
         if (action instanceof SellItem) {
@@ -257,7 +271,7 @@ export default class GameManager {
         }
         if (inputState.keyboard[" "] == "pressed") {
             inputState.keyboard[" "] = "read";
-            return new UseActiveItem();
+            return new UseActiveItem(false);
         }
         if (DEV) {
             if (inputState.keyboard.q == "pressed") {

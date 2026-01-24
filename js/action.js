@@ -102,4 +102,9 @@ export class StartBattle extends Action {
 export class PauseGameTimer extends Action {
 }
 export class UseActiveItem extends Action {
+    alt;
+    constructor(alt) {
+        super();
+        this.alt = alt;
+    }
 }

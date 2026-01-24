@@ -1,4 +1,5 @@
 import Position from "../../gameElements/position.js";
+import { GAMEWIDTH } from "../../global.js";
 import { ActiveItem } from "./active.js";
 import { SilverBell } from "./silverBell.js";
 const activeDict = {
@@ -20,13 +21,6 @@ const activeDict = {
     empty: new ActiveItem({
         spriteSheetPos: new Position(14, 0),
         name: "empty",
-        shopName: "",
-        cost: 0,
-        descriptionText: "",
-    }),
-    altEmpty: new ActiveItem({
-        spriteSheetPos: new Position(14, 1),
-        name: "alt_empty",
         shopName: "",
         cost: 0,
         descriptionText: "",
