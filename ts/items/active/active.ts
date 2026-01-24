@@ -21,14 +21,14 @@ export class ActiveItem extends Item {
 
     this.clickFunction = (cursorPos: Position, button: cursorClick) => {
       if (button == LEFT) {
-        return new UseActiveItem();
+        return new UseActiveItem(this.isAlt);
       } else {
         return new SellItem(this);
       }
     };
   }
 
-  clone(position?: Position): ActiveItem {
+  clone(position?: Position, isAlt?: boolean): ActiveItem {
     return new ActiveItem({
       pos: new Position(position),
       spriteSheetPos: this.spriteSheetPos,
@@ -36,7 +36,7 @@ export class ActiveItem extends Item {
       shopName: this.shopName,
       cost: this.cost,
       descriptionText: this.descriptionText,
-      isAlt: this.isAlt,
+      isAlt: isAlt ?? this.isAlt,
     });
   }
 }

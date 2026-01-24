@@ -140,4 +140,10 @@ export class StartBattle extends Action {
 export class PauseGameTimer extends Action {}
 
 // Calls to use the current active item
-export class UseActiveItem extends Action {}
+export class UseActiveItem extends Action {
+  alt: boolean;
+  constructor(alt: boolean) {
+    super();
+    this.alt = alt;
+  }
+}
