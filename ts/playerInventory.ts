@@ -1,3 +1,5 @@
+import Position from "./gameElements/position.js";
+import { GAMEWIDTH } from "./global.js";
 import type { ActiveItem } from "./items/active/active.js";
 import activeDict from "./items/active/dict.js";
 import { armorDic, type Armor } from "./items/armor/armor.js";
@@ -13,6 +15,7 @@ export type inventory = {
   weapon: Weapon;
   shield: Shield;
   active: ActiveItem;
+  altActive: ActiveItem;
   passives: Item[];
 };
 
@@ -21,6 +24,7 @@ const baseInventory: inventory = {
   shield: shieldDic.wood_shield,
   armor: armorDic.empty,
   active: activeDict.empty,
+  altActive: activeDict.empty.clone(new Position(GAMEWIDTH - 20, 90)),
   passives: [picaxeItem, flagItem],
 };
 
@@ -29,6 +33,7 @@ const playerInventory: inventory = {
   shield: baseInventory.shield,
   armor: baseInventory.armor,
   active: baseInventory.active,
+  altActive: baseInventory.altActive,
   passives: [...baseInventory.passives],
 };
 
@@ -40,6 +45,7 @@ export function hasItem(name: string) {
     playerInventory.armor.name,
     playerInventory.shield.name,
     playerInventory.active.name,
+    playerInventory.altActive.name,
     ...playerInventory.passives.map((x) => x.name),
   ];
   return names.includes(name);
@@ -50,6 +56,7 @@ export function resetInventory() {
   playerInventory.shield = baseInventory.shield;
   playerInventory.armor = baseInventory.armor;
   playerInventory.active = baseInventory.active;
+  playerInventory.altActive = baseInventory.altActive;
   playerInventory.passives = [...baseInventory.passives];
 }
 
@@ -59,6 +66,7 @@ export function getInventoryItems(): Item[] {
     playerInventory.shield,
     playerInventory.armor,
     playerInventory.active,
+    playerInventory.altActive,
     ...playerInventory.passives,
   ];
 }
