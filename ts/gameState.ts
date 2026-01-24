@@ -57,6 +57,7 @@ export function resetGameState() {
   gameState.gold = baseState.gold;
   gameState.health = baseState.health;
   gameState.shopResetPrice = baseState.shopResetPrice;
+  gameState.bugCurse = baseState.bugCurse;
   gameState.level = new Level(0);
   gameState.gameTimer.restart();
   gameState.tiredTimer.restart();

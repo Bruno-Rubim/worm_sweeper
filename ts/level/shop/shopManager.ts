@@ -26,7 +26,7 @@ import {
 } from "../../input/handleInput.js";
 import { soundManager } from "../../sounds/soundManager.js";
 import sounds from "../../sounds/sounds.js";
-import playerInventory from "../../playerInventory.js";
+import playerInventory, { hasItem } from "../../playerInventory.js";
 import { Armor } from "../../items/armor/armor.js";
 import { Shield } from "../../items/shield/shield.js";
 import { Weapon } from "../../items/weapon/weapon.js";
@@ -94,8 +94,15 @@ export default class ShopManager extends SceneManager {
         return;
       }
       if (item instanceof ActiveItem) {
-        playerInventory.active = item;
         action.shopItem.hidden = true;
+        if (playerInventory.active.name != "empty" && hasItem("tool_belt")) {
+          playerInventory.altActive = item.clone(
+            new Position(GAMEWIDTH - 20, 90),
+          );
+          playerInventory.altActive.isAlt = true;
+          return;
+        }
+        playerInventory.active = item;
         return;
       }
       if (item instanceof Consumable) {
@@ -106,6 +113,11 @@ export default class ShopManager extends SceneManager {
         BORDERTHICKLEFT + 13 + 18 * (i % 6),
         BORDERTHICKTOP + 13 + 18 * Math.floor(i / 6),
       );
+      if (item.name == "gold_bug") {
+        gameState.bugCurse = true;
+        soundManager.playSound(sounds.curse);
+      }
+
       playerInventory.passives.push(item);
       return;
     }

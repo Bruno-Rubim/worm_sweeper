@@ -87,6 +87,8 @@ const shopConsList: Consumable[] = Object.values(consumableDict).filter(
 const shelfItemDistance = 20;
 const shelfStartDistance = 12;
 
+const itemsCanRepeat = ["bomb", "energy_potion"];
+
 export default class Shop {
   objects!: GameObject[];
   genericItems!: ShopItem[];
@@ -107,12 +109,14 @@ export default class Shop {
       playerInventory.shield.name,
       playerInventory.armor.name,
       playerInventory.active.name,
+      playerInventory.altActive.name,
       ...playerInventory.passives.map((x) => x.name),
     ];
     let filterNames = [
       ...this.inventoryItemNames,
       ...this.previousSetItemNames,
     ];
+    filterNames = filterNames.filter((x) => !itemsCanRepeat.includes(x));
     this.previousSetItemNames = [];
     this.genericItems = utils
       .shuffleArray(shopItemList.filter((x) => !filterNames.includes(x.name)))

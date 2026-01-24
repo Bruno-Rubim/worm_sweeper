@@ -8,7 +8,14 @@ const passivesDict = {
     shopName: "Gold Bug",
     cost: 20,
     descriptionText:
-      "More gold during caves and when clearing levels. More worms.",
+      "More gold during caves and when clearing levels. More worms. The bug's curse is ever lasting.",
+  }),
+  feather: new Item({
+    spriteSheetPos: new Position(2, 4),
+    name: "feather",
+    shopName: "Feather",
+    cost: 21,
+    descriptionText: "Reduces weapon $spdcooldown by 0.3 Seconds.",
   }),
   dark_crystal: new Item({
     spriteSheetPos: new Position(4, 4),
@@ -62,13 +69,6 @@ const passivesDict = {
     cost: 22,
     descriptionText: "+1 defense each fight.",
   }),
-  // gunpowder: new Item({
-  //   spriteSheetPos: new Position(4, 5),
-  //   name: "gunpowder",
-  //   shopName: "Gunpowder",
-  //   cost: 13,
-  //   descriptionText: "50% discount on bombs.",
-  // }),
   bracer: new Item({
     spriteSheetPos: new Position(6, 5),
     name: "bracer",
@@ -76,12 +76,12 @@ const passivesDict = {
     cost: 36,
     descriptionText: "Adds 0.5 $dfsdefense to your shield.",
   }),
-  feather: new Item({
-    spriteSheetPos: new Position(2, 4),
-    name: "feather",
-    shopName: "Feather",
-    cost: 21,
-    descriptionText: "Reduces weapon $spdcooldown by 0.3 Seconds.",
+  tool_belt: new Item({
+    spriteSheetPos: new Position(8, 5),
+    name: "tool_belt",
+    shopName: "Tool Belt",
+    cost: 26,
+    descriptionText: "Allows you to hold a second active item.",
   }),
   empty: new Item({
     spriteSheetPos: new Position(14, 4),

@@ -33,19 +33,18 @@ import { Weapon } from "./items/weapon/weapon.js";
 import { Shield } from "./items/shield/shield.js";
 import playerInventory, {
   getInventoryItems,
+  hasItem,
   resetInventory,
 } from "./playerInventory.js";
 import { Armor, armorDic } from "./items/armor/armor.js";
-import { Consumable } from "./items/consumable/consumable.js";
 import { utils } from "./utils.js";
 import { bagItem, bookItem, musicButton, sfxButton } from "./items/uiItems.js";
-import { DEV } from "./global.js";
-import Level from "./level/level.js";
+import { DEV, GAMEWIDTH } from "./global.js";
 import { transitionOverlay } from "./level/transitionOverlay.js";
 import activeDict from "./items/active/dict.js";
 import { SilverBell } from "./items/active/silverBell.js";
-import Position from "./gameElements/position.js";
 import { ActiveItem } from "./items/active/active.js";
+import Position from "./gameElements/position.js";
 
 // Says if the cursor has changed or if there's an item description to show TO-DO: change this
 type actionResponse = "cursorChange" | "itemDescription" | void;
@@ -86,16 +85,12 @@ export default class GameManager {
         gameState.gameTimer.addSecs(60);
         soundManager.playSound(sounds.drink);
         break;
-      case "health_vial":
-        gameState.health += 0.5;
-        soundManager.playSound(sounds.drink);
-        break;
       case "health_potion":
-        gameState.health += 1;
+        this.healPlayer(1);
         soundManager.playSound(sounds.drink);
         break;
       case "health_potion_big":
-        gameState.health += 2;
+        this.healPlayer(2);
         soundManager.playSound(sounds.drink);
         break;
     }
@@ -141,6 +136,9 @@ export default class GameManager {
     timeTracker.pause();
   }
 
+  /**
+   * Reset's gamestate's and inventory's values and adds ' to the deathcount
+   */
   restartGame() {
     timerManager.clearQueue();
     resetGameState();
@@ -163,6 +161,9 @@ export default class GameManager {
     }
   }
 
+  /**
+   * Applies the active item's effects according to the name on the item in the inventory's active slot
+   */
   useActiveItem() {
     switch (playerInventory.active.name) {
       case "silver_bell":
@@ -190,6 +191,11 @@ export default class GameManager {
         gameState.holding = playerInventory.active;
         playerInventory.active = activeDict.empty;
         break;
+      case "energy_potion":
+        gameState.tiredTimer.restart();
+        playerInventory.active = activeDict.empty;
+        soundManager.playSound(sounds.drink);
+        break;
       case "empty":
         if (gameState.holding != null) {
           if (gameState.holding.name == "bomb") {
@@ -200,6 +206,13 @@ export default class GameManager {
         }
         break;
     }
+  }
+
+  /**
+   * Adds a given value to health capping at 15
+   */
+  healPlayer(value: number) {
+    gameState.health = Math.min(15, gameState.health + value);
   }
 
   /**
@@ -218,7 +231,14 @@ export default class GameManager {
       if (action.item instanceof Armor) {
         playerInventory.armor = armorDic.empty;
       } else if (action.item instanceof ActiveItem) {
-        playerInventory.active = activeDict.empty;
+        console.log(action.item.isAlt, action.item);
+        if (action.item.isAlt) {
+          playerInventory.altActive = activeDict.empty.clone(
+            new Position(GAMEWIDTH - 20, 90),
+          );
+        } else {
+          playerInventory.active = activeDict.empty;
+        }
       } else {
         playerInventory.passives = playerInventory.passives.filter(
           (x) => x != action.item,
@@ -376,6 +396,9 @@ export default class GameManager {
     ];
     if (gameState.inInventory) {
       gameObjects.push(...getInventoryItems());
+    }
+    if (hasItem("tool_belt")) {
+      gameObjects.push(playerInventory.altActive);
     }
 
     const actions: Action[] | void = handleMouseInput(gameObjects);

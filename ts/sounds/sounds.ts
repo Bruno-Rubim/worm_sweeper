@@ -173,6 +173,7 @@ export const sounds = {
       max: 1.4,
     },
   }),
+  curse: new Sound({ soundName: "curse" }),
 };
 
 // Makes a list of all sounds and awaits their loading

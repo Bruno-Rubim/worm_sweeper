@@ -4,7 +4,7 @@ import { gameState } from "./gameState.js";
 import { GAMEHEIGHT, GAMEWIDTH, LEFT, CENTER } from "./global.js";
 import Position from "./gameElements/position.js";
 import { sprites } from "./sprites.js";
-import playerInventory, { type inventory } from "./playerInventory.js";
+import playerInventory, { hasItem, type inventory } from "./playerInventory.js";
 import {
   bagItem,
   bookItem,
@@ -89,6 +89,9 @@ function renderItems() {
   playerInventory.shield.render();
   playerInventory.armor.render();
   playerInventory.active.render();
+  if (hasItem("tool_belt")) {
+    playerInventory.altActive.render();
+  }
   bookItem.render();
   bagItem.render();
   musicButton.render();
