@@ -1,7 +1,6 @@
-import { SellItem as SellItem, UseActiveItem } from "../../action.js";
 import { canvasManager } from "../../canvasManager.js";
 import Position from "../../gameElements/position.js";
-import { LEFT } from "../../global.js";
+import { GAMEWIDTH } from "../../global.js";
 import { sprites } from "../../sprites.js";
 import { Timer } from "../../timer/timer.js";
 import { GAMETIMERSYNC } from "../../timer/timerManager.js";
@@ -13,14 +12,16 @@ export class SilverBell extends ActiveItem {
         classes: [GAMETIMERSYNC],
         autoStart: false,
     });
-    constructor(pos) {
+    constructor(pos, isAlt) {
+        pos ??= new Position(GAMEWIDTH - 20, 72);
         super({
-            pos: pos ?? new Position(),
+            pos: new Position(pos),
             spriteSheetPos: new Position(2, 0),
             name: "silver_bell",
             shopName: "Silver Bell",
             cost: 15,
             descriptionText: "Reveals the location of doors, or $stn stuns enemies if used during battle. Recharges outside of shop every 60 seconds.",
+            isAlt: isAlt ?? false,
         });
     }
     render() {
@@ -34,7 +35,7 @@ export class SilverBell extends ActiveItem {
             canvasManager.renderSpriteFromSheet(this.sprite, this.pos, this.width, this.height, this.spriteSheetPos.add(1, 0));
         }
     }
-    clone() {
-        return new SilverBell(new Position().add(this.pos));
+    clone(position) {
+        return new SilverBell(new Position(position ?? this.pos), this.isAlt);
     }
 }

@@ -142,6 +142,7 @@ export const sounds = {
             max: 1.4,
         },
     }),
+    curse: new Sound({ soundName: "curse" }),
 };
 const soundArr = [...Object.values(sounds)];
 const promiseArrays = soundArr.map((sound) => sound.load());

@@ -31,6 +31,7 @@ export default class CaveManager extends SceneManager {
             this.cave.cleared = true;
             if (hasItem("health_insurance")) {
                 gameState.health++;
+                gameState.health = Math.min(15, gameState.health);
             }
             gameState.gold += 5;
             gameState.gameTimer.addSecs(60);
@@ -304,7 +305,7 @@ export default class CaveManager extends SceneManager {
         block.content = CONTENTWATER;
     }
     startCave(startPos) {
-        if (hasItem("gold_bug")) {
+        if (gameState.bugCurse) {
             gameState.level.cave.wormQuantity = Math.ceil(gameState.level.cave.wormQuantity * 1.2);
             gameState.level.cave.wormsLeft = gameState.level.cave.wormQuantity;
             gameState.level.cave.goldChance += 0.3;
