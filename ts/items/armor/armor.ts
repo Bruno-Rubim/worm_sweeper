@@ -95,7 +95,7 @@ export const armorDic = {
     shopName: "Glass Armor",
     cost: 40,
     reflection: 1,
-    addText: "turns half of all defense gained into reflection",
+    addText: "Turns half of all defense gained into reflection",
   }),
 
   empty: new Armor({
