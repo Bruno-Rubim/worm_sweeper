@@ -31,7 +31,8 @@ import { Armor } from "../../items/armor/armor.js";
 import { Shield } from "../../items/shield/shield.js";
 import { Weapon } from "../../items/weapon/weapon.js";
 import { ActiveItem } from "../../items/active/active.js";
-import { Consumable } from "../../items/consumable/consumable.js";
+import { InstantItem } from "../../items/instant/instantItem.js";
+import { SilverBell } from "../../items/active/silverBell.js";
 
 // Handles rendering and interactions with the shop scene of the current level
 export default class ShopManager extends SceneManager {
@@ -102,10 +103,13 @@ export default class ShopManager extends SceneManager {
           playerInventory.altActive.isAlt = true;
           return;
         }
+        if (item instanceof SilverBell) {
+          item.ringTimer.restart();
+        }
         playerInventory.active = item;
         return;
       }
-      if (item instanceof Consumable) {
+      if (item instanceof InstantItem) {
         return new ConsumeItem(item.name);
       }
       const i = playerInventory.passives.length;
