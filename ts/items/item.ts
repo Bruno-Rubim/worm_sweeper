@@ -44,6 +44,10 @@ export class Item extends GameObject {
     return this.descriptionText;
   }
 
+  get finalCost() {
+    return this.cost;
+  }
+
   clone(position?: Position): Item {
     return new Item({
       pos: new Position(position),

@@ -222,10 +222,10 @@ export default class GameManager {
   }
 
   /**
-   * Adds a given value to health capping at 15
+   * Adds a given value to health capping at max health
    */
   healPlayer(value: number) {
-    gameState.health = Math.min(15, gameState.health + value);
+    gameState.health = Math.min(gameState.maxHealth, gameState.health + value);
   }
 
   /**

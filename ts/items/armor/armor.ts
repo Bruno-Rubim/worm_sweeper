@@ -19,12 +19,14 @@ export class Armor extends Item {
     reflection?: number;
     spikes?: number;
     protection?: number;
+    addText?: string;
   }) {
     args.defense = args.defense ?? 0;
     args.reflection = args.reflection ?? 0;
     args.spikes = args.spikes ?? 0;
     args.protection = args.protection ?? 0;
     args.speedMult = args.speedMult ?? 1;
+    args.addText = args.addText ?? "";
     super({
       ...args,
       pos: new Position(GAMEWIDTH - 20, 54),
@@ -35,7 +37,7 @@ export class Armor extends Item {
           : "") +
         (args.spikes > 0 ? "$spkSpikes: " + args.spikes + "\n" : "") +
         ((args.reflection ?? 0 > 0)
-          ? "$refDefense: " + args.reflection + "\n"
+          ? "$refReflection: " + args.reflection + "\n"
           : "") +
         (args.speedMult > 1
           ? "$slwSpeed: +" +
@@ -48,9 +50,10 @@ export class Armor extends Item {
           ? "$spdSpeed: -" +
             Math.floor((Math.round((1 - args.speedMult) * 10) / 10) * 100) +
             "%"
-          : ""),
+          : "") +
+        args.addText,
     });
-    this.descFontSize = 0.6;
+    this.descFontSize = args.addText == "" ? 0.6 : 0.4;
     this.defense = args.defense;
     this.speedMult = args.speedMult;
     this.reflection = args.reflection;
@@ -86,6 +89,15 @@ export const armorDic = {
     speedMult: 1.3,
     protection: 2,
   }),
+  glass_armor: new Armor({
+    spriteSheetPos: new Position(6, 2),
+    name: "glass_armor",
+    shopName: "Glass Armor",
+    cost: 40,
+    reflection: 1,
+    addText: "turns half of all defense gained into reflection",
+  }),
+
   empty: new Armor({
     spriteSheetPos: new Position(14, 2),
     name: "empty",

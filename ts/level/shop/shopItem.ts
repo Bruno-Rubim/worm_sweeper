@@ -7,11 +7,11 @@ import Position from "../../gameElements/position.js";
 import { BuyShopItem, ShopItemDescription } from "../../action.js";
 import { canvasManager } from "../../canvasManager.js";
 import { armorDic } from "../../items/armor/armor.js";
-import consumableDict from "../../items/consumable/dict.js";
 import { weaponDic } from "../../items/weapon/dict.js";
 import { shieldDic } from "../../items/shield/shield.js";
 import passivesDict from "../../items/passiveDict.js";
 import activeDict from "../../items/active/dict.js";
+import consumableDict from "../../items/consumableDict.js";
 
 type itemName =
   | keyof typeof passivesDict
@@ -70,7 +70,7 @@ export class ShopItem extends GameObject {
     canvasManager.renderText(
       "numbers_cost",
       this.pos.add(9, 18),
-      this.item.cost.toString(),
+      this.item.finalCost.toString(),
       CENTER,
     );
     if (this.item.name == "time_potion") {
