@@ -29,7 +29,7 @@ export const weaponDic = {
     shopName: "Dagger",
     cost: 37,
     damage: 1,
-    cooldown: 1.3,
+    cooldown: 1.2,
   }),
   cactus: new Weapon({
     spriteSheetPos: new Position(10, 3),
@@ -39,7 +39,7 @@ export const weaponDic = {
     cost: 19,
     damage: 0.5,
     spikes: 0.5,
-    cooldown: 1,
+    cooldown: 1.3,
   }),
   time_blade: new TimeBlade(),
 };

@@ -70,7 +70,7 @@ export class ShopItem extends GameObject {
     canvasManager.renderText(
       "numbers_cost",
       this.pos.add(9, 18),
-      this.item.cost.toString(),
+      this.item.finalCost.toString(),
       CENTER,
     );
     if (this.item.name == "time_potion") {

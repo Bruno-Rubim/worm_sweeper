@@ -342,9 +342,18 @@ export default class BattleManager extends SceneManager {
     const shield = playerInventory.shield;
 
     // Setting defense stats
-    gameState.battle.defense += shield.defense;
+    if (hasItem("glass_armor")) {
+      gameState.battle.defense += Math.ceil(shield.defense) / 2;
+      gameState.battle.reflection += Math.floor(shield.defense) / 2;
+    } else {
+      gameState.battle.defense += shield.defense;
+    }
     gameState.battle.reflection += shield.reflection;
-    gameState.battle.spikes += shield.spikes;
+    if (hasItem("spike_polisher")) {
+      gameState.battle.reflection += shield.spikes;
+    } else {
+      gameState.battle.spikes += shield.spikes;
+    }
     gameState.battle.stun += shield.stun;
 
     // Defense animation
@@ -370,7 +379,7 @@ export default class BattleManager extends SceneManager {
     const rId = utils.randomArrayId(gameState.battle.enemies);
     const enemy = gameState.battle.enemies[rId]!;
     soundManager.playSound(sounds.explosion);
-    enemy.health -= 5;
+    enemy.health -= hasItem("gunpowder") ? 8 : 5;
     enemy.damagedTimer.start();
     tiredTimer.goalSecs = 2 - 2 * playerInventory.armor.speedMult;
     tiredTimer.goalSecs = 2 - playerInventory.armor.speedMult;

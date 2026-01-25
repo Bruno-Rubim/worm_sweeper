@@ -71,13 +71,13 @@ export default class ShopManager extends SceneManager {
 
   handleAction(action: Action) {
     if (action instanceof BuyShopItem) {
-      if (action.shopItem.item.cost > gameState.gold) {
+      if (action.shopItem.item.finalCost > gameState.gold) {
         soundManager.playSound(sounds.wrong);
         return;
       }
       const item = action.shopItem.item;
       action.shopItem.hidden = true;
-      gameState.gold -= action.shopItem.item.cost;
+      gameState.gold -= action.shopItem.item.finalCost;
       soundManager.playSound(sounds.purchase);
       if (item instanceof Armor) {
         playerInventory.armor = item;

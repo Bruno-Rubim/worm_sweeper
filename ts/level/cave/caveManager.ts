@@ -75,7 +75,7 @@ export default class CaveManager extends SceneManager {
       this.cave.cleared = true;
       if (hasItem("health_insurance")) {
         gameState.health++;
-        gameState.health = Math.min(15, gameState.health);
+        gameState.health = Math.min(gameState.maxHealth, gameState.health);
       }
       gameState.gold += 5;
       gameState.gameTimer.addSecs(60);
@@ -127,32 +127,115 @@ export default class CaveManager extends SceneManager {
     }
   }
 
-  getSurrBlocks(gridPos: Position): Block[] {
-    let surrBlocks: Block[] = [];
-    if (gridPos.x != 0) {
-      surrBlocks.push(this.cave.blockMatrix[gridPos.x - 1]![gridPos.y]!);
-      if (gridPos.y != 0) {
-        surrBlocks.push(this.cave.blockMatrix[gridPos.x - 1]![gridPos.y - 1]!);
+  /**
+   * Returns an array with the blocks surrounding the given position
+   * @param gridPos position of the center block
+   * @param extra extend area by 1 on each side
+   * @returns
+   */
+  getSurrBlocks(gridPos: Position, extra: boolean = false): Block[] {
+    let validPositions: [number, number][] = [];
+    if (gridPos.x > 0) {
+      validPositions.push([gridPos.x - 1, gridPos.y]);
+      if (gridPos.y > 0) {
+        validPositions.push([gridPos.x - 1, gridPos.y - 1]);
+      }
+      if (gridPos.y < gameState.level.cave.size - 1) {
+        validPositions.push([gridPos.x - 1, gridPos.y + 1]);
       }
     }
-    if (gridPos.y != 0) {
-      surrBlocks.push(this.cave.blockMatrix[gridPos.x]![gridPos.y - 1]!);
-      if (gridPos.x != gameState.level.cave.size - 1) {
-        surrBlocks.push(this.cave.blockMatrix[gridPos.x + 1]![gridPos.y - 1]!);
+
+    if (gridPos.x < gameState.level.cave.size - 1) {
+      validPositions.push([gridPos.x + 1, gridPos.y]);
+      if (gridPos.y > 0) {
+        validPositions.push([gridPos.x + 1, gridPos.y - 1]);
+      }
+      if (gridPos.y < gameState.level.cave.size - 1) {
+        validPositions.push([gridPos.x + 1, gridPos.y + 1]);
       }
     }
-    if (gridPos.x != gameState.level.cave.size - 1) {
-      surrBlocks.push(this.cave.blockMatrix[gridPos.x + 1]![gridPos.y]!);
-      if (gridPos.y != gameState.level.cave.size - 1) {
-        surrBlocks.push(this.cave.blockMatrix[gridPos.x + 1]![gridPos.y + 1]!);
-      }
+
+    if (gridPos.y > 0) {
+      validPositions.push([gridPos.x, gridPos.y - 1]);
     }
-    if (gridPos.y != gameState.level.cave.size - 1) {
-      surrBlocks.push(this.cave.blockMatrix[gridPos.x]![gridPos.y + 1]!);
-      if (gridPos.x != 0) {
-        surrBlocks.push(this.cave.blockMatrix[gridPos.x - 1]![gridPos.y + 1]!);
-      }
+    if (gridPos.y < gameState.level.cave.size - 1) {
+      validPositions.push([gridPos.x, gridPos.y + 1]);
     }
+
+    if (extra) {
+      if (gridPos.x > 1) {
+        validPositions.push([gridPos.x - 2, gridPos.y]);
+        console.log("middle left");
+        if (gridPos.y > 0) {
+          validPositions.push([gridPos.x - 2, gridPos.y - 1]);
+          console.log("up");
+          if (gridPos.y > 1) {
+            validPositions.push([gridPos.x - 2, gridPos.y - 2]);
+            console.log("upper");
+          }
+        }
+        if (gridPos.y < gameState.level.cave.size - 1) {
+          validPositions.push([gridPos.x - 2, gridPos.y + 1]);
+          console.log("low");
+          if (gridPos.y < gameState.level.cave.size - 2) {
+            validPositions.push([gridPos.x - 2, gridPos.y + 2]);
+            console.log("lower");
+          }
+        }
+      }
+
+      if (gridPos.x < gameState.level.cave.size - 2) {
+        validPositions.push([gridPos.x + 2, gridPos.y]);
+        console.log("middle right");
+        if (gridPos.y > 0) {
+          validPositions.push([gridPos.x + 2, gridPos.y - 1]);
+          console.log("up");
+          if (gridPos.y > 1) {
+            validPositions.push([gridPos.x + 2, gridPos.y - 2]);
+            console.log("uper");
+          }
+        }
+        if (gridPos.y < gameState.level.cave.size - 1) {
+          validPositions.push([gridPos.x + 2, gridPos.y + 1]);
+          console.log("low");
+          if (gridPos.y < gameState.level.cave.size - 2) {
+            validPositions.push([gridPos.x + 2, gridPos.y + 2]);
+            console.log("lower");
+          }
+        }
+      }
+
+      if (gridPos.y > 1) {
+        validPositions.push([gridPos.x, gridPos.y - 2]);
+        console.log("mittle top");
+        if (gridPos.x > 1) {
+          validPositions.push([gridPos.x - 1, gridPos.y - 2]);
+          console.log("left");
+        }
+        if (gridPos.x < gameState.level.cave.size - 1) {
+          validPositions.push([gridPos.x + 1, gridPos.y - 2]);
+          console.log("right");
+        }
+      }
+      if (gridPos.y < gameState.level.cave.size - 2) {
+        validPositions.push([gridPos.x, gridPos.y + 2]);
+        console.log("mittle bottom");
+        if (gridPos.x > 1) {
+          validPositions.push([gridPos.x - 1, gridPos.y + 2]);
+          console.log("left");
+        }
+        if (gridPos.x < gameState.level.cave.size - 1) {
+          validPositions.push([gridPos.x + 1, gridPos.y + 2]);
+          console.log("right");
+        }
+      }
+      console.log("---");
+    }
+
+    let surrBlocks = validPositions.map((p) => {
+      const block = this.cave.blockMatrix[p[0]]![p[1]]!;
+      return block;
+    });
     return surrBlocks;
   }
 
@@ -227,14 +310,14 @@ export default class CaveManager extends SceneManager {
       }
       block.broken = true;
     }
-    this.getSurrBlocks(block.gridPos).forEach((b) => {
+    this.getSurrBlocks(block.gridPos, hasItem("gunpowder")).forEach((b) => {
       if (b.content == CONTENTWORM) {
         b.content = CONTENTEMPTY;
         this.cave.wormsLeft--;
         this.cave.blocksLeft++;
       }
     });
-    this.breakSurrBlocks(block.gridPos, true);
+    this.breakSurrBlocks(block.gridPos, true, hasItem("gunpowder"));
     this.updateAllStats();
   }
 
@@ -267,7 +350,7 @@ export default class CaveManager extends SceneManager {
     return counter;
   }
 
-  breakBlock(block: Block) {
+  breakBlock(block: Block, quiet: boolean = false) {
     let result: breakResult = { battle: new StartBattle(0), gold: 0 };
     block.broken = true;
     this.revealAdjc(block.gridPos);
@@ -314,12 +397,16 @@ export default class CaveManager extends SceneManager {
     }
   }
 
-  breakSurrBlocks(pos: Position, ignoreMarks: boolean = false) {
+  breakSurrBlocks(
+    pos: Position,
+    ignoreMarks: boolean = false,
+    extraArea: boolean = false,
+  ) {
     let totalResult: breakResult = {
       battle: new StartBattle(0),
       gold: 0,
     };
-    const surrBlocks = this.getSurrBlocks(pos);
+    const surrBlocks = this.getSurrBlocks(pos, extraArea);
     surrBlocks.forEach((block) => {
       if (block.broken || (block.marked && !ignoreMarks)) {
         return;

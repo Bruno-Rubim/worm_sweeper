@@ -93,9 +93,9 @@ export const shieldDic = {
     bigSprite: sprites.big_shield_claw,
     name: "claw_shield",
     shopName: "Claw Shield",
-    cost: 35,
+    cost: 28,
     defense: 1,
-    spikes: 0.5,
-    cooldown: 2.5,
+    spikes: 1.5,
+    cooldown: 2.3,
   }),
 };

@@ -174,14 +174,7 @@ export class LevelManager extends GameObject {
           case "battle":
             this.caveManager.clearExposedWorms();
             this.caveManager.updateAllStats();
-            gameState.battle?.start(
-              // TO-DO: put this on battle
-              playerInventory.armor.protection,
-              playerInventory.armor.defense +
-                (hasItem("safety_helmet") ? 1 : 0),
-              playerInventory.armor.reflection,
-              playerInventory.armor.spikes,
-            );
+            gameState.battle?.start();
             break;
           case "cave":
             switch (currentScene) {

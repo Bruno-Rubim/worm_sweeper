@@ -3,6 +3,7 @@ import { GAMEWIDTH } from "./global.js";
 import type { ActiveItem } from "./items/active/active.js";
 import activeDict from "./items/active/dict.js";
 import { armorDic, type Armor } from "./items/armor/armor.js";
+import consumableDict from "./items/consumableDict.js";
 import { Item } from "./items/item.js";
 import passivesDict from "./items/passiveDict.js";
 import { shieldDic, type Shield } from "./items/shield/shield.js";
@@ -25,7 +26,7 @@ const baseInventory: inventory = {
   armor: armorDic.empty,
   active: activeDict.empty,
   altActive: activeDict.empty.clone(new Position(GAMEWIDTH - 20, 90)),
-  passives: [picaxeItem, flagItem],
+  passives: [picaxeItem, flagItem, passivesDict.spike_polisher],
 };
 
 const playerInventory: inventory = {

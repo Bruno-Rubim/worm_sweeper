@@ -16,6 +16,7 @@ export default class GameState {
   });
   gold: number = 0;
   health: number = 5;
+  maxHealth: number = 10;
   deathCount = 0;
   shopResetPrice = 0;
   bugCurse: boolean = false;
@@ -56,6 +57,7 @@ export function resetGameState() {
   gameState.currentScene = baseState.currentScene;
   gameState.gold = baseState.gold;
   gameState.health = baseState.health;
+  gameState.maxHealth = baseState.maxHealth;
   gameState.shopResetPrice = baseState.shopResetPrice;
   gameState.bugCurse = baseState.bugCurse;
   gameState.level = new Level(0);
