@@ -1,3 +1,4 @@
+import playerInventory, { hasItem } from "../../playerInventory.js";
 import { utils } from "../../utils.js";
 import { Enemy, PosionWorm, ScaleWorm, Worm } from "./enemy.js";
 export class Battle {
@@ -18,11 +19,15 @@ export class Battle {
         depth > 2 ? (depth > 4 ? (x = 2) : (x = 1)) : (x = 0);
         this.enemies.push(arr[Math.min(x, utils.randomArrayId(arr))]);
     }
-    start(initialProtection, initialDefense, initialReflection, initialSpikes) {
-        this.protection = initialProtection;
-        this.defense = initialDefense;
-        this.reflection = initialReflection;
-        this.spikes = initialSpikes;
+    start() {
+        const helmet = hasItem("safety_helmet");
+        const glassArmor = hasItem("glass_armor");
+        this.protection = playerInventory.armor.protection;
+        this.defense =
+            playerInventory.armor.defense + (helmet ? (glassArmor ? 0.5 : 1) : 0);
+        this.reflection =
+            playerInventory.armor.reflection + (helmet && glassArmor ? 0.5 : 0);
+        this.spikes = playerInventory.armor.spikes;
         this.enemies.forEach((e) => {
             e.cooldownTimer.start();
         });

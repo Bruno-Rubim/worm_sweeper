@@ -36,13 +36,6 @@ const passivesDict = {
         cost: 12,
         descriptionText: "When breaking a safe block all connected safe blocks are also broken. Doesn't collect gold.",
     }),
-    health_insurance: new Item({
-        spriteSheetPos: new Position(10, 4),
-        name: "health_insurance",
-        shopName: "Health Insurance",
-        cost: 22,
-        descriptionText: "Gain 1 heart when clearing a level.",
-    }),
     carving_knife: new Item({
         spriteSheetPos: new Position(12, 4),
         name: "carving_knife",
@@ -64,6 +57,13 @@ const passivesDict = {
         cost: 22,
         descriptionText: "+1 defense each fight.",
     }),
+    gunpowder: new Item({
+        spriteSheetPos: new Position(4, 5),
+        name: "gunpowder",
+        shopName: "Gunpowder",
+        cost: 12,
+        descriptionText: "Bigger explosions.",
+    }),
     bracer: new Item({
         spriteSheetPos: new Position(6, 5),
         name: "bracer",
@@ -77,6 +77,13 @@ const passivesDict = {
         shopName: "Tool Belt",
         cost: 26,
         descriptionText: "Allows you to hold a second active item.",
+    }),
+    spike_polisher: new Item({
+        spriteSheetPos: new Position(10, 5),
+        name: "spike_polisher",
+        shopName: "Spike Polisher",
+        cost: 19,
+        descriptionText: "Turns spikes gained from shields into reflection.",
     }),
     empty: new Item({
         spriteSheetPos: new Position(14, 4),

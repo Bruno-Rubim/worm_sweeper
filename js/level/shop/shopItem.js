@@ -6,11 +6,11 @@ import Position from "../../gameElements/position.js";
 import { BuyShopItem, ShopItemDescription } from "../../action.js";
 import { canvasManager } from "../../canvasManager.js";
 import { armorDic } from "../../items/armor/armor.js";
-import consumableDict from "../../items/consumable/dict.js";
 import { weaponDic } from "../../items/weapon/dict.js";
 import { shieldDic } from "../../items/shield/shield.js";
 import passivesDict from "../../items/passiveDict.js";
 import activeDict from "../../items/active/dict.js";
+import consumableDict from "../../items/consumableDict.js";
 const items = {
     ...passivesDict,
     ...activeDict,
@@ -41,7 +41,7 @@ export class ShopItem extends GameObject {
         if (this.mouseHovering) {
             canvasManager.renderSpriteFromSheet(sprites.item_sheet, this.pos, 16, 16, this.item.spriteSheetPos.add(1, 0));
         }
-        canvasManager.renderText("numbers_cost", this.pos.add(9, 18), this.item.cost.toString(), CENTER);
+        canvasManager.renderText("numbers_cost", this.pos.add(9, 18), this.item.finalCost.toString(), CENTER);
         if (this.item.name == "time_potion") {
             canvasManager.renderAnimationFrame(sprites.time_potion_pointer_sheet, this.pos, 16, 16, 12, 1, this.firstAnimationTic, timeTracker.currentGameTic);
             canvasManager.renderAnimationFrame(sprites.time_potion_pointer_sheet, this.pos, 16, 16, 12, 1, this.firstAnimationTic, timeTracker.currentGameTic, 1 / 12, new Position(0, 1));

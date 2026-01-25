@@ -3,10 +3,11 @@ import { GAMEWIDTH } from "./global.js";
 import activeDict from "./items/active/dict.js";
 import { armorDic } from "./items/armor/armor.js";
 import { Item } from "./items/item.js";
-import passivesDict from "./items/passiveDict.js";
 import { shieldDic } from "./items/shield/shield.js";
 import { flagItem, picaxeItem } from "./items/uiItems.js";
 import { weaponDic } from "./items/weapon/dict.js";
+import consumableDict from "./items/consumableDict.js";
+import passivesDict from "./items/passiveDict.js";
 const baseInventory = {
     weapon: weaponDic.wood_sword,
     shield: shieldDic.wood_shield,

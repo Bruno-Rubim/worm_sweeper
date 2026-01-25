@@ -154,7 +154,7 @@ export default class GameManager {
         }
     }
     healPlayer(value) {
-        gameState.health = Math.min(15, gameState.health + value);
+        gameState.health = Math.min(gameState.maxHealth, gameState.health + value);
     }
     sellItem(action) {
         if (gameState.currentScene == "shop" &&

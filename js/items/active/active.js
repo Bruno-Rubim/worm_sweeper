@@ -1,6 +1,7 @@
 import { SellItem, UseActiveItem } from "../../action.js";
 import Position from "../../gameElements/position.js";
 import { GAMEWIDTH, LEFT } from "../../global.js";
+import { hasItem } from "../../playerInventory.js";
 import { Item } from "../item.js";
 export class ActiveItem extends Item {
     isAlt;
@@ -15,6 +16,9 @@ export class ActiveItem extends Item {
                 return new SellItem(this);
             }
         };
+    }
+    get finalCost() {
+        return this.cost;
     }
     clone(position, isAlt) {
         return new ActiveItem({

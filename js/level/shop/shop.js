@@ -9,10 +9,10 @@ import { utils } from "../../utils.js";
 import { armorDic } from "../../items/armor/armor.js";
 import { weaponDic } from "../../items/weapon/dict.js";
 import { Shield, shieldDic } from "../../items/shield/shield.js";
-import consumableDict from "../../items/consumable/dict.js";
 import playerInventory from "../../playerInventory.js";
 import passivesDict from "../../items/passiveDict.js";
 import activeDict from "../../items/active/dict.js";
+import consumableDict from "../../items/consumableDict.js";
 const exitBtn = new GameObject({
     sprite: sprites.button_exit,
     pos: new Position(GAMEWIDTH - BORDERTHICKRIGHT - 32, BORDERTHICKTOP),
@@ -48,7 +48,6 @@ const shopShieldList = Object.values(shieldDic).filter((x) => x.cost > 0);
 const shopConsList = Object.values(consumableDict).filter((x) => x.cost > 0);
 const shelfItemDistance = 20;
 const shelfStartDistance = 12;
-const itemsCanRepeat = ["bomb", "energy_potion"];
 export default class Shop {
     objects;
     genericItems;
@@ -69,12 +68,11 @@ export default class Shop {
             playerInventory.active.name,
             playerInventory.altActive.name,
             ...playerInventory.passives.map((x) => x.name),
-        ];
+        ].filter((x) => !Object.keys(consumableDict).includes(x));
         let filterNames = [
             ...this.inventoryItemNames,
             ...this.previousSetItemNames,
         ];
-        filterNames = filterNames.filter((x) => !itemsCanRepeat.includes(x));
         this.previousSetItemNames = [];
         this.genericItems = utils
             .shuffleArray(shopItemList.filter((x) => !filterNames.includes(x.name)))

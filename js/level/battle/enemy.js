@@ -61,7 +61,7 @@ export class Worm extends Enemy {
             pos: new Position(56, 36),
             spriteSheet: sprites.enemy_worm,
             health: 3 + Math.floor(depth / 5),
-            damage: 1 + Math.floor((depth / 7) * 2) / 2,
+            damage: 1 + Math.floor((depth / 20) * 2) / 2,
             attackCooldown: 5 - depth * 0.15,
         });
     }

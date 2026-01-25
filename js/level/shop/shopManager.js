@@ -13,7 +13,8 @@ import { Armor } from "../../items/armor/armor.js";
 import { Shield } from "../../items/shield/shield.js";
 import { Weapon } from "../../items/weapon/weapon.js";
 import { ActiveItem } from "../../items/active/active.js";
-import { Consumable } from "../../items/consumable/consumable.js";
+import { InstantItem } from "../../items/instant/instantItem.js";
+import { SilverBell } from "../../items/active/silverBell.js";
 export default class ShopManager extends SceneManager {
     currentText = "";
     render = () => {
@@ -28,13 +29,13 @@ export default class ShopManager extends SceneManager {
     };
     handleAction(action) {
         if (action instanceof BuyShopItem) {
-            if (action.shopItem.item.cost > gameState.gold) {
+            if (action.shopItem.item.finalCost > gameState.gold) {
                 soundManager.playSound(sounds.wrong);
                 return;
             }
             const item = action.shopItem.item;
             action.shopItem.hidden = true;
-            gameState.gold -= action.shopItem.item.cost;
+            gameState.gold -= action.shopItem.item.finalCost;
             soundManager.playSound(sounds.purchase);
             if (item instanceof Armor) {
                 playerInventory.armor = item;
@@ -58,10 +59,13 @@ export default class ShopManager extends SceneManager {
                     playerInventory.altActive.isAlt = true;
                     return;
                 }
+                if (item instanceof SilverBell) {
+                    item.ringTimer.restart();
+                }
                 playerInventory.active = item;
                 return;
             }
-            if (item instanceof Consumable) {
+            if (item instanceof InstantItem) {
                 return new ConsumeItem(item.name);
             }
             const i = playerInventory.passives.length;
