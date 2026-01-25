@@ -8,8 +8,8 @@ export class SoundManager {
   musicVolume = 0.7;
   sfxVolume = 1;
   muted = false;
-  mutedMusic = false;
-  mutedSfx = false;
+  mutedMusic = localStorage.getItem("mutedMusic") == "true";
+  mutedSfx = localStorage.getItem("mutedSfx") == "true";
   activeSounds: HTMLAudioElement[] = [];
   currentMusicTrack: MusicTrack | null = null;
   musicStartTime = 0;
@@ -115,11 +115,13 @@ export class SoundManager {
 
   muteMusic() {
     this.mutedMusic = !this.mutedMusic;
+    localStorage.setItem("mutedMusic", this.mutedMusic.toString());
     this.updateVolumes();
   }
 
   muteSfx() {
     this.mutedSfx = !this.mutedSfx;
+    localStorage.setItem("mutedSfx", this.mutedSfx.toString());
     this.updateVolumes();
   }
 }
