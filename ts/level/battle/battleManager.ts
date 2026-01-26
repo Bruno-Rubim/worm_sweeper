@@ -314,7 +314,11 @@ export default class BattleManager extends SceneManager {
     }
 
     // Spikes
-    gameState.battle.spikes += weapon.spikes;
+    if (hasItem("spike_polisher")) {
+      gameState.battle.reflection += weapon.spikes;
+    } else {
+      gameState.battle.spikes += weapon.spikes;
+    }
 
     // Weapon animation
     gameState.attackAnimationTimer.goalSecs = weapon.cooldown / 3;

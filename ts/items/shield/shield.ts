@@ -84,9 +84,9 @@ export const shieldDic = {
     bigSprite: sprites.big_shield_hand,
     name: "hand_shield",
     shopName: "Hand Shield",
-    cost: 21,
+    cost: 23,
     defense: 0.5,
-    cooldown: 1,
+    cooldown: 1.2,
   }),
   claw_shield: new Shield({
     spriteSheetPos: new Position(8, 1),
