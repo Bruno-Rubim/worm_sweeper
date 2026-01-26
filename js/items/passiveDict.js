@@ -48,7 +48,7 @@ const passivesDict = {
         name: "whetstone",
         shopName: "Whetstone",
         cost: 18,
-        descriptionText: "Reduces weapon $spdcooldown after attacking for 5% per damage dealt.",
+        descriptionText: "Reduces weapon $spdcooldown for 5% per weapon damage.",
     }),
     safety_helmet: new Item({
         spriteSheetPos: new Position(2, 5),
@@ -83,7 +83,7 @@ const passivesDict = {
         name: "spike_polisher",
         shopName: "Spike Polisher",
         cost: 19,
-        descriptionText: "Turns spikes gained from shields into reflection.",
+        descriptionText: "Turns gained spikes into reflection.",
     }),
     empty: new Item({
         spriteSheetPos: new Position(14, 4),

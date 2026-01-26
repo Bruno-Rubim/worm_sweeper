@@ -38,7 +38,7 @@ export const weaponDic = {
         cost: 19,
         damage: 0.5,
         spikes: 0.5,
-        cooldown: 1.3,
+        cooldown: 1.8,
     }),
     time_blade: new TimeBlade(),
 };

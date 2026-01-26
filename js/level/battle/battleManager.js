@@ -148,7 +148,12 @@ export default class BattleManager extends SceneManager {
         if (weapon.stunSecs > 0) {
             enemy.stun(weapon.stunSecs);
         }
-        gameState.battle.spikes += weapon.spikes;
+        if (hasItem("spike_polisher")) {
+            gameState.battle.reflection += weapon.spikes;
+        }
+        else {
+            gameState.battle.spikes += weapon.spikes;
+        }
         gameState.attackAnimationTimer.goalSecs = weapon.cooldown / 3;
         gameState.attackAnimationTimer.start();
         const tiredTimer = gameState.tiredTimer;
