@@ -76,9 +76,9 @@ export const armorDic = {
     spriteSheetPos: new Position(2, 2),
     name: "swift_vest",
     shopName: "Swift Vest",
-    cost: 38,
+    cost: 36,
     defense: 0,
-    speedMult: 0.7,
+    speedMult: 0.8,
   }),
   silver_chestplate: new Armor({
     spriteSheetPos: new Position(4, 2),
@@ -95,7 +95,7 @@ export const armorDic = {
     shopName: "Glass Armor",
     cost: 40,
     reflection: 1,
-    addText: "turns half of all defense gained into reflection",
+    addText: "Turns half of all defense gained into reflection",
   }),
 
   empty: new Armor({

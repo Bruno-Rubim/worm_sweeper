@@ -49,7 +49,7 @@ const resetBtn = new GameObject({
   },
   hoverFunction: () => {
     return new ShopItemDescription(
-      "Reset items.\n\nItems will always be different than the previous set if possible.",
+      "Reset items.\n\nItems on the left will always be different than the previous set if possible.",
     );
   },
 });
@@ -85,7 +85,7 @@ const shopConsList: InstantItem[] = Object.values(consumableDict).filter(
 );
 
 const shelfItemDistance = 20;
-const shelfStartDistance = 12;
+const shelfStartDistance = 9;
 
 export default class Shop {
   objects!: GameObject[];
@@ -93,7 +93,8 @@ export default class Shop {
   armor: ShopItem | undefined;
   weapon: ShopItem | undefined;
   shield: ShopItem | undefined;
-  consumable!: ShopItem;
+  consumable1!: ShopItem;
+  consumable2!: ShopItem;
   inventoryItemNames: string[] = [];
   previousSetItemNames: string[] = [];
 
@@ -155,14 +156,21 @@ export default class Shop {
     this.shield = new ShopItem(chosenShield.name);
     this.previousSetItemNames.push(this.shield.item.name);
 
-    const chosenConsumable = utils.shuffleArray(
-      shopConsList.filter((x) => !filterNames.includes(x.name)),
-    )[0];
-    this.consumable = new ShopItem(chosenConsumable.name);
-    this.consumable.pos.update(GAMEWIDTH - BORDERTHICKRIGHT - 28, 40);
-    this.previousSetItemNames.push(this.consumable.item.name);
+    const chosenConsumables = utils
+      .shuffleArray(shopConsList.filter((x) => !filterNames.includes(x.name)))
+      .slice(0, 2);
+    this.consumable1 = new ShopItem(chosenConsumables[0].name);
+    this.consumable1.pos.update(GAMEWIDTH - BORDERTHICKRIGHT - 24, 40);
+    this.consumable2 = new ShopItem(chosenConsumables[1].name);
+    this.consumable2.pos.update(GAMEWIDTH - BORDERTHICKRIGHT - 44, 40);
 
-    this.objects = [exitBtn, resetBtn, ...this.genericItems, this.consumable];
+    this.objects = [
+      exitBtn,
+      resetBtn,
+      ...this.genericItems,
+      this.consumable1,
+      this.consumable2,
+    ];
     let xShift = shelfStartDistance;
     if (this.armor) {
       this.armor.pos.update(BORDERTHICKLEFT + xShift, 60);

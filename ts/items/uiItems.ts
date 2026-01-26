@@ -1,6 +1,7 @@
 import { ToggleBook, ToggleInventory } from "../action.js";
 import { canvasManager } from "../canvasManager.js";
 import Position from "../gameElements/position.js";
+import { gameState } from "../gameState.js";
 import { BORDERTHICKLEFT, BORDERTHICKTOP } from "../global.js";
 import { soundManager } from "../sounds/soundManager.js";
 import { sprites } from "../sprites.js";
@@ -22,6 +23,7 @@ export const flagItem = new Item({
   descriptionText: "Right click any block to mark it as a possible threat.",
   pos: new Position(BORDERTHICKLEFT + 13 + 18, BORDERTHICKTOP + 13),
 });
+
 export const bookItem = new Item({
   spriteSheetPos: new Position(4, 7),
   name: "book",
@@ -30,6 +32,8 @@ export const bookItem = new Item({
   descriptionText: "Click to open or close the guide book.",
   pos: new Position(4, 36),
 });
+bookItem.clickFunction = () => new ToggleBook();
+
 export const bagItem = new Item({
   spriteSheetPos: new Position(6, 7),
   name: "bag",
@@ -38,6 +42,26 @@ export const bagItem = new Item({
   descriptionText: "Click to open or close the inventory.",
   pos: new Position(4, 18),
 });
+bagItem.render = () => {
+  canvasManager.renderSpriteFromSheet(
+    sprites.item_sheet,
+    bagItem.pos,
+    16,
+    16,
+    bagItem.spriteSheetPos.add(0, gameState.inInventory ? 1 : 0),
+  );
+  if (bagItem.mouseHovering) {
+    canvasManager.renderSpriteFromSheet(
+      bagItem.sprite,
+      bagItem.pos,
+      bagItem.width,
+      bagItem.height,
+      bagItem.spriteSheetPos.add(1, gameState.inInventory ? 1 : 0),
+    );
+  }
+};
+bagItem.clickFunction = () => new ToggleInventory();
+
 export const musicButton = new Item({
   spriteSheetPos: new Position(8, 7),
   name: "",
@@ -108,6 +132,3 @@ sfxButton.render = () => {
 sfxButton.clickFunction = () => {
   soundManager.muteSfx();
 };
-
-bookItem.clickFunction = () => new ToggleBook();
-bagItem.clickFunction = () => new ToggleInventory();

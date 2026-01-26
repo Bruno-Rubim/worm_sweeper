@@ -113,6 +113,11 @@ export default class GameManager {
    */
   toggleInventory() {
     gameState.inInventory = !gameState.inInventory;
+    if (gameState.inInventory) {
+      soundManager.playSound(sounds.bag_open);
+    } else {
+      soundManager.playSound(sounds.bag_close);
+    }
   }
 
   /**
@@ -381,7 +386,7 @@ export default class GameManager {
       }
       if (inputState.keyboard.w == "pressed") {
         inputState.keyboard.w = "read";
-        soundManager.playSound(sounds.stab);
+        soundManager.playSound(sounds.bag_open);
       }
     }
   }

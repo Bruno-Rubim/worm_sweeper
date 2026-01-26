@@ -31,7 +31,7 @@ const consumableDict = {
     name: "energy_potion",
     shopName: "Energy Potion",
     cost: 5,
-    descriptionText: "Reset your current cooldown instantly.",
+    descriptionText: "Reset your $spdcooldown in a battle instantly.",
   }),
   time_potion: new TimePotion(),
 };

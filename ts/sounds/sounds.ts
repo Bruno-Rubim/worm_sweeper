@@ -173,6 +173,20 @@ export const sounds = {
       max: 1.4,
     },
   }),
+  bag_open: new Sound({
+    soundName: "bag_open",
+    pitchRange: {
+      min: 1,
+      max: 1.1,
+    },
+  }),
+  bag_close: new Sound({
+    soundName: "bag_close",
+    pitchRange: {
+      min: 1,
+      max: 1.1,
+    },
+  }),
   curse: new Sound({ soundName: "curse" }),
 };
 
