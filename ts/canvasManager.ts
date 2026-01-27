@@ -16,8 +16,16 @@ export default class CanvasManager {
     height: 0,
   };
 
+  constructor() {
+    // Binds updating the elmeent size when the window resizes
+    window.addEventListener("resize", () => {
+      this.updateElementSize();
+    });
+    this.updateElementSize();
+  }
+
   /**
-   * Updates the canvas element size and render scale based on current window
+   * Updates the canvas element size, position and render scale based on current window
    */
   updateElementSize() {
     let scale = 0;

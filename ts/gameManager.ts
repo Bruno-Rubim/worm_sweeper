@@ -448,7 +448,6 @@ export default class GameManager {
   }
 
   renderGame() {
-    canvasManager.updateElementSize();
     canvasManager.clearCanvas();
     levelManager.render();
     renderBorder();
