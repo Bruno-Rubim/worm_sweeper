@@ -336,7 +336,6 @@ export default class GameManager {
         this.handleAction(this.handleKeyInput());
     }
     renderGame() {
-        canvasManager.updateElementSize();
         canvasManager.clearCanvas();
         levelManager.render();
         renderBorder();

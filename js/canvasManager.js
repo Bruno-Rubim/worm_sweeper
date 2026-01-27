@@ -13,6 +13,12 @@ export default class CanvasManager {
         width: 0,
         height: 0,
     };
+    constructor() {
+        window.addEventListener("resize", () => {
+            this.updateElementSize();
+        });
+        this.updateElementSize();
+    }
     updateElementSize() {
         let scale = 0;
         if (innerWidth > innerHeight) {
