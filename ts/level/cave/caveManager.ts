@@ -675,7 +675,7 @@ export default class CaveManager extends SceneManager {
             return new ChangeScene("shop");
           case CONTENTWATER:
             // soundManager.playSound(); TO-DO: water sfx
-            gameState.gold += 5;
+            gameState.gold += 1;
             soundManager.playSound(sounds.gold);
             gameState.gameTimer.addSecs(-10);
             break;
