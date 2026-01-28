@@ -4,6 +4,7 @@ import { Battle } from "./level/battle/battle.js";
 import Level from "./level/level.js";
 import { Timer } from "./timer/timer.js";
 import { GAMETIMERSYNC } from "./timer/timerManager.js";
+import timeTracker from "./timer/timeTracker.js";
 
 // Holds the current state of the game at any given time
 export default class GameState {
@@ -18,6 +19,7 @@ export default class GameState {
   health: number = 5;
   maxHealth: number = 10;
   deathCount = 0;
+  deathTic = 0;
 
   shopResetPrice = 0;
   bugCurse: boolean = false;
@@ -34,8 +36,19 @@ export default class GameState {
 
   paused: boolean = false;
   started: boolean = false;
-  gameOver: boolean = false;
   heldWhileDeath: boolean = false;
+  gameOver: boolean = false;
+  deathScreenStage = 0;
+  deathScreenTimer = new Timer({
+    goalSecs: 1.5,
+    goalFunc: () => {
+      this.deathScreenStage++;
+    },
+    deleteAtEnd: false,
+    autoStart: false,
+    loop: true,
+    external: true,
+  });
 
   inInventory: boolean = false;
   inBook: boolean = false;
@@ -45,6 +58,12 @@ export default class GameState {
 
   constructor() {
     this.level = new Level(0);
+  }
+
+  get runTime() {
+    return (
+      (this.deathTic - this.gameTimer.startTic) / timeTracker.ticsPerSecond
+    );
   }
 }
 
@@ -65,6 +84,7 @@ export function resetGameState() {
   gameState.scalesCollected = baseState.scalesCollected;
   gameState.level = new Level(0);
   gameState.gameTimer.restart();
+  gameState.deathScreenTimer.restart();
   gameState.tiredTimer.restart();
   gameState.attackAnimationTimer.restart();
   gameState.shieldUpTimer.restart();

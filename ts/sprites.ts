@@ -62,6 +62,7 @@ export const sprites = {
   letters_book: new Sprite("letters_book"),
   letters_shop_description: new Sprite("letters_shop_description"),
   letters_description: new Sprite("letters_description"),
+  letters_menu: new Sprite("letters_menu"),
   number_sheet: new Sprite("number_sheet"),
   numbers: new Sprite("numbers"),
   pixel_black: new Sprite("pixel_black"),

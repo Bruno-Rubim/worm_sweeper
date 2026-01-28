@@ -449,12 +449,10 @@ export default class BattleManager extends SceneManager {
 
     // Parry
     if (gameState.shieldUpTimer.inMotion && gameState.tiredTimer.inMotion) {
-      if (hasItem("led_boots")) {
-        gameState.tiredTimer.reduceSecs(gameState.tiredTimer.goalSecs / 2);
-        soundManager.playSound(sounds.parry);
-      } else {
-        soundManager.playSound(sounds.shield_thud);
-      }
+      gameState.tiredTimer.reduceSecs(
+        gameState.tiredTimer.goalSecs * (hasItem("led_boots") ? 0.5 : 0.3),
+      );
+      soundManager.playSound(sounds.parry);
     }
 
     if (damage > 0) {
