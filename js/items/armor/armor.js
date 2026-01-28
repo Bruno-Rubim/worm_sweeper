@@ -45,7 +45,7 @@ export class Armor extends Item {
         this.protection = args.protection;
     }
 }
-export const armorDic = {
+export const armorDict = {
     chainmail: new Armor({
         spriteSheetPos: new Position(0, 2),
         name: "chainmail",

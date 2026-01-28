@@ -12,6 +12,7 @@ import { sprites } from "../../sprites.js";
 import timeTracker from "../../timer/timeTracker.js";
 import { utils } from "../../utils.js";
 import SceneManager from "../sceneManager.js";
+import { ScaleWorm } from "./enemy.js";
 const damageOverlay = new GameObject({
     sprite: sprites.damage_sheet,
     height: 128,
@@ -107,6 +108,9 @@ export default class BattleManager extends SceneManager {
                     gameState.gold += 2;
                     soundManager.playSound(sounds.gold);
                 }
+                if (hasItem("scale_shield") && e instanceof ScaleWorm) {
+                    gameState.scalesCollected++;
+                }
             }
         });
         if (gameState.battle.enemies.length <= 0) {
@@ -171,11 +175,11 @@ export default class BattleManager extends SceneManager {
         }
         const shield = playerInventory.shield;
         if (hasItem("glass_armor")) {
-            gameState.battle.defense += Math.ceil(shield.defense) / 2;
-            gameState.battle.reflection += Math.floor(shield.defense) / 2;
+            gameState.battle.defense += Math.ceil(shield.totalDefense) / 2;
+            gameState.battle.reflection += Math.floor(shield.totalDefense) / 2;
         }
         else {
-            gameState.battle.defense += shield.defense;
+            gameState.battle.defense += shield.totalDefense;
         }
         gameState.battle.reflection += shield.reflection;
         if (hasItem("spike_polisher")) {

@@ -8,7 +8,7 @@ import { Action, BuyShopItem, ConsumeItem, ShopItemDescription, } from "../../ac
 import { handleMouseClick, handleMouseHover, handleMouseNotHover, } from "../../input/handleInput.js";
 import { soundManager } from "../../sounds/soundManager.js";
 import sounds from "../../sounds/sounds.js";
-import playerInventory, { hasItem } from "../../playerInventory.js";
+import playerInventory, { hasItem, updateInventoryPositions, } from "../../playerInventory.js";
 import { Armor } from "../../items/armor/armor.js";
 import { Shield } from "../../items/shield/shield.js";
 import { Weapon } from "../../items/weapon/weapon.js";
@@ -68,13 +68,12 @@ export default class ShopManager extends SceneManager {
             if (item instanceof InstantItem) {
                 return new ConsumeItem(item.name);
             }
-            const i = playerInventory.passives.length;
-            item.pos.update(BORDERTHICKLEFT + 13 + 18 * (i % 6), BORDERTHICKTOP + 13 + 18 * Math.floor(i / 6));
             if (item.name == "gold_bug") {
                 gameState.bugCurse = true;
                 soundManager.playSound(sounds.curse);
             }
             playerInventory.passives.push(item);
+            updateInventoryPositions();
             return;
         }
         return action;

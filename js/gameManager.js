@@ -12,8 +12,8 @@ import { handleMouseInput } from "./input/handleInput.js";
 import { bindListeners, inputState } from "./input/inputState.js";
 import { Weapon } from "./items/weapon/weapon.js";
 import { Shield } from "./items/shield/shield.js";
-import playerInventory, { getInventoryItems, hasItem, resetInventory, } from "./playerInventory.js";
-import { Armor, armorDic } from "./items/armor/armor.js";
+import playerInventory, { getInventoryItems, hasItem, resetInventory, updateInventoryPositions, } from "./playerInventory.js";
+import { Armor, armorDict } from "./items/armor/armor.js";
 import { utils } from "./utils.js";
 import { bagItem, bookItem, musicButton, sfxButton } from "./items/uiItems.js";
 import { DEV, GAMEWIDTH } from "./global.js";
@@ -164,13 +164,16 @@ export default class GameManager {
     }
     sellItem(action) {
         if (gameState.currentScene == "shop" &&
-            !["empty", "book", "picaxe", "flag"].includes(action.item.name)) {
-            if (action.item instanceof Weapon || action.item instanceof Shield) {
+            !["empty"].includes(action.item.name)) {
+            if (action.item instanceof Weapon ||
+                action.item instanceof Shield ||
+                ["picaxe", "flag"].includes(action.item.name)) {
                 soundManager.playSound(sounds.wrong);
                 return;
             }
+            playerInventory.soldItemNames.push(action.item.name);
             if (action.item instanceof Armor) {
-                playerInventory.armor = armorDic.empty;
+                playerInventory.armor = armorDict.empty;
             }
             else if (action.item instanceof ActiveItem) {
                 if (action.item.isAlt) {
@@ -182,6 +185,7 @@ export default class GameManager {
             }
             else {
                 playerInventory.passives = playerInventory.passives.filter((x) => x != action.item);
+                updateInventoryPositions();
             }
             gameState.gold += utils.randomInt(4, 1);
             soundManager.playSound(sounds.gold);

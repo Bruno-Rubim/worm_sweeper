@@ -17,6 +17,7 @@ export default class GameState {
     deathCount = 0;
     shopResetPrice = 0;
     bugCurse = false;
+    scalesCollected = 0;
     level;
     inTransition = false;
     currentScene = "cave";
@@ -48,6 +49,7 @@ export function resetGameState() {
     gameState.maxHealth = baseState.maxHealth;
     gameState.shopResetPrice = baseState.shopResetPrice;
     gameState.bugCurse = baseState.bugCurse;
+    gameState.scalesCollected = baseState.scalesCollected;
     gameState.level = new Level(0);
     gameState.gameTimer.restart();
     gameState.tiredTimer.restart();

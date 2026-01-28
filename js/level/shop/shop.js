@@ -6,13 +6,14 @@ import Position from "../../gameElements/position.js";
 import { sprites } from "../../sprites.js";
 import { ShopItem } from "./shopItem.js";
 import { utils } from "../../utils.js";
-import { armorDic } from "../../items/armor/armor.js";
-import { weaponDic } from "../../items/weapon/dict.js";
-import { Shield, shieldDic } from "../../items/shield/shield.js";
+import { armorDict } from "../../items/armor/armor.js";
+import { weaponDict } from "../../items/weapon/dict.js";
+import { Shield } from "../../items/shield/shield.js";
 import playerInventory from "../../playerInventory.js";
 import passivesDict from "../../items/passiveDict.js";
 import activeDict from "../../items/active/dict.js";
 import consumableDict from "../../items/consumableDict.js";
+import { shieldDict } from "../../items/shield/dict.js";
 const exitBtn = new GameObject({
     sprite: sprites.button_exit,
     pos: new Position(GAMEWIDTH - BORDERTHICKRIGHT - 32, BORDERTHICKTOP),
@@ -42,9 +43,9 @@ const shopItemList = [
     ...Object.values(passivesDict),
     ...Object.values(activeDict),
 ].filter((x) => x.cost > 0);
-const shopArmorList = Object.values(armorDic).filter((x) => x.cost > 0);
-const shopWeaponList = Object.values(weaponDic).filter((x) => x.cost > 0);
-const shopShieldList = Object.values(shieldDic).filter((x) => x.cost > 0);
+const shopArmorList = Object.values(armorDict).filter((x) => x.cost > 0);
+const shopWeaponList = Object.values(weaponDict).filter((x) => x.cost > 0);
+const shopShieldList = Object.values(shieldDict).filter((x) => x.cost > 0);
 const shopConsList = Object.values(consumableDict).filter((x) => x.cost > 0);
 const shelfItemDistance = 20;
 const shelfStartDistance = 9;
@@ -73,6 +74,7 @@ export default class Shop {
         let filterNames = [
             ...this.inventoryItemNames,
             ...this.previousSetItemNames,
+            ...playerInventory.soldItemNames,
         ];
         this.previousSetItemNames = [];
         this.genericItems = utils

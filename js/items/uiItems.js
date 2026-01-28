@@ -3,6 +3,7 @@ import { canvasManager } from "../canvasManager.js";
 import Position from "../gameElements/position.js";
 import { gameState } from "../gameState.js";
 import { BORDERTHICKLEFT, BORDERTHICKTOP } from "../global.js";
+import { updateInventoryPositions } from "../playerInventory.js";
 import { soundManager } from "../sounds/soundManager.js";
 import { sprites } from "../sprites.js";
 import { Item } from "./item.js";
@@ -45,7 +46,10 @@ bagItem.render = () => {
         canvasManager.renderSpriteFromSheet(bagItem.sprite, bagItem.pos, bagItem.width, bagItem.height, bagItem.spriteSheetPos.add(1, gameState.inInventory ? 1 : 0));
     }
 };
-bagItem.clickFunction = () => new ToggleInventory();
+bagItem.clickFunction = () => {
+    updateInventoryPositions();
+    return new ToggleInventory();
+};
 export const musicButton = new Item({
     spriteSheetPos: new Position(8, 7),
     name: "",

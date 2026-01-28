@@ -235,14 +235,14 @@ export default class CaveManager extends SceneManager {
             }
             block.broken = true;
         }
-        this.getSurrBlocks(block.gridPos, hasItem("gunpowder")).forEach((b) => {
+        this.getSurrBlocks(block.gridPos).forEach((b) => {
             if (b.content == CONTENTWORM) {
                 b.content = CONTENTEMPTY;
                 this.cave.wormsLeft--;
                 this.cave.blocksLeft++;
             }
         });
-        this.breakSurrBlocks(block.gridPos, true, hasItem("gunpowder"));
+        this.breakSurrBlocks(block.gridPos, true);
         this.updateAllStats();
     }
     updateAllStats() {

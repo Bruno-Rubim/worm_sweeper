@@ -1,7 +1,6 @@
 import Position from "../../gameElements/position.js";
 import { gameState } from "../../gameState.js";
 import { sprites } from "../../sprites.js";
-import { Timer } from "../../timer/timer.js";
 import { Weapon } from "./weapon.js";
 export default class TimeBlade extends Weapon {
     constructor() {
