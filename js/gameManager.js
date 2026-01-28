@@ -1,11 +1,11 @@
-import { Action, ChangeCursorState, ChangeScene, ConsumeItem, EnemyAtack, ItemDescription, LoseGame, RestartGame, SellItem, ToggleBook, ToggleInventory, UseActiveItem, } from "./action.js";
+import { Action, ChangeCursorState, ChangeScene, ConsumeItem, EnemyAttack, ItemDescription, LoseGame, RestartGame, SellItem, ToggleBook, ToggleInventory, UseActiveItem, } from "./action.js";
 import { canvasManager } from "./canvasManager.js";
 import { cursor, CURSORBOMB, CURSORDEFAULT, } from "./cursor.js";
 import { gameState, resetGameState } from "./gameState.js";
 import { levelManager } from "./level/levelManager.js";
 import { renderBorder } from "./renderBorder.js";
 import { soundManager } from "./sounds/soundManager.js";
-import sounds from "./sounds/sounds.js";
+import sounds, { testingSound } from "./sounds/sounds.js";
 import { timerManager } from "./timer/timerManager.js";
 import timeTracker from "./timer/timeTracker.js";
 import { handleMouseInput } from "./input/handleInput.js";
@@ -192,7 +192,7 @@ export default class GameManager {
         }
     }
     performEnemyAttack(action) {
-        return levelManager.battleManager.enemyAtack(action);
+        return levelManager.battleManager.enemyAttack(action);
     }
     handleAction(action) {
         if (!action) {
@@ -222,7 +222,7 @@ export default class GameManager {
             this.restartGame();
             return;
         }
-        if (action instanceof EnemyAtack) {
+        if (action instanceof EnemyAttack) {
             const changeScene = this.performEnemyAttack(action);
             if (this.checkPlayerDead()) {
                 return;
@@ -255,11 +255,9 @@ export default class GameManager {
         timerManager.queue.forEach((timer) => {
             let action = null;
             if (timer.ticsRemaining <= 0 && !timer.ended) {
-                if (timer.goalFunc) {
-                    action = timer.goalFunc();
-                }
+                action = timer.reachGoal();
                 if (timer.loop) {
-                    timer.rewind();
+                    timer.start();
                 }
                 else {
                     timer.ended = true;
@@ -293,7 +291,7 @@ export default class GameManager {
             }
             if (inputState.keyboard.w == "pressed") {
                 inputState.keyboard.w = "read";
-                soundManager.playSound(sounds.bag_open);
+                soundManager.playSound(testingSound);
             }
         }
     }

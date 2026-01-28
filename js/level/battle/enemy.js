@@ -1,4 +1,4 @@
-import { EnemyAtack } from "../../action.js";
+import { EnemyAttack } from "../../action.js";
 import Position from "../../gameElements/position.js";
 import { hasItem } from "../../playerInventory.js";
 import { sounds } from "../../sounds/sounds.js";
@@ -31,7 +31,7 @@ export class Enemy {
         this.cooldownTimer = new Timer({
             goalSecs: args.attackCooldown * (hasItem("moon_flower") ? 1.2 : 1),
             goalFunc: () => {
-                return new EnemyAtack(this.damage, this);
+                return new EnemyAttack(this.damage, this);
             },
             loop: true,
             autoStart: false,
@@ -91,7 +91,7 @@ export class PosionWorm extends Enemy {
         });
         this.cooldownTimer.goalFunc = () => {
             this.spikes += this.damage;
-            return new EnemyAtack(this.damage, this);
+            return new EnemyAttack(this.damage, this);
         };
     }
 }

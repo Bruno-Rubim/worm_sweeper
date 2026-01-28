@@ -1,4 +1,4 @@
-import { ChangeCursorState, ChangeScene, EnemyAtack, LoseGame, } from "../../action.js";
+import { ChangeCursorState, ChangeScene, EnemyAttack, LoseGame, } from "../../action.js";
 import { canvasManager } from "../../canvasManager.js";
 import { CURSORBATTLE } from "../../cursor.js";
 import GameObject from "../../gameElements/gameObject.js";
@@ -55,7 +55,7 @@ export default class BattleManager extends SceneManager {
         });
         const inventory = playerInventory;
         canvasManager.renderSprite(inventory.weapon.bigSprite, new Position(BORDERTHICKLEFT - (gameState.attackAnimationTimer.inMotion ? 0 : 24), BORDERTHICKTOP + (gameState.attackAnimationTimer.inMotion ? 26 : 45)), 128, 128);
-        canvasManager.renderSprite(inventory.shield.bigSprite, new Position(BORDERTHICKLEFT + (gameState.defenseAnimationTimer.inMotion ? 0 : 24), BORDERTHICKTOP + (gameState.defenseAnimationTimer.inMotion ? 26 : 45)), 128, 128);
+        canvasManager.renderSprite(inventory.shield.bigSprite, new Position(BORDERTHICKLEFT + (gameState.shieldUpTimer.inMotion ? 0 : 24), BORDERTHICKTOP + (gameState.shieldUpTimer.inMotion ? 26 : 45)), 128, 128);
         if (battle.protection + battle.defense + battle.reflection > 0) {
             const reflect = battle.reflection;
             const defense = battle.defense;
@@ -189,8 +189,8 @@ export default class BattleManager extends SceneManager {
             gameState.battle.spikes += shield.spikes;
         }
         gameState.battle.stun += shield.stun;
-        gameState.defenseAnimationTimer.goalSecs = shield.cooldown / 3;
-        gameState.defenseAnimationTimer.start();
+        gameState.shieldUpTimer.goalSecs = shield.cooldown / 3;
+        gameState.shieldUpTimer.start();
         const tiredTimer = gameState.tiredTimer;
         tiredTimer.goalSecs = shield.cooldown * playerInventory.armor.speedMult;
         tiredTimer.start();
@@ -220,7 +220,7 @@ export default class BattleManager extends SceneManager {
             e.stun(seconds);
         });
     }
-    enemyAtack(action) {
+    enemyAttack(action) {
         if (!gameState.battle) {
             alert("this shouldn't happen outside of battle");
             return;
@@ -247,6 +247,15 @@ export default class BattleManager extends SceneManager {
         battle.defense = leftoverDefense;
         const playerProtection = battle.protection;
         damage = Math.max(0, damage - playerDefense - playerProtection);
+        if (gameState.shieldUpTimer.inMotion && gameState.tiredTimer.inMotion) {
+            if (hasItem("led_boots")) {
+                gameState.tiredTimer.reduceSecs(gameState.tiredTimer.goalSecs / 2);
+                soundManager.playSound(sounds.parry);
+            }
+            else {
+                soundManager.playSound(sounds.shield_thud);
+            }
+        }
         if (damage > 0) {
             this.playDamageOverlay();
         }

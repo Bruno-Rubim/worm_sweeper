@@ -92,6 +92,13 @@ const passivesDict = {
         cost: 19,
         descriptionText: "Turns gained spikes into reflection.",
     }),
+    led_boots: new Item({
+        spriteSheetPos: new Position(12, 5),
+        name: "led_boots",
+        shopName: "Led Boots",
+        cost: 24,
+        descriptionText: "Halves your cooldown when being hit while your shield is up.",
+    }),
     empty: new Item({
         spriteSheetPos: new Position(14, 4),
         name: "empty",
