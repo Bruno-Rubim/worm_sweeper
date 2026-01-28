@@ -30,7 +30,7 @@ export default class GameState {
 
   tiredTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
   attackAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
-  defenseAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
+  shieldUpTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
 
   paused: boolean = false;
   started: boolean = false;
@@ -67,5 +67,5 @@ export function resetGameState() {
   gameState.gameTimer.restart();
   gameState.tiredTimer.restart();
   gameState.attackAnimationTimer.restart();
-  gameState.defenseAnimationTimer.restart();
+  gameState.shieldUpTimer.restart();
 }

@@ -3,7 +3,7 @@ import {
   ChangeCursorState,
   ChangeScene,
   ConsumeItem,
-  EnemyAtack,
+  EnemyAttack,
   ItemDescription,
   LoseGame,
   RestartGame,
@@ -24,7 +24,7 @@ import { gameState, resetGameState } from "./gameState.js";
 import { levelManager } from "./level/levelManager.js";
 import { renderBorder } from "./renderBorder.js";
 import { soundManager } from "./sounds/soundManager.js";
-import sounds from "./sounds/sounds.js";
+import sounds, { testingSound } from "./sounds/sounds.js";
 import { timerManager } from "./timer/timerManager.js";
 import timeTracker from "./timer/timeTracker.js";
 import { handleMouseInput } from "./input/handleInput.js";
@@ -274,8 +274,8 @@ export default class GameManager {
     }
   }
 
-  performEnemyAttack(action: EnemyAtack) {
-    return levelManager.battleManager.enemyAtack(action);
+  performEnemyAttack(action: EnemyAttack) {
+    return levelManager.battleManager.enemyAttack(action);
   }
 
   /**
@@ -311,7 +311,7 @@ export default class GameManager {
       this.restartGame();
       return;
     }
-    if (action instanceof EnemyAtack) {
+    if (action instanceof EnemyAttack) {
       const changeScene = this.performEnemyAttack(action);
       if (this.checkPlayerDead()) {
         return;
@@ -349,11 +349,9 @@ export default class GameManager {
       // Possible action in result of timer reaching goal
       let action: Action | void | null = null;
       if (timer.ticsRemaining <= 0 && !timer.ended) {
-        if (timer.goalFunc) {
-          action = timer.goalFunc();
-        }
+        action = timer.reachGoal();
         if (timer.loop) {
-          timer.rewind();
+          timer.start();
         } else {
           timer.ended = true;
           if (timer.deleteAtEnd) {
@@ -393,7 +391,7 @@ export default class GameManager {
       }
       if (inputState.keyboard.w == "pressed") {
         inputState.keyboard.w = "read";
-        soundManager.playSound(sounds.bag_open);
+        soundManager.playSound(testingSound);
       }
     }
   }
