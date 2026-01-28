@@ -1,5 +1,5 @@
 import Position from "./gameElements/position.js";
-import { GAMEWIDTH } from "./global.js";
+import { BORDERTHICKLEFT, BORDERTHICKTOP, GAMEWIDTH } from "./global.js";
 import type { ActiveItem } from "./items/active/active.js";
 import activeDict from "./items/active/dict.js";
 import { armorDic, type Armor } from "./items/armor/armor.js";
@@ -16,6 +16,7 @@ export type inventory = {
   active: ActiveItem;
   altActive: ActiveItem;
   passives: Item[];
+  soldItemNames: string[];
 };
 
 const baseInventory: inventory = {
@@ -25,6 +26,7 @@ const baseInventory: inventory = {
   active: activeDict.empty,
   altActive: activeDict.empty.clone(new Position(GAMEWIDTH - 20, 90)),
   passives: [picaxeItem, flagItem],
+  soldItemNames: [],
 };
 
 const playerInventory: inventory = {
@@ -34,6 +36,7 @@ const playerInventory: inventory = {
   active: baseInventory.active,
   altActive: baseInventory.altActive,
   passives: [...baseInventory.passives],
+  soldItemNames: [...baseInventory.soldItemNames],
 };
 
 export default playerInventory;
@@ -57,6 +60,7 @@ export function resetInventory() {
   playerInventory.active = baseInventory.active;
   playerInventory.altActive = baseInventory.altActive;
   playerInventory.passives = [...baseInventory.passives];
+  playerInventory.soldItemNames = [...baseInventory.soldItemNames];
 }
 
 export function getInventoryItems(): Item[] {
@@ -68,4 +72,13 @@ export function getInventoryItems(): Item[] {
     playerInventory.altActive,
     ...playerInventory.passives,
   ];
+}
+
+export function updateInventoryPositions() {
+  playerInventory.passives.forEach((item, i) => {
+    item.pos.update(
+      BORDERTHICKLEFT + 13 + 18 * (i % 6),
+      BORDERTHICKTOP + 13 + 18 * Math.floor(i / 6),
+    );
+  });
 }

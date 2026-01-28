@@ -114,6 +114,7 @@ export default class Shop {
     let filterNames = [
       ...this.inventoryItemNames,
       ...this.previousSetItemNames,
+      ...playerInventory.soldItemNames,
     ];
     this.previousSetItemNames = [];
     this.genericItems = utils

@@ -35,6 +35,7 @@ import playerInventory, {
   getInventoryItems,
   hasItem,
   resetInventory,
+  updateInventoryPositions,
 } from "./playerInventory.js";
 import { Armor, armorDic } from "./items/armor/armor.js";
 import { utils } from "./utils.js";
@@ -240,12 +241,17 @@ export default class GameManager {
   sellItem(action: SellItem) {
     if (
       gameState.currentScene == "shop" &&
-      !["empty", "book", "picaxe", "flag"].includes(action.item.name)
+      !["empty"].includes(action.item.name)
     ) {
-      if (action.item instanceof Weapon || action.item instanceof Shield) {
+      if (
+        action.item instanceof Weapon ||
+        action.item instanceof Shield ||
+        ["picaxe", "flag"].includes(action.item.name)
+      ) {
         soundManager.playSound(sounds.wrong);
         return;
       }
+      playerInventory.soldItemNames.push(action.item.name);
       if (action.item instanceof Armor) {
         playerInventory.armor = armorDic.empty;
       } else if (action.item instanceof ActiveItem) {
@@ -261,6 +267,7 @@ export default class GameManager {
         playerInventory.passives = playerInventory.passives.filter(
           (x) => x != action.item,
         );
+        updateInventoryPositions();
       }
       gameState.gold += utils.randomInt(4, 1);
       soundManager.playSound(sounds.gold);
