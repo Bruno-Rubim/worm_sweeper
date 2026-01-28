@@ -8,8 +8,6 @@ import { shieldDic, type Shield } from "./items/shield/shield.js";
 import { flagItem, picaxeItem } from "./items/uiItems.js";
 import { weaponDic } from "./items/weapon/dict.js";
 import type { Weapon } from "./items/weapon/weapon.js";
-import consumableDict from "./items/consumableDict.js";
-import passivesDict from "./items/passiveDict.js";
 
 export type inventory = {
   armor: Armor;
