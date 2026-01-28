@@ -33,6 +33,7 @@ export const sprites = {
   big_shield_claw: new Sprite("big_shield_claw"),
   big_shield_hand: new Sprite("big_shield_hand"),
   big_shield_jade: new Sprite("big_shield_jade"),
+  big_shield_scale: new Sprite("big_shield_scale"),
   big_shield_steel: new Sprite("big_shield_steel"),
   big_shield_wood: new Sprite("big_shield_wood"),
   big_sword_big: new Sprite("big_sword_big"),

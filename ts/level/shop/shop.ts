@@ -12,15 +12,16 @@ import { sprites } from "../../sprites.js";
 import { ShopItem } from "./shopItem.js";
 import { utils } from "../../utils.js";
 import type { Item } from "../../items/item.js";
-import { armorDic, type Armor } from "../../items/armor/armor.js";
-import { weaponDic } from "../../items/weapon/dict.js";
-import { Shield, shieldDic } from "../../items/shield/shield.js";
+import { armorDict, type Armor } from "../../items/armor/armor.js";
+import { weaponDict } from "../../items/weapon/dict.js";
+import { Shield } from "../../items/shield/shield.js";
 import type { InstantItem } from "../../items/instant/instantItem.js";
 import type { Weapon } from "../../items/weapon/weapon.js";
 import playerInventory from "../../playerInventory.js";
 import passivesDict from "../../items/passiveDict.js";
 import activeDict from "../../items/active/dict.js";
 import consumableDict from "../../items/consumableDict.js";
+import { shieldDict } from "../../items/shield/dict.js";
 
 const exitBtn = new GameObject({
   sprite: sprites.button_exit,
@@ -68,15 +69,15 @@ const shopItemList: Item[] = [
   ...Object.values(activeDict),
 ].filter((x) => x.cost > 0);
 
-const shopArmorList: Armor[] = Object.values(armorDic).filter(
+const shopArmorList: Armor[] = Object.values(armorDict).filter(
   (x) => x.cost > 0,
 );
 
-const shopWeaponList: Weapon[] = Object.values(weaponDic).filter(
+const shopWeaponList: Weapon[] = Object.values(weaponDict).filter(
   (x) => x.cost > 0,
 );
 
-const shopShieldList: Shield[] = Object.values(shieldDic).filter(
+const shopShieldList: Shield[] = Object.values(shieldDict).filter(
   (x) => x.cost > 0,
 );
 
@@ -114,6 +115,7 @@ export default class Shop {
     let filterNames = [
       ...this.inventoryItemNames,
       ...this.previousSetItemNames,
+      ...playerInventory.soldItemNames,
     ];
     this.previousSetItemNames = [];
     this.genericItems = utils

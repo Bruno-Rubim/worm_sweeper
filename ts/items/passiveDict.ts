@@ -40,6 +40,13 @@ const passivesDict = {
     descriptionText:
       "When breaking a safe block all connected safe blocks are also broken. Doesn't collect gold.",
   }),
+  moon_flower: new Item({
+    spriteSheetPos: new Position(10, 4),
+    name: "moon_flower",
+    shopName: "Moon Flower",
+    cost: 28,
+    descriptionText: "Enemies take longer to attack.",
+  }),
   carving_knife: new Item({
     spriteSheetPos: new Position(12, 4),
     name: "carving_knife",
@@ -59,14 +66,14 @@ const passivesDict = {
     name: "safety_helmet",
     shopName: "Safety Helmet",
     cost: 22,
-    descriptionText: "+1 defense each fight.",
+    descriptionText: "+1 initial $dfsdefense each fight.",
   }),
   gunpowder: new Item({
     spriteSheetPos: new Position(4, 5),
     name: "gunpowder",
     shopName: "Gunpowder",
     cost: 12,
-    descriptionText: "Bigger explosions.",
+    descriptionText: "Bombs deal 8 damage.",
   }),
   bracer: new Item({
     spriteSheetPos: new Position(6, 5),
