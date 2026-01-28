@@ -1,7 +1,7 @@
 import {
   ChangeCursorState,
   ChangeScene,
-  EnemyAtack,
+  EnemyAttack,
   LoseGame,
 } from "../../action.js";
 import { canvasManager } from "../../canvasManager.js";
@@ -159,8 +159,8 @@ export default class BattleManager extends SceneManager {
     canvasManager.renderSprite(
       inventory.shield.bigSprite,
       new Position(
-        BORDERTHICKLEFT + (gameState.defenseAnimationTimer.inMotion ? 0 : 24),
-        BORDERTHICKTOP + (gameState.defenseAnimationTimer.inMotion ? 26 : 45),
+        BORDERTHICKLEFT + (gameState.shieldUpTimer.inMotion ? 0 : 24),
+        BORDERTHICKTOP + (gameState.shieldUpTimer.inMotion ? 26 : 45),
       ),
       128,
       128,
@@ -364,9 +364,9 @@ export default class BattleManager extends SceneManager {
     }
     gameState.battle.stun += shield.stun;
 
-    // Defense animation
-    gameState.defenseAnimationTimer.goalSecs = shield.cooldown / 3;
-    gameState.defenseAnimationTimer.start();
+    // Shield Up
+    gameState.shieldUpTimer.goalSecs = shield.cooldown / 3;
+    gameState.shieldUpTimer.start();
 
     // Cooldown
     const tiredTimer = gameState.tiredTimer;
@@ -409,7 +409,7 @@ export default class BattleManager extends SceneManager {
     });
   }
 
-  enemyAtack(action: EnemyAtack) {
+  enemyAttack(action: EnemyAttack) {
     if (!gameState.battle) {
       alert("this shouldn't happen outside of battle");
       return;
@@ -446,6 +446,16 @@ export default class BattleManager extends SceneManager {
 
     const playerProtection = battle.protection;
     damage = Math.max(0, damage - playerDefense - playerProtection);
+
+    // Parry
+    if (gameState.shieldUpTimer.inMotion && gameState.tiredTimer.inMotion) {
+      if (hasItem("led_boots")) {
+        gameState.tiredTimer.reduceSecs(gameState.tiredTimer.goalSecs / 2);
+        soundManager.playSound(sounds.parry);
+      } else {
+        soundManager.playSound(sounds.shield_thud);
+      }
+    }
 
     if (damage > 0) {
       this.playDamageOverlay();

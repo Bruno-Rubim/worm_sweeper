@@ -114,10 +114,11 @@ export class Timer {
   }
 
   /**
-   * Adds the goal seconds into extraTics TO-DO change how this works to actually rewind it
+   * Reduces a number of seconds in tics to the extra tic counter
+   * @param seconds
    */
-  rewind() {
-    this.addSecs(this.goalSecs);
+  reduceSecs(seconds: number) {
+    this.extraTics -= seconds * timeTracker.ticsPerSecond;
   }
 
   restart() {
@@ -128,5 +129,12 @@ export class Timer {
     this.lastPausedTic = timeTracker.currentGameTic;
     this.totalPauseLapse = 0;
     this.extraTics = 0;
+  }
+
+  reachGoal(): Action | void | null {
+    this.extraTics = 0;
+    if (this.goalFunc) {
+      return this.goalFunc();
+    }
   }
 }

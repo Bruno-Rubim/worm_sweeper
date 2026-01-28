@@ -188,7 +188,23 @@ export const sounds = {
     },
   }),
   curse: new Sound({ soundName: "curse" }),
+  parry: new Sound({
+    soundName: "parry",
+    pitchRange: {
+      min: 1,
+      max: 1.2,
+    },
+  }),
+  shield_thud: new Sound({
+    soundName: "shield_thud",
+    pitchRange: {
+      min: 1,
+      max: 1.2,
+    },
+  }),
 };
+
+export let testingSound = sounds.shield_thud;
 
 // Makes a list of all sounds and awaits their loading
 const soundArr = [...Object.values(sounds)];
