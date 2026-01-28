@@ -875,6 +875,293 @@ export const fontMaps = {
             },
         },
     },
+    menu: {
+        spriteSheet: sprites.letters_menu,
+        cellHeight: 14,
+        cellWidth: 9,
+        charMaps: {
+            A: {
+                pos: new Position(0, 0),
+                width: 7,
+            },
+            B: {
+                pos: new Position(1, 0),
+                width: 8,
+            },
+            C: {
+                pos: new Position(2, 0),
+                width: 8,
+            },
+            D: {
+                pos: new Position(3, 0),
+                width: 8,
+            },
+            E: {
+                pos: new Position(4, 0),
+                width: 8,
+            },
+            F: {
+                pos: new Position(5, 0),
+                width: 8,
+            },
+            G: {
+                pos: new Position(6, 0),
+                width: 8,
+            },
+            H: {
+                pos: new Position(7, 0),
+                width: 7,
+            },
+            I: {
+                pos: new Position(8, 0),
+                width: 4,
+            },
+            J: {
+                pos: new Position(9, 0),
+                width: 8,
+            },
+            K: {
+                pos: new Position(10, 0),
+                width: 8,
+            },
+            L: {
+                pos: new Position(11, 0),
+                width: 8,
+            },
+            M: {
+                pos: new Position(0, 1),
+                width: 8,
+            },
+            N: {
+                pos: new Position(1, 1),
+                width: 8,
+            },
+            O: {
+                pos: new Position(2, 1),
+                width: 8,
+            },
+            P: {
+                pos: new Position(3, 1),
+                width: 8,
+            },
+            Q: {
+                pos: new Position(4, 1),
+                width: 8,
+            },
+            R: {
+                pos: new Position(5, 1),
+                width: 8,
+            },
+            S: {
+                pos: new Position(6, 1),
+                width: 7,
+            },
+            T: {
+                pos: new Position(7, 1),
+                width: 7,
+            },
+            U: {
+                pos: new Position(8, 1),
+                width: 7,
+            },
+            V: {
+                pos: new Position(9, 1),
+                width: 7,
+            },
+            W: {
+                pos: new Position(10, 1),
+                width: 8,
+            },
+            X: {
+                pos: new Position(11, 1),
+                width: 7,
+            },
+            Y: {
+                pos: new Position(0, 2),
+                width: 7,
+            },
+            Z: {
+                pos: new Position(1, 2),
+                width: 7,
+            },
+            a: {
+                pos: new Position(0, 3),
+                width: 8,
+            },
+            b: {
+                pos: new Position(1, 3),
+                width: 8,
+            },
+            c: {
+                pos: new Position(2, 3),
+                width: 7,
+            },
+            d: {
+                pos: new Position(3, 3),
+                width: 8,
+            },
+            e: {
+                pos: new Position(4, 3),
+                width: 7,
+            },
+            f: {
+                pos: new Position(5, 3),
+                width: 7,
+            },
+            g: {
+                pos: new Position(6, 3),
+                width: 8,
+            },
+            h: {
+                pos: new Position(7, 3),
+                width: 8,
+            },
+            i: {
+                pos: new Position(8, 3),
+                width: 7,
+            },
+            j: {
+                pos: new Position(9, 3),
+                width: 7,
+            },
+            k: {
+                pos: new Position(10, 3),
+                width: 8,
+            },
+            l: {
+                pos: new Position(11, 3),
+                width: 7,
+            },
+            m: {
+                pos: new Position(0, 4),
+                width: 8,
+            },
+            n: {
+                pos: new Position(1, 4),
+                width: 7,
+            },
+            o: {
+                pos: new Position(2, 4),
+                width: 7,
+            },
+            p: {
+                pos: new Position(3, 4),
+                width: 8,
+            },
+            q: {
+                pos: new Position(4, 4),
+                width: 8,
+            },
+            r: {
+                pos: new Position(5, 4),
+                width: 8,
+            },
+            s: {
+                pos: new Position(6, 4),
+                width: 7,
+            },
+            t: {
+                pos: new Position(7, 4),
+                width: 7,
+            },
+            u: {
+                pos: new Position(8, 4),
+                width: 8,
+            },
+            v: {
+                pos: new Position(9, 4),
+                width: 7,
+            },
+            w: {
+                pos: new Position(10, 4),
+                width: 8,
+            },
+            x: {
+                pos: new Position(11, 4),
+                width: 8,
+            },
+            y: {
+                pos: new Position(0, 5),
+                width: 8,
+            },
+            z: {
+                pos: new Position(1, 6),
+                width: 7,
+            },
+            0: {
+                pos: new Position(0, 6),
+                width: 8,
+            },
+            1: {
+                pos: new Position(1, 6),
+                width: 7,
+            },
+            2: {
+                pos: new Position(2, 6),
+                width: 7,
+            },
+            3: {
+                pos: new Position(3, 6),
+                width: 7,
+            },
+            4: {
+                pos: new Position(4, 6),
+                width: 8,
+            },
+            5: {
+                pos: new Position(5, 6),
+                width: 7,
+            },
+            6: {
+                pos: new Position(6, 6),
+                width: 7,
+            },
+            7: {
+                pos: new Position(7, 6),
+                width: 7,
+            },
+            8: {
+                pos: new Position(8, 6),
+                width: 7,
+            },
+            9: {
+                pos: new Position(9, 6),
+                width: 7,
+            },
+            ".": {
+                pos: new Position(0, 7),
+                width: 3,
+            },
+            ",": {
+                pos: new Position(1, 7),
+                width: 3,
+            },
+            "!": {
+                pos: new Position(2, 7),
+                width: 3,
+            },
+            "?": {
+                pos: new Position(3, 7),
+                width: 3,
+            },
+            "%": {
+                pos: new Position(6, 7),
+                width: 7,
+            },
+            ":": {
+                pos: new Position(0, 8),
+                width: 3,
+            },
+            "'": {
+                pos: new Position(2, 8),
+                width: 2,
+            },
+            " ": {
+                pos: new Position(-1, -1),
+                width: 3,
+            },
+        },
+    },
     numbers_yellow: {
         spriteSheet: sprites.number_sheet,
         cellHeight: 8,

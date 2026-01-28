@@ -1,6 +1,6 @@
 import GameObject from "../gameElements/gameObject.js";
 import Position from "../gameElements/position.js";
-import { BORDERTHICKLEFT, BORDERTHICKTOP, CLICKLEFT, CLICKRIGHT, RIGHT, } from "../global.js";
+import { BORDERTHICKLEFT, BORDERTHICKTOP, CENTER, CLICKLEFT, CLICKRIGHT, GAMEWIDTH, RIGHT, } from "../global.js";
 import { Action, ChangeCursorState, ChangeScene, NextLevel, ResetShop, RestartGame, StartBattle, } from "../action.js";
 import { CURSORBOOK, CURSORDEFAULT, CURSORNONE } from "../cursor.js";
 import { sprites } from "../sprites.js";
@@ -15,7 +15,7 @@ import { gameState } from "../gameState.js";
 import { soundManager } from "../sounds/soundManager.js";
 import BattleManager from "./battle/battleManager.js";
 import { Battle } from "./battle/battle.js";
-import playerInventory, { hasItem } from "../playerInventory.js";
+import playerInventory from "../playerInventory.js";
 import { GAMETIMERSYNC, timerManager } from "../timer/timerManager.js";
 import { transitionOverlay } from "./transitionOverlay.js";
 export class LevelManager extends GameObject {
@@ -67,6 +67,16 @@ export class LevelManager extends GameObject {
         transitionOverlay.render();
         if (gameState.gameOver) {
             canvasManager.renderSprite(sprites.screen_defeat, this.pos, this.width, this.height);
+            console.log(Math.round(gameState.runTime * 10) / 10);
+            if (gameState.deathScreenStage > 0) {
+                canvasManager.renderText("menu", new Position(GAMEWIDTH / 2, 64), "Level: " + (gameState.level.depth + 1), CENTER);
+            }
+            if (gameState.deathScreenStage > 1) {
+                canvasManager.renderText("menu", new Position(GAMEWIDTH / 2, 80), "Run time: " + Math.floor(gameState.runTime) + "s", CENTER);
+            }
+            if (gameState.deathScreenStage > 3) {
+                canvasManager.renderText("menu", new Position(GAMEWIDTH / 2, 128), "Click to restart", CENTER);
+            }
         }
     }
     screenTransition(transitionFunc, delay = 0) {
@@ -185,11 +195,10 @@ export class LevelManager extends GameObject {
             return;
         }
         if (gameState.gameOver) {
-            if (gameState.heldWhileDeath) {
-                gameState.heldWhileDeath = false;
-                return;
+            if (gameState.deathScreenStage > 3) {
+                return new RestartGame();
             }
-            return new RestartGame();
+            return;
         }
         if (gameState.inTransition) {
             return;

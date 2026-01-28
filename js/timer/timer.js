@@ -1,4 +1,4 @@
-import { GAMETIMERSYNC, timerManager } from "./timerManager.js";
+import { timerManager } from "./timerManager.js";
 import timeTracker from "./timeTracker.js";
 export class Timer {
     startTic;
@@ -13,18 +13,23 @@ export class Timer {
     ended = false;
     deleteAtEnd;
     classes;
+    external;
     constructor(args) {
         args.goalSecs ??= Infinity;
         args.loop ??= false;
         args.deleteAtEnd ??= true;
         args.autoStart ??= true;
         args.classes ??= [];
-        this.startTic = timeTracker.currentGameTic;
+        args.external ??= false;
+        this.startTic = args.external
+            ? timeTracker.currentTic
+            : timeTracker.currentGameTic;
         this.goalSecs = args.goalSecs;
         this.goalFunc = args.goalFunc;
         this.loop = args.loop;
         this.deleteAtEnd = args.deleteAtEnd;
         this.classes = args.classes;
+        this.external = args.external;
         if (args.autoStart) {
             this.start();
         }
@@ -43,7 +48,11 @@ export class Timer {
             this.goalTics +
             this.extraTics +
             this.totalPauseLapse -
-            (this.isPaused ? this.lastPausedTic : timeTracker.currentGameTic));
+            (this.isPaused
+                ? this.lastPausedTic
+                : this.external
+                    ? timeTracker.currentTic
+                    : timeTracker.currentGameTic));
     }
     get secondsRemaining() {
         return this.ticsRemaining / timeTracker.ticsPerSecond;
@@ -57,20 +66,26 @@ export class Timer {
     start() {
         this.started = true;
         this.ended = false;
-        this.startTic = timeTracker.currentGameTic;
+        this.startTic = this.external
+            ? timeTracker.currentTic
+            : timeTracker.currentGameTic;
         this.totalPauseLapse = 0;
         this.isPaused = false;
         timerManager.addTimer(this);
     }
     pause() {
         if (!this.isPaused) {
-            this.lastPausedTic = timeTracker.currentGameTic;
+            this.lastPausedTic = this.external
+                ? timeTracker.currentTic
+                : timeTracker.currentGameTic;
             this.isPaused = !this.isPaused;
         }
     }
     unpause() {
         if (this.isPaused) {
-            this.totalPauseLapse += timeTracker.currentGameTic - this.lastPausedTic;
+            this.totalPauseLapse += this.external
+                ? timeTracker.currentTic
+                : timeTracker.currentGameTic - this.lastPausedTic;
             this.isPaused = !this.isPaused;
         }
     }
@@ -89,11 +104,15 @@ export class Timer {
         this.extraTics -= seconds * timeTracker.ticsPerSecond;
     }
     restart() {
-        this.startTic = timeTracker.currentGameTic;
+        this.startTic = this.external
+            ? timeTracker.currentTic
+            : timeTracker.currentGameTic;
         this.started = false;
         this.ended = false;
         this.isPaused = true;
-        this.lastPausedTic = timeTracker.currentGameTic;
+        this.lastPausedTic = this.external
+            ? timeTracker.currentTic
+            : timeTracker.currentGameTic;
         this.totalPauseLapse = 0;
         this.extraTics = 0;
     }

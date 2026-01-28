@@ -97,7 +97,7 @@ const passivesDict = {
         name: "led_boots",
         shopName: "Led Boots",
         cost: 24,
-        descriptionText: "Halves your cooldown when being hit while your shield is up.",
+        descriptionText: "Increases shield parry bonus to 50%.",
     }),
     empty: new Item({
         spriteSheetPos: new Position(14, 4),

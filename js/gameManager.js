@@ -80,6 +80,9 @@ export default class GameManager {
     }
     loseGame() {
         gameState.gameOver = true;
+        gameState.deathTic = timeTracker.currentGameTic;
+        gameState.deathScreenStage = 0;
+        gameState.deathScreenTimer.start();
         levelManager.caveManager.revealAllBlocks();
         timeTracker.pause();
     }
@@ -87,6 +90,7 @@ export default class GameManager {
         timerManager.clearQueue();
         resetGameState();
         gameState.deathCount++;
+        gameState.deathTic = 0;
         resetInventory();
         transitionOverlay.endAnimation();
         timeTracker.unpause();
@@ -253,6 +257,9 @@ export default class GameManager {
     }
     checkTimers() {
         timerManager.queue.forEach((timer) => {
+            if (timer.classes.includes("log")) {
+                console.log(timer.secondsRemaining, timer.secondsRemaining);
+            }
             let action = null;
             if (timer.ticsRemaining <= 0 && !timer.ended) {
                 action = timer.reachGoal();
