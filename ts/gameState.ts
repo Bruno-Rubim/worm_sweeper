@@ -18,8 +18,10 @@ export default class GameState {
   health: number = 5;
   maxHealth: number = 10;
   deathCount = 0;
+
   shopResetPrice = 0;
   bugCurse: boolean = false;
+  scalesCollected = 0;
 
   level: Level;
   inTransition: boolean = false;
@@ -60,6 +62,7 @@ export function resetGameState() {
   gameState.maxHealth = baseState.maxHealth;
   gameState.shopResetPrice = baseState.shopResetPrice;
   gameState.bugCurse = baseState.bugCurse;
+  gameState.scalesCollected = baseState.scalesCollected;
   gameState.level = new Level(0);
   gameState.gameTimer.restart();
   gameState.tiredTimer.restart();

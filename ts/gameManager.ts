@@ -37,7 +37,7 @@ import playerInventory, {
   resetInventory,
   updateInventoryPositions,
 } from "./playerInventory.js";
-import { Armor, armorDic } from "./items/armor/armor.js";
+import { Armor, armorDict } from "./items/armor/armor.js";
 import { utils } from "./utils.js";
 import { bagItem, bookItem, musicButton, sfxButton } from "./items/uiItems.js";
 import { DEV, GAMEWIDTH } from "./global.js";
@@ -253,7 +253,7 @@ export default class GameManager {
       }
       playerInventory.soldItemNames.push(action.item.name);
       if (action.item instanceof Armor) {
-        playerInventory.armor = armorDic.empty;
+        playerInventory.armor = armorDict.empty;
       } else if (action.item instanceof ActiveItem) {
         if (action.item.isAlt) {
           playerInventory.altActive = activeDict.empty.clone(

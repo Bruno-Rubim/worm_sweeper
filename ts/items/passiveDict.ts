@@ -45,7 +45,7 @@ const passivesDict = {
     name: "moon_flower",
     shopName: "Moon Flower",
     cost: 28,
-    descriptionText: "Slows enemies.",
+    descriptionText: "Enemies take longer to attack.",
   }),
   carving_knife: new Item({
     spriteSheetPos: new Position(12, 4),
@@ -66,7 +66,7 @@ const passivesDict = {
     name: "safety_helmet",
     shopName: "Safety Helmet",
     cost: 22,
-    descriptionText: "+1 defense each fight.",
+    descriptionText: "+1 initial $dfsdefense each fight.",
   }),
   gunpowder: new Item({
     spriteSheetPos: new Position(4, 5),

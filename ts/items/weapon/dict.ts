@@ -3,7 +3,7 @@ import { sprites } from "../../sprites.js";
 import TimeBlade from "./timeBlade.js";
 import { Weapon } from "./weapon.js";
 
-export const weaponDic = {
+export const weaponDict = {
   wood_sword: new Weapon({
     spriteSheetPos: new Position(0, 3),
     bigSprite: sprites.big_sword_wood,

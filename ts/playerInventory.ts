@@ -2,11 +2,12 @@ import Position from "./gameElements/position.js";
 import { BORDERTHICKLEFT, BORDERTHICKTOP, GAMEWIDTH } from "./global.js";
 import type { ActiveItem } from "./items/active/active.js";
 import activeDict from "./items/active/dict.js";
-import { armorDic, type Armor } from "./items/armor/armor.js";
+import { armorDict, type Armor } from "./items/armor/armor.js";
 import { Item } from "./items/item.js";
-import { shieldDic, type Shield } from "./items/shield/shield.js";
+import { shieldDict } from "./items/shield/dict.js";
+import { type Shield } from "./items/shield/shield.js";
 import { flagItem, picaxeItem } from "./items/uiItems.js";
-import { weaponDic } from "./items/weapon/dict.js";
+import { weaponDict } from "./items/weapon/dict.js";
 import type { Weapon } from "./items/weapon/weapon.js";
 
 export type inventory = {
@@ -20,9 +21,9 @@ export type inventory = {
 };
 
 const baseInventory: inventory = {
-  weapon: weaponDic.wood_sword,
-  shield: shieldDic.wood_shield,
-  armor: armorDic.empty,
+  weapon: weaponDict.wood_sword,
+  shield: shieldDict.wood_shield,
+  armor: armorDict.empty,
   active: activeDict.empty,
   altActive: activeDict.empty.clone(new Position(GAMEWIDTH - 20, 90)),
   passives: [picaxeItem, flagItem],

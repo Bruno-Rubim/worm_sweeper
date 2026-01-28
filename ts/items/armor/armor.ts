@@ -62,7 +62,7 @@ export class Armor extends Item {
   }
 }
 
-export const armorDic = {
+export const armorDict = {
   chainmail: new Armor({
     spriteSheetPos: new Position(0, 2),
     name: "chainmail",

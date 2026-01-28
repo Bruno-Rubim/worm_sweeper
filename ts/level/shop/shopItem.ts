@@ -6,27 +6,27 @@ import GameObject from "../../gameElements/gameObject.js";
 import Position from "../../gameElements/position.js";
 import { BuyShopItem, ShopItemDescription } from "../../action.js";
 import { canvasManager } from "../../canvasManager.js";
-import { armorDic } from "../../items/armor/armor.js";
-import { weaponDic } from "../../items/weapon/dict.js";
-import { shieldDic } from "../../items/shield/shield.js";
+import { armorDict } from "../../items/armor/armor.js";
+import { weaponDict } from "../../items/weapon/dict.js";
 import passivesDict from "../../items/passiveDict.js";
 import activeDict from "../../items/active/dict.js";
 import consumableDict from "../../items/consumableDict.js";
+import { shieldDict } from "../../items/shield/dict.js";
 
 type itemName =
   | keyof typeof passivesDict
-  | keyof typeof armorDic
+  | keyof typeof armorDict
   | keyof typeof consumableDict
-  | keyof typeof weaponDic
-  | keyof typeof shieldDic;
+  | keyof typeof weaponDict
+  | keyof typeof shieldDict;
 
 const items: Record<itemName, Item> = {
   ...passivesDict,
   ...activeDict,
-  ...weaponDic,
-  ...armorDic,
+  ...weaponDict,
+  ...armorDict,
   ...consumableDict,
-  ...shieldDic,
+  ...shieldDict,
 };
 
 export class ShopItem extends GameObject {
