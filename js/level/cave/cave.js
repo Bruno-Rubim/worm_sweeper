@@ -6,7 +6,7 @@ export default class Cave {
     size;
     hasShop;
     hasWater;
-    goldChance = 0.3;
+    goldChance = 1.7;
     wormQuantity;
     wormsLeft;
     blocksLeft;

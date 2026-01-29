@@ -25,7 +25,6 @@ export default class Block {
     gridPos;
     content = CONTENTEMPTY;
     hasGold = false;
-    hasChest = false;
     hidden = true;
     broken = false;
     marked = false;

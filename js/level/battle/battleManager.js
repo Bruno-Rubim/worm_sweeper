@@ -1,12 +1,11 @@
-import { Action, ChangeCursorState, ChangeScene, EnemyAttack, LoseGame, ObtainItem, } from "../../action.js";
+import { ChangeCursorState, ChangeScene, EnemyAttack, LoseGame, } from "../../action.js";
 import { canvasManager } from "../../canvasManager.js";
 import { CURSORBATTLE } from "../../cursor.js";
 import GameObject from "../../gameElements/gameObject.js";
 import Position from "../../gameElements/position.js";
 import { gameState } from "../../gameState.js";
 import { BORDERTHICKBOTTOM, BORDERTHICKLEFT, BORDERTHICKRIGHT, BORDERTHICKTOP, CENTER, CLICKLEFT, CLICKRIGHT, GAMEHEIGHT, GAMEWIDTH, LEFT, } from "../../global.js";
-import { handleMouseClick, handleMouseHover } from "../../input/handleInput.js";
-import playerInventory, { hasItem, resetInventory, } from "../../playerInventory.js";
+import playerInventory, { hasItem } from "../../playerInventory.js";
 import { soundManager } from "../../sounds/soundManager.js";
 import sounds from "../../sounds/sounds.js";
 import { sprites } from "../../sprites.js";
@@ -27,22 +26,6 @@ damageOverlay.render = () => {
     canvasManager.renderAnimationFrame(damageOverlay.sprite, damageOverlay.pos, damageOverlay.width, damageOverlay.height, 4, 1, damageOverlay.firstAnimationTic, timeTracker.currentGameTic, 1, new Position(), false);
 };
 damageOverlay.hidden;
-const ExitArrow = new GameObject({
-    sprite: sprites.exit_arrow,
-    height: 16,
-    width: 32,
-    pos: new Position(GAMEWIDTH / 2 - 16, 128),
-});
-ExitArrow.render = () => {
-    canvasManager.renderSpriteFromSheet(ExitArrow.sprite, ExitArrow.pos, ExitArrow.width, ExitArrow.height, new Position(ExitArrow.mouseHovering ? 1 : 0, 0));
-};
-ExitArrow.clickFunction = (cursorPos, button) => {
-    if (button == LEFT) {
-        soundManager.playSound(sounds.steps);
-        return new ChangeScene("cave");
-    }
-};
-ExitArrow.hidden;
 export default class BattleManager extends SceneManager {
     render = () => {
         const battle = gameState.battle;
@@ -51,15 +34,6 @@ export default class BattleManager extends SceneManager {
             return;
         }
         canvasManager.renderSprite(sprites.bg_battle, new Position(BORDERTHICKLEFT, BORDERTHICKTOP), GAMEWIDTH - BORDERTHICKLEFT - BORDERTHICKRIGHT, GAMEHEIGHT - BORDERTHICKTOP - BORDERTHICKBOTTOM);
-        if (battle.chest) {
-            canvasManager.renderSpriteFromSheet(sprites.chest, new Position(GAMEWIDTH / 2 - 16, 40), 32, 32, new Position(battle.won ? 1 : 0, 0));
-            if (battle.won && battle.item) {
-                battle.item.render();
-            }
-            if (battle.won) {
-                ExitArrow.render();
-            }
-        }
         battle.enemies.forEach((enemy) => {
             canvasManager.renderSpriteFromSheet(enemy.spriteSheet, enemy.pos, 64, 64, new Position(enemy.attackAnimTimer.inMotion ? 1 : 0, enemy.damagedTimer.inMotion ? 1 : 0));
             if (enemy.health > 0) {
@@ -110,9 +84,7 @@ export default class BattleManager extends SceneManager {
                 "$stn".repeat(roundedStun) +
                 (stun > roundedStun ? "$hst" : ""), CENTER);
         }
-        if (!gameState.tiredTimer.ended &&
-            gameState.tiredTimer.started &&
-            !battle.won) {
+        if (!gameState.tiredTimer.ended && gameState.tiredTimer.started) {
             let counterFrame = Math.floor(Math.min(15, (gameState.tiredTimer.percentage / 100) * 16));
             canvasManager.renderSpriteFromSheet(sprites.counter_sheet, new Position(GAMEWIDTH / 2 - 4, GAMEHEIGHT -
                 BORDERTHICKBOTTOM -
@@ -142,13 +114,6 @@ export default class BattleManager extends SceneManager {
             }
         });
         if (gameState.battle.enemies.length <= 0) {
-            gameState.battle.won = true;
-            ExitArrow.hidden = false;
-            if (gameState.battle.chest && gameState.battle.item) {
-                gameState.battle.item.pos.update(80, 36);
-                gameState.battle.item.lootItem = true;
-                return;
-            }
             return new ChangeScene("cave");
         }
     }
@@ -292,25 +257,9 @@ export default class BattleManager extends SceneManager {
         gameState.health -= Math.max(0, damage);
         return this.checkBattleEnd();
     }
-    handleClick = () => {
-        if (gameState.battle?.won && gameState.battle.item) {
-            const action = handleMouseClick([gameState.battle.item, ExitArrow]);
-            if (action instanceof ObtainItem) {
-                gameState.battle.item = null;
-                playerInventory.passives.push(action.item);
-                soundManager.playSound(sounds.clear);
-                return new ChangeScene("cave");
-            }
-            return action;
-        }
-        return;
-    };
     handleHeld = (cursorPos, button) => {
         if (!gameState.battle) {
             alert("this shouldn't happen outside of battle");
-            return;
-        }
-        if (gameState.battle.won) {
             return;
         }
         const tiredTimer = gameState.tiredTimer;
@@ -331,11 +280,6 @@ export default class BattleManager extends SceneManager {
         }
     };
     handleHover = () => {
-        if (!gameState.battle?.won) {
-            return new ChangeCursorState(CURSORBATTLE);
-        }
-        if (gameState.battle?.won && gameState.battle.item) {
-            return handleMouseHover([gameState.battle.item, ExitArrow]);
-        }
+        return new ChangeCursorState(CURSORBATTLE);
     };
 }
