@@ -24,7 +24,6 @@ transitionOverlay.render = () => {
     4,
     4,
     transitionOverlay.firstAnimationTic,
-    timeTracker.currentGameTic,
     1,
     new Position(),
     false,

@@ -82,7 +82,6 @@ export class ShopItem extends GameObject {
         12,
         1,
         this.firstAnimationTic,
-        timeTracker.currentGameTic,
       );
       canvasManager.renderAnimationFrame(
         sprites.time_potion_pointer_sheet,
@@ -92,7 +91,6 @@ export class ShopItem extends GameObject {
         12,
         1,
         this.firstAnimationTic,
-        timeTracker.currentGameTic,
         1 / 12,
         new Position(0, 1),
       );

@@ -11,6 +11,7 @@ import { gameState } from "../gameState.js";
 import { GAMEWIDTH, LEFT, RIGHT, type cursorClick } from "../global.js";
 import type { ActiveItem } from "../items/active/active.js";
 import activeDict from "../items/active/dict.js";
+import { SilverBell } from "../items/active/silverBell.js";
 import { armorDict, type Armor } from "../items/armor/armor.js";
 import type { Item } from "../items/item.js";
 import passivesDict from "../items/passiveDict.js";
@@ -141,6 +142,38 @@ export class ActiveSlot extends Slot {
         return new SellItem(this.item);
       }
     };
+  }
+
+  render(): void {
+    canvasManager.renderSpriteFromSheet(
+      this.sprite,
+      this.pos,
+      this.width,
+      this.height,
+      this.item.spriteSheetPos,
+    );
+    if (this.item instanceof SilverBell && !this.item.ringTimer.inMotion) {
+      canvasManager.renderAnimationFrame(
+        sprites.bell_shine_sheet,
+        this.pos,
+        this.width,
+        this.height,
+        4,
+        2,
+        this.firstAnimationTic,
+        0.5,
+      );
+    }
+
+    if (this.mouseHovering) {
+      canvasManager.renderSpriteFromSheet(
+        this.sprite,
+        this.pos,
+        this.width,
+        this.height,
+        this.item.spriteSheetPos.add(1, 0),
+      );
+    }
   }
 
   reset(): void {

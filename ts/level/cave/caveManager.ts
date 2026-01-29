@@ -484,6 +484,9 @@ export default class CaveManager extends SceneManager {
   }
 
   startCave(startPos: Position) {
+    // TO-DO: fix multiple bombs
+    if (this.bomb) this.bomb.timer.goalFunc = undefined;
+    this.bomb = null;
     if (gameState.bugCurse) {
       this.cave.wormQuantity = Math.ceil(this.cave.wormQuantity * 1.2);
       this.cave.wormsLeft = this.cave.wormQuantity;
@@ -548,7 +551,6 @@ export default class CaveManager extends SceneManager {
             8,
             1,
             0,
-            timeTracker.currentGameTic,
             0.5,
             new Position(0, 3),
             true,

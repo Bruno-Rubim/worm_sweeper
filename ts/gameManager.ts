@@ -41,13 +41,14 @@ import {
   musicButton,
   sfxButton,
 } from "./border/uiButtons.js";
-import { DEV } from "./global.js";
+import { DEV, GAMEWIDTH } from "./global.js";
 import { transitionOverlay } from "./level/transitionOverlay.js";
 import { SilverBell } from "./items/active/silverBell.js";
 import { ActiveItem } from "./items/active/active.js";
 import { InstantItem } from "./items/instant/instantItem.js";
 import { ActiveSlot, ArmorSlot } from "./inventory/slot.js";
 import activeDict from "./items/active/dict.js";
+import Position from "./gameElements/position.js";
 
 // Says if the cursor has changed or if there's an item description to show TO-DO: change this
 export default class GameManager {
@@ -175,51 +176,49 @@ export default class GameManager {
    * Applies the active item's effects according to the name on the item in the inventory's active slot
    */
   useActiveItem(action: UseActiveItem) {
-    // const item = action.slot
-    //   ? playerInventory.altActive.item
-    //   : playerInventory.active.item;
-    // const clonePos = action.slot
-    //   ? new Position(GAMEWIDTH - 20, 90)
-    //   : new Position(GAMEWIDTH - 20, 72);
-    // switch (item.name) {
-    //   case "silver_bell":
-    //     if (!(item instanceof SilverBell)) {
-    //       alert("something is wrong");
-    //       break;
-    //     }
-    //     if (item.ringTimer.inMotion) {
-    //       return;
-    //     }
-    //     if (gameState.currentScene == "battle") {
-    //       levelManager.battleManager.stunEnemy(3);
-    //     } else {
-    //       gameState.level.cave.bellRang = true;
-    //     }
-    //     soundManager.playSound(sounds.bell);
-    //     item.ringTimer.start();
-    //     return;
-    //   case "empty":
-    //     if (gameState.holding != null) {
-    //       if (gameState.holding.name == "bomb") {
-    //         levelManager.caveManager.bomb = null;
-    //       }
-    //       // gameState.holding = gameState.holding.clone(clonePos, item.isAlt);
-    //       playerInventory.active.item = gameState.holding;
-    //       gameState.holding = null;
-    //     }
-    //     return;
-    //   case "bomb":
-    //     if (gameState.currentScene == "battle") {
-    //       levelManager.handleAction(levelManager.battleManager.bomb());
-    //       break;
-    //     }
-    //     gameState.holding = item;
-    //     break;
-    //   case "energy_potion":
-    //     gameState.tiredTimer.restart();
-    //     soundManager.playSound(sounds.drink);
-    //     break;
-    // }
+    const item = action.slot.alt
+      ? playerInventory.altActive.item
+      : playerInventory.active.item;
+    switch (item.name) {
+      case "silver_bell":
+        if (!(item instanceof SilverBell)) {
+          alert("something is wrong");
+          break;
+        }
+        if (item.ringTimer.inMotion) {
+          return;
+        }
+        if (gameState.currentScene == "battle") {
+          levelManager.battleManager.stunEnemy(3);
+        } else {
+          gameState.level.cave.bellRang = true;
+        }
+        soundManager.playSound(sounds.bell);
+        item.ringTimer.start();
+        return;
+      case "empty":
+        if (gameState.holding != null) {
+          if (gameState.holding.name == "bomb") {
+            levelManager.caveManager.bomb = null;
+          }
+          playerInventory.active.item = gameState.holding;
+          gameState.holding = null;
+        }
+        return;
+      case "bomb":
+        action.slot.item = action.slot.emptyItem;
+        if (gameState.currentScene == "battle") {
+          levelManager.handleAction(levelManager.battleManager.bomb());
+          break;
+        }
+        gameState.holding = item;
+        break;
+      case "energy_potion":
+        action.slot.item = action.slot.emptyItem;
+        gameState.tiredTimer.restart();
+        soundManager.playSound(sounds.drink);
+        break;
+    }
   }
 
   /**
@@ -281,6 +280,10 @@ export default class GameManager {
 
     if (item.name == "tool_belt") {
       playerInventory.altActive.item = activeDict.empty;
+    }
+
+    if (item instanceof SilverBell) {
+      item.ringTimer.restart();
     }
 
     playerInventory.emptyBatSlot.item = item;

@@ -15,7 +15,7 @@ export default class GameState {
     autoStart: false,
     classes: [GAMETIMERSYNC],
   });
-  gold: number = 10000;
+  gold: number = 0;
   health: number = 5;
   maxHealth: number = 10;
   deathCount = 0;
@@ -27,7 +27,7 @@ export default class GameState {
 
   level: Level;
   inTransition: boolean = false;
-  currentScene: "cave" | "shop" | "battle" = "battle";
+  currentScene: "cave" | "shop" | "battle" = "cave";
   battle: Battle | null = new Battle(0, 1, true);
 
   tiredTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });

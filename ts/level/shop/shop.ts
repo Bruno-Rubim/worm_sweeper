@@ -28,6 +28,7 @@ const exitBtn = new GameObject({
   pos: new Position(GAMEWIDTH - BORDERTHICKRIGHT - 32, BORDERTHICKTOP),
   width: 32,
   clickFunction: () => {
+    exitBtn.mouseHovering = false;
     return new ChangeScene("cave");
   },
 });
@@ -101,6 +102,17 @@ export default class Shop {
 
   constructor() {
     this.setItems();
+  }
+
+  get itemNames() {
+    return [
+      this.armor?.item.name,
+      this.weapon?.item.name,
+      this.shield?.item.name,
+      this.consumable1?.item.name,
+      this.consumable2?.item.name,
+      this.genericItems?.map((x) => x.item.name),
+    ].filter((x) => typeof x === "string");
   }
 
   setItems() {

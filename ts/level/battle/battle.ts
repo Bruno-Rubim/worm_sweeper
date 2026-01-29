@@ -1,5 +1,4 @@
 import playerInventory from "../../inventory/playerInventory.js";
-import type { Item } from "../../items/item.js";
 import { utils } from "../../utils.js";
 import { Enemy, PosionWorm, ScaleWorm, Worm } from "./enemy.js";
 
@@ -11,7 +10,6 @@ export class Battle {
   spikes: number = 0;
   stun: number = 0;
   chest: boolean;
-  item: Item | null = null;
   won: boolean = false;
 
   constructor(depth: number, enemyCount: number, chest: boolean) {

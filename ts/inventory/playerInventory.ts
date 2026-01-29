@@ -2,6 +2,7 @@ import type GameObject from "../gameElements/gameObject.js";
 import Position from "../gameElements/position.js";
 import { BORDERTHICKLEFT, BORDERTHICKTOP, GAMEWIDTH } from "../global.js";
 import activeDict from "../items/active/dict.js";
+import consumableDict from "../items/consumableDict.js";
 import { Item } from "../items/item.js";
 import { shieldDict } from "../items/shield/dict.js";
 import { weaponDict } from "../items/weapon/dict.js";
@@ -32,7 +33,7 @@ export class Inventory {
   soldItemNames: string[];
 
   constructor() {
-    this.weapon = new WeaponSlot(weaponDict.big_sword);
+    this.weapon = new WeaponSlot(weaponDict.wood_sword);
     this.shield = new ShieldSlot(shieldDict.wood_shield);
     this.armor = new ArmorSlot();
     this.active = new ActiveSlot(new Position(GAMEWIDTH - 20, 72));
@@ -55,6 +56,17 @@ export class Inventory {
     this.bagSlots[0]!.item = picaxe;
     this.bagSlots[1]!.item = flag;
     this.soldItemNames = [];
+  }
+
+  get itemNames() {
+    return [
+      this.weapon.item.name,
+      this.armor.item.name,
+      this.shield.item.name,
+      this.active.item.name,
+      this.altActive.item.name,
+      ...this.bagSlots.map((x) => x.item.name),
+    ];
   }
 
   hasItem(name: string) {
