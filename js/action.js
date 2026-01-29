@@ -55,6 +55,13 @@ export class SellItem extends Action {
         this.item = item;
     }
 }
+export class ObtainItem extends Action {
+    item;
+    constructor(item) {
+        super();
+        this.item = item;
+    }
+}
 export class ResetShop extends Action {
 }
 export class ConsumeItem extends Action {
@@ -94,9 +101,11 @@ export class RestartGame extends Action {
 }
 export class StartBattle extends Action {
     enemyCount;
-    constructor(enemyCount) {
+    chest;
+    constructor(enemyCount, chest) {
         super();
         this.enemyCount = enemyCount;
+        this.chest = chest;
     }
 }
 export class PauseGameTimer extends Action {

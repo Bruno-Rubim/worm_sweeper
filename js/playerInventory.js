@@ -3,12 +3,14 @@ import { BORDERTHICKLEFT, BORDERTHICKTOP, GAMEWIDTH } from "./global.js";
 import activeDict from "./items/active/dict.js";
 import { armorDict } from "./items/armor/armor.js";
 import { Item } from "./items/item.js";
+import passivesDict from "./items/passiveDict.js";
 import { shieldDict } from "./items/shield/dict.js";
 import {} from "./items/shield/shield.js";
 import { flagItem, picaxeItem } from "./items/uiItems.js";
 import { weaponDict } from "./items/weapon/dict.js";
+import { utils } from "./utils.js";
 const baseInventory = {
-    weapon: weaponDict.wood_sword,
+    weapon: weaponDict.big_sword,
     shield: shieldDict.wood_shield,
     armor: armorDict.empty,
     active: activeDict.empty,
@@ -60,4 +62,12 @@ export function updateInventoryPositions() {
     playerInventory.passives.forEach((item, i) => {
         item.pos.update(BORDERTHICKLEFT + 13 + 18 * (i % 6), BORDERTHICKTOP + 13 + 18 * Math.floor(i / 6));
     });
+}
+export function getRandomItem() {
+    const passives = Object.values(passivesDict).filter((x) => !hasItem(x.name) &&
+        !playerInventory.soldItemNames.includes(x.name) &&
+        x.cost > 0);
+    const r = utils.randomArrayId(passives);
+    const item = passives[r];
+    return item;
 }

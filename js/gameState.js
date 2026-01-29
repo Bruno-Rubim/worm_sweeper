@@ -23,7 +23,7 @@ export default class GameState {
     level;
     inTransition = false;
     currentScene = "cave";
-    battle = new Battle(0, 1);
+    battle = new Battle(0, 1, false);
     tiredTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
     attackAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
     shieldUpTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });

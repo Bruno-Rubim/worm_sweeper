@@ -51,7 +51,7 @@ export default class CanvasManager {
         heightInSheet ??= height;
         this.ctx.drawImage(spriteSheet.img, posInSheet.x * widthInSheet, posInSheet.y * heightInSheet, widthInSheet, heightInSheet, Math.floor(pos.x * this.renderScale), Math.floor(pos.y * this.renderScale), width * this.renderScale, height * this.renderScale);
     }
-    renderAnimationFrame(spriteSheet, pos, width, height, sheetWidthInFrames, sheetHeightInFrames, animationStartTic, currentTic, animationSpeed = 1, sheetPosShift = new Position(), loop = true) {
+    renderAnimationFrame(spriteSheet, pos, width, height, sheetWidthInFrames, sheetHeightInFrames, animationStartTic, currentTic, animationSpeed = 1, sheetPosShift = new Position(), loop = true, renderWidth, renderHeight) {
         const totalFrames = sheetWidthInFrames * sheetHeightInFrames;
         const currentFrame = Math.floor((currentTic - animationStartTic) * animationSpeed) %
             (loop ? sheetWidthInFrames * sheetHeightInFrames : Infinity);
@@ -59,7 +59,7 @@ export default class CanvasManager {
             return;
         }
         const sheetPos = new Position(currentFrame % sheetWidthInFrames, Math.floor(currentFrame / sheetWidthInFrames)).add(sheetPosShift);
-        this.ctx.drawImage(spriteSheet.img, sheetPos.x * width, sheetPos.y * height, width, height, Math.floor(pos.x * this.renderScale), Math.floor(pos.y * this.renderScale), width * this.renderScale, height * this.renderScale);
+        this.ctx.drawImage(spriteSheet.img, sheetPos.x * width, sheetPos.y * height, width, height, Math.floor(pos.x * this.renderScale), Math.floor(pos.y * this.renderScale), (renderWidth ?? width) * this.renderScale, (renderHeight ?? height) * this.renderScale);
     }
     renderText(font, pos, text, direction = RIGHT, limitWidth = Infinity, fontSize = 1) {
         const fontMap = fontMaps[font];

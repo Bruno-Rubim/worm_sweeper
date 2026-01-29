@@ -67,12 +67,19 @@ export class LevelManager extends GameObject {
         transitionOverlay.render();
         if (gameState.gameOver) {
             canvasManager.renderSprite(sprites.screen_defeat, this.pos, this.width, this.height);
-            console.log(Math.round(gameState.runTime * 10) / 10);
             if (gameState.deathScreenStage > 0) {
                 canvasManager.renderText("menu", new Position(GAMEWIDTH / 2, 64), "Level: " + (gameState.level.depth + 1), CENTER);
             }
             if (gameState.deathScreenStage > 1) {
-                canvasManager.renderText("menu", new Position(GAMEWIDTH / 2, 80), "Run time: " + Math.floor(gameState.runTime) + "s", CENTER);
+                const runTime = Math.floor(gameState.runTime);
+                const runTimeMins = Math.floor(runTime / 60);
+                const runTimeSecs = Math.floor(runTime % 60);
+                canvasManager.renderText("menu", new Position(GAMEWIDTH / 2, 80), "Run time: " +
+                    (runTimeMins > 10 ? "" : "0") +
+                    runTimeMins +
+                    ":" +
+                    (runTimeSecs > 10 ? "" : "0") +
+                    runTimeSecs, CENTER);
             }
             if (gameState.deathScreenStage > 3) {
                 canvasManager.renderText("menu", new Position(GAMEWIDTH / 2, 128), "Click to restart", CENTER);
@@ -144,7 +151,7 @@ export class LevelManager extends GameObject {
             });
         }
         else if (action instanceof StartBattle) {
-            gameState.battle = new Battle(gameState.level.depth, action.enemyCount);
+            gameState.battle = new Battle(gameState.level.depth, action.enemyCount, action.chest);
             this.changeScene("battle");
         }
         else if (action instanceof ResetShop) {

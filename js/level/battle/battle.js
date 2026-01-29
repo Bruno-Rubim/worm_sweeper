@@ -1,4 +1,4 @@
-import playerInventory, { hasItem } from "../../playerInventory.js";
+import playerInventory, { getRandomItem, hasItem, } from "../../playerInventory.js";
 import { utils } from "../../utils.js";
 import { Enemy, PosionWorm, ScaleWorm, Worm } from "./enemy.js";
 export class Battle {
@@ -8,7 +8,10 @@ export class Battle {
     reflection = 0;
     spikes = 0;
     stun = 0;
-    constructor(depth, enemyCount) {
+    chest;
+    item = getRandomItem();
+    won = false;
+    constructor(depth, enemyCount, chest) {
         this.enemies = [];
         let arr = [
             new Worm(depth),
@@ -18,6 +21,7 @@ export class Battle {
         let x;
         depth > 2 ? (depth > 4 ? (x = 2) : (x = 1)) : (x = 0);
         this.enemies.push(arr[Math.min(x, utils.randomArrayId(arr))]);
+        this.chest = chest;
     }
     start() {
         const helmet = hasItem("safety_helmet");
