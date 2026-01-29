@@ -152,24 +152,6 @@ export default class Shop {
       this.previousSetItemNames.push(shopItem.item.name);
     });
 
-    const chosenarmor = utils.shuffleArray(
-      shopArmorList.filter((x) => !filterNames.includes(x.name)),
-    )[0];
-    this.armor = new ShopItem(chosenarmor.name);
-    this.previousSetItemNames.push(this.armor.item.name);
-
-    const chosenWeapon = utils.shuffleArray(
-      shopWeaponList.filter((x) => !filterNames.includes(x.name)),
-    )[0];
-    this.weapon = new ShopItem(chosenWeapon.name);
-    this.previousSetItemNames.push(this.weapon.item.name);
-
-    const chosenShield = utils.shuffleArray(
-      shopShieldList.filter((x) => !filterNames.includes(x.name)),
-    )[0];
-    this.shield = new ShopItem(chosenShield.name);
-    this.previousSetItemNames.push(this.shield.item.name);
-
     const chosenConsumables = utils
       .shuffleArray(shopConsList.filter((x) => !filterNames.includes(x.name)))
       .slice(0, 2);
@@ -185,18 +167,37 @@ export default class Shop {
       this.consumable1,
       this.consumable2,
     ];
+
     let xShift = shelfStartDistance;
-    if (this.armor) {
+    const chosenarmor = utils.shuffleArray(
+      shopArmorList.filter((x) => !filterNames.includes(x.name)),
+    )[0];
+    if (chosenarmor) {
+      this.armor = new ShopItem(chosenarmor.name);
       this.armor.pos.update(BORDERTHICKLEFT + xShift, 60);
+      this.previousSetItemNames.push(this.armor.item.name);
       this.objects.push(this.armor);
       xShift += shelfItemDistance;
     }
-    if (this.shield) {
+
+    const chosenShield = utils.shuffleArray(
+      shopShieldList.filter((x) => !filterNames.includes(x.name)),
+    )[0];
+
+    if (chosenShield) {
+      this.shield = new ShopItem(chosenShield.name);
+      this.previousSetItemNames.push(this.shield.item.name);
       this.shield.pos.update(BORDERTHICKLEFT + xShift, 60);
       this.objects.push(this.shield);
       xShift += shelfItemDistance;
     }
-    if (this.weapon) {
+
+    const chosenWeapon = utils.shuffleArray(
+      shopWeaponList.filter((x) => !filterNames.includes(x.name)),
+    )[0];
+    if (chosenWeapon) {
+      this.weapon = new ShopItem(chosenWeapon.name);
+      this.previousSetItemNames.push(this.weapon.item.name);
       this.weapon.pos.update(BORDERTHICKLEFT + xShift, 60);
       this.objects.push(this.weapon);
     }
