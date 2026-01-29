@@ -12,11 +12,5 @@ export class InstantItem extends Item {
     descriptionText: string;
   }) {
     super({ ...args });
-    this.clickFunction = (cursorPos: Position, button: cursorClick) => {
-      if (button == LEFT) {
-        return new ConsumeItem(this.name);
-      }
-      return new SellItem(this);
-    };
   }
 }
