@@ -16,7 +16,7 @@ import SceneManager from "../sceneManager.js";
 import {
   Action,
   BuyShopItem,
-  ConsumeItem,
+  ObtainItem,
   ShopItemDescription,
 } from "../../action.js";
 import {
@@ -26,16 +26,6 @@ import {
 } from "../../input/handleInput.js";
 import { soundManager } from "../../sounds/soundManager.js";
 import sounds from "../../sounds/sounds.js";
-import playerInventory, {
-  hasItem,
-  updateInventoryPositions,
-} from "../../inventory/playerInventory.js";
-import { Armor } from "../../items/armor/armor.js";
-import { Shield } from "../../items/shield/shield.js";
-import { Weapon } from "../../items/weapon/weapon.js";
-import { ActiveItem } from "../../items/active/active.js";
-import { InstantItem } from "../../items/instant/instantItem.js";
-import { SilverBell } from "../../items/active/silverBell.js";
 
 // Handles rendering and interactions with the shop scene of the current level
 export default class ShopManager extends SceneManager {
@@ -82,47 +72,8 @@ export default class ShopManager extends SceneManager {
       action.shopItem.hidden = true;
       gameState.gold -= action.shopItem.item.finalCost;
       soundManager.playSound(sounds.purchase);
-      if (item instanceof Armor) {
-        playerInventory.armor = item;
-        action.shopItem.hidden = true;
-        return;
-      }
-      if (item instanceof Shield) {
-        playerInventory.shield = item;
-        action.shopItem.hidden = true;
-        return;
-      }
-      if (item instanceof Weapon) {
-        playerInventory.weapon = item;
-        action.shopItem.hidden = true;
-        return;
-      }
-      if (item instanceof ActiveItem) {
-        action.shopItem.hidden = true;
-        if (playerInventory.active.name != "empty" && hasItem("tool_belt")) {
-          playerInventory.altActive = item.clone(
-            new Position(GAMEWIDTH - 20, 90),
-          );
-          playerInventory.altActive.isAlt = true;
-          return;
-        }
-        if (item instanceof SilverBell) {
-          item.ringTimer.restart();
-        }
-        playerInventory.active = item;
-        return;
-      }
-      if (item instanceof InstantItem) {
-        return new ConsumeItem(item.name);
-      }
-      if (item.name == "gold_bug") {
-        gameState.bugCurse = true;
-        soundManager.playSound(sounds.curse);
-      }
-
-      playerInventory.passives.push(item);
-      updateInventoryPositions();
-      return;
+      action.shopItem.hidden = true;
+      return new ObtainItem(item);
     }
     return action;
   }
@@ -145,8 +96,7 @@ export default class ShopManager extends SceneManager {
       this.currentText = action.description;
       return;
     } else {
-      this.currentText =
-        "Right click one of your items to sell for some change.";
+      this.currentText = "";
     }
     return action;
   };

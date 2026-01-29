@@ -1,18 +1,11 @@
-import { canvasManager } from "./canvasManager.js";
-import GameObject from "./gameElements/gameObject.js";
-import { gameState } from "./gameState.js";
-import { GAMEHEIGHT, GAMEWIDTH, LEFT, CENTER } from "./global.js";
-import Position from "./gameElements/position.js";
-import { sprites } from "./sprites.js";
-import playerInventory, { hasItem } from "./inventory/playerInventory.js";
-import {
-  bagItem,
-  bookItem,
-  flagItem,
-  musicButton,
-  picaxeItem,
-  sfxButton,
-} from "./items/uiItems.js";
+import { canvasManager } from "../canvasManager.js";
+import GameObject from "../gameElements/gameObject.js";
+import { gameState } from "../gameState.js";
+import { GAMEHEIGHT, GAMEWIDTH, LEFT, CENTER } from "../global.js";
+import Position from "../gameElements/position.js";
+import { sprites } from "../sprites.js";
+import playerInventory from "../inventory/playerInventory.js";
+import { bagButton, bookButton, musicButton, sfxButton } from "./uiButtons.js";
 
 /**
  * Renders the current game stats
@@ -89,11 +82,9 @@ function renderItems() {
   playerInventory.shield.render();
   playerInventory.armor.render();
   playerInventory.active.render();
-  if (hasItem("tool_belt")) {
-    playerInventory.altActive.render();
-  }
-  bookItem.render();
-  bagItem.render();
+  playerInventory.altActive.render();
+  bagButton.render();
+  bookButton.render();
   musicButton.render();
   sfxButton.render();
 }

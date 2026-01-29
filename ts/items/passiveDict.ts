@@ -113,19 +113,4 @@ const passivesDict = {
   }),
 };
 
-/**
- *
- * @param itemName
- * @param screenPos
- * @returns
- */
-export function getItem(
-  itemName: keyof typeof passivesDict,
-  screenPos: Position = new Position(),
-) {
-  let item = passivesDict[itemName].clone();
-  item.pos.update(screenPos);
-  return item;
-}
-
 export default passivesDict;

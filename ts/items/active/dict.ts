@@ -11,6 +11,13 @@ const activeDict = {
     cost: 0,
     descriptionText: "",
   }),
+  locked: new ActiveItem({
+    spriteSheetPos: new Position(-1, -1),
+    name: "locked",
+    shopName: "",
+    cost: 0,
+    descriptionText: "",
+  }),
 };
 
 export default activeDict;

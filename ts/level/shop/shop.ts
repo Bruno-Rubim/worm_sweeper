@@ -105,12 +105,12 @@ export default class Shop {
 
   setItems() {
     this.inventoryItemNames = [
-      playerInventory.weapon.name,
-      playerInventory.shield.name,
-      playerInventory.armor.name,
-      playerInventory.active.name,
-      playerInventory.altActive.name,
-      ...playerInventory.passives.map((x) => x.name),
+      playerInventory.weapon.item.name,
+      playerInventory.shield.item.name,
+      playerInventory.armor.item.name,
+      playerInventory.active.item.name,
+      playerInventory.altActive.item.name,
+      ...playerInventory.bagSlots.map((x) => x.item.name),
     ].filter((x) => !Object.keys(consumableDict).includes(x));
     let filterNames = [
       ...this.inventoryItemNames,

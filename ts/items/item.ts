@@ -1,6 +1,3 @@
-import { ItemDescription } from "../action.js";
-import { canvasManager } from "../canvasManager.js";
-import { GAMEWIDTH, LEFT, RIGHT } from "../global.js";
 import Position from "../gameElements/position.js";
 
 export class Item {

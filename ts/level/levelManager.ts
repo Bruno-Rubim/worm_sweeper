@@ -114,7 +114,7 @@ export class LevelManager extends GameObject {
         this.width,
         this.height,
       );
-      playerInventory.passives.forEach((item, i) => {
+      playerInventory.bagSlots.forEach((item, i) => {
         item.render();
       });
       return;

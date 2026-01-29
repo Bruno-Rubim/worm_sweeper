@@ -1,4 +1,9 @@
-import { ItemDescription, SellItem } from "../action.js";
+import {
+  EquipItem,
+  ItemDescription,
+  SellItem,
+  UseActiveItem,
+} from "../action.js";
 import { canvasManager } from "../canvasManager.js";
 import GameObject from "../gameElements/gameObject.js";
 import Position from "../gameElements/position.js";
@@ -9,27 +14,49 @@ import activeDict from "../items/active/dict.js";
 import { armorDict, type Armor } from "../items/armor/armor.js";
 import type { Item } from "../items/item.js";
 import passivesDict from "../items/passiveDict.js";
+import { shieldDict } from "../items/shield/dict.js";
 import type { Shield } from "../items/shield/shield.js";
+import { weaponDict } from "../items/weapon/dict.js";
 import type { Weapon } from "../items/weapon/weapon.js";
 import { sprites } from "../sprites.js";
 
 export class Slot extends GameObject {
   item: Item;
-  constructor(pos: Position, item: Item = passivesDict.empty) {
+  emptyItem: Item = passivesDict.empty;
+
+  constructor(pos: Position, item?: Item) {
     super({
       sprite: sprites.item_sheet,
       pos: pos,
       clickFunction: (cursorPos: Position, button: cursorClick) => {
-        if (button == RIGHT && gameState.currentScene == "shop") {
-          return new SellItem(this.item);
+        if (button == RIGHT) {
+          // if (gameState.currentScene == "shop") {
+          //   return new SellItem(this.item);
+          // }
+        } else {
+          return new EquipItem(this);
         }
       },
     });
-    this.item = item;
+    this.item = item ?? this.emptyItem;
   }
 
-  replaceItem(item: Item) {
-    this.item = item;
+  switchItems(slot: Slot) {
+    const newItem = slot.item;
+    if (this.item.name == "empty") {
+      slot.item = slot.emptyItem;
+    } else {
+      slot.item = this.item;
+    }
+    if (newItem.name == "empty") {
+      this.item = this.emptyItem;
+    } else {
+      this.item = newItem;
+    }
+  }
+
+  reset() {
+    this.item = this.emptyItem;
   }
 
   render(): void {
@@ -51,12 +78,6 @@ export class Slot extends GameObject {
     }
   }
 
-  clickFunction = (cursorPos: Position, button: cursorClick) => {
-    if (button == RIGHT) {
-      return new SellItem(this.item);
-    }
-  };
-
   hoverFunction = (cursorPos: Position) => {
     if (this.item.description) {
       let side: typeof LEFT | typeof RIGHT;
@@ -75,45 +96,58 @@ export class Slot extends GameObject {
 }
 
 export class WeaponSlot extends Slot {
+  item: Weapon;
+  emptyItem: Weapon = weaponDict.wood_sword;
   constructor(item: Weapon) {
     super(new Position(GAMEWIDTH - 20, 18), item);
-    this.item = item;
-  }
-
-  replaceItem(item: Weapon) {
     this.item = item;
   }
 }
 
 export class ShieldSlot extends Slot {
+  item: Shield;
+  emptyItem: Shield = shieldDict.wood_shield;
   constructor(item: Shield) {
     super(new Position(GAMEWIDTH - 20, 36), item);
-    this.item = item;
-  }
-
-  replaceItem(item: Shield) {
     this.item = item;
   }
 }
 
 export class ArmorSlot extends Slot {
-  constructor(item: Armor = armorDict.empty) {
-    super(new Position(GAMEWIDTH - 20, 54), item);
-    this.item = item;
-  }
-
-  replaceItem(item: Armor) {
-    this.item = item;
+  item: Armor;
+  emptyItem: Armor = armorDict.empty;
+  constructor() {
+    super(new Position(GAMEWIDTH - 20, 54));
+    this.item = this.emptyItem;
   }
 }
 
 export class ActiveSlot extends Slot {
-  constructor(item: ActiveItem = activeDict.empty, pos: Position) {
+  item: ActiveItem;
+  emptyItem: ActiveItem = activeDict.empty;
+  alt: boolean;
+  constructor(pos: Position, item?: ActiveItem, alt: boolean = false) {
     super(pos, item);
-    this.item = item;
+    this.item = item ?? this.emptyItem;
+    this.alt = alt;
+
+    this.clickFunction = (cursorPos: Position, button: cursorClick) => {
+      if (button == LEFT) {
+        if (gameState.inInventory) {
+          return new EquipItem(this);
+        }
+        return new UseActiveItem(this);
+      } else {
+        return new SellItem(this.item);
+      }
+    };
   }
 
-  replaceItem(item: ActiveItem) {
-    this.item = item;
+  reset(): void {
+    if (this.alt) {
+      this.item = activeDict.locked;
+    } else {
+      this.item = this.emptyItem;
+    }
   }
 }
