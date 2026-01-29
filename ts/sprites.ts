@@ -45,6 +45,7 @@ export const sprites = {
   bomb_sheet: new Sprite("bomb_sheet"),
   button_exit: new Sprite("button_exit"),
   button_reset: new Sprite("button_reset"),
+  buttons_ui_sheet: new Sprite("buttons_ui_sheet"),
   chest: new Sprite("chest"),
   counter_sheet: new Sprite("counter_sheet"),
   cursor_sheet: new Sprite("cursor_sheet"),

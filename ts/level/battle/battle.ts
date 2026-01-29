@@ -1,8 +1,4 @@
-import type { Item } from "../../items/item.js";
-import playerInventory, {
-  getRandomItem,
-  hasItem,
-} from "../../playerInventory.js";
+import playerInventory from "../../inventory/playerInventory.js";
 import { utils } from "../../utils.js";
 import { Enemy, PosionWorm, ScaleWorm, Worm } from "./enemy.js";
 
@@ -14,7 +10,6 @@ export class Battle {
   spikes: number = 0;
   stun: number = 0;
   chest: boolean;
-  item: Item | null = getRandomItem();
   won: boolean = false;
 
   constructor(depth: number, enemyCount: number, chest: boolean) {
@@ -31,14 +26,15 @@ export class Battle {
     this.chest = chest;
   }
   start() {
-    const helmet = hasItem("safety_helmet");
-    const glassArmor = hasItem("glass_armor");
-    this.protection = playerInventory.armor.protection;
+    const helmet = playerInventory.hasItem("safety_helmet");
+    const glassArmor = playerInventory.hasItem("glass_armor");
+    this.protection = playerInventory.armor.item.protection;
     this.defense =
-      playerInventory.armor.defense + (helmet ? (glassArmor ? 0.5 : 1) : 0);
+      playerInventory.armor.item.defense +
+      (helmet ? (glassArmor ? 0.5 : 1) : 0);
     this.reflection =
-      playerInventory.armor.reflection + (helmet && glassArmor ? 0.5 : 0);
-    this.spikes = playerInventory.armor.spikes;
+      playerInventory.armor.item.reflection + (helmet && glassArmor ? 0.5 : 0);
+    this.spikes = playerInventory.armor.item.spikes;
     this.enemies.forEach((e) => {
       e.cooldownTimer.start();
     });

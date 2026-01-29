@@ -3,6 +3,7 @@ import { GAMEHEIGHT, GAMEWIDTH, LEFT, RIGHT, CENTER } from "./global.js";
 import Position from "./gameElements/position.js";
 import type { Sprite } from "./sprites.js";
 import { utils } from "./utils.js";
+import timeTracker from "./timer/timeTracker.js";
 
 export default class CanvasManager {
   canvasElement = document.querySelector("canvas")!;
@@ -123,7 +124,6 @@ export default class CanvasManager {
    * @param sheetWidthInFrames
    * @param sheetHeightInFrames
    * @param animationStartTic
-   * @param currentTic
    * @param animationSpeed
    * @param sheetPosShift
    * @param loop
@@ -137,7 +137,6 @@ export default class CanvasManager {
     sheetWidthInFrames: number,
     sheetHeightInFrames: number,
     animationStartTic: number,
-    currentTic: number,
     animationSpeed: number = 1,
     sheetPosShift: Position = new Position(),
     loop: boolean = true,
@@ -146,8 +145,9 @@ export default class CanvasManager {
   ) {
     const totalFrames = sheetWidthInFrames * sheetHeightInFrames;
     const currentFrame =
-      Math.floor((currentTic - animationStartTic) * animationSpeed) %
-      (loop ? sheetWidthInFrames * sheetHeightInFrames : Infinity);
+      Math.floor(
+        (timeTracker.currentGameTic - animationStartTic) * animationSpeed,
+      ) % (loop ? sheetWidthInFrames * sheetHeightInFrames : Infinity);
     if (!loop && currentFrame > totalFrames) {
       return;
     }

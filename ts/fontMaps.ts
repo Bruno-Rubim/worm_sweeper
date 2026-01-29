@@ -1832,6 +1832,7 @@ export function measureTextWidth(font: string, text: string) {
   return width;
 }
 
+// TO-DO: rewrite how writing text works because rn it's a mess
 export function measureTextBoxHeight(
   font: string,
   text: string,

@@ -4,8 +4,10 @@ import {
   ChangeScene,
   ConsumeItem,
   EnemyAttack,
+  EquipItem,
   ItemDescription,
   LoseGame,
+  ObtainItem,
   RestartGame,
   SellItem,
   ToggleBook,
@@ -22,7 +24,7 @@ import {
 import type GameObject from "./gameElements/gameObject.js";
 import { gameState, resetGameState } from "./gameState.js";
 import { levelManager } from "./level/levelManager.js";
-import { renderBorder } from "./renderBorder.js";
+import { renderBorder } from "./border/renderBorder.js";
 import { soundManager } from "./sounds/soundManager.js";
 import sounds, { testingSound } from "./sounds/sounds.js";
 import { timerManager } from "./timer/timerManager.js";
@@ -31,25 +33,24 @@ import { handleMouseInput } from "./input/handleInput.js";
 import { bindListeners, inputState } from "./input/inputState.js";
 import { Weapon } from "./items/weapon/weapon.js";
 import { Shield } from "./items/shield/shield.js";
-import playerInventory, {
-  getInventoryItems,
-  hasItem,
-  resetInventory,
-  updateInventoryPositions,
-} from "./playerInventory.js";
-import { Armor, armorDict } from "./items/armor/armor.js";
-import { utils } from "./utils.js";
-import { bagItem, bookItem, musicButton, sfxButton } from "./items/uiItems.js";
+import playerInventory from "./inventory/playerInventory.js";
+import { Armor } from "./items/armor/armor.js";
+import {
+  bagButton,
+  bookButton,
+  musicButton,
+  sfxButton,
+} from "./border/uiButtons.js";
 import { DEV, GAMEWIDTH } from "./global.js";
 import { transitionOverlay } from "./level/transitionOverlay.js";
-import activeDict from "./items/active/dict.js";
 import { SilverBell } from "./items/active/silverBell.js";
 import { ActiveItem } from "./items/active/active.js";
+import { InstantItem } from "./items/instant/instantItem.js";
+import { ActiveSlot, ArmorSlot } from "./inventory/slot.js";
+import activeDict from "./items/active/dict.js";
 import Position from "./gameElements/position.js";
 
 // Says if the cursor has changed or if there's an item description to show TO-DO: change this
-type actionResponse = "cursorChange" | "itemDescription" | void;
-
 export default class GameManager {
   cursorChanged = false;
   hoverItemDesc = false;
@@ -153,7 +154,7 @@ export default class GameManager {
     resetGameState();
     gameState.deathCount++;
     gameState.deathTic = 0;
-    resetInventory();
+    playerInventory.reset();
     transitionOverlay.endAnimation();
     timeTracker.unpause();
   }
@@ -175,12 +176,9 @@ export default class GameManager {
    * Applies the active item's effects according to the name on the item in the inventory's active slot
    */
   useActiveItem(action: UseActiveItem) {
-    const item = action.alt
-      ? playerInventory.altActive
-      : playerInventory.active;
-    const clonePos = action.alt
-      ? new Position(GAMEWIDTH - 20, 90)
-      : new Position(GAMEWIDTH - 20, 72);
+    const item = action.slot.alt
+      ? playerInventory.altActive.item
+      : playerInventory.active.item;
     switch (item.name) {
       case "silver_bell":
         if (!(item instanceof SilverBell)) {
@@ -203,16 +201,12 @@ export default class GameManager {
           if (gameState.holding.name == "bomb") {
             levelManager.caveManager.bomb = null;
           }
-          gameState.holding = gameState.holding.clone(clonePos, item.isAlt);
-          if (item.isAlt) {
-            playerInventory.altActive = gameState.holding;
-          } else {
-            playerInventory.active = gameState.holding;
-          }
+          playerInventory.active.item = gameState.holding;
           gameState.holding = null;
         }
         return;
       case "bomb":
+        action.slot.item = action.slot.emptyItem;
         if (gameState.currentScene == "battle") {
           levelManager.handleAction(levelManager.battleManager.bomb());
           break;
@@ -220,14 +214,10 @@ export default class GameManager {
         gameState.holding = item;
         break;
       case "energy_potion":
+        action.slot.item = action.slot.emptyItem;
         gameState.tiredTimer.restart();
         soundManager.playSound(sounds.drink);
         break;
-    }
-    if (item.isAlt) {
-      playerInventory.altActive = activeDict.empty.clone(clonePos, true);
-    } else {
-      playerInventory.active = activeDict.empty.clone(clonePos);
     }
   }
 
@@ -238,44 +228,144 @@ export default class GameManager {
     gameState.health = Math.min(gameState.maxHealth, gameState.health + value);
   }
 
+  obtainItem(action: ObtainItem) {
+    const item = action.item;
+
+    if (item instanceof Shield) {
+      playerInventory.emptyBatSlot.item = playerInventory.shield.item;
+      playerInventory.shield.item = item;
+      return;
+    }
+
+    if (item instanceof Weapon) {
+      playerInventory.emptyBatSlot.item = playerInventory.weapon.item;
+      playerInventory.weapon.item = item;
+      return;
+    }
+
+    if (item instanceof Armor) {
+      if (playerInventory.armor.item.name != "empty") {
+        playerInventory.emptyBatSlot.item = playerInventory.armor.item;
+      }
+      playerInventory.armor.item = item;
+      return;
+    }
+
+    if (item instanceof ActiveItem) {
+      if (item instanceof SilverBell) {
+        item.ringTimer.restart();
+      }
+      if (
+        playerInventory.active.item.name != "empty" &&
+        playerInventory.hasItem("tool_belt")
+      ) {
+        playerInventory.emptyBatSlot.switchItems(playerInventory.altActive);
+        playerInventory.altActive.item = item;
+        return;
+      }
+      playerInventory.emptyBatSlot.switchItems(playerInventory.active);
+      playerInventory.active.item = item;
+      return;
+    }
+
+    if (item instanceof InstantItem) {
+      this.consumeItem(new ConsumeItem(item.name));
+      return;
+    }
+
+    if (item.name == "gold_bug") {
+      gameState.bugCurse = true;
+      soundManager.playSound(sounds.curse);
+    }
+
+    if (item.name == "tool_belt") {
+      playerInventory.altActive.item = activeDict.empty;
+    }
+
+    if (item instanceof SilverBell) {
+      item.ringTimer.restart();
+    }
+
+    playerInventory.emptyBatSlot.item = item;
+  }
+
+  equipItem(action: EquipItem) {
+    const item = action.slot.item;
+    if (item.name == "empty") {
+      return;
+    }
+    if (item instanceof Shield) {
+      playerInventory.shield.switchItems(action.slot);
+    }
+    if (item instanceof Weapon) {
+      playerInventory.weapon.switchItems(action.slot);
+    }
+
+    if (item instanceof Armor) {
+      if (action.slot instanceof ArmorSlot) {
+        playerInventory.emptyBatSlot.switchItems(action.slot);
+      } else {
+        playerInventory.armor.switchItems(action.slot);
+      }
+    }
+
+    if (item instanceof ActiveItem) {
+      if (action.slot instanceof ActiveSlot) {
+        playerInventory.emptyBatSlot.switchItems(action.slot);
+      } else {
+        if (
+          playerInventory.hasItem("tool_belt") &&
+          playerInventory.active.item.name != "empty"
+        ) {
+          playerInventory.altActive.switchItems(action.slot);
+        } else {
+          playerInventory.active.switchItems(action.slot);
+        }
+      }
+    }
+  }
+
   /**
    * Sells an item if on a shop
    * @param action
    */
   sellItem(action: SellItem) {
-    if (
-      gameState.currentScene == "shop" &&
-      !["empty"].includes(action.item.name)
-    ) {
-      if (
-        action.item instanceof Weapon ||
-        action.item instanceof Shield ||
-        ["picaxe", "flag"].includes(action.item.name)
-      ) {
-        soundManager.playSound(sounds.wrong);
-        return;
-      }
-      playerInventory.soldItemNames.push(action.item.name);
-      if (action.item instanceof Armor) {
-        playerInventory.armor = armorDict.empty;
-      } else if (action.item instanceof ActiveItem) {
-        if (action.item.isAlt) {
-          playerInventory.altActive = activeDict.empty.clone(
-            new Position(GAMEWIDTH - 20, 90),
-            true,
-          );
-        } else {
-          playerInventory.active = activeDict.empty;
-        }
-      } else {
-        playerInventory.passives = playerInventory.passives.filter(
-          (x) => x != action.item,
-        );
-        updateInventoryPositions();
-      }
-      gameState.gold += utils.randomInt(4, 1);
-      soundManager.playSound(sounds.gold);
-    }
+    // if (
+    //   gameState.currentScene != "shop" ||
+    //   ["empty"].includes(action.item.name)
+    // ) {
+    //   return;
+    // }
+    // if (
+    //   ["picaxe", "flag", "wood_sword", "wood_shield"].includes(action.item.name)
+    // ) {
+    //   soundManager.playSound(sounds.wrong);
+    //   return;
+    // }
+    // playerInventory.soldItemNames.push(action.item.name);
+    // if (action.item instanceof Armor) {
+    //   if (playerInventory.armor.item == action.item) {
+    //     playerInventory.armor.item = armorDict.empty;
+    //   } else {
+    //     playerInventory.bagSlots.find((x) => x.item == action.item)!.item =
+    //       passivesDict.empty;
+    //   }
+    // } else if (action.item instanceof ActiveItem) {
+    //   if (action.item.isAlt) {
+    //     playerInventory.altActive.item = activeDict.empty.clone(
+    //       new Position(GAMEWIDTH - 20, 90),
+    //       true,
+    //     );
+    //   } else {
+    //     playerInventory.active.item = activeDict.empty;
+    //   }
+    // } else {
+    //   // playerInventory.bagSlots = playerInventory.bagSlots.filter(
+    //   //   (x) => x != action.item,
+    //   // );
+    // }
+    // gameState.gold += utils.randomInt(4, 1);
+    // soundManager.playSound(sounds.gold);
   }
 
   performEnemyAttack(action: EnemyAttack) {
@@ -287,7 +377,7 @@ export default class GameManager {
    * @param action
    * @returns
    */
-  handleAction(action: Action | void | null): actionResponse {
+  handleAction(action: Action | void | null) {
     if (!action) {
       return;
     }
@@ -330,8 +420,16 @@ export default class GameManager {
       this.useActiveItem(action);
       return;
     }
+    if (action instanceof ObtainItem) {
+      this.obtainItem(action);
+      return;
+    }
+    if (action instanceof EquipItem) {
+      this.equipItem(action);
+      return;
+    }
     if (action instanceof SellItem) {
-      this.sellItem(action);
+      // this.sellItem(action);
       return;
     }
     if (action instanceof ChangeScene) {
@@ -384,7 +482,11 @@ export default class GameManager {
     }
     if (inputState.keyboard[" "] == "pressed") {
       inputState.keyboard[" "] = "read";
-      return new UseActiveItem(false);
+      return new UseActiveItem(playerInventory.active);
+    }
+    if (inputState.keyboard.Shift == "pressed") {
+      inputState.keyboard.Shift = "read";
+      return new UseActiveItem(playerInventory.altActive);
     }
     // Functions avaliable for devs. Check the global.ts
     if (DEV) {
@@ -414,20 +516,14 @@ export default class GameManager {
 
     const gameObjects: GameObject[] = [
       levelManager,
-      bagItem,
-      bookItem,
+      bagButton,
+      bookButton,
       musicButton,
       sfxButton,
-      playerInventory.weapon,
-      playerInventory.shield,
-      playerInventory.armor,
-      playerInventory.active,
+      ...playerInventory.gearSlots,
     ];
     if (gameState.inInventory) {
-      gameObjects.push(...getInventoryItems());
-    }
-    if (hasItem("tool_belt")) {
-      gameObjects.push(playerInventory.altActive);
+      gameObjects.push(...playerInventory.bagSlots);
     }
 
     const actions: Action[] | void = handleMouseInput(gameObjects);

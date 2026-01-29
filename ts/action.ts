@@ -4,6 +4,7 @@ import type { Item } from "./items/item.js";
 import type Position from "./gameElements/position.js";
 import type { ShopItem } from "./level/shop/shopItem.js";
 import type { Enemy } from "./level/battle/enemy.js";
+import type { ActiveSlot, Slot } from "./inventory/slot.js";
 
 // Represents a consequence of something happening in game
 export class Action {}
@@ -67,6 +68,24 @@ export class BuyShopItem extends Action {
   }
 }
 
+// Calls to add an item to inventory
+export class ObtainItem extends Action {
+  item: Item;
+  constructor(item: Item) {
+    super();
+    this.item = item;
+  }
+}
+
+// Calls to equip an item from an inventory slot
+export class EquipItem extends Action {
+  slot: Slot;
+  constructor(slot: Slot) {
+    super();
+    this.slot = slot;
+  }
+}
+
 // Calls to sell an item from inventory
 export class SellItem extends Action {
   item: Item;
@@ -76,14 +95,6 @@ export class SellItem extends Action {
   }
 }
 
-// Calls to add an item to inventory
-export class ObtainItem extends Action {
-  item: Item;
-  constructor(item: Item) {
-    super();
-    this.item = item;
-  }
-}
 // Calls to reset the items of the current shop
 export class ResetShop extends Action {}
 
@@ -151,9 +162,9 @@ export class PauseGameTimer extends Action {}
 
 // Calls to use the current active item
 export class UseActiveItem extends Action {
-  alt: boolean;
-  constructor(alt: boolean) {
+  slot: ActiveSlot;
+  constructor(slot: ActiveSlot) {
     super();
-    this.alt = alt;
+    this.slot = slot;
   }
 }

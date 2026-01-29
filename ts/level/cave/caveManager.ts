@@ -30,10 +30,10 @@ import { gameState } from "../../gameState.js";
 import { canvasManager } from "../../canvasManager.js";
 import { soundManager } from "../../sounds/soundManager.js";
 import { utils } from "../../utils.js";
-import { hasItem } from "../../playerInventory.js";
 import { Timer } from "../../timer/timer.js";
 import { musicTracks } from "../../sounds/music.js";
 import timeTracker from "../../timer/timeTracker.js";
+import playerInventory from "../../inventory/playerInventory.js";
 
 type breakResult = {
   battle: StartBattle;
@@ -72,13 +72,13 @@ export default class CaveManager extends SceneManager {
       !this.cave.cleared
     ) {
       this.cave.cleared = true;
-      if (hasItem("health_insurance")) {
+      if (playerInventory.hasItem("health_insurance")) {
         gameState.health++;
         gameState.health = Math.min(gameState.maxHealth, gameState.health);
       }
       gameState.gold += 5;
       gameState.gameTimer.addSecs(60);
-      if (hasItem("gold_bug")) {
+      if (playerInventory.hasItem("gold_bug")) {
         gameState.gold += 5;
       }
       soundManager.playSound(sounds.clear);
@@ -116,7 +116,12 @@ export default class CaveManager extends SceneManager {
         !block.starter &&
         block.content == CONTENTWORM &&
         this.getAdjcBlocks(block.gridPos).every(
-          (b) => b.content == CONTENTWORM,
+          (b) =>
+            !b.starter &&
+            (b.content == CONTENTWORM || b.content == CONTENTEMPTY) &&
+            this.getSurrBlocks(b.gridPos).every(
+              (c) => c.content == CONTENTWORM || c.content == CONTENTEMPTY,
+            ),
         ),
     );
   }
@@ -303,7 +308,7 @@ export default class CaveManager extends SceneManager {
     }
     this.getSurrBlocks(
       block.gridPos,
-      // hasItem("gunpowder")
+      // playerInventory.hasItem("gunpowder")
     ).forEach((b) => {
       if (b.content == CONTENTWORM) {
         b.content = CONTENTEMPTY;
@@ -314,7 +319,7 @@ export default class CaveManager extends SceneManager {
     this.breakSurrBlocks(
       block.gridPos,
       true,
-      // hasItem("gunpowder")
+      // playerInventory.hasItem("gunpowder")
     );
     this.updateAllStats();
   }
@@ -470,24 +475,31 @@ export default class CaveManager extends SceneManager {
   }
 
   placeChest() {
-    let block;
     if (this.blocksCanPlaceChest.length == 0) {
-      block = this.cave.allBLocks
-        .filter((b) => b.content == CONTENTWORM)
-        .sort((a, b) => b.threatLevel - a.threatLevel)[0]!;
-    } else {
-      const r = utils.randomArrayId(this.blocksCanPlaceChest);
-      block = this.blocksCanPlaceChest[r]!;
+      console.warn("no chest for you, when will you learn");
+      return;
     }
+    const r = utils.randomArrayId(this.blocksCanPlaceChest);
+    const block = this.blocksCanPlaceChest[r]!;
+    this.getAdjcBlocks(block.gridPos).forEach((b) => {
+      if (b.content != CONTENTWORM && this.blocksCanPlaceWorm.includes(b)) {
+        b.content = CONTENTWORM;
+        this.cave.wormsLeft++;
+        this.cave.blocksLeft--;
+      }
+    });
     block.hasChest = true;
     block.hasGold = false;
   }
 
   startCave(startPos: Position) {
+    // TO-DO: fix multiple bombs
+    if (this.bomb) this.bomb.timer.goalFunc = undefined;
+    this.bomb = null;
     if (gameState.bugCurse) {
       this.cave.wormQuantity = Math.ceil(this.cave.wormQuantity * 1.2);
       this.cave.wormsLeft = this.cave.wormQuantity;
-      this.cave.goldChance += 0.3;
+      this.cave.goldChance = 0.4;
       this.cave.blocksLeft =
         this.cave.size * this.cave.size - this.cave.wormsLeft;
     }
@@ -548,7 +560,6 @@ export default class CaveManager extends SceneManager {
             8,
             1,
             0,
-            timeTracker.currentGameTic,
             0.5,
             new Position(0, 3),
             true,
@@ -671,7 +682,7 @@ export default class CaveManager extends SceneManager {
       let enemyCount = 0;
       if (
         !block.broken &&
-        (!block.hidden || hasItem("dark_crystal")) &&
+        (!block.hidden || playerInventory.hasItem("dark_crystal")) &&
         !block.marked
       ) {
         // Regular block break
@@ -682,7 +693,7 @@ export default class CaveManager extends SceneManager {
         if (breakResult.gold > 0) {
           soundManager.playSound(sounds.gold);
         }
-        if (hasItem("drill") && block.threatLevel == 0) {
+        if (playerInventory.hasItem("drill") && block.threatLevel == 0) {
           soundManager.playSound(sounds.drill);
           this.breakConnectedEmpty(block);
         }
@@ -710,13 +721,13 @@ export default class CaveManager extends SceneManager {
             break;
           case CONTENTEMPTY:
             if (
-              hasItem("detonator") &&
+              playerInventory.hasItem("detonator") &&
               block.threatLevel > 0 &&
               block.threatLevel == block.markerLevel
             ) {
               let breakResult = this.breakSurrBlocks(block.gridPos);
               soundManager.playSound(sounds.detonate);
-              if (hasItem("drill")) {
+              if (playerInventory.hasItem("drill")) {
                 this.breakConnectedEmpty(block);
               }
               enemyCount += breakResult.battle.enemyCount;
@@ -759,7 +770,7 @@ export default class CaveManager extends SceneManager {
         return new ChangeCursorState(CURSORGOLDWATER);
       }
       if (
-        hasItem("detonator") &&
+        playerInventory.hasItem("detonator") &&
         block.threatLevel > 0 &&
         block.threatLevel == block.markerLevel
       ) {

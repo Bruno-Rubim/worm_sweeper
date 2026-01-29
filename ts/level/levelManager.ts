@@ -35,7 +35,7 @@ import { gameState } from "../gameState.js";
 import { soundManager } from "../sounds/soundManager.js";
 import BattleManager from "./battle/battleManager.js";
 import { Battle } from "./battle/battle.js";
-import playerInventory from "../playerInventory.js";
+import playerInventory from "../inventory/playerInventory.js";
 import { GAMETIMERSYNC, timerManager } from "../timer/timerManager.js";
 import { transitionOverlay } from "./transitionOverlay.js";
 
@@ -114,7 +114,7 @@ export class LevelManager extends GameObject {
         this.width,
         this.height,
       );
-      playerInventory.passives.forEach((item, i) => {
+      playerInventory.bagSlots.forEach((item, i) => {
         item.render();
       });
       return;
