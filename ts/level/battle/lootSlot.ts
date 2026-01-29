@@ -1,6 +1,12 @@
-import { ObtainItem } from "../../action.js";
+import { ItemDescription, ObtainItem } from "../../action.js";
 import Position from "../../gameElements/position.js";
-import { GAMEWIDTH, type cursorClick } from "../../global.js";
+import {
+  CENTER,
+  GAMEWIDTH,
+  LEFT,
+  RIGHT,
+  type cursorClick,
+} from "../../global.js";
 import { Slot } from "../../inventory/slot.js";
 import { soundManager } from "../../sounds/soundManager.js";
 import sounds from "../../sounds/sounds.js";
@@ -13,6 +19,15 @@ export default class LootSlot extends Slot {
       this.item = this.emptyItem;
       soundManager.playSound(sounds.clear);
       return new ObtainItem(item);
+    };
+    this.hoverFunction = (cursorPos: Position) => {
+      if (this.item.description) {
+        return new ItemDescription(
+          this.item.description,
+          CENTER,
+          this.item.descFontSize,
+        );
+      }
     };
   }
 }

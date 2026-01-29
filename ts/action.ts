@@ -1,5 +1,5 @@
 import type { cursorState } from "./cursor.js";
-import type { LEFT, RIGHT } from "./global.js";
+import type { CENTER, LEFT, RIGHT } from "./global.js";
 import type { Item } from "./items/item.js";
 import type Position from "./gameElements/position.js";
 import type { ShopItem } from "./level/shop/shopItem.js";
@@ -127,11 +127,11 @@ export class ToggleInventory extends Action {}
 // Calls to render an item description next to the cursor
 export class ItemDescription extends Action {
   description: string;
-  side: typeof LEFT | typeof RIGHT;
+  side: typeof LEFT | typeof RIGHT | typeof CENTER;
   descFontSize: number;
   constructor(
     description: string,
-    side: typeof LEFT | typeof RIGHT,
+    side: typeof LEFT | typeof RIGHT | typeof CENTER,
     descFontSize: number,
   ) {
     super();

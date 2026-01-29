@@ -2,7 +2,7 @@ import type CanvasManager from "./canvasManager.js";
 import { canvasManager } from "./canvasManager.js";
 import { measureTextBoxHeight } from "./fontMaps.js";
 import GameObject from "./gameElements/gameObject.js";
-import { RIGHT, type LEFT } from "./global.js";
+import { CENTER, RIGHT, type LEFT } from "./global.js";
 import Position from "./gameElements/position.js";
 import { sprites } from "./sprites.js";
 import { inputState } from "./input/inputState.js";
@@ -34,7 +34,7 @@ export type cursorState = keyof typeof cursorSheetPos;
 
 // Object of item descriptions when hovering on border
 class Description extends GameObject {
-  side: typeof RIGHT | typeof LEFT = RIGHT;
+  side: typeof RIGHT | typeof LEFT | typeof CENTER = RIGHT;
   text: string = "";
   renderScale: number = 0.4;
   fontSize: number = 0.4;
@@ -55,7 +55,10 @@ class Description extends GameObject {
     const padding = 4 * this.renderScale;
     canvasManager.renderBox(
       sprites.description_box_sheet,
-      this.pos.add(this.side == RIGHT ? -54 : 15, 6),
+      this.pos.add(
+        this.side == RIGHT ? -54 : this.side == CENTER ? -20 : 15,
+        this.side == CENTER ? 18 : 6,
+      ),
       3,
       3,
       this.width,
@@ -70,7 +73,10 @@ class Description extends GameObject {
     );
     canvasManager.renderText(
       "description",
-      this.pos.add((this.side == RIGHT ? -54 : 15) + padding, padding + 6),
+      this.pos.add(
+        (this.side == RIGHT ? -54 : this.side == CENTER ? -20 : 15) + padding,
+        padding + (this.side == CENTER ? 18 : 6),
+      ),
       this.text,
       RIGHT,
       this.width,
