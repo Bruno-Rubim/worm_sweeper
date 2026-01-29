@@ -29,7 +29,7 @@ import sounds from "../../sounds/sounds.js";
 import playerInventory, {
   hasItem,
   updateInventoryPositions,
-} from "../../playerInventory.js";
+} from "../../inventory/playerInventory.js";
 import { Armor } from "../../items/armor/armor.js";
 import { Shield } from "../../items/shield/shield.js";
 import { Weapon } from "../../items/weapon/weapon.js";

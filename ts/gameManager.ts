@@ -36,7 +36,7 @@ import playerInventory, {
   hasItem,
   resetInventory,
   updateInventoryPositions,
-} from "./playerInventory.js";
+} from "./inventory/playerInventory.js";
 import { Armor, armorDict } from "./items/armor/armor.js";
 import { utils } from "./utils.js";
 import { bagItem, bookItem, musicButton, sfxButton } from "./items/uiItems.js";

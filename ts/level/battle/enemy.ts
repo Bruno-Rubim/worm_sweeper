@@ -1,6 +1,6 @@
 import { EnemyAttack } from "../../action.js";
 import Position from "../../gameElements/position.js";
-import { hasItem } from "../../playerInventory.js";
+import { hasItem } from "../../inventory/playerInventory.js";
 import { sounds, type Sound } from "../../sounds/sounds.js";
 import { sprites, type Sprite } from "../../sprites.js";
 import { Timer } from "../../timer/timer.js";

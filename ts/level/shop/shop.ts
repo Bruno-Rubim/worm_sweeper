@@ -17,7 +17,7 @@ import { weaponDict } from "../../items/weapon/dict.js";
 import { Shield } from "../../items/shield/shield.js";
 import type { InstantItem } from "../../items/instant/instantItem.js";
 import type { Weapon } from "../../items/weapon/weapon.js";
-import playerInventory from "../../playerInventory.js";
+import playerInventory from "../../inventory/playerInventory.js";
 import passivesDict from "../../items/passiveDict.js";
 import activeDict from "../../items/active/dict.js";
 import consumableDict from "../../items/consumableDict.js";

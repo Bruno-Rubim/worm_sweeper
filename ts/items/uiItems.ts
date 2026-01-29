@@ -3,7 +3,7 @@ import { canvasManager } from "../canvasManager.js";
 import Position from "../gameElements/position.js";
 import { gameState } from "../gameState.js";
 import { BORDERTHICKLEFT, BORDERTHICKTOP } from "../global.js";
-import { updateInventoryPositions } from "../playerInventory.js";
+import { updateInventoryPositions } from "../inventory/playerInventory.js";
 import { soundManager } from "../sounds/soundManager.js";
 import { sprites } from "../sprites.js";
 import { Item } from "./item.js";

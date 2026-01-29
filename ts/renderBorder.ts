@@ -4,7 +4,7 @@ import { gameState } from "./gameState.js";
 import { GAMEHEIGHT, GAMEWIDTH, LEFT, CENTER } from "./global.js";
 import Position from "./gameElements/position.js";
 import { sprites } from "./sprites.js";
-import playerInventory, { hasItem, type inventory } from "./playerInventory.js";
+import playerInventory, { hasItem } from "./inventory/playerInventory.js";
 import {
   bagItem,
   bookItem,

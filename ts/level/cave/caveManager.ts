@@ -30,7 +30,7 @@ import { gameState } from "../../gameState.js";
 import { canvasManager } from "../../canvasManager.js";
 import { soundManager } from "../../sounds/soundManager.js";
 import { utils } from "../../utils.js";
-import { hasItem } from "../../playerInventory.js";
+import { hasItem } from "../../inventory/playerInventory.js";
 import { Timer } from "../../timer/timer.js";
 import { musicTracks } from "../../sounds/music.js";
 import timeTracker from "../../timer/timeTracker.js";

@@ -1,16 +1,16 @@
-import Position from "./gameElements/position.js";
-import { BORDERTHICKLEFT, BORDERTHICKTOP, GAMEWIDTH } from "./global.js";
-import type { ActiveItem } from "./items/active/active.js";
-import activeDict from "./items/active/dict.js";
-import { armorDict, type Armor } from "./items/armor/armor.js";
-import { Item } from "./items/item.js";
-import passivesDict from "./items/passiveDict.js";
-import { shieldDict } from "./items/shield/dict.js";
-import { type Shield } from "./items/shield/shield.js";
-import { flagItem, picaxeItem } from "./items/uiItems.js";
-import { weaponDict } from "./items/weapon/dict.js";
-import type { Weapon } from "./items/weapon/weapon.js";
-import { utils } from "./utils.js";
+import Position from "../gameElements/position.js";
+import { BORDERTHICKLEFT, BORDERTHICKTOP, GAMEWIDTH } from "../global.js";
+import type { ActiveItem } from "../items/active/active.js";
+import activeDict from "../items/active/dict.js";
+import { armorDict, type Armor } from "../items/armor/armor.js";
+import { Item } from "../items/item.js";
+import passivesDict from "../items/passiveDict.js";
+import { shieldDict } from "../items/shield/dict.js";
+import { type Shield } from "../items/shield/shield.js";
+import { flagItem, picaxeItem } from "../items/uiItems.js";
+import { weaponDict } from "../items/weapon/dict.js";
+import type { Weapon } from "../items/weapon/weapon.js";
+import { utils } from "../utils.js";
 
 export type inventory = {
   armor: Armor;
@@ -23,7 +23,7 @@ export type inventory = {
 };
 
 const baseInventory: inventory = {
-  weapon: weaponDict.big_sword,
+  weapon: weaponDict.wood_sword,
   shield: shieldDict.wood_shield,
   armor: armorDict.empty,
   active: activeDict.empty,

@@ -1,8 +1,8 @@
-import type { Item } from "../../items/item.js";
 import playerInventory, {
   getRandomItem,
   hasItem,
-} from "../../playerInventory.js";
+} from "../../inventory/playerInventory.js";
+import type { Item } from "../../items/item.js";
 import { utils } from "../../utils.js";
 import { Enemy, PosionWorm, ScaleWorm, Worm } from "./enemy.js";
 

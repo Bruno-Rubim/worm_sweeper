@@ -25,10 +25,7 @@ import {
   type cursorClick,
 } from "../../global.js";
 import { handleMouseClick, handleMouseHover } from "../../input/handleInput.js";
-import playerInventory, {
-  hasItem,
-  resetInventory,
-} from "../../playerInventory.js";
+import playerInventory, { hasItem } from "../../inventory/playerInventory.js";
 import { soundManager } from "../../sounds/soundManager.js";
 import sounds from "../../sounds/sounds.js";
 import { sprites } from "../../sprites.js";
@@ -197,9 +194,8 @@ export default class BattleManager extends SceneManager {
     });
 
     // Renders weapon
-    const inventory = playerInventory;
     canvasManager.renderSprite(
-      inventory.weapon.bigSprite,
+      playerInventory.weapon.bigSprite,
       new Position(
         BORDERTHICKLEFT - (gameState.attackAnimationTimer.inMotion ? 0 : 24),
         BORDERTHICKTOP + (gameState.attackAnimationTimer.inMotion ? 26 : 45),
@@ -210,7 +206,7 @@ export default class BattleManager extends SceneManager {
 
     // Renders shield
     canvasManager.renderSprite(
-      inventory.shield.bigSprite,
+      playerInventory.shield.bigSprite,
       new Position(
         BORDERTHICKLEFT + (gameState.shieldUpTimer.inMotion ? 0 : 24),
         BORDERTHICKTOP + (gameState.shieldUpTimer.inMotion ? 26 : 45),
