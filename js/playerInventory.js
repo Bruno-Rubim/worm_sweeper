@@ -10,7 +10,7 @@ import { flagItem, picaxeItem } from "./items/uiItems.js";
 import { weaponDict } from "./items/weapon/dict.js";
 import { utils } from "./utils.js";
 const baseInventory = {
-    weapon: weaponDict.big_sword,
+    weapon: weaponDict.wood_sword,
     shield: shieldDict.wood_shield,
     armor: armorDict.empty,
     active: activeDict.empty,
