@@ -76,6 +76,14 @@ export class SellItem extends Action {
   }
 }
 
+// Calls to add an item to inventory
+export class ObtainItem extends Action {
+  item: Item;
+  constructor(item: Item) {
+    super();
+    this.item = item;
+  }
+}
 // Calls to reset the items of the current shop
 export class ResetShop extends Action {}
 
@@ -131,9 +139,11 @@ export class RestartGame extends Action {}
 // Calls to start a battle
 export class StartBattle extends Action {
   enemyCount: number;
-  constructor(enemyCount: number) {
+  chest: boolean;
+  constructor(enemyCount: number, chest: boolean) {
     super();
     this.enemyCount = enemyCount;
+    this.chest = chest;
   }
 }
 

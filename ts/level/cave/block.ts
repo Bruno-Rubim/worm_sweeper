@@ -38,6 +38,7 @@ export default class Block {
 
   content: blockContent = CONTENTEMPTY;
   hasGold: boolean = false;
+  hasChest: boolean = false;
   hidden = true;
   broken = false;
   marked = false;

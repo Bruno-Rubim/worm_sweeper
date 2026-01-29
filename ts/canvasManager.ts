@@ -141,6 +141,8 @@ export default class CanvasManager {
     animationSpeed: number = 1,
     sheetPosShift: Position = new Position(),
     loop: boolean = true,
+    renderWidth?: number,
+    renderHeight?: number,
   ) {
     const totalFrames = sheetWidthInFrames * sheetHeightInFrames;
     const currentFrame =
@@ -161,8 +163,8 @@ export default class CanvasManager {
       height,
       Math.floor(pos.x * this.renderScale),
       Math.floor(pos.y * this.renderScale),
-      width * this.renderScale,
-      height * this.renderScale,
+      (renderWidth ?? width) * this.renderScale,
+      (renderHeight ?? height) * this.renderScale,
     );
   }
 

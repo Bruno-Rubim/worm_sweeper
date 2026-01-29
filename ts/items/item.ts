@@ -1,4 +1,4 @@
-import { ItemDescription, SellItem } from "../action.js";
+import { ItemDescription, ObtainItem, SellItem } from "../action.js";
 import { canvasManager } from "../canvasManager.js";
 import GameObject from "../gameElements/gameObject.js";
 import { GAMEWIDTH, LEFT, RIGHT, type cursorClick } from "../global.js";
@@ -12,6 +12,7 @@ export class Item extends GameObject {
   descriptionText: string;
   descFontSize = 0.4;
   cost: number;
+  lootItem: boolean = false;
 
   constructor(args: {
     pos?: Position;
@@ -35,6 +36,9 @@ export class Item extends GameObject {
     this.clickFunction = (cursorPos: Position, button: cursorClick) => {
       if (button == RIGHT) {
         return new SellItem(this);
+      } else if (this.lootItem) {
+        this.lootItem = false;
+        return new ObtainItem(this);
       }
     };
     this.descriptionText = args.descriptionText;

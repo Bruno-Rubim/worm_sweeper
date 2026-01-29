@@ -1,8 +1,10 @@
 import {
+  Action,
   ChangeCursorState,
   ChangeScene,
   EnemyAttack,
   LoseGame,
+  ObtainItem,
 } from "../../action.js";
 import { canvasManager } from "../../canvasManager.js";
 import { CURSORBATTLE } from "../../cursor.js";
@@ -20,8 +22,13 @@ import {
   GAMEHEIGHT,
   GAMEWIDTH,
   LEFT,
+  type cursorClick,
 } from "../../global.js";
-import playerInventory, { hasItem } from "../../playerInventory.js";
+import { handleMouseClick, handleMouseHover } from "../../input/handleInput.js";
+import playerInventory, {
+  hasItem,
+  resetInventory,
+} from "../../playerInventory.js";
 import { soundManager } from "../../sounds/soundManager.js";
 import sounds from "../../sounds/sounds.js";
 import { sprites } from "../../sprites.js";
@@ -58,6 +65,32 @@ damageOverlay.render = () => {
 
 damageOverlay.hidden;
 
+const ExitArrow = new GameObject({
+  sprite: sprites.exit_arrow,
+  height: 16,
+  width: 32,
+  pos: new Position(GAMEWIDTH / 2 - 16, 128),
+});
+
+ExitArrow.render = () => {
+  canvasManager.renderSpriteFromSheet(
+    ExitArrow.sprite,
+    ExitArrow.pos,
+    ExitArrow.width,
+    ExitArrow.height,
+    new Position(ExitArrow.mouseHovering ? 1 : 0, 0),
+  );
+};
+
+ExitArrow.clickFunction = (cursorPos: Position, button: cursorClick) => {
+  if (button == LEFT) {
+    soundManager.playSound(sounds.steps);
+    return new ChangeScene("cave");
+  }
+};
+
+ExitArrow.hidden;
+
 // Manages rendering and interactions with the currentBattle scene of the gameState
 export default class BattleManager extends SceneManager {
   /**
@@ -70,13 +103,33 @@ export default class BattleManager extends SceneManager {
       alert("this shouldn't happen outside of battle");
       return;
     }
-    // Renders enemies
+    // Background
     canvasManager.renderSprite(
       sprites.bg_battle,
       new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
       GAMEWIDTH - BORDERTHICKLEFT - BORDERTHICKRIGHT,
       GAMEHEIGHT - BORDERTHICKTOP - BORDERTHICKBOTTOM,
     );
+
+    // Renders chest
+    if (battle.chest) {
+      canvasManager.renderSpriteFromSheet(
+        sprites.chest,
+        new Position(GAMEWIDTH / 2 - 16, 40),
+        32,
+        32,
+        new Position(battle.won ? 1 : 0, 0),
+      );
+      if (battle.won && battle.item) {
+        battle.item.render();
+      }
+      // Arrow
+      if (battle.won) {
+        ExitArrow.render();
+      }
+    }
+
+    // Renders enemies
     battle.enemies.forEach((enemy) => {
       canvasManager.renderSpriteFromSheet(
         enemy.spriteSheet,
@@ -212,7 +265,11 @@ export default class BattleManager extends SceneManager {
     }
 
     // Renders cooldown counter
-    if (!gameState.tiredTimer.ended && gameState.tiredTimer.started) {
+    if (
+      !gameState.tiredTimer.ended &&
+      gameState.tiredTimer.started &&
+      !battle.won
+    ) {
       let counterFrame = Math.floor(
         Math.min(15, (gameState.tiredTimer.percentage / 100) * 16),
       );
@@ -243,10 +300,13 @@ export default class BattleManager extends SceneManager {
       alert("this shouldn't happen outside of battle");
       return;
     }
+
+    // Player dead
     if (gameState.health <= 0) {
       return new LoseGame();
     }
     gameState.battle.enemies.forEach((e, i) => {
+      // Enemie dead
       if (e.health <= 0) {
         e.die();
         gameState.battle!.enemies.splice(i, 1);
@@ -259,7 +319,17 @@ export default class BattleManager extends SceneManager {
         }
       }
     });
+
+    // Battle won
     if (gameState.battle.enemies.length <= 0) {
+      gameState.battle.won = true;
+      ExitArrow.hidden = false;
+      if (gameState.battle.chest && gameState.battle.item) {
+        gameState.battle.item.pos.update(80, 36);
+        gameState.battle.item.lootItem = true;
+        // Open chest
+        return;
+      }
       return new ChangeScene("cave");
     }
   }
@@ -463,6 +533,20 @@ export default class BattleManager extends SceneManager {
     return this.checkBattleEnd();
   }
 
+  handleClick = () => {
+    if (gameState.battle?.won && gameState.battle.item) {
+      const action = handleMouseClick([gameState.battle.item, ExitArrow]);
+      if (action instanceof ObtainItem) {
+        gameState.battle.item = null;
+        playerInventory.passives.push(action.item);
+        soundManager.playSound(sounds.clear);
+        return new ChangeScene("cave");
+      }
+      return action;
+    }
+    return;
+  };
+
   /**
    * Checks if the player isn't tired and attacks or defends accordingly
    * @param cursorPos
@@ -475,6 +559,9 @@ export default class BattleManager extends SceneManager {
   ) => {
     if (!gameState.battle) {
       alert("this shouldn't happen outside of battle");
+      return;
+    }
+    if (gameState.battle.won) {
       return;
     }
     const tiredTimer = gameState.tiredTimer;
@@ -495,6 +582,11 @@ export default class BattleManager extends SceneManager {
   };
 
   handleHover = () => {
-    return new ChangeCursorState(CURSORBATTLE);
+    if (!gameState.battle?.won) {
+      return new ChangeCursorState(CURSORBATTLE);
+    }
+    if (gameState.battle?.won && gameState.battle.item) {
+      return handleMouseHover([gameState.battle.item, ExitArrow]);
+    }
   };
 }
