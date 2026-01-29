@@ -15,7 +15,7 @@ import { gameState } from "../gameState.js";
 import { soundManager } from "../sounds/soundManager.js";
 import BattleManager from "./battle/battleManager.js";
 import { Battle } from "./battle/battle.js";
-import playerInventory from "../playerInventory.js";
+import playerInventory from "../inventory/playerInventory.js";
 import { GAMETIMERSYNC, timerManager } from "../timer/timerManager.js";
 import { transitionOverlay } from "./transitionOverlay.js";
 export class LevelManager extends GameObject {
@@ -58,7 +58,7 @@ export class LevelManager extends GameObject {
         }
         if (gameState.inInventory) {
             canvasManager.renderSprite(sprites.bg_bag, this.pos, this.width, this.height);
-            playerInventory.passives.forEach((item, i) => {
+            playerInventory.bagSlots.forEach((item, i) => {
                 item.render();
             });
             return;
@@ -67,12 +67,19 @@ export class LevelManager extends GameObject {
         transitionOverlay.render();
         if (gameState.gameOver) {
             canvasManager.renderSprite(sprites.screen_defeat, this.pos, this.width, this.height);
-            console.log(Math.round(gameState.runTime * 10) / 10);
             if (gameState.deathScreenStage > 0) {
                 canvasManager.renderText("menu", new Position(GAMEWIDTH / 2, 64), "Level: " + (gameState.level.depth + 1), CENTER);
             }
             if (gameState.deathScreenStage > 1) {
-                canvasManager.renderText("menu", new Position(GAMEWIDTH / 2, 80), "Run time: " + Math.floor(gameState.runTime) + "s", CENTER);
+                const runTime = Math.floor(gameState.runTime);
+                const runTimeMins = Math.floor(runTime / 60);
+                const runTimeSecs = Math.floor(runTime % 60);
+                canvasManager.renderText("menu", new Position(GAMEWIDTH / 2, 80), "Run time: " +
+                    (runTimeMins > 10 ? "" : "0") +
+                    runTimeMins +
+                    ":" +
+                    (runTimeSecs > 10 ? "" : "0") +
+                    runTimeSecs, CENTER);
             }
             if (gameState.deathScreenStage > 3) {
                 canvasManager.renderText("menu", new Position(GAMEWIDTH / 2, 128), "Click to restart", CENTER);
@@ -144,7 +151,7 @@ export class LevelManager extends GameObject {
             });
         }
         else if (action instanceof StartBattle) {
-            gameState.battle = new Battle(gameState.level.depth, action.enemyCount);
+            gameState.battle = new Battle(gameState.level.depth, action.enemyCount, action.chest);
             this.changeScene("battle");
         }
         else if (action instanceof ResetShop) {

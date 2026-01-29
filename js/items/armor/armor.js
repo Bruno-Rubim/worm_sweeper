@@ -16,7 +16,6 @@ export class Armor extends Item {
         args.addText = args.addText ?? "";
         super({
             ...args,
-            pos: new Position(GAMEWIDTH - 20, 54),
             descriptionText: (args.defense > 0 ? "$dfsDefense: " + args.defense + "\n" : "") +
                 (args.protection > 0
                     ? "$proProtection: " + args.protection + "\n"

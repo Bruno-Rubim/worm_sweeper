@@ -13,7 +13,6 @@ export class Weapon extends Item {
     constructor(args) {
         super({
             ...args,
-            pos: new Position(GAMEWIDTH - 20, 18),
             descriptionText: "$dmgDamage: " +
                 args.damage +
                 ((args.spikes ?? 0 > 0) ? "\n$spkSpikes: " + args.spikes : "") +

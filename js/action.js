@@ -48,6 +48,20 @@ export class BuyShopItem extends Action {
         this.shopItem = shopItem;
     }
 }
+export class ObtainItem extends Action {
+    item;
+    constructor(item) {
+        super();
+        this.item = item;
+    }
+}
+export class EquipItem extends Action {
+    slot;
+    constructor(slot) {
+        super();
+        this.slot = slot;
+    }
+}
 export class SellItem extends Action {
     item;
     constructor(item) {
@@ -94,17 +108,19 @@ export class RestartGame extends Action {
 }
 export class StartBattle extends Action {
     enemyCount;
-    constructor(enemyCount) {
+    chest;
+    constructor(enemyCount, chest) {
         super();
         this.enemyCount = enemyCount;
+        this.chest = chest;
     }
 }
 export class PauseGameTimer extends Action {
 }
 export class UseActiveItem extends Action {
-    alt;
-    constructor(alt) {
+    slot;
+    constructor(slot) {
         super();
-        this.alt = alt;
+        this.slot = slot;
     }
 }

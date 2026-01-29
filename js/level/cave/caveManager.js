@@ -10,32 +10,31 @@ import { gameState } from "../../gameState.js";
 import { canvasManager } from "../../canvasManager.js";
 import { soundManager } from "../../sounds/soundManager.js";
 import { utils } from "../../utils.js";
-import { hasItem } from "../../playerInventory.js";
 import { Timer } from "../../timer/timer.js";
 import { musicTracks } from "../../sounds/music.js";
+import timeTracker from "../../timer/timeTracker.js";
+import playerInventory from "../../inventory/playerInventory.js";
 export default class CaveManager extends SceneManager {
     bomb = null;
     get cave() {
         return gameState.level.cave;
     }
     getBlockFromScrenPos(pos) {
-        const blockPos = pos
-            .subtract(this.pos)
-            .divide(gameState.level.cave.levelScale * 16);
-        return gameState.level.cave.blockMatrix[blockPos.x][blockPos.y];
+        const blockPos = pos.subtract(this.pos).divide(this.cave.levelScale * 16);
+        return this.cave.blockMatrix[blockPos.x][blockPos.y];
     }
     checkCaveClear() {
         if (this.cave.blocksLeft == 0 &&
             this.cave.wormsLeft == 0 &&
             !this.cave.cleared) {
             this.cave.cleared = true;
-            if (hasItem("health_insurance")) {
+            if (playerInventory.hasItem("health_insurance")) {
                 gameState.health++;
                 gameState.health = Math.min(gameState.maxHealth, gameState.health);
             }
             gameState.gold += 5;
             gameState.gameTimer.addSecs(60);
-            if (hasItem("gold_bug")) {
+            if (playerInventory.hasItem("gold_bug")) {
                 gameState.gold += 5;
             }
             soundManager.playSound(sounds.clear);
@@ -53,15 +52,22 @@ export default class CaveManager extends SceneManager {
             block.content == CONTENTEMPTY &&
             this.getAdjcBlocks(block.gridPos).every((b) => b.content == CONTENTEMPTY));
     }
+    get blocksCanPlaceChest() {
+        this.updateAllStats();
+        return this.cave.allBLocks.filter((block) => !block.starter &&
+            block.content == CONTENTWORM &&
+            this.getAdjcBlocks(block.gridPos).every((b) => !b.starter &&
+                (b.content == CONTENTWORM || b.content == CONTENTEMPTY) &&
+                this.getSurrBlocks(b.gridPos).every((c) => c.content == CONTENTWORM || c.content == CONTENTEMPTY)));
+    }
     placeGold() {
-        for (let i = 0; i < gameState.level.cave.size; i++) {
-            for (let j = 0; j < gameState.level.cave.size; j++) {
+        for (let i = 0; i < this.cave.size; i++) {
+            for (let j = 0; j < this.cave.size; j++) {
                 const block = this.cave.blockMatrix[i][j];
                 if (block.starter) {
                     continue;
                 }
-                const rngGold = Math.floor(Math.random() * gameState.level.cave.goldChance);
-                if (rngGold >= 1) {
+                if (Math.random() <= this.cave.goldChance) {
                     block.hasGold = true;
                 }
             }
@@ -74,91 +80,74 @@ export default class CaveManager extends SceneManager {
             if (gridPos.y > 0) {
                 validPositions.push([gridPos.x - 1, gridPos.y - 1]);
             }
-            if (gridPos.y < gameState.level.cave.size - 1) {
+            if (gridPos.y < this.cave.size - 1) {
                 validPositions.push([gridPos.x - 1, gridPos.y + 1]);
             }
         }
-        if (gridPos.x < gameState.level.cave.size - 1) {
+        if (gridPos.x < this.cave.size - 1) {
             validPositions.push([gridPos.x + 1, gridPos.y]);
             if (gridPos.y > 0) {
                 validPositions.push([gridPos.x + 1, gridPos.y - 1]);
             }
-            if (gridPos.y < gameState.level.cave.size - 1) {
+            if (gridPos.y < this.cave.size - 1) {
                 validPositions.push([gridPos.x + 1, gridPos.y + 1]);
             }
         }
         if (gridPos.y > 0) {
             validPositions.push([gridPos.x, gridPos.y - 1]);
         }
-        if (gridPos.y < gameState.level.cave.size - 1) {
+        if (gridPos.y < this.cave.size - 1) {
             validPositions.push([gridPos.x, gridPos.y + 1]);
         }
         if (extra) {
             if (gridPos.x > 1) {
                 validPositions.push([gridPos.x - 2, gridPos.y]);
-                console.log("middle left");
                 if (gridPos.y > 0) {
                     validPositions.push([gridPos.x - 2, gridPos.y - 1]);
-                    console.log("up");
                     if (gridPos.y > 1) {
                         validPositions.push([gridPos.x - 2, gridPos.y - 2]);
-                        console.log("upper");
                     }
                 }
-                if (gridPos.y < gameState.level.cave.size - 1) {
+                if (gridPos.y < this.cave.size - 1) {
                     validPositions.push([gridPos.x - 2, gridPos.y + 1]);
-                    console.log("low");
-                    if (gridPos.y < gameState.level.cave.size - 2) {
+                    if (gridPos.y < this.cave.size - 2) {
                         validPositions.push([gridPos.x - 2, gridPos.y + 2]);
-                        console.log("lower");
                     }
                 }
             }
-            if (gridPos.x < gameState.level.cave.size - 2) {
+            if (gridPos.x < this.cave.size - 2) {
                 validPositions.push([gridPos.x + 2, gridPos.y]);
-                console.log("middle right");
                 if (gridPos.y > 0) {
                     validPositions.push([gridPos.x + 2, gridPos.y - 1]);
-                    console.log("up");
                     if (gridPos.y > 1) {
                         validPositions.push([gridPos.x + 2, gridPos.y - 2]);
-                        console.log("uper");
                     }
                 }
-                if (gridPos.y < gameState.level.cave.size - 1) {
+                if (gridPos.y < this.cave.size - 1) {
                     validPositions.push([gridPos.x + 2, gridPos.y + 1]);
-                    console.log("low");
-                    if (gridPos.y < gameState.level.cave.size - 2) {
+                    if (gridPos.y < this.cave.size - 2) {
                         validPositions.push([gridPos.x + 2, gridPos.y + 2]);
-                        console.log("lower");
                     }
                 }
             }
             if (gridPos.y > 1) {
                 validPositions.push([gridPos.x, gridPos.y - 2]);
-                console.log("mittle top");
                 if (gridPos.x > 1) {
                     validPositions.push([gridPos.x - 1, gridPos.y - 2]);
-                    console.log("left");
                 }
-                if (gridPos.x < gameState.level.cave.size - 1) {
+                if (gridPos.x < this.cave.size - 1) {
                     validPositions.push([gridPos.x + 1, gridPos.y - 2]);
-                    console.log("right");
                 }
             }
-            if (gridPos.y < gameState.level.cave.size - 2) {
+            if (gridPos.y < this.cave.size - 2) {
                 validPositions.push([gridPos.x, gridPos.y + 2]);
-                console.log("mittle bottom");
                 if (gridPos.x > 1) {
                     validPositions.push([gridPos.x - 1, gridPos.y + 2]);
-                    console.log("left");
                 }
-                if (gridPos.x < gameState.level.cave.size - 1) {
+                if (gridPos.x < this.cave.size - 1) {
                     validPositions.push([gridPos.x + 1, gridPos.y + 2]);
-                    console.log("right");
                 }
             }
-            console.log("---");
         }
         let surrBlocks = validPositions.map((p) => {
             const block = this.cave.blockMatrix[p[0]][p[1]];
@@ -174,10 +163,10 @@ export default class CaveManager extends SceneManager {
         if (gridPos.y != 0) {
             surrBlocks.push(this.cave.blockMatrix[gridPos.x][gridPos.y - 1]);
         }
-        if (gridPos.x != gameState.level.cave.size - 1) {
+        if (gridPos.x != this.cave.size - 1) {
             surrBlocks.push(this.cave.blockMatrix[gridPos.x + 1][gridPos.y]);
         }
-        if (gridPos.y != gameState.level.cave.size - 1) {
+        if (gridPos.y != this.cave.size - 1) {
             surrBlocks.push(this.cave.blockMatrix[gridPos.x][gridPos.y + 1]);
         }
         return surrBlocks;
@@ -272,11 +261,11 @@ export default class CaveManager extends SceneManager {
         return counter;
     }
     breakBlock(block, quiet = false) {
-        let result = { battle: new StartBattle(0), gold: 0 };
+        let result = { battle: new StartBattle(0, false), gold: 0 };
         block.broken = true;
         this.revealAdjc(block.gridPos);
         if (block.content != CONTENTWORM) {
-            gameState.level.cave.blocksLeft--;
+            this.cave.blocksLeft--;
         }
         else {
             result.battle.enemyCount++;
@@ -284,13 +273,16 @@ export default class CaveManager extends SceneManager {
         if (block.hasGold) {
             result.gold++;
         }
+        if (block.hasChest) {
+            result.battle.chest = true;
+        }
         this.updateBlockStats(block);
         soundManager.playSound(sounds.break);
         return result;
     }
     breakConnectedEmpty(block) {
         let totalResult = {
-            battle: new StartBattle(0),
+            battle: new StartBattle(0, false),
             gold: 0,
         };
         if (block.threatLevel == 0 && !block.marked) {
@@ -318,7 +310,7 @@ export default class CaveManager extends SceneManager {
     }
     breakSurrBlocks(pos, ignoreMarks = false, extraArea = false) {
         let totalResult = {
-            battle: new StartBattle(0),
+            battle: new StartBattle(0, false),
             gold: 0,
         };
         const surrBlocks = this.getSurrBlocks(pos, extraArea);
@@ -333,6 +325,9 @@ export default class CaveManager extends SceneManager {
             }
             totalResult.battle.enemyCount += result.battle.enemyCount;
             totalResult.gold += result.gold;
+            if (result.battle.chest) {
+                totalResult.battle.chest = true;
+            }
         });
         return totalResult;
     }
@@ -375,14 +370,33 @@ export default class CaveManager extends SceneManager {
         const block = this.blocksCanPlaceStuff[r];
         block.content = CONTENTWATER;
     }
+    placeChest() {
+        if (this.blocksCanPlaceChest.length == 0) {
+            console.warn("no chest for you, when will you learn");
+            return;
+        }
+        const r = utils.randomArrayId(this.blocksCanPlaceChest);
+        const block = this.blocksCanPlaceChest[r];
+        this.getAdjcBlocks(block.gridPos).forEach((b) => {
+            if (b.content != CONTENTWORM && this.blocksCanPlaceWorm.includes(b)) {
+                b.content = CONTENTWORM;
+                this.cave.wormsLeft++;
+                this.cave.blocksLeft--;
+            }
+        });
+        block.hasChest = true;
+        block.hasGold = false;
+    }
     startCave(startPos) {
+        if (this.bomb)
+            this.bomb.timer.goalFunc = undefined;
+        this.bomb = null;
         if (gameState.bugCurse) {
-            gameState.level.cave.wormQuantity = Math.ceil(gameState.level.cave.wormQuantity * 1.2);
-            gameState.level.cave.wormsLeft = gameState.level.cave.wormQuantity;
-            gameState.level.cave.goldChance += 0.3;
-            gameState.level.cave.blocksLeft =
-                gameState.level.cave.size * gameState.level.cave.size -
-                    gameState.level.cave.wormsLeft;
+            this.cave.wormQuantity = Math.ceil(this.cave.wormQuantity * 1.2);
+            this.cave.wormsLeft = this.cave.wormQuantity;
+            this.cave.goldChance = 0.4;
+            this.cave.blocksLeft =
+                this.cave.size * this.cave.size - this.cave.wormsLeft;
         }
         const firstBlock = this.cave.blockMatrix[startPos.x][startPos.y];
         firstBlock.starter = true;
@@ -392,31 +406,39 @@ export default class CaveManager extends SceneManager {
         });
         this.placeGold();
         this.placeExit();
-        if (gameState.level.cave.hasShop) {
+        if (this.cave.hasShop) {
             this.placeShop();
         }
         this.placeWorms();
-        if (gameState.level.cave.hasWater) {
+        if (this.cave.hasWater) {
             this.placeWater();
         }
+        if ((gameState.level.depth + 1) % 3 == 0) {
+            this.placeChest();
+        }
         this.breakSurrBlocks(firstBlock.gridPos);
-        gameState.level.cave.started = true;
+        this.cave.started = true;
     }
     render = () => {
-        const blockSize = 16 * gameState.level.cave.levelScale;
-        for (let i = 0; i < gameState.level.cave.size; i++) {
-            for (let j = 0; j < gameState.level.cave.size; j++) {
+        const blockSize = 16 * this.cave.levelScale;
+        for (let i = 0; i < this.cave.size; i++) {
+            for (let j = 0; j < this.cave.size; j++) {
                 const blockPos = new Position(i * blockSize, j * blockSize).add(this.pos);
                 const block = this.cave.blockMatrix[i][j];
-                if (!gameState.level.cave.started) {
+                if (!this.cave.started) {
                     canvasManager.renderSpriteFromSheet(sprites.block_sheet, blockPos, blockSize, blockSize, blockSheetPos.hidden, 16, 16);
                     continue;
                 }
-                canvasManager.renderSpriteFromSheet(sprites.block_sheet, blockPos, blockSize, blockSize, block.sheetBlockPos, 16, 16);
+                if (block.hasChest && !block.hidden && !block.broken) {
+                    canvasManager.renderAnimationFrame(sprites.block_sheet, blockPos, 16, 16, 8, 1, 0, 0.5, new Position(0, 3), true, blockSize, blockSize);
+                }
+                else {
+                    canvasManager.renderSpriteFromSheet(sprites.block_sheet, blockPos, blockSize, blockSize, block.sheetBlockPos, 16, 16);
+                }
                 if ((block.broken && block.content != CONTENTEMPTY) || block.marked) {
                     canvasManager.renderSpriteFromSheet(sprites.block_sheet, blockPos, blockSize, blockSize, block.sheetContentPos.add(0, 0), 16, 16);
                 }
-                if (gameState.level.cave.bellRang &&
+                if (this.cave.bellRang &&
                     [CONTENTDOOREXIT, CONTENTDOORSHOP].includes(block.content) &&
                     !block.broken) {
                     canvasManager.renderSpriteFromSheet(sprites.block_sheet, blockPos, blockSize, blockSize, blockSheetPos.bell, 16, 16);
@@ -468,7 +490,7 @@ export default class CaveManager extends SceneManager {
             }
             let enemyCount = 0;
             if (!block.broken &&
-                (!block.hidden || hasItem("dark_crystal")) &&
+                (!block.hidden || playerInventory.hasItem("dark_crystal")) &&
                 !block.marked) {
                 let breakResult = this.breakBlock(block);
                 enemyCount += breakResult.battle.enemyCount;
@@ -476,7 +498,7 @@ export default class CaveManager extends SceneManager {
                 if (breakResult.gold > 0) {
                     soundManager.playSound(sounds.gold);
                 }
-                if (hasItem("drill") && block.threatLevel == 0) {
+                if (playerInventory.hasItem("drill") && block.threatLevel == 0) {
                     soundManager.playSound(sounds.drill);
                     this.breakConnectedEmpty(block);
                 }
@@ -503,12 +525,12 @@ export default class CaveManager extends SceneManager {
                         gameState.gameTimer.addSecs(-10);
                         break;
                     case CONTENTEMPTY:
-                        if (hasItem("detonator") &&
+                        if (playerInventory.hasItem("detonator") &&
                             block.threatLevel > 0 &&
                             block.threatLevel == block.markerLevel) {
                             let breakResult = this.breakSurrBlocks(block.gridPos);
                             soundManager.playSound(sounds.detonate);
-                            if (hasItem("drill")) {
+                            if (playerInventory.hasItem("drill")) {
                                 this.breakConnectedEmpty(block);
                             }
                             enemyCount += breakResult.battle.enemyCount;
@@ -521,7 +543,7 @@ export default class CaveManager extends SceneManager {
                 }
             }
             if (enemyCount > 0) {
-                return new StartBattle(enemyCount);
+                return new StartBattle(enemyCount, block.hasChest);
             }
             else {
                 this.checkCaveClear();
@@ -551,7 +573,7 @@ export default class CaveManager extends SceneManager {
             if (block.content == CONTENTWATER) {
                 return new ChangeCursorState(CURSORGOLDWATER);
             }
-            if (hasItem("detonator") &&
+            if (playerInventory.hasItem("detonator") &&
                 block.threatLevel > 0 &&
                 block.threatLevel == block.markerLevel) {
                 return new ChangeCursorState(CURSORDETONATOR);

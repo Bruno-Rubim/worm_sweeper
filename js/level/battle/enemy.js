@@ -1,6 +1,6 @@
 import { EnemyAttack } from "../../action.js";
 import Position from "../../gameElements/position.js";
-import { hasItem } from "../../playerInventory.js";
+import playerInventory from "../../inventory/playerInventory.js";
 import { sounds } from "../../sounds/sounds.js";
 import { sprites } from "../../sprites.js";
 import { Timer } from "../../timer/timer.js";
@@ -29,7 +29,8 @@ export class Enemy {
         this.attackAnimTimer = new Timer({ goalSecs: 0.3, autoStart: false });
         this.damagedTimer = new Timer({ goalSecs: 0.16, autoStart: false });
         this.cooldownTimer = new Timer({
-            goalSecs: args.attackCooldown * (hasItem("moon_flower") ? 1.2 : 1),
+            goalSecs: args.attackCooldown *
+                (playerInventory.hasItem("moon_flower") ? 1.2 : 1),
             goalFunc: () => {
                 return new EnemyAttack(this.damage, this);
             },

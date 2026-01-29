@@ -14,5 +14,5 @@ transitionOverlay.render = () => {
     if (transitionOverlay.hidden) {
         return;
     }
-    canvasManager.renderAnimationFrame(transitionOverlay.sprite, transitionOverlay.pos, transitionOverlay.width, transitionOverlay.height, 4, 4, transitionOverlay.firstAnimationTic, timeTracker.currentGameTic, 1, new Position(), false);
+    canvasManager.renderAnimationFrame(transitionOverlay.sprite, transitionOverlay.pos, transitionOverlay.width, transitionOverlay.height, 4, 4, transitionOverlay.firstAnimationTic, 1, new Position(), false);
 };

@@ -9,7 +9,7 @@ import { utils } from "../../utils.js";
 import { armorDict } from "../../items/armor/armor.js";
 import { weaponDict } from "../../items/weapon/dict.js";
 import { Shield } from "../../items/shield/shield.js";
-import playerInventory from "../../playerInventory.js";
+import playerInventory from "../../inventory/playerInventory.js";
 import passivesDict from "../../items/passiveDict.js";
 import activeDict from "../../items/active/dict.js";
 import consumableDict from "../../items/consumableDict.js";
@@ -19,6 +19,7 @@ const exitBtn = new GameObject({
     pos: new Position(GAMEWIDTH - BORDERTHICKRIGHT - 32, BORDERTHICKTOP),
     width: 32,
     clickFunction: () => {
+        exitBtn.mouseHovering = false;
         return new ChangeScene("cave");
     },
 });
@@ -62,14 +63,24 @@ export default class Shop {
     constructor() {
         this.setItems();
     }
+    get itemNames() {
+        return [
+            this.armor?.item.name,
+            this.weapon?.item.name,
+            this.shield?.item.name,
+            this.consumable1?.item.name,
+            this.consumable2?.item.name,
+            this.genericItems?.map((x) => x.item.name),
+        ].filter((x) => typeof x === "string");
+    }
     setItems() {
         this.inventoryItemNames = [
-            playerInventory.weapon.name,
-            playerInventory.shield.name,
-            playerInventory.armor.name,
-            playerInventory.active.name,
-            playerInventory.altActive.name,
-            ...playerInventory.passives.map((x) => x.name),
+            playerInventory.weapon.item.name,
+            playerInventory.shield.item.name,
+            playerInventory.armor.item.name,
+            playerInventory.active.item.name,
+            playerInventory.altActive.item.name,
+            ...playerInventory.bagSlots.map((x) => x.item.name),
         ].filter((x) => !Object.keys(consumableDict).includes(x));
         let filterNames = [
             ...this.inventoryItemNames,
@@ -91,15 +102,6 @@ export default class Shop {
             shopItem.pos.update(BORDERTHICKLEFT + shelfStartDistance + i * shelfItemDistance, 28);
             this.previousSetItemNames.push(shopItem.item.name);
         });
-        const chosenarmor = utils.shuffleArray(shopArmorList.filter((x) => !filterNames.includes(x.name)))[0];
-        this.armor = new ShopItem(chosenarmor.name);
-        this.previousSetItemNames.push(this.armor.item.name);
-        const chosenWeapon = utils.shuffleArray(shopWeaponList.filter((x) => !filterNames.includes(x.name)))[0];
-        this.weapon = new ShopItem(chosenWeapon.name);
-        this.previousSetItemNames.push(this.weapon.item.name);
-        const chosenShield = utils.shuffleArray(shopShieldList.filter((x) => !filterNames.includes(x.name)))[0];
-        this.shield = new ShopItem(chosenShield.name);
-        this.previousSetItemNames.push(this.shield.item.name);
         const chosenConsumables = utils
             .shuffleArray(shopConsList.filter((x) => !filterNames.includes(x.name)))
             .slice(0, 2);
@@ -115,17 +117,26 @@ export default class Shop {
             this.consumable2,
         ];
         let xShift = shelfStartDistance;
-        if (this.armor) {
+        const chosenarmor = utils.shuffleArray(shopArmorList.filter((x) => !filterNames.includes(x.name)))[0];
+        if (chosenarmor) {
+            this.armor = new ShopItem(chosenarmor.name);
             this.armor.pos.update(BORDERTHICKLEFT + xShift, 60);
+            this.previousSetItemNames.push(this.armor.item.name);
             this.objects.push(this.armor);
             xShift += shelfItemDistance;
         }
-        if (this.shield) {
+        const chosenShield = utils.shuffleArray(shopShieldList.filter((x) => !filterNames.includes(x.name)))[0];
+        if (chosenShield) {
+            this.shield = new ShopItem(chosenShield.name);
+            this.previousSetItemNames.push(this.shield.item.name);
             this.shield.pos.update(BORDERTHICKLEFT + xShift, 60);
             this.objects.push(this.shield);
             xShift += shelfItemDistance;
         }
-        if (this.weapon) {
+        const chosenWeapon = utils.shuffleArray(shopWeaponList.filter((x) => !filterNames.includes(x.name)))[0];
+        if (chosenWeapon) {
+            this.weapon = new ShopItem(chosenWeapon.name);
+            this.previousSetItemNames.push(this.weapon.item.name);
             this.weapon.pos.update(BORDERTHICKLEFT + xShift, 60);
             this.objects.push(this.weapon);
         }

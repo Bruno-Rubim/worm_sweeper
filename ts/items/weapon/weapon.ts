@@ -26,7 +26,6 @@ export class Weapon extends Item {
   }) {
     super({
       ...args,
-      pos: new Position(GAMEWIDTH - 20, 18),
       descriptionText:
         "$dmgDamage: " +
         args.damage +

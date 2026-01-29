@@ -106,17 +106,5 @@ const passivesDict = {
         cost: 0,
         descriptionText: "",
     }),
-    locked_slot: new Item({
-        spriteSheetPos: new Position(-1, -1),
-        name: "locked_slot",
-        shopName: "",
-        cost: 0,
-        descriptionText: "",
-    }),
 };
-export function getItem(itemName, screenPos = new Position()) {
-    let item = passivesDict[itemName].clone();
-    item.pos.update(screenPos);
-    return item;
-}
 export default passivesDict;

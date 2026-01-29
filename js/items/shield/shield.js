@@ -17,7 +17,6 @@ export class Shield extends Item {
         args.descFontSize = args.descFontSize ?? 0.6;
         super({
             ...args,
-            pos: new Position(GAMEWIDTH - 20, 36),
             descriptionText: (args.defense > 0 ? "$dfsDefense: " + args.defense + "\n" : "") +
                 (args.reflection > 0
                     ? "$refReflection: " + args.reflection + "\n"
