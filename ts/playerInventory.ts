@@ -4,11 +4,13 @@ import type { ActiveItem } from "./items/active/active.js";
 import activeDict from "./items/active/dict.js";
 import { armorDict, type Armor } from "./items/armor/armor.js";
 import { Item } from "./items/item.js";
+import passivesDict from "./items/passiveDict.js";
 import { shieldDict } from "./items/shield/dict.js";
 import { type Shield } from "./items/shield/shield.js";
 import { flagItem, picaxeItem } from "./items/uiItems.js";
 import { weaponDict } from "./items/weapon/dict.js";
 import type { Weapon } from "./items/weapon/weapon.js";
+import { utils } from "./utils.js";
 
 export type inventory = {
   armor: Armor;
@@ -21,7 +23,7 @@ export type inventory = {
 };
 
 const baseInventory: inventory = {
-  weapon: weaponDict.wood_sword,
+  weapon: weaponDict.big_sword,
   shield: shieldDict.wood_shield,
   armor: armorDict.empty,
   active: activeDict.empty,
@@ -82,4 +84,16 @@ export function updateInventoryPositions() {
       BORDERTHICKTOP + 13 + 18 * Math.floor(i / 6),
     );
   });
+}
+
+export function getRandomItem() {
+  const passives = Object.values(passivesDict).filter(
+    (x) =>
+      !hasItem(x.name) &&
+      !playerInventory.soldItemNames.includes(x.name) &&
+      x.cost > 0,
+  );
+  const r = utils.randomArrayId(passives);
+  const item = passives[r]!;
+  return item;
 }

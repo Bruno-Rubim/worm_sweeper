@@ -129,7 +129,6 @@ export class LevelManager extends GameObject {
         this.width,
         this.height,
       );
-      console.log(Math.round(gameState.runTime * 10) / 10);
       if (gameState.deathScreenStage > 0) {
         canvasManager.renderText(
           "menu",
@@ -139,10 +138,18 @@ export class LevelManager extends GameObject {
         );
       }
       if (gameState.deathScreenStage > 1) {
+        const runTime = Math.floor(gameState.runTime);
+        const runTimeMins = Math.floor(runTime / 60);
+        const runTimeSecs = Math.floor(runTime % 60);
         canvasManager.renderText(
           "menu",
           new Position(GAMEWIDTH / 2, 80),
-          "Run time: " + Math.floor(gameState.runTime) + "s",
+          "Run time: " +
+            (runTimeMins > 10 ? "" : "0") +
+            runTimeMins +
+            ":" +
+            (runTimeSecs > 10 ? "" : "0") +
+            runTimeSecs,
           CENTER,
         );
       }
@@ -248,7 +255,11 @@ export class LevelManager extends GameObject {
         this.caveManager.startCave(action.starterGridPos);
       });
     } else if (action instanceof StartBattle) {
-      gameState.battle = new Battle(gameState.level.depth, action.enemyCount);
+      gameState.battle = new Battle(
+        gameState.level.depth,
+        action.enemyCount,
+        action.chest,
+      );
       this.changeScene("battle");
     } else if (action instanceof ResetShop) {
       // Reset shop items

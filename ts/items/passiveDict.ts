@@ -111,13 +111,6 @@ const passivesDict = {
     cost: 0,
     descriptionText: "",
   }),
-  locked_slot: new Item({
-    spriteSheetPos: new Position(-1, -1),
-    name: "locked_slot",
-    shopName: "",
-    cost: 0,
-    descriptionText: "",
-  }),
 };
 
 /**

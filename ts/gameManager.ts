@@ -351,9 +351,6 @@ export default class GameManager {
   checkTimers() {
     timerManager.queue.forEach((timer) => {
       // Possible action in result of timer reaching goal
-      if (timer.classes.includes("log")) {
-        console.log(timer.secondsRemaining, timer.secondsRemaining);
-      }
       let action: Action | void | null = null;
       if (timer.ticsRemaining <= 0 && !timer.ended) {
         action = timer.reachGoal();
@@ -381,7 +378,9 @@ export default class GameManager {
       if (gameState.inBook) {
         return new ToggleBook();
       }
-      this.pauseGame();
+      if (!gameState.gameOver) {
+        this.pauseGame();
+      }
     }
     if (inputState.keyboard[" "] == "pressed") {
       inputState.keyboard[" "] = "read";
