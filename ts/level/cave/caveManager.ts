@@ -116,7 +116,12 @@ export default class CaveManager extends SceneManager {
         !block.starter &&
         block.content == CONTENTWORM &&
         this.getAdjcBlocks(block.gridPos).every(
-          (b) => b.content == CONTENTWORM,
+          (b) =>
+            !b.starter &&
+            (b.content == CONTENTWORM || b.content == CONTENTEMPTY) &&
+            this.getSurrBlocks(b.gridPos).every(
+              (c) => c.content == CONTENTWORM || c.content == CONTENTEMPTY,
+            ),
         ),
     );
   }
@@ -470,15 +475,19 @@ export default class CaveManager extends SceneManager {
   }
 
   placeChest() {
-    let block;
     if (this.blocksCanPlaceChest.length == 0) {
-      block = this.cave.allBLocks
-        .filter((b) => b.content == CONTENTWORM)
-        .sort((a, b) => b.threatLevel - a.threatLevel)[0]!;
-    } else {
-      const r = utils.randomArrayId(this.blocksCanPlaceChest);
-      block = this.blocksCanPlaceChest[r]!;
+      console.warn("no chest for you, when will you learn");
+      return;
     }
+    const r = utils.randomArrayId(this.blocksCanPlaceChest);
+    const block = this.blocksCanPlaceChest[r]!;
+    this.getAdjcBlocks(block.gridPos).forEach((b) => {
+      if (b.content != CONTENTWORM && this.blocksCanPlaceWorm.includes(b)) {
+        b.content = CONTENTWORM;
+        this.cave.wormsLeft++;
+        this.cave.blocksLeft--;
+      }
+    });
     block.hasChest = true;
     block.hasGold = false;
   }
@@ -490,7 +499,7 @@ export default class CaveManager extends SceneManager {
     if (gameState.bugCurse) {
       this.cave.wormQuantity = Math.ceil(this.cave.wormQuantity * 1.2);
       this.cave.wormsLeft = this.cave.wormQuantity;
-      this.cave.goldChance += 0.3;
+      this.cave.goldChance = 0.4;
       this.cave.blocksLeft =
         this.cave.size * this.cave.size - this.cave.wormsLeft;
     }
