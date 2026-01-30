@@ -88,10 +88,10 @@ export class EquipItem extends Action {
 
 // Calls to sell an item from inventory
 export class SellItem extends Action {
-  item: Item;
-  constructor(item: Item) {
+  slot: Slot;
+  constructor(slot: Slot) {
     super();
-    this.item = item;
+    this.slot = slot;
   }
 }
 

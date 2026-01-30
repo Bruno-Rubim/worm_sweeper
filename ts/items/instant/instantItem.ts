@@ -1,5 +1,3 @@
-import { GAMEWIDTH, LEFT, type cursorClick } from "../../global.js";
-import { ConsumeItem, SellItem } from "../../action.js";
 import Position from "../../gameElements/position.js";
 import { Item } from "../item.js";
 

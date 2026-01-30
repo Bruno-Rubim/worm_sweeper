@@ -47,7 +47,7 @@ const ExitArrow = new GameObject({
   sprite: sprites.exit_arrow,
   height: 16,
   width: 32,
-  pos: new Position(GAMEWIDTH / 2 - 16, 112),
+  pos: new Position(GAMEWIDTH / 2 - 16, 128),
   clickFunction: (cursorPos: Position, button: cursorClick) => {
     if (button == LEFT) {
       ExitArrow.mouseHovering = false;
@@ -197,6 +197,11 @@ export default class BattleManager extends SceneManager {
       128,
     );
 
+    if (battle.won) {
+      return;
+    }
+    //Renders stats
+
     // Renders defense stats
     if (battle.protection + battle.defense + battle.reflection > 0) {
       const reflect = battle.reflection;
@@ -243,11 +248,7 @@ export default class BattleManager extends SceneManager {
     }
 
     // Renders cooldown counter
-    if (
-      !gameState.tiredTimer.ended &&
-      gameState.tiredTimer.started &&
-      !battle.won
-    ) {
+    if (!gameState.tiredTimer.ended && gameState.tiredTimer.started) {
       let counterFrame = Math.floor(
         Math.min(15, (gameState.tiredTimer.percentage / 100) * 16),
       );

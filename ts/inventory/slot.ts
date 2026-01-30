@@ -31,9 +31,9 @@ export class Slot extends GameObject {
       pos: pos,
       clickFunction: (cursorPos: Position, button: cursorClick) => {
         if (button == RIGHT) {
-          // if (gameState.currentScene == "shop") {
-          //   return new SellItem(this.item);
-          // }
+          if (gameState.currentScene == "shop") {
+            return new SellItem(this);
+          }
         } else {
           return new EquipItem(this);
         }
@@ -139,7 +139,7 @@ export class ActiveSlot extends Slot {
         }
         return new UseActiveItem(this);
       } else {
-        return new SellItem(this.item);
+        return new SellItem(this);
       }
     };
   }
