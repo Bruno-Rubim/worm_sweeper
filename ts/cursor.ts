@@ -91,6 +91,7 @@ class Cursor {
   pos = new Position();
   state: cursorState = CURSORDEFAULT;
   description = new Description(this.pos);
+  scale: number = 1;
 
   /**
    * Renders the cursor based on its current state and mouse inputState
@@ -99,13 +100,15 @@ class Cursor {
   render(canvasManager: CanvasManager) {
     canvasManager.renderSpriteFromSheet(
       sprites.cursor_sheet,
-      this.pos,
-      16,
-      16,
+      this.pos.subtract(8 * this.scale, 8 * this.scale),
+      16 * this.scale,
+      16 * this.scale,
       cursorSheetPos[this.state].add(
         0,
         inputState.mouse.heldLeft ? 1 : inputState.mouse.heldRight ? 2 : 0,
       ),
+      16,
+      16,
     );
     this.description.render();
   }

@@ -70,7 +70,8 @@ export default class GameManager {
    * Updates the state of the cursor, changing its visual
    * @param newState
    */
-  changeCursorState(newState: cursorState) {
+  changeCursorState(newState: cursorState, scale: number = 1) {
+    cursor.scale = scale;
     cursor.state = newState;
     this.cursorChanged = true;
   }
@@ -383,7 +384,7 @@ export default class GameManager {
       return;
     }
     if (action instanceof ChangeCursorState) {
-      this.changeCursorState(action.newState);
+      this.changeCursorState(action.newState, action.scale);
       return "cursorChange";
     }
     if (action instanceof ConsumeItem) {
@@ -549,8 +550,6 @@ export default class GameManager {
 
     inputState.mouse.clickedRight = false;
     inputState.mouse.clickedLeft = false;
-
-    cursor.pos.update(cursor.pos.subtract(8, 8));
 
     this.handleAction(this.handleKeyInput());
   }

@@ -11,9 +11,11 @@ export class Action {}
 
 export class ChangeCursorState extends Action {
   newState: cursorState;
-  constructor(newState: cursorState) {
+  scale: number;
+  constructor(newState: cursorState, scale: number = 1) {
     super();
     this.newState = newState;
+    this.scale = scale;
   }
 }
 

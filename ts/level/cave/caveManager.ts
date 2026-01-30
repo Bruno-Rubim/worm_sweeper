@@ -792,32 +792,32 @@ export default class CaveManager extends SceneManager {
     }
     if (block.broken) {
       if (block.content == CONTENTWATER) {
-        return new ChangeCursorState(CURSORWATER);
+        return new ChangeCursorState(CURSORWATER, this.cave.levelScale);
       }
       if (block.content == CONTENTBLOOD) {
-        return new ChangeCursorState(CURSORBLOOD);
+        return new ChangeCursorState(CURSORBLOOD, this.cave.levelScale);
       }
       if (
         playerInventory.hasItem("detonator") &&
         block.threatLevel > 0 &&
         block.threatLevel == block.markerLevel
       ) {
-        return new ChangeCursorState(CURSORDETONATOR);
+        return new ChangeCursorState(CURSORDETONATOR, this.cave.levelScale);
       }
     }
     if (
       block.broken &&
       [CONTENTDOOREXIT, CONTENTDOORSHOP].includes(block.content)
     ) {
-      return new ChangeCursorState(CURSORDEFAULT);
+      return new ChangeCursorState(CURSORDEFAULT, this.cave.levelScale);
     }
     if (
       block.broken &&
       [CONTENTDOOREXITOPEN, CONTENTDOORSHOPOPEN].includes(block.content)
     ) {
-      return new ChangeCursorState(CURSORARROW);
+      return new ChangeCursorState(CURSORARROW, this.cave.levelScale);
     }
-    return new ChangeCursorState(CURSORPICAXE);
+    return new ChangeCursorState(CURSORPICAXE, this.cave.levelScale);
   };
 
   handleNotHover = () => {
