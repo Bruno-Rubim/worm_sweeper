@@ -97,23 +97,27 @@ export class Inventory {
     return [this.weapon, this.shield, this.armor, this.active, this.altActive];
   }
 
-  get emptyBatSlot() {
+  get emptyBagSlot() {
     return this.bagSlots.find((x) => x.item.name == "empty")!;
+  }
+
+  updateBagEmpties() {
+    let firstEmptyId: null | number = null;
+    for (let i = 0; i < this.bagSlots.length; i++) {
+      const slot = this.bagSlots[i]!;
+      if (firstEmptyId == null && slot.item.name == "empty") {
+        firstEmptyId = i;
+        continue;
+      }
+      if (slot.item.name != "empty" && firstEmptyId != null) {
+        this.bagSlots[firstEmptyId]?.switchItems(slot);
+        i = firstEmptyId;
+        firstEmptyId = null;
+      }
+    }
   }
 }
 
 const playerInventory = new Inventory();
 
 export default playerInventory;
-
-// export function getRandomItem() {
-//   const passives = Object.values(passivesDict).filter(
-//     (x) =>
-//       !hasItem(x.name) &&
-//       !playerInventory.soldItemNames.includes(x.name) &&
-//       x.cost > 0,
-//   );
-//   const r = utils.randomArrayId(passives);
-//   const item = passives[r]!;
-//   return item;
-// }

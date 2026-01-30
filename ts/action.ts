@@ -1,5 +1,5 @@
 import type { cursorState } from "./cursor.js";
-import type { LEFT, RIGHT } from "./global.js";
+import type { CENTER, LEFT, RIGHT } from "./global.js";
 import type { Item } from "./items/item.js";
 import type Position from "./gameElements/position.js";
 import type { ShopItem } from "./level/shop/shopItem.js";
@@ -11,9 +11,11 @@ export class Action {}
 
 export class ChangeCursorState extends Action {
   newState: cursorState;
-  constructor(newState: cursorState) {
+  scale: number;
+  constructor(newState: cursorState, scale: number = 1) {
     super();
     this.newState = newState;
+    this.scale = scale;
   }
 }
 
@@ -88,10 +90,10 @@ export class EquipItem extends Action {
 
 // Calls to sell an item from inventory
 export class SellItem extends Action {
-  item: Item;
-  constructor(item: Item) {
+  slot: Slot;
+  constructor(slot: Slot) {
     super();
-    this.item = item;
+    this.slot = slot;
   }
 }
 
@@ -127,11 +129,11 @@ export class ToggleInventory extends Action {}
 // Calls to render an item description next to the cursor
 export class ItemDescription extends Action {
   description: string;
-  side: typeof LEFT | typeof RIGHT;
+  side: typeof LEFT | typeof RIGHT | typeof CENTER;
   descFontSize: number;
   constructor(
     description: string,
-    side: typeof LEFT | typeof RIGHT,
+    side: typeof LEFT | typeof RIGHT | typeof CENTER,
     descFontSize: number,
   ) {
     super();

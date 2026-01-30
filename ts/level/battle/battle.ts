@@ -14,6 +14,11 @@ export class Battle {
 
   constructor(depth: number, enemyCount: number, chest: boolean) {
     this.enemies = [];
+    this.chest = chest;
+    if (this.chest) {
+      depth *= 1.2;
+    }
+
     let arr: Enemy[] = [
       new Worm(depth),
       new ScaleWorm(depth),
@@ -23,7 +28,6 @@ export class Battle {
     depth > 2 ? (depth > 4 ? (x = 2) : (x = 1)) : (x = 0);
 
     this.enemies.push(arr[Math.min(x, utils.randomArrayId(arr))]!);
-    this.chest = chest;
   }
   start() {
     const helmet = playerInventory.hasItem("safety_helmet");

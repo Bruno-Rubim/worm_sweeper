@@ -55,6 +55,7 @@ export default class GameObject {
     hitboxWidth?: number;
     hitboxHeight?: number;
     hitboxPosShift?: Position;
+    hidden?: Boolean;
     clickFunction?: (cursorPos: Position, button: cursorClick) => Action | void;
     heldFunction?: (cursorPos: Position, button: cursorClick) => Action | void;
     hoverFunction?: (cursorPos: Position) => Action | void;
@@ -76,6 +77,7 @@ export default class GameObject {
     this.hoverFunction = args.hoverFunction;
     this.notHoverFunction = args.notHoverFunction;
     this.firstAnimationTic = timeTracker.currentGameTic;
+    this.hidden = args.hidden ?? false;
   }
 
   /**

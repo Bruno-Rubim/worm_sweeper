@@ -38,42 +38,16 @@ import sounds from "../../sounds/sounds.js";
 import { sprites } from "../../sprites.js";
 import timeTracker from "../../timer/timeTracker.js";
 import { utils } from "../../utils.js";
+import damageOverlay from "../damageOverlay.js";
 import SceneManager from "../sceneManager.js";
 import { ScaleWorm } from "./enemy.js";
 import LootSlot from "./lootSlot.js";
-
-const damageOverlay = new GameObject({
-  sprite: sprites.damage_sheet,
-  height: 128,
-  width: 128,
-  pos: new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
-});
-
-damageOverlay.render = () => {
-  if (damageOverlay.hidden) {
-    return;
-  }
-  canvasManager.renderAnimationFrame(
-    damageOverlay.sprite,
-    damageOverlay.pos,
-    damageOverlay.width,
-    damageOverlay.height,
-    4,
-    1,
-    damageOverlay.firstAnimationTic,
-    1,
-    new Position(),
-    false,
-  );
-};
-
-damageOverlay.hidden;
 
 const ExitArrow = new GameObject({
   sprite: sprites.exit_arrow,
   height: 16,
   width: 32,
-  pos: new Position(GAMEWIDTH / 2 - 16, 112),
+  pos: new Position(GAMEWIDTH / 2 - 16, 128),
   clickFunction: (cursorPos: Position, button: cursorClick) => {
     if (button == LEFT) {
       ExitArrow.mouseHovering = false;
@@ -223,6 +197,11 @@ export default class BattleManager extends SceneManager {
       128,
     );
 
+    if (battle.won) {
+      return;
+    }
+    //Renders stats
+
     // Renders defense stats
     if (battle.protection + battle.defense + battle.reflection > 0) {
       const reflect = battle.reflection;
@@ -269,11 +248,7 @@ export default class BattleManager extends SceneManager {
     }
 
     // Renders cooldown counter
-    if (
-      !gameState.tiredTimer.ended &&
-      gameState.tiredTimer.started &&
-      !battle.won
-    ) {
+    if (!gameState.tiredTimer.ended && gameState.tiredTimer.started) {
       let counterFrame = Math.floor(
         Math.min(15, (gameState.tiredTimer.percentage / 100) * 16),
       );
@@ -290,9 +265,6 @@ export default class BattleManager extends SceneManager {
         new Position(counterFrame % 8, Math.floor(counterFrame / 8)),
       );
     }
-
-    // Render damage overlay
-    damageOverlay.render();
   };
 
   selectLootItem() {
@@ -301,19 +273,18 @@ export default class BattleManager extends SceneManager {
       return;
     }
 
+    const bannedNames = [
+      ...playerInventory.itemNames,
+      ...gameState.level.shop.itemNames,
+      "gold_bug",
+    ];
     const itemPool = [
       ...Object.values(weaponDict),
       ...Object.values(shieldDict),
       ...Object.values(armorDict),
       ...Object.values(activeDict),
       ...Object.values(passivesDict),
-    ].filter(
-      (x) =>
-        ![
-          ...playerInventory.itemNames,
-          ...gameState.level.shop.itemNames,
-        ].includes(x.name),
-    );
+    ].filter((x) => !bannedNames.includes(x.name));
 
     const r = utils.randomArrayId(itemPool);
     this.lootSlot.item = itemPool[r]!;
@@ -386,6 +357,13 @@ export default class BattleManager extends SceneManager {
 
     soundManager.playSound(weapon.sound);
 
+    // Set Spikes
+    if (playerInventory.hasItem("spike_polisher")) {
+      gameState.battle.reflection += weapon.spikes;
+    } else {
+      gameState.battle.spikes += weapon.spikes;
+    }
+
     const playerReflection = gameState.battle.reflection;
     const playerDefense = gameState.battle.defense;
     const playerProtection = gameState.battle.protection;
@@ -412,13 +390,6 @@ export default class BattleManager extends SceneManager {
 
     if (weapon.stunSecs > 0) {
       enemy.stun(weapon.stunSecs);
-    }
-
-    // Spikes
-    if (playerInventory.hasItem("spike_polisher")) {
-      gameState.battle.reflection += weapon.spikes;
-    } else {
-      gameState.battle.spikes += weapon.spikes;
     }
 
     // Weapon animation

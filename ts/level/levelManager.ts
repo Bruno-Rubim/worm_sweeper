@@ -38,6 +38,7 @@ import { Battle } from "./battle/battle.js";
 import playerInventory from "../inventory/playerInventory.js";
 import { GAMETIMERSYNC, timerManager } from "../timer/timerManager.js";
 import { transitionOverlay } from "./transitionOverlay.js";
+import damageOverlay from "./damageOverlay.js";
 
 // Manages rendering and interactions with the current level from gameState
 export class LevelManager extends GameObject {
@@ -78,6 +79,7 @@ export class LevelManager extends GameObject {
    * @returns
    */
   render(): void {
+    // Book
     if (gameState.inBook) {
       canvasManager.renderSprite(
         sprites.bg_rules,
@@ -97,6 +99,8 @@ export class LevelManager extends GameObject {
       );
       return;
     }
+
+    // Pause Screen
     if (gameState.paused) {
       canvasManager.renderSprite(
         sprites.screen_paused,
@@ -107,6 +111,7 @@ export class LevelManager extends GameObject {
       return;
     }
 
+    // Inventory
     if (gameState.inInventory) {
       canvasManager.renderSprite(
         sprites.bg_bag,
@@ -120,7 +125,13 @@ export class LevelManager extends GameObject {
       return;
     }
 
+    // Screen
     this.currentSceneManager.render();
+
+    // Damage overlay
+    damageOverlay.render();
+
+    // Transition
     transitionOverlay.render();
     if (gameState.gameOver) {
       canvasManager.renderSprite(

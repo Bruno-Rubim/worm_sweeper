@@ -1,12 +1,12 @@
 import Block from "./block.js";
 import Position from "../../gameElements/position.js";
-import { utils } from "../../utils.js";
 
 export default class Cave {
   difficulty: number;
   size: number;
   hasShop: boolean;
   hasWater: boolean;
+  hasBlood: boolean;
   goldChance = 0.3;
   wormQuantity: number;
   wormsLeft: number;
@@ -20,8 +20,9 @@ export default class Cave {
   constructor(depth: number) {
     this.difficulty = (depth % 4) + Math.floor(depth / 3) + 4;
     this.size = Math.floor(depth / 4) + 6;
-    this.hasShop = depth > 0;
-    this.hasWater = depth > 1 && utils.randomInt(3) == 0;
+    this.hasShop = depth >= 1;
+    this.hasWater = depth >= 3 && Math.random() <= 0.25;
+    this.hasBlood = depth >= 7 && Math.random() <= 0.2;
     this.wormQuantity = Math.floor(
       this.difficulty * 0.033 * this.size * this.size,
     );
