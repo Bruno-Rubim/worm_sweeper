@@ -357,6 +357,13 @@ export default class BattleManager extends SceneManager {
 
     soundManager.playSound(weapon.sound);
 
+    // Set Spikes
+    if (playerInventory.hasItem("spike_polisher")) {
+      gameState.battle.reflection += weapon.spikes;
+    } else {
+      gameState.battle.spikes += weapon.spikes;
+    }
+
     const playerReflection = gameState.battle.reflection;
     const playerDefense = gameState.battle.defense;
     const playerProtection = gameState.battle.protection;
@@ -383,13 +390,6 @@ export default class BattleManager extends SceneManager {
 
     if (weapon.stunSecs > 0) {
       enemy.stun(weapon.stunSecs);
-    }
-
-    // Spikes
-    if (playerInventory.hasItem("spike_polisher")) {
-      gameState.battle.reflection += weapon.spikes;
-    } else {
-      gameState.battle.spikes += weapon.spikes;
     }
 
     // Weapon animation
