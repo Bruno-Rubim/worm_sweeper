@@ -5,7 +5,7 @@ import timeTracker from "../timer/timeTracker.js";
 import { canvasManager } from "../canvasManager.js";
 export default class GameObject {
     sprite;
-    hidden = false;
+    hidden;
     pos;
     width;
     height;
@@ -24,6 +24,7 @@ export default class GameObject {
         this.pos = args.pos ?? new Position();
         this.width = args.width ?? 16;
         this.height = args.height ?? 16;
+        this.hidden = args.hidden ?? false;
         this.hitboxPosShift = args.hitboxPosShift;
         this.hitbox = new Hitbox({
             objPos: this.pos,
@@ -36,7 +37,6 @@ export default class GameObject {
         this.hoverFunction = args.hoverFunction;
         this.notHoverFunction = args.notHoverFunction;
         this.firstAnimationTic = timeTracker.currentGameTic;
-        this.hidden = args.hidden ?? false;
     }
     updatePosition(newPos) {
         this.pos = newPos;
