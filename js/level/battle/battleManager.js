@@ -17,27 +17,15 @@ import sounds from "../../sounds/sounds.js";
 import { sprites } from "../../sprites.js";
 import timeTracker from "../../timer/timeTracker.js";
 import { utils } from "../../utils.js";
+import damageOverlay from "../damageOverlay.js";
 import SceneManager from "../sceneManager.js";
 import { ScaleWorm } from "./enemy.js";
 import LootSlot from "./lootSlot.js";
-const damageOverlay = new GameObject({
-    sprite: sprites.damage_sheet,
-    height: 128,
-    width: 128,
-    pos: new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
-});
-damageOverlay.render = () => {
-    if (damageOverlay.hidden) {
-        return;
-    }
-    canvasManager.renderAnimationFrame(damageOverlay.sprite, damageOverlay.pos, damageOverlay.width, damageOverlay.height, 4, 1, damageOverlay.firstAnimationTic, 1, new Position(), false);
-};
-damageOverlay.hidden;
 const ExitArrow = new GameObject({
     sprite: sprites.exit_arrow,
     height: 16,
     width: 32,
-    pos: new Position(GAMEWIDTH / 2 - 16, 112),
+    pos: new Position(GAMEWIDTH / 2 - 16, 128),
     clickFunction: (cursorPos, button) => {
         if (button == LEFT) {
             ExitArrow.mouseHovering = false;
@@ -89,6 +77,9 @@ export default class BattleManager extends SceneManager {
         });
         canvasManager.renderSprite(playerInventory.weapon.item.bigSprite, new Position(BORDERTHICKLEFT - (gameState.attackAnimationTimer.inMotion ? 0 : 24), BORDERTHICKTOP + (gameState.attackAnimationTimer.inMotion ? 26 : 45)), 128, 128);
         canvasManager.renderSprite(playerInventory.shield.item.bigSprite, new Position(BORDERTHICKLEFT + (gameState.shieldUpTimer.inMotion ? 0 : 24), BORDERTHICKTOP + (gameState.shieldUpTimer.inMotion ? 26 : 45)), 128, 128);
+        if (battle.won) {
+            return;
+        }
         if (battle.protection + battle.defense + battle.reflection > 0) {
             const reflect = battle.reflection;
             const defense = battle.defense;
@@ -117,31 +108,30 @@ export default class BattleManager extends SceneManager {
                 "$stn".repeat(roundedStun) +
                 (stun > roundedStun ? "$hst" : ""), CENTER);
         }
-        if (!gameState.tiredTimer.ended &&
-            gameState.tiredTimer.started &&
-            !battle.won) {
+        if (!gameState.tiredTimer.ended && gameState.tiredTimer.started) {
             let counterFrame = Math.floor(Math.min(15, (gameState.tiredTimer.percentage / 100) * 16));
             canvasManager.renderSpriteFromSheet(sprites.counter_sheet, new Position(GAMEWIDTH / 2 - 4, GAMEHEIGHT -
                 BORDERTHICKBOTTOM -
                 (battle.spikes + battle.stun > 0 ? 31 : 22)), 8, 8, new Position(counterFrame % 8, Math.floor(counterFrame / 8)));
         }
-        damageOverlay.render();
     };
     selectLootItem() {
         if (!gameState.battle) {
             alert("this shouldn't happen outside of battle");
             return;
         }
+        const bannedNames = [
+            ...playerInventory.itemNames,
+            ...gameState.level.shop.itemNames,
+            "gold_bug",
+        ];
         const itemPool = [
             ...Object.values(weaponDict),
             ...Object.values(shieldDict),
             ...Object.values(armorDict),
             ...Object.values(activeDict),
             ...Object.values(passivesDict),
-        ].filter((x) => ![
-            ...playerInventory.itemNames,
-            ...gameState.level.shop.itemNames,
-        ].includes(x.name));
+        ].filter((x) => !bannedNames.includes(x.name));
         const r = utils.randomArrayId(itemPool);
         this.lootSlot.item = itemPool[r];
     }
@@ -190,6 +180,12 @@ export default class BattleManager extends SceneManager {
         const weapon = playerInventory.weapon.item;
         let damage = weapon.totalDamage;
         soundManager.playSound(weapon.sound);
+        if (playerInventory.hasItem("spike_polisher")) {
+            gameState.battle.reflection += weapon.spikes;
+        }
+        else {
+            gameState.battle.spikes += weapon.spikes;
+        }
         const playerReflection = gameState.battle.reflection;
         const playerDefense = gameState.battle.defense;
         const playerProtection = gameState.battle.protection;
@@ -210,12 +206,6 @@ export default class BattleManager extends SceneManager {
         enemy.damagedTimer.start();
         if (weapon.stunSecs > 0) {
             enemy.stun(weapon.stunSecs);
-        }
-        if (playerInventory.hasItem("spike_polisher")) {
-            gameState.battle.reflection += weapon.spikes;
-        }
-        else {
-            gameState.battle.spikes += weapon.spikes;
         }
         gameState.attackAnimationTimer.goalSecs = weapon.cooldown / 3;
         gameState.attackAnimationTimer.start();

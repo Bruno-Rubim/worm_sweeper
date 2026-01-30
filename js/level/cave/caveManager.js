@@ -1,10 +1,10 @@
-import { ChangeCursorState, ChangeScene, NextLevel, StartBattle, } from "../../action.js";
-import { CURSORARROW, CURSORDEFAULT, CURSORDETONATOR, CURSORGOLDWATER, CURSORPICAXE, } from "../../cursor.js";
+import { ChangeCursorState, ChangeScene, LoseGame, NextLevel, StartBattle, } from "../../action.js";
+import { CURSORARROW, CURSORDEFAULT, CURSORDETONATOR, CURSORWATER, CURSORPICAXE, CURSORBLOOD, } from "../../cursor.js";
 import { CLICKLEFT } from "../../global.js";
 import Position from "../../gameElements/position.js";
 import sounds from "../../sounds/sounds.js";
 import { sprites } from "../../sprites.js";
-import Block, { blockSheetPos, CONTENTDOOREXIT, CONTENTDOOREXITOPEN, CONTENTDOORSHOP, CONTENTDOORSHOPOPEN, CONTENTEMPTY, CONTENTWATER, CONTENTWORM, } from "./block.js";
+import Block, { blockSheetPos, CONTENTBLOOD, CONTENTDOOREXIT, CONTENTDOOREXITOPEN, CONTENTDOORSHOP, CONTENTDOORSHOPOPEN, CONTENTEMPTY, CONTENTWATER, CONTENTWORM, } from "./block.js";
 import SceneManager from "../sceneManager.js";
 import { gameState } from "../../gameState.js";
 import { canvasManager } from "../../canvasManager.js";
@@ -14,10 +14,15 @@ import { Timer } from "../../timer/timer.js";
 import { musicTracks } from "../../sounds/music.js";
 import timeTracker from "../../timer/timeTracker.js";
 import playerInventory from "../../inventory/playerInventory.js";
+import damageOverlay from "../damageOverlay.js";
 export default class CaveManager extends SceneManager {
     bomb = null;
     get cave() {
         return gameState.level.cave;
+    }
+    playDamageOverlay() {
+        damageOverlay.hidden = false;
+        damageOverlay.firstAnimationTic = timeTracker.currentGameTic;
     }
     getBlockFromScrenPos(pos) {
         const blockPos = pos.subtract(this.pos).divide(this.cave.levelScale * 16);
@@ -38,6 +43,15 @@ export default class CaveManager extends SceneManager {
                 gameState.gold += 5;
             }
             soundManager.playSound(sounds.clear);
+            this.cave.allBLocks.forEach((b) => {
+                if (b.hasChest) {
+                    if (b.marked) {
+                        b.marked = false;
+                        this.cave.wormsLeft++;
+                    }
+                }
+            });
+            this.updateAllStats();
         }
     }
     get blocksCanPlaceWorm() {
@@ -362,13 +376,18 @@ export default class CaveManager extends SceneManager {
         const block = this.blocksCanPlaceStuff[r];
         block.content = CONTENTDOORSHOP;
     }
-    placeWater() {
+    placeFountain() {
         if (this.blocksCanPlaceStuff.length == 0) {
             return;
         }
         const r = utils.randomArrayId(this.blocksCanPlaceStuff);
         const block = this.blocksCanPlaceStuff[r];
-        block.content = CONTENTWATER;
+        if (this.cave.hasBlood) {
+            block.content = CONTENTBLOOD;
+        }
+        else {
+            block.content = CONTENTWATER;
+        }
     }
     placeChest() {
         if (this.blocksCanPlaceChest.length == 0) {
@@ -411,7 +430,7 @@ export default class CaveManager extends SceneManager {
         }
         this.placeWorms();
         if (this.cave.hasWater) {
-            this.placeWater();
+            this.placeFountain();
         }
         if ((gameState.level.depth + 1) % 3 == 0) {
             this.placeChest();
@@ -429,11 +448,13 @@ export default class CaveManager extends SceneManager {
                     canvasManager.renderSpriteFromSheet(sprites.block_sheet, blockPos, blockSize, blockSize, blockSheetPos.hidden, 16, 16);
                     continue;
                 }
-                if (block.hasChest && !block.hidden && !block.broken) {
-                    canvasManager.renderAnimationFrame(sprites.block_sheet, blockPos, 16, 16, 8, 1, 0, 0.5, new Position(0, 3), true, blockSize, blockSize);
-                }
-                else {
+                {
                     canvasManager.renderSpriteFromSheet(sprites.block_sheet, blockPos, blockSize, blockSize, block.sheetBlockPos, 16, 16);
+                }
+                if (block.hasChest &&
+                    !block.broken &&
+                    (!block.hidden || this.cave.cleared)) {
+                    canvasManager.renderAnimationFrame(sprites.block_sheet, blockPos, 16, 16, 8, 1, 0, 0.5, new Position(0, 3), true, blockSize, blockSize);
                 }
                 if ((block.broken && block.content != CONTENTEMPTY) || block.marked) {
                     canvasManager.renderSpriteFromSheet(sprites.block_sheet, blockPos, blockSize, blockSize, block.sheetContentPos.add(0, 0), 16, 16);
@@ -522,7 +543,16 @@ export default class CaveManager extends SceneManager {
                     case CONTENTWATER:
                         gameState.gold += 1;
                         soundManager.playSound(sounds.gold);
-                        gameState.gameTimer.addSecs(-10);
+                        gameState.gameTimer.addSecs(-5);
+                        break;
+                    case CONTENTBLOOD:
+                        gameState.gameTimer.addSecs(30);
+                        gameState.health--;
+                        this.playDamageOverlay();
+                        soundManager.playSound(sounds.bite);
+                        if (gameState.health <= 0) {
+                            return new LoseGame();
+                        }
                         break;
                     case CONTENTEMPTY:
                         if (playerInventory.hasItem("detonator") &&
@@ -571,23 +601,26 @@ export default class CaveManager extends SceneManager {
         }
         if (block.broken) {
             if (block.content == CONTENTWATER) {
-                return new ChangeCursorState(CURSORGOLDWATER);
+                return new ChangeCursorState(CURSORWATER, this.cave.levelScale);
+            }
+            if (block.content == CONTENTBLOOD) {
+                return new ChangeCursorState(CURSORBLOOD, this.cave.levelScale);
             }
             if (playerInventory.hasItem("detonator") &&
                 block.threatLevel > 0 &&
                 block.threatLevel == block.markerLevel) {
-                return new ChangeCursorState(CURSORDETONATOR);
+                return new ChangeCursorState(CURSORDETONATOR, this.cave.levelScale);
             }
         }
         if (block.broken &&
             [CONTENTDOOREXIT, CONTENTDOORSHOP].includes(block.content)) {
-            return new ChangeCursorState(CURSORDEFAULT);
+            return new ChangeCursorState(CURSORDEFAULT, this.cave.levelScale);
         }
         if (block.broken &&
             [CONTENTDOOREXITOPEN, CONTENTDOORSHOPOPEN].includes(block.content)) {
-            return new ChangeCursorState(CURSORARROW);
+            return new ChangeCursorState(CURSORARROW, this.cave.levelScale);
         }
-        return new ChangeCursorState(CURSORPICAXE);
+        return new ChangeCursorState(CURSORPICAXE, this.cave.levelScale);
     };
     handleNotHover = () => {
         if (this.bomb?.hoverScreenPos) {

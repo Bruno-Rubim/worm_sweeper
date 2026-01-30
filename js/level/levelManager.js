@@ -18,6 +18,7 @@ import { Battle } from "./battle/battle.js";
 import playerInventory from "../inventory/playerInventory.js";
 import { GAMETIMERSYNC, timerManager } from "../timer/timerManager.js";
 import { transitionOverlay } from "./transitionOverlay.js";
+import damageOverlay from "./damageOverlay.js";
 export class LevelManager extends GameObject {
     shopManager;
     caveManager;
@@ -64,6 +65,7 @@ export class LevelManager extends GameObject {
             return;
         }
         this.currentSceneManager.render();
+        damageOverlay.render();
         transitionOverlay.render();
         if (gameState.gameOver) {
             canvasManager.renderSprite(sprites.screen_defeat, this.pos, this.width, this.height);

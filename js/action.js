@@ -2,9 +2,11 @@ export class Action {
 }
 export class ChangeCursorState extends Action {
     newState;
-    constructor(newState) {
+    scale;
+    constructor(newState, scale = 1) {
         super();
         this.newState = newState;
+        this.scale = scale;
     }
 }
 export class Transition extends Action {
@@ -63,10 +65,10 @@ export class EquipItem extends Action {
     }
 }
 export class SellItem extends Action {
-    item;
-    constructor(item) {
+    slot;
+    constructor(slot) {
         super();
-        this.item = item;
+        this.slot = slot;
     }
 }
 export class ResetShop extends Action {

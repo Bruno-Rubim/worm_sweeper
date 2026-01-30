@@ -36,6 +36,7 @@ export default class GameObject {
         this.hoverFunction = args.hoverFunction;
         this.notHoverFunction = args.notHoverFunction;
         this.firstAnimationTic = timeTracker.currentGameTic;
+        this.hidden = args.hidden ?? false;
     }
     updatePosition(newPos) {
         this.pos = newPos;

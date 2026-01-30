@@ -6,6 +6,7 @@ export const CONTENTDOORSHOP = "door_shop";
 export const CONTENTDOORSHOPOPEN = "door_shop_open";
 export const CONTENTWORM = "worm";
 export const CONTENTWATER = "water";
+export const CONTENTBLOOD = "blood";
 export const blockSheetPos = {
     [CONTENTDOOREXIT]: new Position(0, 0),
     [CONTENTDOOREXITOPEN]: new Position(1, 0),
@@ -18,7 +19,8 @@ export const blockSheetPos = {
     [CONTENTEMPTY]: new Position(0, 1),
     bell: new Position(9, 0),
     marked: new Position(9, 1),
-    [CONTENTWATER]: new Position(4, 2),
+    [CONTENTWATER]: new Position(3, 2),
+    [CONTENTBLOOD]: new Position(4, 2),
 };
 export default class Block {
     gamePos;

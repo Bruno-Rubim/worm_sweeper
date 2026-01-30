@@ -77,8 +77,23 @@ export class Inventory {
     get gearSlots() {
         return [this.weapon, this.shield, this.armor, this.active, this.altActive];
     }
-    get emptyBatSlot() {
+    get emptyBagSlot() {
         return this.bagSlots.find((x) => x.item.name == "empty");
+    }
+    updateBagEmpties() {
+        let firstEmptyId = null;
+        for (let i = 0; i < this.bagSlots.length; i++) {
+            const slot = this.bagSlots[i];
+            if (firstEmptyId == null && slot.item.name == "empty") {
+                firstEmptyId = i;
+                continue;
+            }
+            if (slot.item.name != "empty" && firstEmptyId != null) {
+                this.bagSlots[firstEmptyId]?.switchItems(slot);
+                i = firstEmptyId;
+                firstEmptyId = null;
+            }
+        }
     }
 }
 const playerInventory = new Inventory();

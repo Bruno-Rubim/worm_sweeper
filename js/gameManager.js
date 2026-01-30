@@ -13,23 +13,26 @@ import { bindListeners, inputState } from "./input/inputState.js";
 import { Weapon } from "./items/weapon/weapon.js";
 import { Shield } from "./items/shield/shield.js";
 import playerInventory from "./inventory/playerInventory.js";
-import { Armor } from "./items/armor/armor.js";
+import { Armor, armorDict } from "./items/armor/armor.js";
 import { bagButton, bookButton, musicButton, sfxButton, } from "./border/uiButtons.js";
 import { DEV, GAMEWIDTH } from "./global.js";
 import { transitionOverlay } from "./level/transitionOverlay.js";
 import { SilverBell } from "./items/active/silverBell.js";
 import { ActiveItem } from "./items/active/active.js";
 import { InstantItem } from "./items/instant/instantItem.js";
-import { ActiveSlot, ArmorSlot } from "./inventory/slot.js";
+import { ActiveSlot, ArmorSlot, ShieldSlot, WeaponSlot, } from "./inventory/slot.js";
 import activeDict from "./items/active/dict.js";
 import Position from "./gameElements/position.js";
+import { utils } from "./utils.js";
+import passivesDict from "./items/passiveDict.js";
 export default class GameManager {
     cursorChanged = false;
     hoverItemDesc = false;
     constructor() {
         bindListeners(canvasManager.canvasElement);
     }
-    changeCursorState(newState) {
+    changeCursorState(newState, scale = 1) {
+        cursor.scale = scale;
         cursor.state = newState;
         this.cursorChanged = true;
     }
@@ -132,7 +135,7 @@ export default class GameManager {
                     if (gameState.holding.name == "bomb") {
                         levelManager.caveManager.bomb = null;
                     }
-                    playerInventory.active.item = gameState.holding;
+                    action.slot.item = gameState.holding;
                     gameState.holding = null;
                 }
                 return;
@@ -157,18 +160,18 @@ export default class GameManager {
     obtainItem(action) {
         const item = action.item;
         if (item instanceof Shield) {
-            playerInventory.emptyBatSlot.item = playerInventory.shield.item;
+            playerInventory.emptyBagSlot.item = playerInventory.shield.item;
             playerInventory.shield.item = item;
             return;
         }
         if (item instanceof Weapon) {
-            playerInventory.emptyBatSlot.item = playerInventory.weapon.item;
+            playerInventory.emptyBagSlot.item = playerInventory.weapon.item;
             playerInventory.weapon.item = item;
             return;
         }
         if (item instanceof Armor) {
             if (playerInventory.armor.item.name != "empty") {
-                playerInventory.emptyBatSlot.item = playerInventory.armor.item;
+                playerInventory.emptyBagSlot.item = playerInventory.armor.item;
             }
             playerInventory.armor.item = item;
             return;
@@ -179,11 +182,11 @@ export default class GameManager {
             }
             if (playerInventory.active.item.name != "empty" &&
                 playerInventory.hasItem("tool_belt")) {
-                playerInventory.emptyBatSlot.switchItems(playerInventory.altActive);
+                playerInventory.emptyBagSlot.switchItems(playerInventory.altActive);
                 playerInventory.altActive.item = item;
                 return;
             }
-            playerInventory.emptyBatSlot.switchItems(playerInventory.active);
+            playerInventory.emptyBagSlot.switchItems(playerInventory.active);
             playerInventory.active.item = item;
             return;
         }
@@ -201,7 +204,7 @@ export default class GameManager {
         if (item instanceof SilverBell) {
             item.ringTimer.restart();
         }
-        playerInventory.emptyBatSlot.item = item;
+        playerInventory.emptyBagSlot.item = item;
     }
     equipItem(action) {
         const item = action.slot.item;
@@ -216,7 +219,7 @@ export default class GameManager {
         }
         if (item instanceof Armor) {
             if (action.slot instanceof ArmorSlot) {
-                playerInventory.emptyBatSlot.switchItems(action.slot);
+                playerInventory.emptyBagSlot.switchItems(action.slot);
             }
             else {
                 playerInventory.armor.switchItems(action.slot);
@@ -224,7 +227,7 @@ export default class GameManager {
         }
         if (item instanceof ActiveItem) {
             if (action.slot instanceof ActiveSlot) {
-                playerInventory.emptyBatSlot.switchItems(action.slot);
+                playerInventory.emptyBagSlot.switchItems(action.slot);
             }
             else {
                 if (playerInventory.hasItem("tool_belt") &&
@@ -238,6 +241,31 @@ export default class GameManager {
         }
     }
     sellItem(action) {
+        if (gameState.currentScene != "shop" ||
+            ["empty"].includes(action.slot.item.name)) {
+            return;
+        }
+        if (["picaxe", "flag", "wood_sword", "wood_shield"].includes(action.slot.item.name)) {
+            soundManager.playSound(sounds.wrong);
+            return;
+        }
+        const item = action.slot.item;
+        action.slot.item = action.slot.emptyItem;
+        if (action.slot instanceof WeaponSlot) {
+            playerInventory.bagSlots.find((x) => x.item.name == "wood_sword").item =
+                passivesDict.empty;
+        }
+        else if (action.slot instanceof ShieldSlot) {
+            playerInventory.bagSlots.find((x) => x.item.name == "wood_shield").item =
+                passivesDict.empty;
+        }
+        else if (item.name == "tool_belt") {
+            playerInventory.emptyBagSlot.switchItems(playerInventory.altActive);
+            playerInventory.altActive.reset();
+        }
+        playerInventory.updateBagEmpties();
+        gameState.gold += utils.randomInt(4, 1);
+        soundManager.playSound(sounds.gold);
     }
     performEnemyAttack(action) {
         return levelManager.battleManager.enemyAttack(action);
@@ -247,7 +275,7 @@ export default class GameManager {
             return;
         }
         if (action instanceof ChangeCursorState) {
-            this.changeCursorState(action.newState);
+            this.changeCursorState(action.newState, action.scale);
             return "cursorChange";
         }
         if (action instanceof ConsumeItem) {
@@ -294,6 +322,7 @@ export default class GameManager {
             return;
         }
         if (action instanceof SellItem) {
+            this.sellItem(action);
             return;
         }
         if (action instanceof ChangeScene) {
@@ -389,7 +418,6 @@ export default class GameManager {
         }
         inputState.mouse.clickedRight = false;
         inputState.mouse.clickedLeft = false;
-        cursor.pos.update(cursor.pos.subtract(8, 8));
         this.handleAction(this.handleKeyInput());
     }
     renderGame() {
