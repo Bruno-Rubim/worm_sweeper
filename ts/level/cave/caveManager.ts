@@ -94,6 +94,15 @@ export default class CaveManager extends SceneManager {
         gameState.gold += 5;
       }
       soundManager.playSound(sounds.clear);
+      this.cave.allBLocks.forEach((b) => {
+        if (b.hasChest) {
+          if (b.marked) {
+            b.marked = false;
+            this.cave.wormsLeft++;
+          }
+        }
+      });
+      this.updateAllStats();
     }
   }
 
@@ -567,7 +576,11 @@ export default class CaveManager extends SceneManager {
         }
 
         //Renders block
-        if (block.hasChest && !block.hidden && !block.broken) {
+        if (
+          block.hasChest &&
+          !block.broken &&
+          (!block.hidden || this.cave.cleared)
+        ) {
           canvasManager.renderAnimationFrame(
             sprites.block_sheet,
             blockPos,
