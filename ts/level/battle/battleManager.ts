@@ -38,36 +38,10 @@ import sounds from "../../sounds/sounds.js";
 import { sprites } from "../../sprites.js";
 import timeTracker from "../../timer/timeTracker.js";
 import { utils } from "../../utils.js";
+import damageOverlay from "../damageOverlay.js";
 import SceneManager from "../sceneManager.js";
 import { ScaleWorm } from "./enemy.js";
 import LootSlot from "./lootSlot.js";
-
-const damageOverlay = new GameObject({
-  sprite: sprites.damage_sheet,
-  height: 128,
-  width: 128,
-  pos: new Position(BORDERTHICKLEFT, BORDERTHICKTOP),
-});
-
-damageOverlay.render = () => {
-  if (damageOverlay.hidden) {
-    return;
-  }
-  canvasManager.renderAnimationFrame(
-    damageOverlay.sprite,
-    damageOverlay.pos,
-    damageOverlay.width,
-    damageOverlay.height,
-    4,
-    1,
-    damageOverlay.firstAnimationTic,
-    1,
-    new Position(),
-    false,
-  );
-};
-
-damageOverlay.hidden;
 
 const ExitArrow = new GameObject({
   sprite: sprites.exit_arrow,
@@ -290,9 +264,6 @@ export default class BattleManager extends SceneManager {
         new Position(counterFrame % 8, Math.floor(counterFrame / 8)),
       );
     }
-
-    // Render damage overlay
-    damageOverlay.render();
   };
 
   selectLootItem() {

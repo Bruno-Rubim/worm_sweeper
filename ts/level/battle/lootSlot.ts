@@ -1,12 +1,6 @@
 import { ItemDescription, ObtainItem } from "../../action.js";
 import Position from "../../gameElements/position.js";
-import {
-  CENTER,
-  GAMEWIDTH,
-  LEFT,
-  RIGHT,
-  type cursorClick,
-} from "../../global.js";
+import { CENTER, GAMEWIDTH, type cursorClick } from "../../global.js";
 import { Slot } from "../../inventory/slot.js";
 import { soundManager } from "../../sounds/soundManager.js";
 import sounds from "../../sounds/sounds.js";

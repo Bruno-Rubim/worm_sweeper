@@ -13,7 +13,8 @@ export const CURSORDETONATOR = "cursor_detonator";
 export const CURSORARROW = "cursor_arrow";
 export const CURSORBATTLE = "cursor_battle";
 export const CURSORBOMB = "cursor_bomb";
-export const CURSORGOLDWATER = "cursor_gold_water";
+export const CURSORWATER = "cursor_water";
+export const CURSORBLOOD = "cursor_blood";
 export const CURSORBOOK = "cursor_book";
 export const CURSORNONE = "cursor_none";
 
@@ -25,9 +26,10 @@ const cursorSheetPos = {
   [CURSORARROW]: new Position(3, 0),
   [CURSORBATTLE]: new Position(4, 0),
   [CURSORBOMB]: new Position(5, 0),
-  [CURSORGOLDWATER]: new Position(6, 0),
+  [CURSORWATER]: new Position(6, 0),
+  [CURSORBLOOD]: new Position(7, 0),
   [CURSORBOOK]: new Position(0, 3),
-  [CURSORNONE]: new Position(6, 3),
+  [CURSORNONE]: new Position(-1, -1),
 };
 
 export type cursorState = keyof typeof cursorSheetPos;

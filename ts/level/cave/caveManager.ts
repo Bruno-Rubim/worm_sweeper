@@ -1,6 +1,7 @@
 import {
   ChangeCursorState,
   ChangeScene,
+  LoseGame,
   NextLevel,
   StartBattle,
 } from "../../action.js";
@@ -8,8 +9,9 @@ import {
   CURSORARROW,
   CURSORDEFAULT,
   CURSORDETONATOR,
-  CURSORGOLDWATER,
+  CURSORWATER,
   CURSORPICAXE,
+  CURSORBLOOD,
 } from "../../cursor.js";
 import { CLICKLEFT, type CLICKRIGHT } from "../../global.js";
 import Position from "../../gameElements/position.js";
@@ -17,6 +19,7 @@ import sounds from "../../sounds/sounds.js";
 import { sprites } from "../../sprites.js";
 import Block, {
   blockSheetPos,
+  CONTENTBLOOD,
   CONTENTDOOREXIT,
   CONTENTDOOREXITOPEN,
   CONTENTDOORSHOP,
@@ -34,6 +37,7 @@ import { Timer } from "../../timer/timer.js";
 import { musicTracks } from "../../sounds/music.js";
 import timeTracker from "../../timer/timeTracker.js";
 import playerInventory from "../../inventory/playerInventory.js";
+import damageOverlay from "../damageOverlay.js";
 
 type breakResult = {
   battle: StartBattle;
@@ -50,6 +54,14 @@ export default class CaveManager extends SceneManager {
 
   get cave() {
     return gameState.level.cave;
+  }
+
+  /**
+   * Sets the animation start of damage overlay to current tic and makes sure it's not hidden
+   */
+  playDamageOverlay() {
+    damageOverlay.hidden = false;
+    damageOverlay.firstAnimationTic = timeTracker.currentGameTic;
   }
 
   /**
@@ -465,13 +477,17 @@ export default class CaveManager extends SceneManager {
     block.content = CONTENTDOORSHOP;
   }
 
-  placeWater() {
+  placeFountain() {
     if (this.blocksCanPlaceStuff.length == 0) {
       return;
     }
     const r = utils.randomArrayId(this.blocksCanPlaceStuff);
     const block = this.blocksCanPlaceStuff[r]!;
-    block.content = CONTENTWATER;
+    if (this.cave.hasBlood) {
+      block.content = CONTENTBLOOD;
+    } else {
+      block.content = CONTENTWATER;
+    }
   }
 
   placeChest() {
@@ -516,7 +532,7 @@ export default class CaveManager extends SceneManager {
     }
     this.placeWorms();
     if (this.cave.hasWater) {
-      this.placeWater();
+      this.placeFountain();
     }
     if ((gameState.level.depth + 1) % 3 == 0) {
       this.placeChest();
@@ -717,7 +733,16 @@ export default class CaveManager extends SceneManager {
             // soundManager.playSound(); TO-DO: water sfx
             gameState.gold += 1;
             soundManager.playSound(sounds.gold);
-            gameState.gameTimer.addSecs(-10);
+            gameState.gameTimer.addSecs(-5);
+            break;
+          case CONTENTBLOOD:
+            gameState.gameTimer.addSecs(30);
+            gameState.health--;
+            this.playDamageOverlay();
+            soundManager.playSound(sounds.bite);
+            if (gameState.health <= 0) {
+              return new LoseGame();
+            }
             break;
           case CONTENTEMPTY:
             if (
@@ -767,7 +792,10 @@ export default class CaveManager extends SceneManager {
     }
     if (block.broken) {
       if (block.content == CONTENTWATER) {
-        return new ChangeCursorState(CURSORGOLDWATER);
+        return new ChangeCursorState(CURSORWATER);
+      }
+      if (block.content == CONTENTBLOOD) {
+        return new ChangeCursorState(CURSORBLOOD);
       }
       if (
         playerInventory.hasItem("detonator") &&
