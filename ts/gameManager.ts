@@ -201,7 +201,7 @@ export default class GameManager {
           if (gameState.holding.name == "bomb") {
             levelManager.caveManager.bomb = null;
           }
-          playerInventory.active.item = gameState.holding;
+          action.slot.item = gameState.holding;
           gameState.holding = null;
         }
         return;

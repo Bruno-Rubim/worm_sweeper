@@ -36,10 +36,13 @@ export class Inventory {
     this.weapon = new WeaponSlot(weaponDict.wood_sword);
     this.shield = new ShieldSlot(shieldDict.wood_shield);
     this.armor = new ArmorSlot();
-    this.active = new ActiveSlot(new Position(GAMEWIDTH - 20, 72));
+    this.active = new ActiveSlot(
+      new Position(GAMEWIDTH - 20, 72),
+      activeDict.silver_bell,
+    );
     this.altActive = new ActiveSlot(
       new Position(GAMEWIDTH - 20, 90),
-      activeDict.locked,
+      consumableDict.bomb,
       true,
     );
     this.bagSlots = [];
