@@ -576,6 +576,17 @@ export default class CaveManager extends SceneManager {
         }
 
         //Renders block
+        {
+          canvasManager.renderSpriteFromSheet(
+            sprites.block_sheet,
+            blockPos,
+            blockSize,
+            blockSize,
+            block.sheetBlockPos,
+            16,
+            16,
+          );
+        }
         if (
           block.hasChest &&
           !block.broken &&
@@ -594,16 +605,6 @@ export default class CaveManager extends SceneManager {
             true,
             blockSize,
             blockSize,
-          );
-        } else {
-          canvasManager.renderSpriteFromSheet(
-            sprites.block_sheet,
-            blockPos,
-            blockSize,
-            blockSize,
-            block.sheetBlockPos,
-            16,
-            16,
           );
         }
 
