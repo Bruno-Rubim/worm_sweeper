@@ -105,14 +105,15 @@ export default class Shop {
   }
 
   get itemNames() {
-    return [
+    const result = [
       this.armor?.item.name,
       this.weapon?.item.name,
       this.shield?.item.name,
       this.consumable1?.item.name,
       this.consumable2?.item.name,
-      this.genericItems?.map((x) => x.item.name),
+      ...this.genericItems?.map((x) => x.item.name),
     ].filter((x) => typeof x === "string");
+    return result;
   }
 
   setItems() {

@@ -272,19 +272,18 @@ export default class BattleManager extends SceneManager {
       return;
     }
 
+    const bannedNames = [
+      ...playerInventory.itemNames,
+      ...gameState.level.shop.itemNames,
+      "gold_bug",
+    ];
     const itemPool = [
       ...Object.values(weaponDict),
       ...Object.values(shieldDict),
       ...Object.values(armorDict),
       ...Object.values(activeDict),
       ...Object.values(passivesDict),
-    ].filter(
-      (x) =>
-        ![
-          ...playerInventory.itemNames,
-          ...gameState.level.shop.itemNames,
-        ].includes(x.name),
-    );
+    ].filter((x) => !bannedNames.includes(x.name));
 
     const r = utils.randomArrayId(itemPool);
     this.lootSlot.item = itemPool[r]!;
