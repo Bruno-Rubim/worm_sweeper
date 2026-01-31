@@ -1754,7 +1754,7 @@ export const fontMaps = {
                 pos: new Position(4, 2),
                 width: 9,
             },
-            $stn: {
+            $trn: {
                 pos: new Position(5, 2),
                 width: 9,
             },
@@ -1778,7 +1778,7 @@ export const fontMaps = {
                 pos: new Position(4, 3),
                 width: 9,
             },
-            $hst: {
+            $htr: {
                 pos: new Position(5, 3),
                 width: 9,
             },

@@ -5,7 +5,7 @@ import timeTracker from "../timer/timeTracker.js";
 import { canvasManager } from "../canvasManager.js";
 export default class GameObject {
     sprite;
-    hidden;
+    hidden = false;
     pos;
     width;
     height;

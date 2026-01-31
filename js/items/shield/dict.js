@@ -26,9 +26,8 @@ export const shieldDict = {
         bigSprite: sprites.big_shield_steel,
         name: "steel_shield",
         shopName: "Steel Shield",
-        cost: 30,
+        cost: 20,
         defense: 2,
-        stun: 1,
         cooldown: 3,
     }),
     hand_shield: new Shield({

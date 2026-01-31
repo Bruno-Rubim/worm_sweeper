@@ -152,7 +152,7 @@ export default class BattleManager extends SceneManager {
                     soundManager.playSound(sounds.gold);
                 }
                 if (playerInventory.hasItem("scale_shield") && e instanceof ScaleWorm) {
-                    gameState.scalesCollected++;
+                    gameState.scalesCollected = Math.min(10, gameState.scalesCollected + 1);
                 }
             }
         });
@@ -298,8 +298,13 @@ export default class BattleManager extends SceneManager {
         const playerProtection = battle.protection;
         damage = Math.max(0, damage - playerDefense - playerProtection);
         if (gameState.shieldUpTimer.inMotion && gameState.tiredTimer.inMotion) {
-            gameState.tiredTimer.reduceSecs(gameState.tiredTimer.goalSecs *
-                (playerInventory.hasItem("led_boots") ? 0.5 : 0.3));
+            if (playerInventory.hasItem("charged_ambar")) {
+                this.stunEnemy(2);
+            }
+            else {
+                gameState.tiredTimer.reduceSecs(gameState.tiredTimer.goalSecs *
+                    (playerInventory.hasItem("led_boots") ? 0.5 : 0.3));
+            }
             soundManager.playSound(sounds.parry);
         }
         if (damage > 0) {

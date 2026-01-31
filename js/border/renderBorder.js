@@ -1,7 +1,7 @@
 import { canvasManager } from "../canvasManager.js";
 import GameObject from "../gameElements/gameObject.js";
 import { gameState } from "../gameState.js";
-import { GAMEHEIGHT, GAMEWIDTH, LEFT, CENTER } from "../global.js";
+import { GAMEHEIGHT, GAMEWIDTH, LEFT, CENTER, RIGHT } from "../global.js";
 import Position from "../gameElements/position.js";
 import { sprites } from "../sprites.js";
 import playerInventory from "../inventory/playerInventory.js";
@@ -15,8 +15,8 @@ function renderStats() {
     canvasManager.renderText("numbers_red", new Position(GAMEWIDTH - 4, GAMEHEIGHT - 14), "$skl" + gameState.deathCount.toString(), LEFT);
     if (gameState.health > 0) {
         const roundedHealth = Math.floor(gameState.health);
-        canvasManager.renderText("icons", new Position(GAMEWIDTH / 2, GAMEHEIGHT - 14), "$hrt".repeat(roundedHealth) +
-            (gameState.health > roundedHealth ? "$hhr" : ""), CENTER);
+        canvasManager.renderText("icons", new Position(43, GAMEHEIGHT - 14), "$hrt".repeat(roundedHealth) +
+            (gameState.health > roundedHealth ? "$hhr" : ""), RIGHT);
     }
 }
 function renderItems() {
