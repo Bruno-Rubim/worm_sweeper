@@ -30,7 +30,7 @@ export default class ScaleShield extends Shield {
       (this.spikes > 0 ? "$spkSpikes: " + this.spikes + "\n" : "") +
       (this.stun > 0 ? "$stnStun: " + this.stun + "s\n" : "") +
       (this.cooldown > 0 ? "$spdCooldown: " + this.cooldown + "s\n" : "") +
-      "Gains 0.5 $dfsdefense for each Scale Worm defeated."
+      "Gains 0.5 $dfsdefense for each Scale Worm defeated up to 6.5."
     );
   }
 }

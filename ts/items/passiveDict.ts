@@ -54,6 +54,13 @@ const passivesDict = {
     cost: 8,
     descriptionText: "Gain 2 gold for every enemy killed.",
   }),
+  health_insurance: new Item({
+    spriteSheetPos: new Position(14, 4),
+    name: "health_insurance",
+    shopName: "Health Insurance",
+    cost: 22,
+    descriptionText: "Gain 1 heart when clearing a level.",
+  }),
   whetstone: new Item({
     spriteSheetPos: new Position(0, 5),
     name: "whetstone",
@@ -103,9 +110,16 @@ const passivesDict = {
     cost: 24,
     descriptionText: "Increases shield parry bonus to 50%.",
   }),
+  charged_ambar: new Item({
+    spriteSheetPos: new Position(0, 8),
+    name: "charged_ambar",
+    shopName: "Charged Ambar",
+    cost: 23,
+    descriptionText: "Replaces shield parry bonus for a 2 second stun.",
+  }),
 
   empty: new Item({
-    spriteSheetPos: new Position(14, 4),
+    spriteSheetPos: new Position(-1, -1),
     name: "empty",
     shopName: "",
     cost: 0,

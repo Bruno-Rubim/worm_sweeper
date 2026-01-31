@@ -9,7 +9,7 @@ import { canvasManager } from "../canvasManager.js";
 // Represents a given object in game, can have interaction functions that return Actions
 export default class GameObject {
   sprite: Sprite;
-  hidden: Boolean;
+  hidden: Boolean = false;
 
   pos: Position;
   width: number;

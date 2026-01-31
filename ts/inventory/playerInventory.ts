@@ -88,7 +88,7 @@ export class Inventory {
     this.active.reset();
     this.altActive.reset();
     this.soldItemNames = [];
-    this.bagSlots.forEach((x) => x.reset);
+    this.bagSlots.forEach((x) => x.reset());
     this.bagSlots[0]!.item = picaxe;
     this.bagSlots[1]!.item = flag;
   }
