@@ -522,7 +522,7 @@ export default class BattleManager extends SceneManager {
     // Parry
     if (gameState.shieldUpTimer.inMotion && gameState.tiredTimer.inMotion) {
       if (playerInventory.hasItem("charged_ambar")) {
-        this.stunEnemy(1);
+        this.stunEnemy(2);
       } else {
         gameState.tiredTimer.reduceSecs(
           gameState.tiredTimer.goalSecs *
