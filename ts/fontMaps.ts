@@ -1715,91 +1715,114 @@ export const fontMaps: Record<string, fontMap> = {
     cellHeight: 9,
     cellWidth: 9,
     charMaps: {
+      // worm
       $wrm: {
         pos: new Position(0, 0),
         width: 9,
       },
+      // gold
       $gld: {
         pos: new Position(1, 0),
         width: 9,
       },
+      // door
       $dor: {
         pos: new Position(2, 0),
         width: 9,
       },
+      // block
       $blk: {
         pos: new Position(3, 0),
         width: 9,
       },
+      // time
       $tim: {
         pos: new Position(4, 0),
         width: 9,
       },
+      // skull
       $skl: {
         pos: new Position(5, 0),
         width: 9,
       },
+      // slow
       $slw: {
         pos: new Position(0, 1),
         width: 9,
       },
+      // speed
       $spd: {
         pos: new Position(1, 1),
         width: 9,
       },
-
+      // damage
       $dmg: {
         pos: new Position(2, 1),
         width: 9,
       },
+
+      // heart
       $hrt: {
         pos: new Position(0, 2),
         width: 9,
       },
+      // defense
       $dfs: {
         pos: new Position(1, 2),
         width: 9,
       },
+      // protection
       $pro: {
         pos: new Position(2, 2),
         width: 9,
       },
+      // reflection
       $ref: {
         pos: new Position(3, 2),
         width: 9,
       },
+      // spike
       $spk: {
         pos: new Position(4, 2),
         width: 9,
       },
-      $stn: {
+      // thorn
+      $trn: {
         pos: new Position(5, 2),
         width: 9,
       },
+
+      // half heart
       $hhr: {
         pos: new Position(0, 3),
         width: 9,
       },
+      // half defense
       $hdf: {
         pos: new Position(1, 3),
         width: 9,
       },
+      // half protection
       $hpr: {
         pos: new Position(2, 3),
         width: 9,
       },
+      // half reflection
       $hrf: {
         pos: new Position(3, 3),
         width: 9,
       },
+      // half spike
       $hsp: {
         pos: new Position(4, 3),
         width: 9,
       },
-      $hst: {
+      // half thorn
+      $htr: {
         pos: new Position(5, 3),
         width: 9,
       },
+
       " ": {
         pos: new Position(-1, -1),
         width: 3,

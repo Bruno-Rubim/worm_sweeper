@@ -103,6 +103,13 @@ const passivesDict = {
     cost: 24,
     descriptionText: "Increases shield parry bonus to 50%.",
   }),
+  charged_ambar: new Item({
+    spriteSheetPos: new Position(0, 8),
+    name: "charged_ambar",
+    shopName: "Charged Ambar",
+    cost: 12,
+    descriptionText: "Replaces shield parry bonus for a 1 second stun.",
+  }),
 
   empty: new Item({
     spriteSheetPos: new Position(14, 4),

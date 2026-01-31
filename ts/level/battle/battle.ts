@@ -16,7 +16,7 @@ export class Battle {
     this.enemies = [];
     this.chest = chest;
     if (this.chest) {
-      depth *= 1.2;
+      depth += 2;
     }
 
     let arr: Enemy[] = [
