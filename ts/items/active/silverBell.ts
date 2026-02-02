@@ -14,7 +14,7 @@ export class SilverBell extends ActiveItem {
       spriteSheetPos: new Position(2, 0),
       name: "silver_bell",
       shopName: "Silver Bell",
-      cost: 15,
+      cost: 20,
       descriptionText:
         "Reveals the location of doors, or stuns enemies if used during battle. Recharges outside of shop after 60 seconds.",
     });

@@ -14,14 +14,14 @@ export class Item {
     name: string;
     shopName: string;
     cost: number;
-    descriptionText: string;
+    descriptionText?: string;
   }) {
     this.spriteSheetPos = args.spriteSheetPos;
     this.name = args.name;
     this.shopName = args.shopName;
     this.cost = args.cost;
 
-    this.descriptionText = args.descriptionText;
+    this.descriptionText = args.descriptionText ?? "";
   }
 
   get description() {

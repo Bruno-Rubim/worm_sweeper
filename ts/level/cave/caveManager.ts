@@ -38,7 +38,7 @@ import { musicTracks } from "../../sounds/music.js";
 import timeTracker from "../../timer/timeTracker.js";
 import playerInventory from "../../inventory/playerInventory.js";
 import damageOverlay from "../damageOverlay.js";
-import { Radar } from "../../items/active/radar.js";
+import { TimedActiveItem } from "../../items/active/active.js";
 
 type breakResult = {
   battle: StartBattle;
@@ -691,7 +691,7 @@ export default class CaveManager extends SceneManager {
       );
     }
 
-    // Renders radar
+    // Render radar
     if (this.radar) {
       const block = this.getBlockFromScrenPos(this.radar.screenPos);
       const blockPos = new Position(
@@ -707,7 +707,7 @@ export default class CaveManager extends SceneManager {
         1,
         0,
         0.5,
-        new Position(0, 2),
+        new Position(0, 1),
         true,
         blockSize,
         blockSize,
@@ -755,7 +755,10 @@ export default class CaveManager extends SceneManager {
         gameState.holding = null;
         return;
       }
-      if (gameState.holding instanceof Radar) {
+      if (
+        gameState.holding instanceof TimedActiveItem &&
+        gameState.holding.name == "radar"
+      ) {
         const radar = gameState.holding;
         if (!block.broken || block.content != CONTENTEMPTY) {
           return;
