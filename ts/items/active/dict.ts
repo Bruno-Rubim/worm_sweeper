@@ -23,7 +23,7 @@ const activeDict = {
     shopName: "Radar",
     descriptionText:
       "Reveals worms around it. Recharges outside of shop after 45 seconds.",
-    cooldown: 5,
+    cooldown: 45,
     goalFunc: () => {
       soundManager.playSound(sounds.radar_ready);
     },

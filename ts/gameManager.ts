@@ -44,7 +44,6 @@ import {
 } from "./border/uiButtons.js";
 import { DEV } from "./global.js";
 import { transitionOverlay } from "./level/transitionOverlay.js";
-import { SilverBell } from "./items/active/silverBell.js";
 import { ActiveItem, TimedActiveItem } from "./items/active/active.js";
 import { InstantItem } from "./items/instant/instantItem.js";
 import {
@@ -56,7 +55,6 @@ import {
 import activeDict from "./items/active/dict.js";
 import { utils } from "./utils.js";
 import passivesDict from "./items/passiveDict.js";
-import { Radar } from "./items/active/radar.js";
 
 // Says if the cursor has changed or if there's an item description to show TO-DO: change this
 export default class GameManager {
@@ -302,10 +300,6 @@ export default class GameManager {
 
     if (item.name == "tool_belt") {
       playerInventory.altActive.item = activeDict.empty;
-    }
-
-    if (item instanceof SilverBell) {
-      item.ringTimer.restart();
     }
 
     playerInventory.emptyBagSlot.item = item;

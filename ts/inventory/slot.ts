@@ -11,8 +11,6 @@ import { gameState } from "../gameState.js";
 import { GAMEWIDTH, LEFT, RIGHT, type cursorClick } from "../global.js";
 import { TimedActiveItem, type ActiveItem } from "../items/active/active.js";
 import activeDict from "../items/active/dict.js";
-import { Radar } from "../items/active/radar.js";
-import { SilverBell } from "../items/active/silverBell.js";
 import { armorDict, type Armor } from "../items/armor/armor.js";
 import type { Item } from "../items/item.js";
 import passivesDict from "../items/passiveDict.js";
