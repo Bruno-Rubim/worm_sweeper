@@ -21,7 +21,7 @@ export default class GameObject {
   mouseHeldLeft: boolean = false;
   mouseHeldRight: boolean = false;
 
-  firstAnimationTic: number;
+  animationTicStart: number;
 
   /**
    * Function for when the cursor clicks it
@@ -76,7 +76,7 @@ export default class GameObject {
     this.heldFunction = args.heldFunction;
     this.hoverFunction = args.hoverFunction;
     this.notHoverFunction = args.notHoverFunction;
-    this.firstAnimationTic = timeTracker.currentGameTic;
+    this.animationTicStart = timeTracker.currentGameTic;
     this.hidden = args.hidden ?? false;
   }
 
@@ -101,16 +101,16 @@ export default class GameObject {
   }
 
   /**
-   * Updates its firstAnimationTic
+   * Updates its animationTicStart
    */
   resetAnimation() {
-    this.firstAnimationTic = timeTracker.currentGameTic;
+    this.animationTicStart = timeTracker.currentGameTic;
   }
 
   /**
-   * Sets the firstAnimationTic to -Infinity (ultimately making it so it's impossible for the animation to not be finished)
+   * Sets the animationTicStart to -Infinity (ultimately making it so it's impossible for the animation to not be finished)
    */
   endAnimation() {
-    this.firstAnimationTic = -Infinity;
+    this.animationTicStart = -Infinity;
   }
 }

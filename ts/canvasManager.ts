@@ -142,14 +142,19 @@ export default class CanvasManager {
     loop: boolean = true,
     renderWidth?: number,
     renderHeight?: number,
+    afterLoopFrame?: boolean,
   ) {
     const totalFrames = sheetWidthInFrames * sheetHeightInFrames;
-    const currentFrame =
+    let currentFrame =
       Math.floor(
         (timeTracker.currentGameTic - animationStartTic) * animationSpeed,
       ) % (loop ? sheetWidthInFrames * sheetHeightInFrames : Infinity);
-    if (!loop && currentFrame > totalFrames) {
-      return;
+    if (!loop && currentFrame > totalFrames - 1) {
+      if (afterLoopFrame) {
+        currentFrame = totalFrames - 1;
+      } else {
+        return;
+      }
     }
     const sheetPos = new Position(
       currentFrame % sheetWidthInFrames,

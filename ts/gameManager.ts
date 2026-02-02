@@ -19,6 +19,7 @@ import {
   cursor,
   CURSORBOMB,
   CURSORDEFAULT,
+  CURSORRADAR,
   type cursorState,
 } from "./cursor.js";
 import type GameObject from "./gameElements/gameObject.js";
@@ -34,14 +35,14 @@ import { bindListeners, inputState } from "./input/inputState.js";
 import { Weapon } from "./items/weapon/weapon.js";
 import { Shield } from "./items/shield/shield.js";
 import playerInventory from "./inventory/playerInventory.js";
-import { Armor, armorDict } from "./items/armor/armor.js";
+import { Armor } from "./items/armor/armor.js";
 import {
   bagButton,
   bookButton,
   musicButton,
   sfxButton,
 } from "./border/uiButtons.js";
-import { DEV, GAMEWIDTH } from "./global.js";
+import { DEV } from "./global.js";
 import { transitionOverlay } from "./level/transitionOverlay.js";
 import { SilverBell } from "./items/active/silverBell.js";
 import { ActiveItem } from "./items/active/active.js";
@@ -53,9 +54,9 @@ import {
   WeaponSlot,
 } from "./inventory/slot.js";
 import activeDict from "./items/active/dict.js";
-import Position from "./gameElements/position.js";
 import { utils } from "./utils.js";
 import passivesDict from "./items/passiveDict.js";
+import { Radar } from "./items/active/radar.js";
 
 // Says if the cursor has changed or if there's an item description to show TO-DO: change this
 export default class GameManager {
@@ -222,9 +223,25 @@ export default class GameManager {
         gameState.holding = item;
         break;
       case "energy_potion":
-        action.slot.item = action.slot.emptyItem;
-        gameState.tiredTimer.restart();
-        soundManager.playSound(sounds.drink);
+        if (gameState.tiredTimer.inMotion) {
+          action.slot.item = action.slot.emptyItem;
+          gameState.tiredTimer.restart();
+          soundManager.playSound(sounds.drink);
+        }
+        break;
+      case "radar":
+        if (!(item instanceof Radar)) {
+          alert("something's wrong");
+          return;
+        }
+        if (item.useTimer.inMotion) {
+          return;
+        }
+        if (gameState.holding instanceof Radar) {
+          gameState.holding = null;
+          return;
+        }
+        gameState.holding = action.slot.item;
         break;
     }
   }
@@ -331,6 +348,7 @@ export default class GameManager {
         }
       }
     }
+    playerInventory.updateBagEmpties();
   }
 
   /**
@@ -537,6 +555,9 @@ export default class GameManager {
     if (gameState.holding != null) {
       if (gameState.holding.name == "bomb") {
         this.changeCursorState(CURSORBOMB);
+      }
+      if (gameState.holding.name == "radar") {
+        this.changeCursorState(CURSORRADAR);
       }
     }
 

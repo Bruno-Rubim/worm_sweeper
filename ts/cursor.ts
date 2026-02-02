@@ -17,6 +17,7 @@ export const CURSORWATER = "cursor_water";
 export const CURSORBLOOD = "cursor_blood";
 export const CURSORBOOK = "cursor_book";
 export const CURSORNONE = "cursor_none";
+export const CURSORRADAR = "cursor_radar";
 
 // Different cursor states and their position on the cursor spriteSheet
 const cursorSheetPos = {
@@ -29,6 +30,7 @@ const cursorSheetPos = {
   [CURSORWATER]: new Position(6, 0),
   [CURSORBLOOD]: new Position(7, 0),
   [CURSORBOOK]: new Position(0, 3),
+  [CURSORRADAR]: new Position(1, 3),
   [CURSORNONE]: new Position(-1, -1),
 };
 
