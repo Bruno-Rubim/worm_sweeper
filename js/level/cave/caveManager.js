@@ -15,7 +15,7 @@ import { musicTracks } from "../../sounds/music.js";
 import timeTracker from "../../timer/timeTracker.js";
 import playerInventory from "../../inventory/playerInventory.js";
 import damageOverlay from "../damageOverlay.js";
-import { Radar } from "../../items/active/radar.js";
+import { TimedActiveItem } from "../../items/active/active.js";
 export default class CaveManager extends SceneManager {
     bomb = null;
     radar = null;
@@ -487,7 +487,7 @@ export default class CaveManager extends SceneManager {
         if (this.radar) {
             const block = this.getBlockFromScrenPos(this.radar.screenPos);
             const blockPos = new Position(block.gridPos.x * blockSize, block.gridPos.y * blockSize).add(this.pos);
-            canvasManager.renderAnimationFrame(sprites.radar_sheet, blockPos, 16, 16, 4, 1, 0, 0.5, new Position(0, 2), true, blockSize, blockSize);
+            canvasManager.renderAnimationFrame(sprites.radar_sheet, blockPos, 16, 16, 4, 1, 0, 0.5, new Position(0, 1), true, blockSize, blockSize);
         }
     };
     handleClick = (cursorPos, button) => {
@@ -523,7 +523,8 @@ export default class CaveManager extends SceneManager {
                 gameState.holding = null;
                 return;
             }
-            if (gameState.holding instanceof Radar) {
+            if (gameState.holding instanceof TimedActiveItem &&
+                gameState.holding.name == "radar") {
                 const radar = gameState.holding;
                 if (!block.broken || block.content != CONTENTEMPTY) {
                     return;

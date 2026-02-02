@@ -12,7 +12,7 @@ export class Item {
         this.name = args.name;
         this.shopName = args.shopName;
         this.cost = args.cost;
-        this.descriptionText = args.descriptionText;
+        this.descriptionText = args.descriptionText ?? "";
     }
     get description() {
         return this.descriptionText;

@@ -4,9 +4,8 @@ import GameObject from "../gameElements/gameObject.js";
 import Position from "../gameElements/position.js";
 import { gameState } from "../gameState.js";
 import { GAMEWIDTH, LEFT, RIGHT } from "../global.js";
+import { TimedActiveItem } from "../items/active/active.js";
 import activeDict from "../items/active/dict.js";
-import { Radar } from "../items/active/radar.js";
-import { SilverBell } from "../items/active/silverBell.js";
 import { armorDict } from "../items/armor/armor.js";
 import passivesDict from "../items/passiveDict.js";
 import { shieldDict } from "../items/shield/dict.js";
@@ -114,18 +113,21 @@ export class ActiveSlot extends Slot {
         };
     }
     render() {
-        if (this.item instanceof SilverBell && !this.item.ringTimer.inMotion) {
-            canvasManager.renderAnimationFrame(sprites.bell_shine_sheet, this.pos, this.width, this.height, 4, 2, this.animationTicStart, 0.5);
-        }
-        else if (this.item instanceof Radar && !this.item.useTimer.inMotion) {
-            canvasManager.renderSpriteFromSheet(sprites.radar_sheet, this.pos, this.width, this.height, new Position(3, 0));
+        if (this.item instanceof TimedActiveItem && !this.item.useTimer.inMotion) {
+            if (this.item.name == "silver_bell" && !this.item.useTimer.inMotion) {
+                canvasManager.renderAnimationFrame(this.item.altSpriteSheet, this.pos, this.width, this.height, 4, 2, this.animationTicStart, 0.5);
+            }
+            else {
+                canvasManager.renderSpriteFromSheet(this.item.altSpriteSheet, this.pos, this.width, this.height, new Position(0, 0));
+            }
         }
         else {
             canvasManager.renderSpriteFromSheet(this.sprite, this.pos, this.width, this.height, this.item.spriteSheetPos);
         }
         if (this.mouseHovering) {
-            if (this.item instanceof Radar && !this.item.useTimer.inMotion) {
-                canvasManager.renderSpriteFromSheet(sprites.radar_sheet, this.pos, this.width, this.height, new Position(3, 1));
+            if (this.item instanceof TimedActiveItem &&
+                !this.item.useTimer.inMotion) {
+                canvasManager.renderSpriteFromSheet(this.item.altSpriteSheet, this.pos, this.width, this.height, new Position(1, 0));
             }
             else {
                 canvasManager.renderSpriteFromSheet(this.sprite, this.pos, this.width, this.height, this.item.spriteSheetPos.add(1, 0));

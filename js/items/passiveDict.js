@@ -118,7 +118,6 @@ const passivesDict = {
         name: "empty",
         shopName: "",
         cost: 0,
-        descriptionText: "",
     }),
 };
 export default passivesDict;

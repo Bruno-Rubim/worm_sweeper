@@ -17,14 +17,12 @@ import { Armor } from "./items/armor/armor.js";
 import { bagButton, bookButton, musicButton, sfxButton, } from "./border/uiButtons.js";
 import { DEV } from "./global.js";
 import { transitionOverlay } from "./level/transitionOverlay.js";
-import { SilverBell } from "./items/active/silverBell.js";
-import { ActiveItem } from "./items/active/active.js";
+import { ActiveItem, TimedActiveItem } from "./items/active/active.js";
 import { InstantItem } from "./items/instant/instantItem.js";
 import { ActiveSlot, ArmorSlot, ShieldSlot, WeaponSlot, } from "./inventory/slot.js";
 import activeDict from "./items/active/dict.js";
 import { utils } from "./utils.js";
 import passivesDict from "./items/passiveDict.js";
-import { Radar } from "./items/active/radar.js";
 export default class GameManager {
     cursorChanged = false;
     hoverItemDesc = false;
@@ -112,24 +110,35 @@ export default class GameManager {
         const item = action.slot.alt
             ? playerInventory.altActive.item
             : playerInventory.active.item;
-        switch (item.name) {
-            case "silver_bell":
-                if (!(item instanceof SilverBell)) {
-                    alert("something is wrong");
-                    break;
-                }
-                if (item.ringTimer.inMotion) {
+        if (item instanceof TimedActiveItem) {
+            switch (item.name) {
+                case "silver_bell":
+                    if (item.useTimer.inMotion) {
+                        return;
+                    }
+                    if (gameState.currentScene == "battle") {
+                        levelManager.battleManager.stunEnemy(3);
+                    }
+                    else {
+                        gameState.level.cave.bellRang = true;
+                    }
+                    soundManager.playSound(sounds.bell);
+                    item.useTimer.start();
                     return;
-                }
-                if (gameState.currentScene == "battle") {
-                    levelManager.battleManager.stunEnemy(3);
-                }
-                else {
-                    gameState.level.cave.bellRang = true;
-                }
-                soundManager.playSound(sounds.bell);
-                item.ringTimer.start();
-                return;
+                case "radar":
+                    if (item.useTimer.inMotion) {
+                        return;
+                    }
+                    if (gameState.holding?.name == "radar") {
+                        gameState.holding = null;
+                        return;
+                    }
+                    gameState.holding = action.slot.item;
+                    break;
+            }
+            return;
+        }
+        switch (item.name) {
             case "empty":
                 if (gameState.holding != null) {
                     if (gameState.holding.name == "bomb") {
@@ -153,20 +162,6 @@ export default class GameManager {
                     gameState.tiredTimer.restart();
                     soundManager.playSound(sounds.drink);
                 }
-                break;
-            case "radar":
-                if (!(item instanceof Radar)) {
-                    alert("something's wrong");
-                    return;
-                }
-                if (item.useTimer.inMotion) {
-                    return;
-                }
-                if (gameState.holding instanceof Radar) {
-                    gameState.holding = null;
-                    return;
-                }
-                gameState.holding = action.slot.item;
                 break;
         }
     }
@@ -193,8 +188,8 @@ export default class GameManager {
             return;
         }
         if (item instanceof ActiveItem) {
-            if (item instanceof SilverBell) {
-                item.ringTimer.restart();
+            if (item instanceof TimedActiveItem) {
+                item.useTimer.restart();
             }
             if (playerInventory.active.item.name != "empty" &&
                 playerInventory.hasItem("tool_belt")) {
@@ -216,9 +211,6 @@ export default class GameManager {
         }
         if (item.name == "tool_belt") {
             playerInventory.altActive.item = activeDict.empty;
-        }
-        if (item instanceof SilverBell) {
-            item.ringTimer.restart();
         }
         playerInventory.emptyBagSlot.item = item;
     }
@@ -243,16 +235,25 @@ export default class GameManager {
         }
         if (item instanceof ActiveItem) {
             if (action.slot instanceof ActiveSlot) {
+                if (item instanceof TimedActiveItem) {
+                    item.useTimer.pause();
+                }
                 playerInventory.emptyBagSlot.switchItems(action.slot);
             }
             else {
+                let targetSlot;
                 if (playerInventory.hasItem("tool_belt") &&
                     playerInventory.active.item.name != "empty") {
-                    playerInventory.altActive.switchItems(action.slot);
+                    targetSlot = playerInventory.altActive;
                 }
                 else {
-                    playerInventory.active.switchItems(action.slot);
+                    targetSlot = playerInventory.active;
                 }
+                if (targetSlot.item instanceof TimedActiveItem &&
+                    gameState.currentScene != "shop") {
+                    targetSlot.item.useTimer.pause();
+                }
+                targetSlot.switchItems(action.slot);
             }
         }
         playerInventory.updateBagEmpties();
