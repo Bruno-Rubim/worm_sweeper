@@ -13,7 +13,7 @@ const activeDict = {
     shopName: "Silver Bell",
     descriptionText:
       "Reveals the location of doors, or stuns enemies if used during battle. Recharges outside of shop after 60 seconds.",
-    cooldown: 5,
+    cooldown: 60,
   }),
   radar: new TimedActiveItem({
     spriteSheetPos: new Position(6, 0),
