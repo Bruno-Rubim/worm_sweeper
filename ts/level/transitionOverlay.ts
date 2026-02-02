@@ -23,7 +23,7 @@ transitionOverlay.render = () => {
     transitionOverlay.height,
     4,
     4,
-    transitionOverlay.firstAnimationTic,
+    transitionOverlay.animationTicStart,
     1,
     new Position(),
     false,

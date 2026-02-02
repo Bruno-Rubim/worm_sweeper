@@ -23,7 +23,7 @@ damageOverlay.render = () => {
     damageOverlay.height,
     4,
     1,
-    damageOverlay.firstAnimationTic,
+    damageOverlay.animationTicStart,
     1,
     new Position(),
     false,

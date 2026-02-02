@@ -50,6 +50,7 @@ export default class Block {
   threatLevel = 0;
   drilled = false;
   starter = false;
+  radar_detected = false;
 
   cursorHovering = false;
 

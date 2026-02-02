@@ -277,6 +277,8 @@ export default class BattleManager extends SceneManager {
       ...playerInventory.itemNames,
       ...gameState.level.shop.itemNames,
       "gold_bug",
+      "locked",
+      "empty",
     ];
     const itemPool = [
       ...Object.values(weaponDict),
@@ -340,7 +342,7 @@ export default class BattleManager extends SceneManager {
    */
   playDamageOverlay() {
     damageOverlay.hidden = false;
-    damageOverlay.firstAnimationTic = timeTracker.currentGameTic;
+    damageOverlay.animationTicStart = timeTracker.currentGameTic;
   }
 
   /**

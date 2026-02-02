@@ -11,6 +11,7 @@ import { gameState } from "../gameState.js";
 import { GAMEWIDTH, LEFT, RIGHT, type cursorClick } from "../global.js";
 import type { ActiveItem } from "../items/active/active.js";
 import activeDict from "../items/active/dict.js";
+import { Radar } from "../items/active/radar.js";
 import { SilverBell } from "../items/active/silverBell.js";
 import { armorDict, type Armor } from "../items/armor/armor.js";
 import type { Item } from "../items/item.js";
@@ -145,13 +146,6 @@ export class ActiveSlot extends Slot {
   }
 
   render(): void {
-    canvasManager.renderSpriteFromSheet(
-      this.sprite,
-      this.pos,
-      this.width,
-      this.height,
-      this.item.spriteSheetPos,
-    );
     if (this.item instanceof SilverBell && !this.item.ringTimer.inMotion) {
       canvasManager.renderAnimationFrame(
         sprites.bell_shine_sheet,
@@ -160,19 +154,45 @@ export class ActiveSlot extends Slot {
         this.height,
         4,
         2,
-        this.firstAnimationTic,
+        this.animationTicStart,
         0.5,
       );
-    }
-
-    if (this.mouseHovering) {
+    } else if (this.item instanceof Radar && !this.item.useTimer.inMotion) {
+      canvasManager.renderSpriteFromSheet(
+        sprites.radar_sheet,
+        this.pos,
+        this.width,
+        this.height,
+        new Position(3, 0),
+      );
+    } else {
       canvasManager.renderSpriteFromSheet(
         this.sprite,
         this.pos,
         this.width,
         this.height,
-        this.item.spriteSheetPos.add(1, 0),
+        this.item.spriteSheetPos,
       );
+    }
+
+    if (this.mouseHovering) {
+      if (this.item instanceof Radar && !this.item.useTimer.inMotion) {
+        canvasManager.renderSpriteFromSheet(
+          sprites.radar_sheet,
+          this.pos,
+          this.width,
+          this.height,
+          new Position(3, 1),
+        );
+      } else {
+        canvasManager.renderSpriteFromSheet(
+          this.sprite,
+          this.pos,
+          this.width,
+          this.height,
+          this.item.spriteSheetPos.add(1, 0),
+        );
+      }
     }
   }
 
