@@ -14,6 +14,6 @@ damageOverlay.render = () => {
     if (damageOverlay.hidden) {
         return;
     }
-    canvasManager.renderAnimationFrame(damageOverlay.sprite, damageOverlay.pos, damageOverlay.width, damageOverlay.height, 4, 1, damageOverlay.firstAnimationTic, 1, new Position(), false);
+    canvasManager.renderAnimationFrame(damageOverlay.sprite, damageOverlay.pos, damageOverlay.width, damageOverlay.height, 4, 1, damageOverlay.animationTicStart, 1, new Position(), false);
 };
 export default damageOverlay;

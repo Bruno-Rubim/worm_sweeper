@@ -1,6 +1,6 @@
 import { Action, ChangeCursorState, ChangeScene, ConsumeItem, EnemyAttack, EquipItem, ItemDescription, LoseGame, ObtainItem, RestartGame, SellItem, ToggleBook, ToggleInventory, UseActiveItem, } from "./action.js";
 import { canvasManager } from "./canvasManager.js";
-import { cursor, CURSORBOMB, CURSORDEFAULT, } from "./cursor.js";
+import { cursor, CURSORBOMB, CURSORDEFAULT, CURSORRADAR, } from "./cursor.js";
 import { gameState, resetGameState } from "./gameState.js";
 import { levelManager } from "./level/levelManager.js";
 import { renderBorder } from "./border/renderBorder.js";
@@ -13,18 +13,18 @@ import { bindListeners, inputState } from "./input/inputState.js";
 import { Weapon } from "./items/weapon/weapon.js";
 import { Shield } from "./items/shield/shield.js";
 import playerInventory from "./inventory/playerInventory.js";
-import { Armor, armorDict } from "./items/armor/armor.js";
+import { Armor } from "./items/armor/armor.js";
 import { bagButton, bookButton, musicButton, sfxButton, } from "./border/uiButtons.js";
-import { DEV, GAMEWIDTH } from "./global.js";
+import { DEV } from "./global.js";
 import { transitionOverlay } from "./level/transitionOverlay.js";
 import { SilverBell } from "./items/active/silverBell.js";
 import { ActiveItem } from "./items/active/active.js";
 import { InstantItem } from "./items/instant/instantItem.js";
 import { ActiveSlot, ArmorSlot, ShieldSlot, WeaponSlot, } from "./inventory/slot.js";
 import activeDict from "./items/active/dict.js";
-import Position from "./gameElements/position.js";
 import { utils } from "./utils.js";
 import passivesDict from "./items/passiveDict.js";
+import { Radar } from "./items/active/radar.js";
 export default class GameManager {
     cursorChanged = false;
     hoverItemDesc = false;
@@ -148,9 +148,25 @@ export default class GameManager {
                 gameState.holding = item;
                 break;
             case "energy_potion":
-                action.slot.item = action.slot.emptyItem;
-                gameState.tiredTimer.restart();
-                soundManager.playSound(sounds.drink);
+                if (gameState.tiredTimer.inMotion) {
+                    action.slot.item = action.slot.emptyItem;
+                    gameState.tiredTimer.restart();
+                    soundManager.playSound(sounds.drink);
+                }
+                break;
+            case "radar":
+                if (!(item instanceof Radar)) {
+                    alert("something's wrong");
+                    return;
+                }
+                if (item.useTimer.inMotion) {
+                    return;
+                }
+                if (gameState.holding instanceof Radar) {
+                    gameState.holding = null;
+                    return;
+                }
+                gameState.holding = action.slot.item;
                 break;
         }
     }
@@ -239,6 +255,7 @@ export default class GameManager {
                 }
             }
         }
+        playerInventory.updateBagEmpties();
     }
     sellItem(action) {
         if (gameState.currentScene != "shop" ||
@@ -408,6 +425,9 @@ export default class GameManager {
         if (gameState.holding != null) {
             if (gameState.holding.name == "bomb") {
                 this.changeCursorState(CURSORBOMB);
+            }
+            if (gameState.holding.name == "radar") {
+                this.changeCursorState(CURSORRADAR);
             }
         }
         if (!this.cursorChanged) {

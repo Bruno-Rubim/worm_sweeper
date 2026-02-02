@@ -15,14 +15,16 @@ import { musicTracks } from "../../sounds/music.js";
 import timeTracker from "../../timer/timeTracker.js";
 import playerInventory from "../../inventory/playerInventory.js";
 import damageOverlay from "../damageOverlay.js";
+import { Radar } from "../../items/active/radar.js";
 export default class CaveManager extends SceneManager {
     bomb = null;
+    radar = null;
     get cave() {
         return gameState.level.cave;
     }
     playDamageOverlay() {
         damageOverlay.hidden = false;
-        damageOverlay.firstAnimationTic = timeTracker.currentGameTic;
+        damageOverlay.animationTicStart = timeTracker.currentGameTic;
     }
     getBlockFromScrenPos(pos) {
         const blockPos = pos.subtract(this.pos).divide(this.cave.levelScale * 16);
@@ -409,6 +411,8 @@ export default class CaveManager extends SceneManager {
     startCave(startPos) {
         if (this.bomb)
             this.bomb.timer.goalFunc = undefined;
+        if (this.radar)
+            this.radar = null;
         this.bomb = null;
         if (gameState.bugCurse) {
             this.cave.wormQuantity = Math.ceil(this.cave.wormQuantity * 1.2);
@@ -456,6 +460,11 @@ export default class CaveManager extends SceneManager {
                     (!block.hidden || this.cave.cleared)) {
                     canvasManager.renderAnimationFrame(sprites.block_sheet, blockPos, 16, 16, 8, 1, 0, 0.5, new Position(0, 3), true, blockSize, blockSize);
                 }
+                if (block.radar_detected &&
+                    !block.broken &&
+                    block.content == CONTENTWORM) {
+                    canvasManager.renderSpriteFromSheet(sprites.block_sheet, blockPos, blockSize, blockSize, new Position(5, 2), 16, 16);
+                }
                 if ((block.broken && block.content != CONTENTEMPTY) || block.marked) {
                     canvasManager.renderSpriteFromSheet(sprites.block_sheet, blockPos, blockSize, blockSize, block.sheetContentPos.add(0, 0), 16, 16);
                 }
@@ -474,6 +483,11 @@ export default class CaveManager extends SceneManager {
                 framePos = new Position(Math.min(2, Math.floor(this.bomb.timer.percentage / ((1 / 3) * 100))) + 1, 0);
             }
             canvasManager.renderSpriteFromSheet(sprites.bomb_sheet, blockPos, blockSize, blockSize, framePos, 16, 16);
+        }
+        if (this.radar) {
+            const block = this.getBlockFromScrenPos(this.radar.screenPos);
+            const blockPos = new Position(block.gridPos.x * blockSize, block.gridPos.y * blockSize).add(this.pos);
+            canvasManager.renderAnimationFrame(sprites.radar_sheet, blockPos, 16, 16, 4, 1, 0, 0.5, new Position(0, 2), true, blockSize, blockSize);
         }
     };
     handleClick = (cursorPos, button) => {
@@ -508,6 +522,19 @@ export default class CaveManager extends SceneManager {
                 soundManager.playSound(sounds.bomb_fuse);
                 gameState.holding = null;
                 return;
+            }
+            if (gameState.holding instanceof Radar) {
+                const radar = gameState.holding;
+                if (!block.broken || block.content != CONTENTEMPTY) {
+                    return;
+                }
+                this.radar = {
+                    screenPos: new Position(cursorPos),
+                };
+                this.getSurrBlocks(block.gridPos).forEach((x) => (x.radar_detected = true));
+                radar.useTimer.start();
+                soundManager.playSound(sounds.radar_scan);
+                gameState.holding = null;
             }
             let enemyCount = 0;
             if (!block.broken &&

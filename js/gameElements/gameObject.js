@@ -14,7 +14,7 @@ export default class GameObject {
     mouseHovering = false;
     mouseHeldLeft = false;
     mouseHeldRight = false;
-    firstAnimationTic;
+    animationTicStart;
     clickFunction;
     heldFunction;
     hoverFunction;
@@ -36,7 +36,8 @@ export default class GameObject {
         this.heldFunction = args.heldFunction;
         this.hoverFunction = args.hoverFunction;
         this.notHoverFunction = args.notHoverFunction;
-        this.firstAnimationTic = timeTracker.currentGameTic;
+        this.animationTicStart = timeTracker.currentGameTic;
+        this.hidden = args.hidden ?? false;
     }
     updatePosition(newPos) {
         this.pos = newPos;
@@ -49,9 +50,9 @@ export default class GameObject {
         canvasManager.renderSprite(this.sprite, this.pos, this.width, this.height);
     }
     resetAnimation() {
-        this.firstAnimationTic = timeTracker.currentGameTic;
+        this.animationTicStart = timeTracker.currentGameTic;
     }
     endAnimation() {
-        this.firstAnimationTic = -Infinity;
+        this.animationTicStart = -Infinity;
     }
 }

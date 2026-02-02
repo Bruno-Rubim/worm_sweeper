@@ -171,8 +171,19 @@ export const sounds = {
             max: 1.2,
         },
     }),
+    radar_scan: new Sound({
+        soundName: "radar_scan",
+        pitchRange: {
+            min: 0.9,
+            max: 1,
+        },
+    }),
+    radar_ready: new Sound({
+        soundName: "radar_ready",
+        fixedPitches: [1.2],
+    }),
 };
-export let testingSound = sounds.shield_thud;
+export let testingSound = sounds.radar_ready;
 const soundArr = [...Object.values(sounds)];
 const promiseArrays = soundArr.map((sound) => sound.load());
 promiseArrays.forEach(async (arr) => {

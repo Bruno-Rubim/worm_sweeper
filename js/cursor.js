@@ -15,6 +15,7 @@ export const CURSORWATER = "cursor_water";
 export const CURSORBLOOD = "cursor_blood";
 export const CURSORBOOK = "cursor_book";
 export const CURSORNONE = "cursor_none";
+export const CURSORRADAR = "cursor_radar";
 const cursorSheetPos = {
     [CURSORDEFAULT]: new Position(0, 0),
     [CURSORPICAXE]: new Position(1, 0),
@@ -25,6 +26,7 @@ const cursorSheetPos = {
     [CURSORWATER]: new Position(6, 0),
     [CURSORBLOOD]: new Position(7, 0),
     [CURSORBOOK]: new Position(0, 3),
+    [CURSORRADAR]: new Position(1, 3),
     [CURSORNONE]: new Position(-1, -1),
 };
 class Description extends GameObject {

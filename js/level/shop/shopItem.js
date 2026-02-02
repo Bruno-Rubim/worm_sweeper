@@ -43,8 +43,8 @@ export class ShopItem extends GameObject {
         }
         canvasManager.renderText("numbers_cost", this.pos.add(9, 18), this.item.finalCost.toString(), CENTER);
         if (this.item.name == "time_potion") {
-            canvasManager.renderAnimationFrame(sprites.time_potion_pointer_sheet, this.pos, 16, 16, 12, 1, this.firstAnimationTic);
-            canvasManager.renderAnimationFrame(sprites.time_potion_pointer_sheet, this.pos, 16, 16, 12, 1, this.firstAnimationTic, 1 / 12, new Position(0, 1));
+            canvasManager.renderAnimationFrame(sprites.time_potion_pointer_sheet, this.pos, 16, 16, 12, 1, this.animationTicStart);
+            canvasManager.renderAnimationFrame(sprites.time_potion_pointer_sheet, this.pos, 16, 16, 12, 1, this.animationTicStart, 1 / 12, new Position(0, 1));
         }
     }
 }

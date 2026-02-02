@@ -64,6 +64,7 @@ export const sprites = {
     numbers: new Sprite("numbers"),
     pixel_black: new Sprite("pixel_black"),
     time_potion_pointer_sheet: new Sprite("time_potion_pointer_sheet"),
+    radar_sheet: new Sprite("radar_sheet"),
     screen_defeat: new Sprite("screen_defeat"),
     screen_paused: new Sprite("screen_paused"),
     stun_sprite_sheet: new Sprite("stun_sprite_sheet"),
