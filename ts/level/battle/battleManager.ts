@@ -486,8 +486,7 @@ export default class BattleManager extends SceneManager {
     const rId = utils.randomArrayId(gameState.battle.enemies);
     const enemy = gameState.battle.enemies[rId]!;
     soundManager.playSound(sounds.explosion);
-    enemy.health -= playerInventory.hasItem("gunpowder") ? 8 : 5;
-    enemy.damagedTimer.start();
+    enemy.takeDamage(playerInventory.hasItem("gunpowder") ? 8 : 5);
     tiredTimer.goalSecs = 2 - 2 * playerInventory.armor.item.speedMult;
     tiredTimer.goalSecs = 2 - playerInventory.armor.item.speedMult;
     tiredTimer.start();
