@@ -36,9 +36,10 @@ import { soundManager } from "../sounds/soundManager.js";
 import BattleManager from "./battle/battleManager.js";
 import { Battle } from "./battle/battle.js";
 import playerInventory from "../inventory/playerInventory.js";
-import { GAMETIMERSYNC, timerManager } from "../timer/timerManager.js";
+import { timerManager } from "../timer/timerManager.js";
 import { transitionOverlay } from "./transitionOverlay.js";
 import damageOverlay from "./damageOverlay.js";
+import { TimedActiveItem } from "../items/active/active.js";
 
 // Manages rendering and interactions with the current level from gameState
 export class LevelManager extends GameObject {
@@ -230,13 +231,25 @@ export class LevelManager extends GameObject {
                 this.caveManager.checkCaveClear();
               // Falls through the next lines
               case "shop":
-                timerManager.unpauseTimers(GAMETIMERSYNC);
+                gameState.gameTimer.unpause();
+                if (playerInventory.active instanceof TimedActiveItem) {
+                  playerInventory.active.useTimer.unpause();
+                }
+                if (playerInventory.altActive instanceof TimedActiveItem) {
+                  playerInventory.altActive.useTimer.unpause();
+                }
                 break;
             }
             break;
           case "shop":
-            // Pauses timer when entering a shop
-            timerManager.pauseTimers(GAMETIMERSYNC);
+            // Pauses timers when entering a shop
+            gameState.gameTimer.pause();
+            if (playerInventory.active instanceof TimedActiveItem) {
+              playerInventory.active.useTimer.pause();
+            }
+            if (playerInventory.altActive instanceof TimedActiveItem) {
+              playerInventory.altActive.useTimer.pause();
+            }
             break;
         }
         gameState.currentScene = scene;

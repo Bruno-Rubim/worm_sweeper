@@ -132,6 +132,17 @@ export default class BattleManager extends SceneManager {
           CENTER,
         );
       }
+      if (enemy.defense > 0) {
+        // Renders enemy health
+        const roundedDefense = Math.floor(enemy.defense);
+        canvasManager.renderText(
+          "icons",
+          enemy.pos.add(33, 73),
+          "$dfs".repeat(roundedDefense) +
+            (enemy.defense > roundedDefense ? "$hdf" : ""),
+          CENTER,
+        );
+      }
       if (enemy.spikes > 0) {
         // Renders enemy spikes
         const roundedReflection = Math.floor(enemy.spikes);
@@ -345,6 +356,32 @@ export default class BattleManager extends SceneManager {
     damageOverlay.animationTicStart = timeTracker.currentGameTic;
   }
 
+  damagePlayer(damage: number) {
+    if (!gameState.battle) {
+      alert("not in battle");
+      return 0;
+    }
+    if (damage <= 0) {
+      return 0;
+    }
+    let returnDamage = gameState.battle.spikes;
+    gameState.battle.spikes = 0;
+
+    const reflection = gameState.battle.reflection;
+    returnDamage += Math.min(reflection, damage);
+    gameState.battle.reflection = Math.max(0, reflection - damage);
+    damage = Math.max(0, damage - reflection);
+
+    const defense = gameState.battle.defense;
+    gameState.battle.defense = Math.max(0, defense - damage);
+    damage = Math.max(0, damage - defense);
+    if (damage > 0) {
+      gameState.health -= damage;
+      this.playDamageOverlay();
+    }
+    return returnDamage;
+  }
+
   /**
    * Deals damage to a random enemy and starts the tired timer according to current weapon stats
    * @returns
@@ -358,7 +395,7 @@ export default class BattleManager extends SceneManager {
     const rId = utils.randomArrayId(gameState.battle.enemies);
     const enemy = gameState.battle.enemies[rId]!;
     const weapon = playerInventory.weapon.item;
-    let damage = weapon.totalDamage;
+    let weaponDmg = weapon.totalDamage;
 
     soundManager.playSound(weapon.sound);
 
@@ -369,29 +406,17 @@ export default class BattleManager extends SceneManager {
       gameState.battle.spikes += weapon.spikes;
     }
 
-    const playerReflection = gameState.battle.reflection;
-    const playerDefense = gameState.battle.defense;
-    const playerProtection = gameState.battle.protection;
+    let enemyReturnDmg = enemy.takeDamage(weaponDmg);
+    let playerReturnDmg = this.damagePlayer(enemyReturnDmg);
 
-    let enemySpikeDamage = enemy.spikes;
-    let reflectDamage = Math.min(playerReflection, enemySpikeDamage);
-    enemy.health -= reflectDamage;
-
-    gameState.battle.reflection -= reflectDamage;
-
-    enemySpikeDamage -= reflectDamage;
-    gameState.battle.defense = Math.max(0, playerDefense - enemySpikeDamage);
-    enemySpikeDamage = Math.max(0, enemySpikeDamage - playerDefense);
-
-    const takenDamage = Math.max(0, enemySpikeDamage - playerProtection);
-    if (takenDamage > 0) {
-      gameState.health -= takenDamage;
-      this.playDamageOverlay();
+    let overflow = 0;
+    while (enemyReturnDmg > 0 && playerReturnDmg > 0 && overflow < 100) {
+      enemyReturnDmg = enemy.takeDamage(playerReturnDmg);
+      playerReturnDmg = this.damagePlayer(enemyReturnDmg);
     }
-    enemy.spikes = 0;
-
-    enemy.health -= damage;
-    enemy.damagedTimer.start();
+    if (overflow >= 100) {
+      alert("fuck");
+    }
 
     if (weapon.stunSecs > 0) {
       enemy.stun(weapon.stunSecs);
@@ -406,7 +431,7 @@ export default class BattleManager extends SceneManager {
     tiredTimer.goalSecs =
       (weapon.cooldown - (playerInventory.hasItem("feather") ? 0.3 : 0)) *
       (playerInventory.armor.item.speedMult -
-        (playerInventory.hasItem("whetstone") ? damage * 0.05 : 0));
+        (playerInventory.hasItem("whetstone") ? weaponDmg * 0.05 : 0));
     tiredTimer.start();
     return this.checkBattleEnd();
   }
@@ -492,53 +517,25 @@ export default class BattleManager extends SceneManager {
     soundManager.playSound(action.enemy.biteSound);
 
     action.enemy.attackAnimTimer.start();
-    let damage = action.damage;
-
-    // Spikes
-    if (damage > 0) {
-      action.enemy.health -= battle.spikes;
-      battle.spikes = 0;
-    }
+    let enemyDamage = action.damage;
 
     // Stun
-    if (damage > 0 && battle.stun > 0) {
+    if (enemyDamage > 0 && battle.stun > 0) {
       action.enemy.stun(battle.stun);
       battle.stun = 0;
     }
 
-    // Reflection
-    const playerReflect = battle.reflection;
-    const reflectDamage = Math.min(playerReflect, damage);
-    action.enemy.health -= reflectDamage;
-    damage -= reflectDamage;
-    battle.reflection -= reflectDamage;
+    let playerReturnDmg = this.damagePlayer(enemyDamage);
+    let enemyReturnDmg = action.enemy.takeDamage(playerReturnDmg);
 
-    // Defense
-    const playerDefense = battle.defense;
-    const leftoverDefense = Math.max(0, playerDefense - damage);
-    battle.defense = leftoverDefense;
-
-    const playerProtection = battle.protection;
-    damage = Math.max(0, damage - playerDefense - playerProtection);
-
-    // Parry
-    if (gameState.shieldUpTimer.inMotion && gameState.tiredTimer.inMotion) {
-      if (playerInventory.hasItem("charged_ambar")) {
-        this.stunEnemy(2);
-      } else {
-        gameState.tiredTimer.reduceSecs(
-          gameState.tiredTimer.goalSecs *
-            (playerInventory.hasItem("led_boots") ? 0.5 : 0.3),
-        );
-      }
-      soundManager.playSound(sounds.parry);
+    let overflow = 0;
+    while (enemyReturnDmg > 0 && playerReturnDmg > 0 && overflow < 100) {
+      enemyReturnDmg = action.enemy.takeDamage(playerReturnDmg);
+      playerReturnDmg = this.damagePlayer(enemyReturnDmg);
     }
-
-    if (damage > 0) {
-      this.playDamageOverlay();
+    if (overflow >= 100) {
+      alert("fuck");
     }
-
-    gameState.health -= Math.max(0, damage);
     return this.checkBattleEnd();
   }
 

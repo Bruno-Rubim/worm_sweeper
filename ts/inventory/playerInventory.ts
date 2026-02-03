@@ -33,7 +33,7 @@ export class Inventory {
   soldItemNames: string[];
 
   constructor() {
-    this.weapon = new WeaponSlot(weaponDict.wood_sword);
+    this.weapon = new WeaponSlot(weaponDict.cactus);
     this.shield = new ShieldSlot(shieldDict.wood_shield);
     this.armor = new ArmorSlot();
     this.active = new ActiveSlot(new Position(GAMEWIDTH - 20, 72));

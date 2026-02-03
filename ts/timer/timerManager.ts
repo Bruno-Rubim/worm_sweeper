@@ -1,7 +1,7 @@
 import { type Timer } from "./timer.js";
 
 // Timer class for timers that aren synced to the gameTimer
-export const GAMETIMERSYNC = "gameTimerSync";
+export const ACTIVEITEMTIMER = "activeItemTimer";
 
 export class TimerManager {
   queue: Timer[] = [];
