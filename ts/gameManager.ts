@@ -216,6 +216,9 @@ export default class GameManager {
     switch (item.name) {
       case "empty":
         if (gameState.holding != null) {
+          if (gameState.holding.name == "radar") {
+            return;
+          }
           if (gameState.holding.name == "bomb") {
             levelManager.caveManager.bomb = null;
           }

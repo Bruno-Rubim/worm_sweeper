@@ -88,4 +88,5 @@ export function resetGameState() {
   gameState.tiredTimer.restart();
   gameState.attackAnimationTimer.restart();
   gameState.shieldUpTimer.restart();
+  gameState.holding = baseState.holding;
 }
