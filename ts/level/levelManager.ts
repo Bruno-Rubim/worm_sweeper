@@ -36,10 +36,9 @@ import { soundManager } from "../sounds/soundManager.js";
 import BattleManager from "./battle/battleManager.js";
 import { Battle } from "./battle/battle.js";
 import playerInventory from "../inventory/playerInventory.js";
-import { timerManager } from "../timer/timerManager.js";
 import { transitionOverlay } from "./transitionOverlay.js";
-import damageOverlay from "./damageOverlay.js";
 import { TimedActiveItem } from "../items/active/active.js";
+import { damageOverlay, stunnedOverlay } from "./overlays.js";
 
 // Manages rendering and interactions with the current level from gameState
 export class LevelManager extends GameObject {
@@ -129,8 +128,9 @@ export class LevelManager extends GameObject {
     // Screen
     this.currentSceneManager.render();
 
-    // Damage overlay
+    // Overlays
     damageOverlay.render();
+    stunnedOverlay.render();
 
     // Transition
     transitionOverlay.render();

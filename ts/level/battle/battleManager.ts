@@ -38,7 +38,7 @@ import sounds from "../../sounds/sounds.js";
 import { sprites } from "../../sprites.js";
 import timeTracker from "../../timer/timeTracker.js";
 import { utils } from "../../utils.js";
-import damageOverlay from "../damageOverlay.js";
+import { damageOverlay, stunnedOverlay } from "../overlays.js";
 import SceneManager from "../sceneManager.js";
 import { ScaleWorm } from "./enemy.js";
 import LootSlot from "./lootSlot.js";
@@ -502,15 +502,21 @@ export default class BattleManager extends SceneManager {
    * Pauses the current battle's enemies' cooldown timers for a given ammount of seconds
    * @param seconds
    */
-  stunEnemy(seconds: number) {
-    if (!gameState.battle) {
-      alert("not in battle");
-      return;
+  stunPlayer(seconds: number) {
+    gameState.stunnedTimer.goalSecs = seconds;
+    gameState.stunnedTimer.start();
+    if (gameState.tiredTimer.inMotion) {
+      gameState.tiredTimer.pause();
     }
-    gameState.battle.enemies.forEach((e) => {
-      e.stunned(seconds);
-    });
+    // stunnedOverlay.hidden = false;
+    // stunnedOverlay.animationTicStart = timeTracker.currentGameTic;
   }
+
+  /**
+   *
+   * @param action
+   * @returns
+   */
 
   enemyAttack(action: EnemyAttack) {
     if (!gameState.battle) {
@@ -531,13 +537,13 @@ export default class BattleManager extends SceneManager {
 
     // Stun Player
     if (action.enemy.stun > 0) {
-      gameState.tiredTimer.addSecs(action.enemy.stun);
+      this.stunPlayer(action.enemy.stun);
     }
 
     // Parry
     if (gameState.shieldUpTimer.inMotion && gameState.tiredTimer.inMotion) {
       if (playerInventory.hasItem("charged_ambar")) {
-        this.stunEnemy(2);
+        action.enemy.stunned(2);
       } else {
         gameState.tiredTimer.reduceSecs(
           gameState.tiredTimer.goalSecs *
@@ -583,7 +589,7 @@ export default class BattleManager extends SceneManager {
       alert("this shouldn't happen outside of battle");
       return;
     }
-    if (gameState.battle.won) {
+    if (gameState.battle.won || gameState.stunnedTimer.inMotion) {
       return;
     }
     const tiredTimer = gameState.tiredTimer;

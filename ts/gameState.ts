@@ -29,6 +29,13 @@ export default class GameState {
   battle: Battle | null = new Battle(0, 1, true);
 
   tiredTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
+  stunnedTimer = new Timer({
+    goalSecs: 0,
+    deleteAtEnd: false,
+    goalFunc: () => {
+      this.tiredTimer.unpause();
+    },
+  });
   attackAnimationTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
   shieldUpTimer = new Timer({ goalSecs: 0, deleteAtEnd: false });
 
