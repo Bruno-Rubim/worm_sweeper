@@ -81,11 +81,9 @@ export class ConsumeItem extends Action {
     }
 }
 export class EnemyAttack extends Action {
-    damage;
     enemy;
-    constructor(damage, enemy) {
+    constructor(enemy) {
         super();
-        this.damage = damage;
         this.enemy = enemy;
     }
 }

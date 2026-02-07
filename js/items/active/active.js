@@ -1,6 +1,6 @@
 import Position from "../../gameElements/position.js";
 import { Timer } from "../../timer/timer.js";
-import { GAMETIMERSYNC } from "../../timer/timerManager.js";
+import { ACTIVEITEMTIMER } from "../../timer/timerManager.js";
 import { Item } from "../item.js";
 export class ActiveItem extends Item {
     constructor(args) {
@@ -19,7 +19,7 @@ export class TimedActiveItem extends ActiveItem {
             goalSecs: args.cooldown,
             goalFunc: args.goalFunc,
             autoStart: false,
-            classes: [GAMETIMERSYNC],
+            classes: [ACTIVEITEMTIMER],
         });
         this.altSpriteSheet = args.altSpriteSheet;
     }

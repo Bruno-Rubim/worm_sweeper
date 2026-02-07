@@ -2,7 +2,6 @@ import { LoseGame } from "./action.js";
 import { Battle } from "./level/battle/battle.js";
 import Level from "./level/level.js";
 import { Timer } from "./timer/timer.js";
-import { GAMETIMERSYNC } from "./timer/timerManager.js";
 import timeTracker from "./timer/timeTracker.js";
 export default class GameState {
     gameTimer = new Timer({
@@ -10,7 +9,6 @@ export default class GameState {
         goalFunc: () => new LoseGame(),
         deleteAtEnd: false,
         autoStart: false,
-        classes: [GAMETIMERSYNC],
     });
     gold = 0;
     health = 5;
@@ -72,4 +70,5 @@ export function resetGameState() {
     gameState.tiredTimer.restart();
     gameState.attackAnimationTimer.restart();
     gameState.shieldUpTimer.restart();
+    gameState.holding = baseState.holding;
 }

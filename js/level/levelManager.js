@@ -16,9 +16,10 @@ import { soundManager } from "../sounds/soundManager.js";
 import BattleManager from "./battle/battleManager.js";
 import { Battle } from "./battle/battle.js";
 import playerInventory from "../inventory/playerInventory.js";
-import { GAMETIMERSYNC, timerManager } from "../timer/timerManager.js";
+import { timerManager } from "../timer/timerManager.js";
 import { transitionOverlay } from "./transitionOverlay.js";
 import damageOverlay from "./damageOverlay.js";
+import { TimedActiveItem } from "../items/active/active.js";
 export class LevelManager extends GameObject {
     shopManager;
     caveManager;
@@ -127,12 +128,24 @@ export class LevelManager extends GameObject {
                             gameState.level.cave.wormQuantity--;
                             this.caveManager.checkCaveClear();
                         case "shop":
-                            timerManager.unpauseTimers(GAMETIMERSYNC);
+                            gameState.gameTimer.unpause();
+                            if (playerInventory.active instanceof TimedActiveItem) {
+                                playerInventory.active.useTimer.unpause();
+                            }
+                            if (playerInventory.altActive instanceof TimedActiveItem) {
+                                playerInventory.altActive.useTimer.unpause();
+                            }
                             break;
                     }
                     break;
                 case "shop":
-                    timerManager.pauseTimers(GAMETIMERSYNC);
+                    gameState.gameTimer.pause();
+                    if (playerInventory.active instanceof TimedActiveItem) {
+                        playerInventory.active.useTimer.pause();
+                    }
+                    if (playerInventory.altActive instanceof TimedActiveItem) {
+                        playerInventory.altActive.useTimer.pause();
+                    }
                     break;
             }
             gameState.currentScene = scene;

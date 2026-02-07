@@ -40,17 +40,18 @@ export default class GameManager {
         gameState.paused = timeTracker.isPaused;
     }
     consumeItem(action) {
+        const alchemyKit = playerInventory.hasItem("alchemy_kit");
         switch (action.itemName) {
             case "time_potion":
-                gameState.gameTimer.addSecs(60);
+                gameState.gameTimer.addSecs(60 * (alchemyKit ? 2 : 1));
                 soundManager.playSound(sounds.drink);
                 break;
             case "health_potion":
-                this.healPlayer(1);
+                this.healPlayer(1 * (alchemyKit ? 2 : 1));
                 soundManager.playSound(sounds.drink);
                 break;
             case "health_potion_big":
-                this.healPlayer(2);
+                this.healPlayer(2 * (alchemyKit ? 2 : 1));
                 soundManager.playSound(sounds.drink);
                 break;
         }
@@ -141,6 +142,9 @@ export default class GameManager {
         switch (item.name) {
             case "empty":
                 if (gameState.holding != null) {
+                    if (gameState.holding.name == "radar") {
+                        return;
+                    }
                     if (gameState.holding.name == "bomb") {
                         levelManager.caveManager.bomb = null;
                     }

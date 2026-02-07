@@ -1,5 +1,5 @@
 import {} from "./timer.js";
-export const GAMETIMERSYNC = "gameTimerSync";
+export const ACTIVEITEMTIMER = "activeItemTimer";
 export class TimerManager {
     queue = [];
     addTimer(timer) {

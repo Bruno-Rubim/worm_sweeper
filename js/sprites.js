@@ -50,6 +50,7 @@ export const sprites = {
     enemy_worm: new Sprite("enemy_worm"),
     enemy_scale_worm: new Sprite("enemy_scale_worm"),
     enemy_poison_worm: new Sprite("enemy_poison_worm"),
+    enemy_ribbon_worm: new Sprite("enemy_ribbon_worm"),
     exit_arrow: new Sprite("exit_arrow"),
     game_border: new Sprite("game_border"),
     icon_sheet: new Sprite("icon_sheet"),

@@ -113,6 +113,13 @@ const passivesDict = {
         cost: 23,
         descriptionText: "Replaces shield parry bonus for a 2 second stun.",
     }),
+    alchemy_kit: new Item({
+        spriteSheetPos: new Position(2, 8),
+        name: "alchemy_kit",
+        shopName: "Alchemy Kit",
+        cost: 54,
+        descriptionText: "Doubles the effects of potions.",
+    }),
     empty: new Item({
         spriteSheetPos: new Position(-1, -1),
         name: "empty",

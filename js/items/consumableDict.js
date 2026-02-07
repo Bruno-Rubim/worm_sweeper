@@ -24,13 +24,6 @@ const consumableDict = {
         cost: 6,
         descriptionText: "Deal 5 damage during battle or use on any block to destroy blocks around it, along with worms and gold.",
     }),
-    energy_potion: new ActiveItem({
-        spriteSheetPos: new Position(4, 0),
-        name: "energy_potion",
-        shopName: "Energy Potion",
-        cost: 5,
-        descriptionText: "Reset your $spdcooldown in a battle instantly.",
-    }),
     time_potion: new TimePotion(),
 };
 export default consumableDict;
