@@ -55,7 +55,7 @@ export default class GameState {
   holding: ActiveItem | null = null;
 
   constructor() {
-    this.level = new Level(4);
+    this.level = new Level(0);
   }
 
   get runTime() {

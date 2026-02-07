@@ -31,7 +31,7 @@ export class Battle {
   }
   start() {
     const helmet = playerInventory.hasItem("safety_helmet");
-    const glassArmor = playerInventory.hasItem("glass_armor");
+    const glassArmor = playerInventory.armor.item.name == "glass_armor";
     this.protection = playerInventory.armor.item.protection;
     this.defense =
       playerInventory.armor.item.defense +
