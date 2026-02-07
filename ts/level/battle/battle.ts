@@ -16,7 +16,7 @@ export class Battle {
     this.enemies = [];
     this.chest = chest;
     if (this.chest) {
-      depth += 2;
+      depth = 2 + depth * 1.15;
     }
 
     let arr: Enemy[] = [
@@ -34,8 +34,6 @@ export class Battle {
         : (x = 2)
       : (x = 1);
     arr = arr.slice(0, x);
-
-    console.log(arr);
     this.enemies.push(arr[utils.randomArrayId(arr)]!);
   }
   start() {

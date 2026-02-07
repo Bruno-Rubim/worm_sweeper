@@ -37,8 +37,8 @@ import { Timer } from "../../timer/timer.js";
 import { musicTracks } from "../../sounds/music.js";
 import timeTracker from "../../timer/timeTracker.js";
 import playerInventory from "../../inventory/playerInventory.js";
-import damageOverlay from "../damageOverlay.js";
 import { TimedActiveItem } from "../../items/active/active.js";
+import { damageOverlay } from "../overlays.js";
 
 type breakResult = {
   battle: StartBattle;
