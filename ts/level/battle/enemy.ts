@@ -9,6 +9,7 @@ import timeTracker from "../../timer/timeTracker.js";
 export class Enemy {
   health: number;
   spikes: number;
+  stun: number;
   damage: number;
   defense: number;
   level: number;
@@ -34,6 +35,7 @@ export class Enemy {
     this.damage = 0;
     this.defense = 0;
     this.spikes = 0;
+    this.stun = 0;
     this.level = args.level;
     this.pos = args.pos;
     this.biteSound = args.biteSound ?? sounds.bite;
@@ -46,14 +48,14 @@ export class Enemy {
         args.attackCooldown *
         (playerInventory.hasItem("moon_flower") ? 1.2 : 1),
       goalFunc: () => {
-        return new EnemyAttack(this.damage, this);
+        return new EnemyAttack(this);
       },
       loop: true,
       autoStart: false,
     });
   }
 
-  stun(seconds: number) {
+  stunned(seconds: number) {
     this.stunTimer = new Timer({
       goalSecs: seconds,
       goalFunc: () => {
@@ -133,7 +135,26 @@ export class PosionWorm extends Enemy {
     this.cooldownTimer.goalFunc = () => {
       this.spikes += this.damage;
       console.log(this.spikes);
-      return new EnemyAttack(this.damage, this);
+      return new EnemyAttack(this);
+    };
+  }
+}
+
+export class RibbonWorm extends Enemy {
+  constructor(depth: number) {
+    super({
+      level: depth,
+      attackCooldown: 5 - depth * 0.1,
+      pos: new Position(56, 36),
+      spriteSheet: sprites.enemy_ribbon_worm,
+      stunSpriteShift: new Position(0, 0),
+    });
+    this.damage = -0.5 + Math.floor((this.level / 10) * 2) / 2;
+    this.health = 3 + Math.floor(this.level / 4);
+    this.stun = this.damage;
+
+    this.cooldownTimer.goalFunc = () => {
+      return new EnemyAttack(this);
     };
   }
 }

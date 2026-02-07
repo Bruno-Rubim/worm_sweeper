@@ -111,11 +111,9 @@ export class ConsumeItem extends Action {
 
 // Calls for an enemy attack, holding which enemy is attacking and their damage
 export class EnemyAttack extends Action {
-  damage: number;
   enemy: Enemy;
-  constructor(damage: number, enemy: Enemy) {
+  constructor(enemy: Enemy) {
     super();
-    this.damage = damage;
     this.enemy = enemy;
   }
 }

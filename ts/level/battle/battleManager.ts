@@ -419,7 +419,7 @@ export default class BattleManager extends SceneManager {
     }
 
     if (weapon.stunSecs > 0) {
-      enemy.stun(weapon.stunSecs);
+      enemy.stunned(weapon.stunSecs);
     }
 
     // Weapon animation
@@ -508,7 +508,7 @@ export default class BattleManager extends SceneManager {
       return;
     }
     gameState.battle.enemies.forEach((e) => {
-      e.stun(seconds);
+      e.stunned(seconds);
     });
   }
 
@@ -521,12 +521,17 @@ export default class BattleManager extends SceneManager {
     soundManager.playSound(action.enemy.biteSound);
 
     action.enemy.attackAnimTimer.start();
-    let enemyDamage = action.damage;
+    let enemyDamage = action.enemy.damage;
 
-    // Stun
+    // Stun Enemy
     if (enemyDamage > 0 && battle.stun > 0) {
-      action.enemy.stun(battle.stun);
+      action.enemy.stunned(battle.stun);
       battle.stun = 0;
+    }
+
+    // Stun Player
+    if (action.enemy.stun > 0) {
+      gameState.tiredTimer.addSecs(action.enemy.stun);
     }
 
     // Parry
