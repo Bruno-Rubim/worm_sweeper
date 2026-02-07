@@ -499,6 +499,16 @@ export default class BattleManager extends SceneManager {
   }
 
   /**
+   * Stuns all enemies for a given number
+   * @param seconds
+   */
+  stunEnemy(seconds: number) {
+    gameState.battle?.enemies.forEach((e) => {
+      e.stunned(seconds);
+    });
+  }
+
+  /**
    * Pauses the current battle's enemies' cooldown timers for a given ammount of seconds
    * @param seconds
    */
