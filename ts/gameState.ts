@@ -3,7 +3,6 @@ import type { ActiveItem } from "./items/active/active.js";
 import { Battle } from "./level/battle/battle.js";
 import Level from "./level/level.js";
 import { Timer } from "./timer/timer.js";
-import { GAMETIMERSYNC } from "./timer/timerManager.js";
 import timeTracker from "./timer/timeTracker.js";
 
 // Holds the current state of the game at any given time
@@ -13,7 +12,6 @@ export default class GameState {
     goalFunc: () => new LoseGame(),
     deleteAtEnd: false,
     autoStart: false,
-    classes: [GAMETIMERSYNC],
   });
   gold: number = 0;
   health: number = 5;
@@ -88,4 +86,5 @@ export function resetGameState() {
   gameState.tiredTimer.restart();
   gameState.attackAnimationTimer.restart();
   gameState.shieldUpTimer.restart();
+  gameState.holding = baseState.holding;
 }

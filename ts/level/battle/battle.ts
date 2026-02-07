@@ -1,6 +1,6 @@
 import playerInventory from "../../inventory/playerInventory.js";
 import { utils } from "../../utils.js";
-import { Enemy, PosionWorm, ScaleWorm, Worm } from "./enemy.js";
+import { Enemy, PosionWorm, RibbonWorm, ScaleWorm, Worm } from "./enemy.js";
 
 export class Battle {
   enemies: Enemy[];
@@ -23,15 +23,24 @@ export class Battle {
       new Worm(depth),
       new ScaleWorm(depth),
       new PosionWorm(depth),
+      new RibbonWorm(depth),
     ];
     let x;
-    depth > 2 ? (depth > 4 ? (x = 2) : (x = 1)) : (x = 0);
+    depth > 2
+      ? depth > 5
+        ? depth > 10
+          ? (x = 4)
+          : (x = 3)
+        : (x = 2)
+      : (x = 1);
+    arr = arr.slice(0, x);
 
-    this.enemies.push(arr[Math.min(x, utils.randomArrayId(arr))]!);
+    console.log(arr);
+    this.enemies.push(arr[utils.randomArrayId(arr)]!);
   }
   start() {
     const helmet = playerInventory.hasItem("safety_helmet");
-    const glassArmor = playerInventory.hasItem("glass_armor");
+    const glassArmor = playerInventory.armor.item.name == "glass_armor";
     this.protection = playerInventory.armor.item.protection;
     this.defense =
       playerInventory.armor.item.defense +
