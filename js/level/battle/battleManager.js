@@ -285,6 +285,11 @@ export default class BattleManager extends SceneManager {
         tiredTimer.start();
         return this.checkBattleEnd();
     }
+    stunEnemy(seconds) {
+        gameState.battle?.enemies.forEach((e) => {
+            e.stunned(seconds);
+        });
+    }
     stunPlayer(seconds) {
         gameState.stunnedTimer.goalSecs = seconds;
         gameState.stunnedTimer.start();
