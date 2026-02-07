@@ -430,9 +430,14 @@ export default class BattleManager extends SceneManager {
     const tiredTimer = gameState.tiredTimer;
     tiredTimer.goalSecs =
       (weapon.cooldown - (playerInventory.hasItem("feather") ? 0.3 : 0)) *
-      (playerInventory.armor.item.speedMult -
-        (playerInventory.hasItem("whetstone") ? weaponDmg * 0.05 : 0));
+      playerInventory.armor.item.speedMult;
     tiredTimer.start();
+
+    if (playerInventory.hasItem("whetstone")) {
+      tiredTimer.reduceSecs(gameState.tiredTimer.goalSecs * weaponDmg * 0.05);
+      console.log(weaponDmg * 0.05);
+    }
+
     return this.checkBattleEnd();
   }
 
@@ -522,6 +527,19 @@ export default class BattleManager extends SceneManager {
     if (enemyDamage > 0 && battle.stun > 0) {
       action.enemy.stun(battle.stun);
       battle.stun = 0;
+    }
+
+    // Parry
+    if (gameState.shieldUpTimer.inMotion && gameState.tiredTimer.inMotion) {
+      if (playerInventory.hasItem("charged_ambar")) {
+        this.stunEnemy(2);
+      } else {
+        gameState.tiredTimer.reduceSecs(
+          gameState.tiredTimer.goalSecs *
+            (playerInventory.hasItem("led_boots") ? 0.5 : 0.3),
+        );
+      }
+      soundManager.playSound(sounds.parry);
     }
 
     let playerReturnDmg = this.damagePlayer(enemyDamage);

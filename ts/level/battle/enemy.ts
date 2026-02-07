@@ -74,6 +74,9 @@ export class Enemy {
   }
 
   takeDamage(damage: number): number {
+    if (damage <= 0) {
+      return 0;
+    }
     let returnDamage = this.spikes;
     this.spikes = 0;
     const defense = this.defense;
@@ -106,18 +109,12 @@ export class ScaleWorm extends Enemy {
       level: depth,
       pos: new Position(56, 36),
       spriteSheet: sprites.enemy_scale_worm,
-      attackCooldown: 10 - Math.floor(depth / 3) * 0.3,
+      attackCooldown: 8 - Math.floor(depth / 3) * 0.3,
       stunSpriteShift: new Position(8, 21),
     });
 
-    this.health = 5 + Math.floor(this.level / 7);
-    this.damage = 1 + Math.floor((this.level / 5) * 2) / 2;
-    this.defense = this.damage;
-
-    this.cooldownTimer.goalFunc = () => {
-      this.defense += this.damage;
-      return new EnemyAttack(this.damage, this);
-    };
+    this.health = 6 + Math.floor(depth / 3);
+    this.damage = 1.5 + Math.floor((depth / 8) * 2) / 2;
   }
 }
 
@@ -132,8 +129,10 @@ export class PosionWorm extends Enemy {
     this.damage = Math.max(0, 0.5 + Math.floor((this.level - 5) / 4) / 2);
     this.health = 3 + Math.floor(this.level / 5);
     this.spikes = Math.max(0, 0.5 + Math.floor((this.level - 5) / 4) / 2);
+
     this.cooldownTimer.goalFunc = () => {
       this.spikes += this.damage;
+      console.log(this.spikes);
       return new EnemyAttack(this.damage, this);
     };
   }
