@@ -125,12 +125,12 @@ export class RibbonWorm extends Enemy {
     constructor(depth) {
         super({
             level: depth,
-            attackCooldown: 5 - depth * 0.1,
+            attackCooldown: 4 - depth * 0.13,
             pos: new Position(56, 36),
             spriteSheet: sprites.enemy_ribbon_worm,
             stunSpriteShift: new Position(0, 0),
         });
-        this.damage = -0.5 + Math.floor((this.level / 10) * 2) / 2;
+        this.damage = 0.5;
         this.health = 3 + Math.floor(this.level / 4);
         this.stun = this.damage;
         this.cooldownTimer.goalFunc = () => {

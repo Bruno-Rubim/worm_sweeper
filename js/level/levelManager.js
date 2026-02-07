@@ -16,10 +16,9 @@ import { soundManager } from "../sounds/soundManager.js";
 import BattleManager from "./battle/battleManager.js";
 import { Battle } from "./battle/battle.js";
 import playerInventory from "../inventory/playerInventory.js";
-import { timerManager } from "../timer/timerManager.js";
 import { transitionOverlay } from "./transitionOverlay.js";
-import damageOverlay from "./damageOverlay.js";
 import { TimedActiveItem } from "../items/active/active.js";
+import { damageOverlay, stunnedOverlay } from "./overlays.js";
 export class LevelManager extends GameObject {
     shopManager;
     caveManager;
@@ -67,6 +66,7 @@ export class LevelManager extends GameObject {
         }
         this.currentSceneManager.render();
         damageOverlay.render();
+        stunnedOverlay.render();
         transitionOverlay.render();
         if (gameState.gameOver) {
             canvasManager.renderSprite(sprites.screen_defeat, this.pos, this.width, this.height);

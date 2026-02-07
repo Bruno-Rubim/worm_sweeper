@@ -74,6 +74,7 @@ export const sprites = {
     worm: new Sprite("worm"),
     scene_transition: new Sprite("scene_transition"),
     damage_sheet: new Sprite("damage_sheet"),
+    stunned_sheet: new Sprite("stunned_sheet"),
 };
 const spriteArr = Object.values(sprites);
 const promises = spriteArr.map((sprite) => sprite.load());

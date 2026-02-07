@@ -14,8 +14,8 @@ import { Timer } from "../../timer/timer.js";
 import { musicTracks } from "../../sounds/music.js";
 import timeTracker from "../../timer/timeTracker.js";
 import playerInventory from "../../inventory/playerInventory.js";
-import damageOverlay from "../damageOverlay.js";
 import { TimedActiveItem } from "../../items/active/active.js";
+import { damageOverlay } from "../overlays.js";
 export default class CaveManager extends SceneManager {
     bomb = null;
     radar = null;
