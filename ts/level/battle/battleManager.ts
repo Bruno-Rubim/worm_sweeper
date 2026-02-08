@@ -188,7 +188,7 @@ export default class BattleManager extends SceneManager {
 
     // Renders weapon
     canvasManager.renderSprite(
-      playerInventory.weapon.item.bigSprite,
+      playerInventory.weaponSlot.item.bigSprite,
       new Position(
         BORDERTHICKLEFT - (gameState.attackAnimationTimer.inMotion ? 0 : 24),
         BORDERTHICKTOP + (gameState.attackAnimationTimer.inMotion ? 26 : 45),
@@ -199,7 +199,7 @@ export default class BattleManager extends SceneManager {
 
     // Renders shield
     canvasManager.renderSprite(
-      playerInventory.shield.item.bigSprite,
+      playerInventory.shieldSlot.item.bigSprite,
       new Position(
         BORDERTHICKLEFT + (gameState.shieldUpTimer.inMotion ? 0 : 24),
         BORDERTHICKTOP + (gameState.shieldUpTimer.inMotion ? 26 : 45),
@@ -397,7 +397,7 @@ export default class BattleManager extends SceneManager {
 
     const rId = utils.randomArrayId(gameState.battle.enemies);
     const enemy = gameState.battle.enemies[rId]!;
-    const weapon = playerInventory.weapon.item;
+    const weapon = playerInventory.weaponSlot.item;
     let weaponDmg = weapon.totalDamage;
 
     soundManager.playSound(weapon.sound);
@@ -433,12 +433,11 @@ export default class BattleManager extends SceneManager {
     const tiredTimer = gameState.tiredTimer;
     tiredTimer.goalSecs =
       (weapon.cooldown - (playerInventory.hasItem("feather") ? 0.3 : 0)) *
-      playerInventory.armor.item.speedMult;
+      playerInventory.armorSlot.item.speedMult;
     tiredTimer.start();
 
     if (playerInventory.hasItem("whetstone")) {
       tiredTimer.reduceSecs(gameState.tiredTimer.goalSecs * weaponDmg * 0.05);
-      console.log(weaponDmg * 0.05);
     }
 
     return this.checkBattleEnd();
@@ -453,7 +452,7 @@ export default class BattleManager extends SceneManager {
       alert("this shouldn't happen outside of battle");
       return;
     }
-    const shield = playerInventory.shield.item;
+    const shield = playerInventory.shieldSlot.item;
 
     // Setting defense stats
     if (playerInventory.hasItem("glass_armor")) {
@@ -477,7 +476,7 @@ export default class BattleManager extends SceneManager {
     // Cooldown
     const tiredTimer = gameState.tiredTimer;
     tiredTimer.goalSecs =
-      shield.cooldown * playerInventory.armor.item.speedMult;
+      shield.cooldown * playerInventory.armorSlot.item.speedMult;
     tiredTimer.start();
   }
 
@@ -495,8 +494,8 @@ export default class BattleManager extends SceneManager {
     const enemy = gameState.battle.enemies[rId]!;
     soundManager.playSound(sounds.explosion);
     enemy.takeDamage(playerInventory.hasItem("gunpowder") ? 8 : 5);
-    tiredTimer.goalSecs = 2 - 2 * playerInventory.armor.item.speedMult;
-    tiredTimer.goalSecs = 2 - playerInventory.armor.item.speedMult;
+    tiredTimer.goalSecs = 2 - 2 * playerInventory.armorSlot.item.speedMult;
+    tiredTimer.goalSecs = 2 - playerInventory.armorSlot.item.speedMult;
     tiredTimer.start();
     return this.checkBattleEnd();
   }

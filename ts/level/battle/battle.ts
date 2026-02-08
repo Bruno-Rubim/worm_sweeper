@@ -49,14 +49,15 @@ export class Battle {
   }
   start() {
     const helmet = playerInventory.hasItem("safety_helmet");
-    const glassArmor = playerInventory.armor.item.name == "glass_armor";
-    this.protection = playerInventory.armor.item.protection;
+    const glassArmor = playerInventory.armorSlot.item.name == "glass_armor";
+    this.protection = playerInventory.armorSlot.item.protection;
     this.defense =
-      playerInventory.armor.item.defense +
+      playerInventory.armorSlot.item.defense +
       (helmet ? (glassArmor ? 0.5 : 1) : 0);
     this.reflection =
-      playerInventory.armor.item.reflection + (helmet && glassArmor ? 0.5 : 0);
-    this.spikes = playerInventory.armor.item.spikes;
+      playerInventory.armorSlot.item.reflection +
+      (helmet && glassArmor ? 0.5 : 0);
+    this.spikes = playerInventory.armorSlot.item.spikes;
     this.enemies.forEach((e) => {
       e.cooldownTimer.start();
     });

@@ -232,11 +232,15 @@ export class LevelManager extends GameObject {
               // Falls through the next lines
               case "shop":
                 gameState.gameTimer.unpause();
-                if (playerInventory.active instanceof TimedActiveItem) {
-                  playerInventory.active.useTimer.unpause();
+                if (
+                  playerInventory.activeSlot.item instanceof TimedActiveItem
+                ) {
+                  playerInventory.activeSlot.item.useTimer.unpause();
                 }
-                if (playerInventory.altActive instanceof TimedActiveItem) {
-                  playerInventory.altActive.useTimer.unpause();
+                if (
+                  playerInventory.altActiveSlot.item instanceof TimedActiveItem
+                ) {
+                  playerInventory.altActiveSlot.item.useTimer.unpause();
                 }
                 break;
             }
@@ -244,11 +248,11 @@ export class LevelManager extends GameObject {
           case "shop":
             // Pauses timers when entering a shop
             gameState.gameTimer.pause();
-            if (playerInventory.active instanceof TimedActiveItem) {
-              playerInventory.active.useTimer.pause();
+            if (playerInventory.activeSlot.item instanceof TimedActiveItem) {
+              playerInventory.activeSlot.item.useTimer.pause();
             }
-            if (playerInventory.altActive instanceof TimedActiveItem) {
-              playerInventory.altActive.useTimer.pause();
+            if (playerInventory.altActiveSlot.item instanceof TimedActiveItem) {
+              playerInventory.altActiveSlot.item.useTimer.pause();
             }
             break;
         }

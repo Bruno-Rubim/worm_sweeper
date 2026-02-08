@@ -132,7 +132,6 @@ export class PosionWorm extends Enemy {
 
     this.cooldownTimer.goalFunc = () => {
       this.spikes += this.damage;
-      console.log(this.spikes);
       return new EnemyAttack(this);
     };
   }

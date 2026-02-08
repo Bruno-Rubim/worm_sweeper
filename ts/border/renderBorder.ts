@@ -78,11 +78,11 @@ function renderStats() {
  * @param gameState
  */
 function renderItems() {
-  playerInventory.weapon.render();
-  playerInventory.shield.render();
-  playerInventory.armor.render();
-  playerInventory.active.render();
-  playerInventory.altActive.render();
+  playerInventory.weaponSlot.render();
+  playerInventory.shieldSlot.render();
+  playerInventory.armorSlot.render();
+  playerInventory.activeSlot.render();
+  playerInventory.altActiveSlot.render();
   bagButton.render();
   bookButton.render();
   musicButton.render();

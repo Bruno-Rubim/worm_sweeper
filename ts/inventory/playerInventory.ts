@@ -24,20 +24,20 @@ export const flag = new Item({
 });
 
 export class Inventory {
-  armor: ArmorSlot;
-  weapon: WeaponSlot;
-  shield: ShieldSlot;
-  active: ActiveSlot;
-  altActive: ActiveSlot;
+  armorSlot: ArmorSlot;
+  weaponSlot: WeaponSlot;
+  shieldSlot: ShieldSlot;
+  activeSlot: ActiveSlot;
+  altActiveSlot: ActiveSlot;
   bagSlots: Slot[];
   soldItemNames: string[];
 
   constructor() {
-    this.weapon = new WeaponSlot(weaponDict.wood_sword);
-    this.shield = new ShieldSlot(shieldDict.wood_shield);
-    this.armor = new ArmorSlot();
-    this.active = new ActiveSlot(new Position(GAMEWIDTH - 20, 72));
-    this.altActive = new ActiveSlot(
+    this.weaponSlot = new WeaponSlot(weaponDict.wood_sword);
+    this.shieldSlot = new ShieldSlot(shieldDict.wood_shield);
+    this.armorSlot = new ArmorSlot();
+    this.activeSlot = new ActiveSlot(new Position(GAMEWIDTH - 20, 72));
+    this.altActiveSlot = new ActiveSlot(
       new Position(GAMEWIDTH - 20, 90),
       activeDict.locked,
       true,
@@ -60,33 +60,33 @@ export class Inventory {
 
   get itemNames() {
     return [
-      this.weapon.item.name,
-      this.armor.item.name,
-      this.shield.item.name,
-      this.active.item.name,
-      this.altActive.item.name,
+      this.weaponSlot.item.name,
+      this.armorSlot.item.name,
+      this.shieldSlot.item.name,
+      this.activeSlot.item.name,
+      this.altActiveSlot.item.name,
       ...this.bagSlots.map((x) => x.item.name),
     ];
   }
 
   hasItem(name: string) {
     const names = [
-      this.weapon.item.name,
-      this.armor.item.name,
-      this.shield.item.name,
-      this.active.item.name,
-      this.altActive.item.name,
+      this.weaponSlot.item.name,
+      this.armorSlot.item.name,
+      this.shieldSlot.item.name,
+      this.activeSlot.item.name,
+      this.altActiveSlot.item.name,
       ...this.bagSlots.map((x) => x.item.name),
     ];
     return names.includes(name);
   }
 
   reset() {
-    this.weapon.reset();
-    this.shield.reset();
-    this.armor.reset();
-    this.active.reset();
-    this.altActive.reset();
+    this.weaponSlot.reset();
+    this.shieldSlot.reset();
+    this.armorSlot.reset();
+    this.activeSlot.reset();
+    this.altActiveSlot.reset();
     this.soldItemNames = [];
     this.bagSlots.forEach((x) => x.reset());
     this.bagSlots[0]!.item = picaxe;
@@ -94,7 +94,13 @@ export class Inventory {
   }
 
   get gearSlots(): GameObject[] {
-    return [this.weapon, this.shield, this.armor, this.active, this.altActive];
+    return [
+      this.weaponSlot,
+      this.shieldSlot,
+      this.armorSlot,
+      this.activeSlot,
+      this.altActiveSlot,
+    ];
   }
 
   get emptyBagSlot() {

@@ -43,7 +43,6 @@ stunnedOverlay.render = () => {
   if (stunnedOverlay.hidden || !gameState.stunnedTimer.inMotion) {
     return;
   }
-  console.log(Math.floor((100 - gameState.stunnedTimer.percentage) / 25));
   canvasManager.renderAnimationFrame(
     stunnedOverlay.sprite,
     stunnedOverlay.pos,

@@ -185,8 +185,8 @@ export default class GameManager {
    */
   useActiveItem(action: UseActiveItem) {
     const item = action.slot.alt
-      ? playerInventory.altActive.item
-      : playerInventory.active.item;
+      ? playerInventory.altActiveSlot.item
+      : playerInventory.activeSlot.item;
     if (item instanceof TimedActiveItem) {
       switch (item.name) {
         case "silver_bell":
@@ -256,22 +256,22 @@ export default class GameManager {
     const item = action.item;
 
     if (item instanceof Shield) {
-      playerInventory.emptyBagSlot.item = playerInventory.shield.item;
-      playerInventory.shield.item = item;
+      playerInventory.emptyBagSlot.item = playerInventory.shieldSlot.item;
+      playerInventory.shieldSlot.item = item;
       return;
     }
 
     if (item instanceof Weapon) {
-      playerInventory.emptyBagSlot.item = playerInventory.weapon.item;
-      playerInventory.weapon.item = item;
+      playerInventory.emptyBagSlot.item = playerInventory.weaponSlot.item;
+      playerInventory.weaponSlot.item = item;
       return;
     }
 
     if (item instanceof Armor) {
-      if (playerInventory.armor.item.name != "empty") {
-        playerInventory.emptyBagSlot.item = playerInventory.armor.item;
+      if (playerInventory.armorSlot.item.name != "empty") {
+        playerInventory.emptyBagSlot.item = playerInventory.armorSlot.item;
       }
-      playerInventory.armor.item = item;
+      playerInventory.armorSlot.item = item;
       return;
     }
 
@@ -280,15 +280,15 @@ export default class GameManager {
         item.useTimer.restart();
       }
       if (
-        playerInventory.active.item.name != "empty" &&
+        playerInventory.activeSlot.item.name != "empty" &&
         playerInventory.hasItem("tool_belt")
       ) {
-        playerInventory.emptyBagSlot.switchItems(playerInventory.altActive);
-        playerInventory.altActive.item = item;
+        playerInventory.emptyBagSlot.switchItems(playerInventory.altActiveSlot);
+        playerInventory.altActiveSlot.item = item;
         return;
       }
-      playerInventory.emptyBagSlot.switchItems(playerInventory.active);
-      playerInventory.active.item = item;
+      playerInventory.emptyBagSlot.switchItems(playerInventory.activeSlot);
+      playerInventory.activeSlot.item = item;
       return;
     }
 
@@ -303,7 +303,7 @@ export default class GameManager {
     }
 
     if (item.name == "tool_belt") {
-      playerInventory.altActive.item = activeDict.empty;
+      playerInventory.altActiveSlot.item = activeDict.empty;
     }
 
     playerInventory.emptyBagSlot.item = item;
@@ -315,17 +315,17 @@ export default class GameManager {
       return;
     }
     if (item instanceof Shield) {
-      playerInventory.shield.switchItems(action.slot);
+      playerInventory.shieldSlot.switchItems(action.slot);
     }
     if (item instanceof Weapon) {
-      playerInventory.weapon.switchItems(action.slot);
+      playerInventory.weaponSlot.switchItems(action.slot);
     }
 
     if (item instanceof Armor) {
       if (action.slot instanceof ArmorSlot) {
         playerInventory.emptyBagSlot.switchItems(action.slot);
       } else {
-        playerInventory.armor.switchItems(action.slot);
+        playerInventory.armorSlot.switchItems(action.slot);
       }
     }
 
@@ -336,21 +336,30 @@ export default class GameManager {
         }
         playerInventory.emptyBagSlot.switchItems(action.slot);
       } else {
+        // Defines if the target slot is active or altActive
         let targetSlot: ActiveSlot;
         if (
           playerInventory.hasItem("tool_belt") &&
-          playerInventory.active.item.name != "empty"
+          playerInventory.activeSlot.item.name != "empty"
         ) {
-          targetSlot = playerInventory.altActive;
+          targetSlot = playerInventory.altActiveSlot;
         } else {
-          targetSlot = playerInventory.active;
+          targetSlot = playerInventory.activeSlot;
         }
+
         if (
           targetSlot.item instanceof TimedActiveItem &&
           gameState.currentScene != "shop"
         ) {
           targetSlot.item.useTimer.pause();
         }
+        if (
+          item instanceof TimedActiveItem &&
+          gameState.currentScene != "shop"
+        ) {
+          item.useTimer.unpause();
+        }
+
         targetSlot.switchItems(action.slot);
       }
     }
@@ -385,8 +394,8 @@ export default class GameManager {
       playerInventory.bagSlots.find((x) => x.item.name == "wood_shield")!.item =
         passivesDict.empty;
     } else if (item.name == "tool_belt") {
-      playerInventory.emptyBagSlot.switchItems(playerInventory.altActive);
-      playerInventory.altActive.reset();
+      playerInventory.emptyBagSlot.switchItems(playerInventory.altActiveSlot);
+      playerInventory.altActiveSlot.reset();
     }
 
     playerInventory.updateBagEmpties();
@@ -508,11 +517,11 @@ export default class GameManager {
     }
     if (inputState.keyboard[" "] == "pressed") {
       inputState.keyboard[" "] = "read";
-      return new UseActiveItem(playerInventory.active);
+      return new UseActiveItem(playerInventory.activeSlot);
     }
     if (inputState.keyboard.Shift == "pressed") {
       inputState.keyboard.Shift = "read";
-      return new UseActiveItem(playerInventory.altActive);
+      return new UseActiveItem(playerInventory.altActiveSlot);
     }
     // Functions avaliable for devs. Check the global.ts
     if (DEV) {
