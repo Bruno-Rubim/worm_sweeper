@@ -44,9 +44,7 @@ export class Enemy {
     this.attackAnimTimer = new Timer({ goalSecs: 0.3, autoStart: false });
     this.damagedTimer = new Timer({ goalSecs: 0.16, autoStart: false });
     this.cooldownTimer = new Timer({
-      goalSecs:
-        args.attackCooldown *
-        (playerInventory.hasItem("moon_flower") ? 1.2 : 1),
+      goalSecs: args.attackCooldown,
       goalFunc: () => {
         return new EnemyAttack(this);
       },

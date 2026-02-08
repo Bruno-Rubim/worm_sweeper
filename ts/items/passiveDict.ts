@@ -124,6 +124,15 @@ const passivesDict = {
     cost: 54,
     descriptionText: "Doubles the effects of potions.",
   }),
+  fang_necklace: new Item({
+    spriteSheetPos: new Position(4, 8),
+    name: "fang_necklace",
+    shopName: "Fang Necklace",
+    cost: 28,
+    descriptionText:
+      "Halves enemy $dmgdamage, but boosts their attack $spdspeed",
+  }),
+
   empty: new Item({
     spriteSheetPos: new Position(-1, -1),
     name: "empty",

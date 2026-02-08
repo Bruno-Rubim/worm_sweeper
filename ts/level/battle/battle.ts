@@ -34,7 +34,18 @@ export class Battle {
         : (x = 2)
       : (x = 1);
     arr = arr.slice(0, x);
-    this.enemies.push(arr[utils.randomArrayId(arr)]!);
+    const enemy = arr[utils.randomArrayId(arr)]!;
+
+    if (playerInventory.hasItem("moon_flower")) {
+      enemy.cooldownTimer.goalSecs *= 1.2;
+    }
+
+    if (playerInventory.hasItem("fang_necklace")) {
+      enemy.damage = Math.ceil(enemy.damage) / 2;
+      enemy.cooldownTimer.goalSecs *= 0.7;
+    }
+
+    this.enemies.push(enemy);
   }
   start() {
     const helmet = playerInventory.hasItem("safety_helmet");

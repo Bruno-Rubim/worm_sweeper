@@ -375,6 +375,9 @@ export default class BattleManager extends SceneManager {
     const defense = gameState.battle.defense;
     gameState.battle.defense = Math.max(0, defense - damage);
     damage = Math.max(0, damage - defense);
+
+    const protection = gameState.battle.protection;
+    damage -= protection;
     if (damage > 0) {
       gameState.health -= damage;
       this.playDamageOverlay();
